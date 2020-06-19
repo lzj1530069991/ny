@@ -1,0 +1,1572 @@
+
+                    Nyquest Technology Co., Ltd.
+
+NYASM 2.25
+
+    ADDR  OPCODE/VALUE              LINE   TAG  SOURCE                   STATEMENT    
+
+                                    1-    1     ;--------------------------------------------------------
+                                    1-    2     ; File Created by SDCC : free open source ANSI-C Compiler
+                                    1-    3     ; Version 3.7.1 #0 (MSVC)
+                                    1-    4     ;--------------------------------------------------------
+                                    1-    5     ; NY8A port
+                                    1-    6     ;--------------------------------------------------------
+                                    1-    7     	.file	"main.c"
+                                    1-    8     	list	p=NY8A051F,c=on
+                                    1-    9     	#include "ny8a051f.inc"
+                                    1-   11     ;--------------------------------------------------------
+                                    1-   12     ; external declarations
+                                    1-   13     ;--------------------------------------------------------
+                                    1-   14     	extern	__moduint
+                                    1-   15     	extern	_PORTBbits
+                                    1-   16     	extern	_PCONbits
+                                    1-   17     	extern	_BWUCONbits
+                                    1-   18     	extern	_BPLCONbits
+                                    1-   19     	extern	_BPHCONbits
+                                    1-   20     	extern	_INTEbits
+                                    1-   21     	extern	_INTFbits
+                                    1-   22     	extern	_INDF
+                                    1-   23     	extern	_TMR0
+                                    1-   24     	extern	_PCL
+                                    1-   25     	extern	_STATUS
+                                    1-   26     	extern	_FSR
+                                    1-   27     	extern	_PORTB
+                                    1-   28     	extern	_PCON
+                                    1-   29     	extern	_BWUCON
+                                    1-   30     	extern	_PCHBUF
+                                    1-   31     	extern	_BPLCON
+                                    1-   32     	extern	_BPHCON
+                                    1-   33     	extern	_INTE
+                                    1-   34     	extern	_INTF
+                                    1-   35     	extern	_TMR1
+                                    1-   36     	extern	_T1CR1
+                                    1-   37     	extern	_T1CR2
+                                    1-   38     	extern	_PWM1DUTY
+                                    1-   39     	extern	_PS1CV
+                                    1-   40     	extern	_BZ1CR
+                                    1-   41     	extern	_IRCR
+                                    1-   42     	extern	_TBHP
+                                    1-   43     	extern	_TBHD
+                                    1-   44     	extern	_OSCCR
+                                    1-   45     	extern	_IOSTB
+                                    1-   46     	extern	_PS0CV
+                                    1-   47     	extern	_BODCON
+                                    1-   48     	extern	_PCON1
+                                    1-   49     	extern	_T0MD
+                                    1-   50     	extern	___sdcc_saved_fsr
+                                    1-   51     	extern	___sdcc_saved_stk00
+                                    1-   52     	extern	___sdcc_saved_stk01
+                                    1-   53     	extern	__nyc_ny8_startup
+                                    1-   54     ;--------------------------------------------------------
+                                    1-   55     ; global declarations
+                                    1-   56     ;--------------------------------------------------------
+                                    1-   57     	extern	_delay
+                                    1-   58     	extern	_keyRead
+                                    1-   59     	extern	_KeyScan
+                                    1-   60     	extern	_pwmStop
+                                    1-   61     	extern	_pwmStart
+                                    1-   62     	extern	_setPWMduty
+                                    1-   63     	extern	_checkLVD
+                                    1-   64     	extern	_ledCon
+                                    1-   65     	extern	_delayCon
+                                    1-   66     	extern	_gotoSleep
+                                    1-   67     	extern	_isr
+                                    1-   68     	extern	_main
+                                    1-   69     	extern	_KeyStatus
+                                    1-   70     	extern	_keyCount
+                                    1-   71     	extern	_count500ms
+                                    1-   72     	extern	_count4Hour
+                                    1-   73     	extern	_count60s
+                                    1-   74     	extern	_intCount
+                                    1-   75     	extern	_IntFlag
+                                    1-   76     	extern	_workStep
+                                    1-   77     	extern	_ledFlag
+                                    1-   78     	extern	_ledCount
+                                    1-   79     	extern	_sleepDelay
+                                    1-   80     	extern	_step2Count
+                                    1-   81     	extern	_longPressFlag
+                                    1-   82     	extern	_RDUTY
+                                    1-   83     	extern	_GDUTY
+                                    1-   84     	extern	_BDUTY
+                                    1-   85     	extern	_startFlag
+                                    1-   87     	extern PSAVE
+                                    1-   88     	extern SSAVE
+                                    1-   89     	extern WSAVE
+                                    1-   90     	extern STK04
+                                    1-   91     	extern STK03
+                                    1-   92     	extern STK02
+                                    1-   93     	extern STK01
+                                    1-   94     	extern STK00
+                                    1-   96     .segment "uninit", 0x20000010
+ 20000010                           1-   97     PSAVE:
+                                    1-   98     	.res 1
+ 20000011                           1-   99     SSAVE:
+                                    1-  100     	.res 1
+ 20000012                           1-  101     WSAVE:
+                                    1-  102     	.res 1
+ 20000013                           1-  103     STK04:
+                                    1-  104     	.res 1
+ 20000014                           1-  105     STK03:
+                                    1-  106     	.res 1
+ 20000015                           1-  107     STK02:
+                                    1-  108     	.res 1
+ 20000016                           1-  109     STK01:
+                                    1-  110     	.res 1
+ 20000017                           1-  111     STK00:
+                                    1-  112     	.res 1
+                                    1-  114     ;--------------------------------------------------------
+                                    1-  115     ; global definitions
+                                    1-  116     ;--------------------------------------------------------
+                                    1-  117     .segment "uninit"
+     0000                           1-  118     _KeyStatus:
+                                    1-  119     	.res	1
+                                    1-  122     ;--------------------------------------------------------
+                                    1-  123     ; absolute symbol definitions
+                                    1-  124     ;--------------------------------------------------------
+                                    1-  125     ;--------------------------------------------------------
+                                    1-  126     ; compiler-defined variables
+                                    1-  127     ;--------------------------------------------------------
+                                    1-  128     .segment "uninit"
+     0000                           1-  129     r0x1025:
+                                    1-  130     	.res	1
+                                    1-  131     .segment "uninit"
+     0000                           1-  132     r0x1026:
+                                    1-  133     	.res	1
+                                    1-  134     .segment "uninit"
+     0000                           1-  135     r0x1023:
+                                    1-  136     	.res	1
+                                    1-  137     .segment "uninit"
+     0000                           1-  138     r0x1024:
+                                    1-  139     	.res	1
+                                    1-  140     .segment "uninit"
+     0000                           1-  141     r0x1020:
+                                    1-  142     	.res	1
+                                    1-  143     .segment "uninit"
+     0000                           1-  144     r0x101D:
+                                    1-  145     	.res	1
+                                    1-  146     .segment "uninit"
+     0000                           1-  147     r0x101E:
+                                    1-  148     	.res	1
+                                    1-  149     .segment "uninit"
+     0000                           1-  150     r0x1019:
+                                    1-  151     	.res	1
+                                    1-  152     .segment "uninit"
+     0000                           1-  153     r0x1018:
+                                    1-  154     	.res	1
+                                    1-  155     .segment "uninit"
+     0000                           1-  156     r0x101A:
+                                    1-  157     	.res	1
+                                    1-  158     .segment "uninit"
+     0000                           1-  159     r0x101B:
+                                    1-  160     	.res	1
+                                    1-  161     ;--------------------------------------------------------
+                                    1-  162     ; initialized data
+                                    1-  163     ;--------------------------------------------------------
+                                    1-  165     .segment "idata"
+     0000                           1-  166     _keyCount:
+     0000 0000 0000                 1-  167     	dw	0x00, 0x00
+                                    1-  171     .segment "idata"
+     0000                           1-  172     _count500ms:
+     0000 0000 0000                 1-  173     	dw	0x00, 0x00
+                                    1-  177     .segment "idata"
+     0000                           1-  178     _count4Hour:
+     0000 0000 0000                 1-  179     	dw	0x00, 0x00
+                                    1-  183     .segment "idata"
+     0000                           1-  184     _count60s:
+     0000 0000 0000                 1-  185     	dw	0x00, 0x00
+                                    1-  189     .segment "idata"
+     0000                           1-  190     _intCount:
+     0000 0000                      1-  191     	dw	0x00
+                                    1-  195     .segment "idata"
+     0000                           1-  196     _IntFlag:
+     0000 0000                      1-  197     	dw	0x00
+                                    1-  201     .segment "idata"
+     0000                           1-  202     _workStep:
+     0000 0000                      1-  203     	dw	0x00
+                                    1-  207     .segment "idata"
+     0000                           1-  208     _ledFlag:
+     0000 0000                      1-  209     	dw	0x00
+                                    1-  213     .segment "idata"
+     0000                           1-  214     _ledCount:
+     0000 0000                      1-  215     	dw	0x00
+                                    1-  219     .segment "idata"
+     0000                           1-  220     _sleepDelay:
+     0000 0000                      1-  221     	dw	0x00
+                                    1-  225     .segment "idata"
+     0000                           1-  226     _step2Count:
+     0000 0000                      1-  227     	dw	0x00
+                                    1-  231     .segment "idata"
+     0000                           1-  232     _longPressFlag:
+     0000 0000                      1-  233     	dw	0x00
+                                    1-  237     .segment "idata"
+     0000                           1-  238     _RDUTY:
+     0000 0000                      1-  239     	dw	0x00
+                                    1-  243     .segment "idata"
+     0000                           1-  244     _GDUTY:
+     0000 0000                      1-  245     	dw	0x00
+                                    1-  249     .segment "idata"
+     0000                           1-  250     _BDUTY:
+     0000 0000                      1-  251     	dw	0x00
+                                    1-  255     .segment "idata"
+     0000                           1-  256     _startFlag:
+     0000 0000                      1-  257     	dw	0x00
+                                    1-  260     ;--------------------------------------------------------
+                                    1-  261     ; overlayable items in internal ram 
+                                    1-  262     ;--------------------------------------------------------
+                                    1-  263     ;	udata_ovr
+                                    1-  264     ;--------------------------------------------------------
+                                    1-  265     ; reset vector 
+                                    1-  266     ;--------------------------------------------------------
+                                    1-  267     ORG	0x0000
+     0000 3rrr                      1-  268     	LGOTO	__nyc_ny8_startup
+                                    1-  269     ;--------------------------------------------------------
+                                    1-  270     ; interrupt and initialization code
+                                    1-  271     ;--------------------------------------------------------
+                                    1-  272     ORG 0x0008
+     0008 3rrr                      1-  273     	lgoto	__sdcc_interrupt
+                                    1-  275     .segment "code"
+     0000                           1-  276     __sdcc_interrupt:
+                                    1-  277     ;***
+                                    1-  278     ;  pBlock Stats: dbName = I
+                                    1-  279     ;***
+                                    1-  280     ;functions called:
+                                    1-  281     ;   _setPWMduty
+                                    1-  282     ;   _setPWMduty
+                                    1-  283     ;   _setPWMduty
+                                    1-  284     ;   _setPWMduty
+                                    1-  285     ;   _setPWMduty
+                                    1-  286     ;   _setPWMduty
+                                    1-  287     ;2 compiler assigned registers:
+                                    1-  288     ;   STK00
+                                    1-  289     ;   STK01
+                                    1-  290     ;; Starting pCode block
+     0000                           1-  291     _isr:
+                                    1-  292     ; 0 exit points
+                                    1-  293     	.line	61, "main.c"; 	void isr(void) __interrupt(0)
+     0000 00rr                      1-  294     	MOVAR	WSAVE
+     0001 1503                      1-  295     	SWAPR	STATUS,W
+     0002 0283                      1-  296     	CLRR	STATUS
+     0003 00rr                      1-  297     	MOVAR	SSAVE
+     0004 010A                      1-  298     	MOVR	PCHBUF,W
+     0005 028A                      1-  299     	CLRR	PCHBUF
+     0006 00rr                      1-  300     	MOVAR	PSAVE
+     0007 0104                      1-  301     	MOVR	FSR,W
+     0008 00rr                      1-  302     	MOVAR	___sdcc_saved_fsr
+     0009 01rr                      1-  303     	MOVR	STK00,W
+     000A 00rr                      1-  304     	MOVAR	___sdcc_saved_stk00
+     000B 01rr                      1-  305     	MOVR	STK01,W
+     000C 00rr                      1-  306     	MOVAR	___sdcc_saved_stk01
+                                    1-  307     	.line	63, "main.c"; 	if(INTFbits.T0IF)
+     000D 08rr                      1-  308     	BTRSS	_INTFbits,0
+     000E 3rrr                      1-  309     	LGOTO	_00110_DS_
+                                    1-  310     	.line	65, "main.c"; 	TMR0 = 55;
+     000F 2137                      1-  311     	MOVIA	0x37
+     0010 00rr                      1-  312     	MOVAR	_TMR0
+                                    1-  313     	.line	66, "main.c"; 	intCount++;
+     0011 05rr                      1-  314     	INCR	_intCount,F
+                                    1-  315     	.line	67, "main.c"; 	if(ledFlag)
+     0012 01rr                      1-  316     	MOVR	_ledFlag,W
+     0013 0D03                      1-  317     	BTRSC	STATUS,2
+     0014 3rrr                      1-  318     	LGOTO	_00106_DS_
+                                    1-  319     	.line	69, "main.c"; 	setPWMduty(0x02,RDUTY);
+     0015 01rr                      1-  320     	MOVR	_RDUTY,W
+     0016 00rr                      1-  321     	MOVAR	STK00
+     0017 2102                      1-  322     	MOVIA	0x02
+     0018 2rrr                      1-  323     	LCALL	_setPWMduty
+                                    1-  324     	.line	70, "main.c"; 	setPWMduty(0x20,GDUTY);
+     0019 01rr                      1-  325     	MOVR	_GDUTY,W
+     001A 00rr                      1-  326     	MOVAR	STK00
+     001B 2120                      1-  327     	MOVIA	0x20
+     001C 2rrr                      1-  328     	LCALL	_setPWMduty
+                                    1-  329     	.line	71, "main.c"; 	setPWMduty(0x10,BDUTY);
+     001D 01rr                      1-  330     	MOVR	_BDUTY,W
+     001E 00rr                      1-  331     	MOVAR	STK00
+     001F 2110                      1-  332     	MOVIA	0x10
+     0020 2rrr                      1-  333     	LCALL	_setPWMduty
+                                    1-  334     	.line	72, "main.c"; 	ledCount++;
+     0021 05rr                      1-  335     	INCR	_ledCount,F
+     0022                           1-  336     _00106_DS_:
+                                    1-  337     	.line	74, "main.c"; 	if(intCount == 96)
+     0022 01rr                      1-  338     	MOVR	_intCount,W
+     0023 2460                      1-  339     	XORIA	0x60
+     0024 0903                      1-  340     	BTRSS	STATUS,2
+     0025 3rrr                      1-  341     	LGOTO	_00110_DS_
+                                    1-  342     	.line	76, "main.c"; 	intCount = 0;
+     0026 02rr                      1-  343     	CLRR	_intCount
+                                    1-  344     	.line	77, "main.c"; 	IntFlag = 1;
+     0027 2101                      1-  345     	MOVIA	0x01
+     0028 00rr                      1-  346     	MOVAR	_IntFlag
+     0029                           1-  347     _00110_DS_:
+                                    1-  348     	.line	80, "main.c"; 	if(INTFbits.PBIF)
+     0029 08rr                      1-  349     	BTRSS	_INTFbits,1
+     002A 3rrr                      1-  350     	LGOTO	_00112_DS_
+                                    1-  351     	.line	82, "main.c"; 	INTF= (unsigned char)~(C_INT_PBKey);	// Clear PABIF(PortB input change interrupt flag bit)		
+     002B 21FD                      1-  352     	MOVIA	0xfd
+     002C 00rr                      1-  353     	MOVAR	_INTF
+     002D                           1-  354     _00112_DS_:
+                                    1-  355     	.line	85, "main.c"; 	INTF = 0;
+     002D 02rr                      1-  356     	CLRR	_INTF
+                                    1-  357     	.line	87, "main.c"; 	}
+     002E 01rr                      1-  358     	MOVR	___sdcc_saved_stk01,W
+     002F 00rr                      1-  359     	MOVAR	STK01
+     0030 01rr                      1-  360     	MOVR	___sdcc_saved_stk00,W
+     0031 00rr                      1-  361     	MOVAR	STK00
+     0032 01rr                      1-  362     	MOVR	___sdcc_saved_fsr,W
+     0033 0084                      1-  363     	MOVAR	FSR
+     0034 01rr                      1-  364     	MOVR	PSAVE,W
+     0035 008A                      1-  365     	MOVAR	PCHBUF
+     0036 0283                      1-  366     	CLRR	STATUS
+     0037 15rr                      1-  367     	SWAPR	SSAVE,W
+     0038 0083                      1-  368     	MOVAR	STATUS
+     0039 15rr                      1-  369     	SWAPR	WSAVE,F
+     003A 15rr                      1-  370     	SWAPR	WSAVE,W
+     003B                           1-  371     END_OF_INTERRUPT:
+     003B 0011                      1-  372     	RETIE	
+                                    1-  374     ;--------------------------------------------------------
+                                    1-  375     ; code
+                                    1-  376     ;--------------------------------------------------------
+                                    1-  377     ;***
+                                    1-  378     ;  pBlock Stats: dbName = M
+                                    1-  379     ;***
+                                    1-  380     ;has an exit
+                                    1-  381     ;functions called:
+                                    1-  382     ;   _checkLVD
+                                    1-  383     ;   _delayCon
+                                    1-  384     ;   _KeyScan
+                                    1-  385     ;   _keyRead
+                                    1-  386     ;   _pwmStart
+                                    1-  387     ;   _checkLVD
+                                    1-  388     ;   _delayCon
+                                    1-  389     ;   _KeyScan
+                                    1-  390     ;   _keyRead
+                                    1-  391     ;   _pwmStart
+                                    1-  392     ;2 compiler assigned registers:
+                                    1-  393     ;   r0x1025
+                                    1-  394     ;   r0x1026
+                                    1-  395     ;; Starting pCode block
+                                    1-  396     .segment "code"; module=main, function=_main
+                                    1-  398     ;local variable name mapping:
+     0000                           1-  400     _main:
+                                    1-  401     ; 2 exit points
+                                    1-  402     	.line	93, "main.c"; 	PORTB = 0xFB;
+     0000 21FB                      1-  403     	MOVIA	0xfb
+     0001 00rr                      1-  404     	MOVAR	_PORTB
+                                    1-  405     	.line	94, "main.c"; 	BPHCON = 0xF6;
+     0002 21F6                      1-  406     	MOVIA	0xf6
+     0003 00rr                      1-  407     	MOVAR	_BPHCON
+                                    1-  408     	.line	96, "main.c"; 	IOSTB =  C_PB0_Input | C_PB3_Input;	
+     0004 2109                      1-  409     	MOVIA	0x09
+     0005 000r                      1-  410     	IOST	_IOSTB
+                                    1-  411     	.line	97, "main.c"; 	PORTB = 0xFB;                        	// PortB Data Register = 0x00
+     0006 21FB                      1-  412     	MOVIA	0xfb
+     0007 00rr                      1-  413     	MOVAR	_PORTB
+                                    1-  414     	.line	98, "main.c"; 	PCON = C_WDT_En | C_LVR_En | C_LVD_En;				// Enable WDT & LVR
+     0008 21A8                      1-  415     	MOVIA	0xa8
+     0009 00rr                      1-  416     	MOVAR	_PCON
+                                    1-  417     	.line	100, "main.c"; 	PCON1 = C_TMR0_Dis;
+     000A 0200                      1-  418     	CLRA	
+     000B 000r                      1-  419     	IOST	_PCON1
+                                    1-  420     	.line	102, "main.c"; 	TMR0 = 55;
+     000C 2137                      1-  421     	MOVIA	0x37
+     000D 00rr                      1-  422     	MOVAR	_TMR0
+                                    1-  423     	.line	103, "main.c"; 	T0MD =  C_PS0_TMR0 | C_PS0_Div2;
+     000E 0200                      1-  424     	CLRA	
+     000F 0003                      1-  425     	T0MD	
+                                    1-  426     	.line	105, "main.c"; 	PCON1 = C_LVD_3P0V | C_TMR0_En;
+     0010 2115                      1-  427     	MOVIA	0x15
+     0011 000r                      1-  428     	IOST	_PCON1
+                                    1-  429     	.line	106, "main.c"; 	INTE =  C_INT_TMR0 | C_INT_TMR1;	// Enable Timer0、Timer1、WDT overflow interrupt
+     0012 2109                      1-  430     	MOVIA	0x09
+     0013 00rr                      1-  431     	MOVAR	_INTE
+                                    1-  432     	.line	107, "main.c"; 	INTF = 0;
+     0014 02rr                      1-  433     	CLRR	_INTF
+                                    1-  434     	.line	108, "main.c"; 	ENI();
+     0015 0004                      1-  435     	ENI
+                                    1-  436     	.line	109, "main.c"; 	startFlag = 1;
+     0016 2101                      1-  437     	MOVIA	0x01
+     0017 00rr                      1-  438     	MOVAR	_startFlag
+     0018                           1-  439     _00132_DS_:
+                                    1-  440     	.line	112, "main.c"; 	CLRWDT();
+     0018 0002                      1-  441     	clrwdt
+                                    1-  442     	.line	114, "main.c"; 	if(!IntFlag)
+     0019 01rr                      1-  443     	MOVR	_IntFlag,W
+     001A 0D03                      1-  444     	BTRSC	STATUS,2
+     001B 3rrr                      1-  445     	LGOTO	_00132_DS_
+                                    1-  446     	.line	116, "main.c"; 	IntFlag = 0;
+     001C 02rr                      1-  447     	CLRR	_IntFlag
+                                    1-  448     	.line	118, "main.c"; 	checkLVD();
+     001D 2rrr                      1-  449     	LCALL	_checkLVD
+                                    1-  450     	.line	119, "main.c"; 	delayCon();
+     001E 2rrr                      1-  451     	LCALL	_delayCon
+                                    1-  452     	.line	120, "main.c"; 	KeyStatus = KeyScan() & 0x1F;	//
+     001F 2rrr                      1-  453     	LCALL	_KeyScan
+     0020 00rr                      1-  454     	MOVAR	r0x1025
+     0021 211F                      1-  455     	MOVIA	0x1f
+     0022 10rr                      1-  456     	ANDAR	r0x1025,W
+     0023 00rr                      1-  457     	MOVAR	_KeyStatus
+                                    1-  458     	.line	121, "main.c"; 	keyClick = keyRead();
+     0024 2rrr                      1-  459     	LCALL	_keyRead
+     0025 00rr                      1-  460     	MOVAR	r0x1025
+                                    1-  461     	.line	123, "main.c"; 	if(keyClick == 1)
+     0026 02rr                      1-  462     	CLRR	r0x1026
+     0027 01rr                      1-  463     	MOVR	r0x1025,W
+     0028 2401                      1-  464     	XORIA	0x01
+     0029 0D03                      1-  465     	BTRSC	STATUS,2
+     002A 05rr                      1-  466     	INCR	r0x1026,F
+     002B 01rr                      1-  467     	MOVR	r0x1026,W
+     002C 0D03                      1-  468     	BTRSC	STATUS,2
+     002D 3rrr                      1-  469     	LGOTO	_00126_DS_
+                                    1-  470     	.line	125, "main.c"; 	count4Hour = 0;
+     002E 02rr                      1-  471     	CLRR	_count4Hour
+     002F 02rr                      1-  472     	CLRR	(_count4Hour + 1)
+                                    1-  473     	.line	126, "main.c"; 	workStep++;
+     0030 05rr                      1-  474     	INCR	_workStep,F
+                                    1-  475     ;;unsigned compare: left < lit (0x3=3), size=1
+                                    1-  476     	.line	127, "main.c"; 	if(workStep >= 3)
+     0031 2103                      1-  477     	MOVIA	0x03
+     0032 04rr                      1-  478     	SUBAR	_workStep,W
+     0033 0803                      1-  479     	BTRSS	STATUS,0
+     0034 3rrr                      1-  480     	LGOTO	_00127_DS_
+                                    1-  481     	.line	128, "main.c"; 	workStep = 0;
+     0035 02rr                      1-  482     	CLRR	_workStep
+     0036 3rrr                      1-  483     	LGOTO	_00127_DS_
+     0037                           1-  484     _00126_DS_:
+                                    1-  485     	.line	130, "main.c"; 	else if(keyClick == 2)
+     0037 01rr                      1-  486     	MOVR	r0x1025,W
+     0038 2402                      1-  487     	XORIA	0x02
+     0039 0903                      1-  488     	BTRSS	STATUS,2
+     003A 3rrr                      1-  489     	LGOTO	_00127_DS_
+                                    1-  490     	.line	132, "main.c"; 	count60s = 0;
+     003B 02rr                      1-  491     	CLRR	_count60s
+     003C 02rr                      1-  492     	CLRR	(_count60s + 1)
+                                    1-  493     	.line	133, "main.c"; 	ledFlag = ~ledFlag;
+     003D 07rr                      1-  494     	COMR	_ledFlag,W
+     003E 00rr                      1-  495     	MOVAR	_ledFlag
+                                    1-  496     	.line	134, "main.c"; 	if(!workStep)		//未喷雾重置定时4个小时
+     003F 01rr                      1-  497     	MOVR	_workStep,W
+     0040 0903                      1-  498     	BTRSS	STATUS,2
+     0041 3rrr                      1-  499     	LGOTO	_00127_DS_
+                                    1-  500     	.line	135, "main.c"; 	count4Hour = 0;
+     0042 02rr                      1-  501     	CLRR	_count4Hour
+     0043 02rr                      1-  502     	CLRR	(_count4Hour + 1)
+     0044                           1-  503     _00127_DS_:
+                                    1-  504     	.line	138, "main.c"; 	if(keyClick == 1 && workStep)
+     0044 01rr                      1-  505     	MOVR	r0x1026,W
+     0045 0D03                      1-  506     	BTRSC	STATUS,2
+     0046 3rrr                      1-  507     	LGOTO	_00132_DS_
+     0047 01rr                      1-  508     	MOVR	_workStep,W
+     0048 0D03                      1-  509     	BTRSC	STATUS,2
+     0049 3rrr                      1-  510     	LGOTO	_00132_DS_
+                                    1-  511     	.line	140, "main.c"; 	pwmStart();
+     004A 2rrr                      1-  512     	LCALL	_pwmStart
+     004B 3rrr                      1-  513     	LGOTO	_00132_DS_
+                                    1-  514     	.line	145, "main.c"; 	}
+                                    1-  515     	RETURN	
+     004C 0010                      3-   26 m1      ret
+                                    1-  516     ; exit point of _main
+                                    1-  518     ;***
+                                    1-  519     ;  pBlock Stats: dbName = C
+                                    1-  520     ;***
+                                    1-  521     ;has an exit
+                                    1-  522     ;5 compiler assigned registers:
+                                    1-  523     ;   r0x1018
+                                    1-  524     ;   STK00
+                                    1-  525     ;   r0x1019
+                                    1-  526     ;   r0x101A
+                                    1-  527     ;   r0x101B
+                                    1-  528     ;; Starting pCode block
+                                    1-  529     .segment "code"; module=main, function=_delay
+                                    1-  531     ;local variable name mapping:
+     0000                           1-  536     _delay:
+                                    1-  537     ; 2 exit points
+                                    1-  538     	.line	423, "main.c"; 	void delay(u16t time)
+     0000 00rr                      1-  539     	MOVAR	r0x1018
+     0001 01rr                      1-  540     	MOVR	STK00,W
+     0002 00rr                      1-  541     	MOVAR	r0x1019
+                                    1-  542     	.line	425, "main.c"; 	for(u16t i=0;i<time;i++);
+     0003 02rr                      1-  543     	CLRR	r0x101A
+     0004 02rr                      1-  544     	CLRR	r0x101B
+     0005                           1-  545     _00492_DS_:
+     0005 01rr                      1-  546     	MOVR	r0x1018,W
+     0006 04rr                      1-  547     	SUBAR	r0x101B,W
+     0007 0903                      1-  548     	BTRSS	STATUS,2
+     0008 3rrr                      1-  549     	LGOTO	_00503_DS_
+     0009 01rr                      1-  550     	MOVR	r0x1019,W
+     000A 04rr                      1-  551     	SUBAR	r0x101A,W
+     000B                           1-  552     _00503_DS_:
+     000B 0C03                      1-  553     	BTRSC	STATUS,0
+     000C 3rrr                      1-  554     	LGOTO	_00494_DS_
+     000D 05rr                      1-  555     	INCR	r0x101A,F
+     000E 0D03                      1-  556     	BTRSC	STATUS,2
+     000F 05rr                      1-  557     	INCR	r0x101B,F
+     0010 3rrr                      1-  558     	LGOTO	_00492_DS_
+     0011                           1-  559     _00494_DS_:
+                                    1-  560     	.line	426, "main.c"; 	}
+                                    1-  561     	RETURN	
+     0011 0010                      3-   26 m1      ret
+                                    1-  562     ; exit point of _delay
+                                    1-  564     ;***
+                                    1-  565     ;  pBlock Stats: dbName = C
+                                    1-  566     ;***
+                                    1-  567     ;has an exit
+                                    1-  568     ;; Starting pCode block
+                                    1-  569     .segment "code"; module=main, function=_keyRead
+     0000                           1-  571     _keyRead:
+                                    1-  572     ; 2 exit points
+                                    1-  573     	.line	392, "main.c"; 	if (KeyStatus & 0x01)
+     0000 08rr                      1-  574     	BTRSS	_KeyStatus,0
+     0001 3rrr                      1-  575     	LGOTO	_00464_DS_
+                                    1-  576     	.line	394, "main.c"; 	keyCount++;
+     0002 05rr                      1-  577     	INCR	_keyCount,F
+     0003 0D03                      1-  578     	BTRSC	STATUS,2
+     0004 05rr                      1-  579     	INCR	(_keyCount + 1),F
+                                    1-  580     ;;unsigned compare: left < lit (0xC8=200), size=2
+                                    1-  581     	.line	395, "main.c"; 	if(keyCount >= 200)
+     0005 2100                      1-  582     	MOVIA	0x00
+     0006 04rr                      1-  583     	SUBAR	(_keyCount + 1),W
+     0007 0903                      1-  584     	BTRSS	STATUS,2
+     0008 3rrr                      1-  585     	LGOTO	_00483_DS_
+     0009 21C8                      1-  586     	MOVIA	0xc8
+     000A 04rr                      1-  587     	SUBAR	_keyCount,W
+     000B                           1-  588     _00483_DS_:
+     000B 0803                      1-  589     	BTRSS	STATUS,0
+     000C 3rrr                      1-  590     	LGOTO	_00465_DS_
+                                    1-  591     	.line	397, "main.c"; 	keyCount = 200;
+     000D 21C8                      1-  592     	MOVIA	0xc8
+     000E 00rr                      1-  593     	MOVAR	_keyCount
+     000F 02rr                      1-  594     	CLRR	(_keyCount + 1)
+                                    1-  595     	.line	398, "main.c"; 	if(!longPressFlag)
+     0010 01rr                      1-  596     	MOVR	_longPressFlag,W
+     0011 0903                      1-  597     	BTRSS	STATUS,2
+     0012 3rrr                      1-  598     	LGOTO	_00465_DS_
+                                    1-  599     	.line	400, "main.c"; 	longPressFlag = 1;
+     0013 2101                      1-  600     	MOVIA	0x01
+     0014 00rr                      1-  601     	MOVAR	_longPressFlag
+                                    1-  602     	.line	401, "main.c"; 	return 2;
+     0015 2102                      1-  603     	MOVIA	0x02
+     0016 3rrr                      1-  604     	LGOTO	_00466_DS_
+                                    1-  605     ;;unsigned compare: left < lit (0xC8=200), size=2
+     0017                           1-  606     _00464_DS_:
+                                    1-  607     	.line	407, "main.c"; 	if(keyCount >= 200)
+     0017 2100                      1-  608     	MOVIA	0x00
+     0018 04rr                      1-  609     	SUBAR	(_keyCount + 1),W
+     0019 0903                      1-  610     	BTRSS	STATUS,2
+     001A 3rrr                      1-  611     	LGOTO	_00484_DS_
+     001B 21C8                      1-  612     	MOVIA	0xc8
+     001C 04rr                      1-  613     	SUBAR	_keyCount,W
+     001D                           1-  614     _00484_DS_:
+     001D 0803                      1-  615     	BTRSS	STATUS,0
+     001E 3rrr                      1-  616     	LGOTO	_00461_DS_
+                                    1-  617     	.line	409, "main.c"; 	keyCount = 0;
+     001F 02rr                      1-  618     	CLRR	_keyCount
+     0020 02rr                      1-  619     	CLRR	(_keyCount + 1)
+                                    1-  620     	.line	410, "main.c"; 	longPressFlag = 0;
+     0021 02rr                      1-  621     	CLRR	_longPressFlag
+                                    1-  622     	.line	411, "main.c"; 	return	0;
+     0022 2100                      1-  623     	MOVIA	0x00
+     0023 3rrr                      1-  624     	LGOTO	_00466_DS_
+                                    1-  625     ;;unsigned compare: left < lit (0x8=8), size=2
+     0024                           1-  626     _00461_DS_:
+                                    1-  627     	.line	413, "main.c"; 	else if(keyCount >= 8)
+     0024 2100                      1-  628     	MOVIA	0x00
+     0025 04rr                      1-  629     	SUBAR	(_keyCount + 1),W
+     0026 0903                      1-  630     	BTRSS	STATUS,2
+     0027 3rrr                      1-  631     	LGOTO	_00485_DS_
+     0028 2108                      1-  632     	MOVIA	0x08
+     0029 04rr                      1-  633     	SUBAR	_keyCount,W
+     002A                           1-  634     _00485_DS_:
+     002A 0803                      1-  635     	BTRSS	STATUS,0
+     002B 3rrr                      1-  636     	LGOTO	_00462_DS_
+                                    1-  637     	.line	415, "main.c"; 	keyCount = 0;
+     002C 02rr                      1-  638     	CLRR	_keyCount
+     002D 02rr                      1-  639     	CLRR	(_keyCount + 1)
+                                    1-  640     	.line	416, "main.c"; 	return	1;
+     002E 2101                      1-  641     	MOVIA	0x01
+     002F 3rrr                      1-  642     	LGOTO	_00466_DS_
+     0030                           1-  643     _00462_DS_:
+                                    1-  644     	.line	418, "main.c"; 	keyCount = 0;
+     0030 02rr                      1-  645     	CLRR	_keyCount
+     0031 02rr                      1-  646     	CLRR	(_keyCount + 1)
+     0032                           1-  647     _00465_DS_:
+                                    1-  648     	.line	420, "main.c"; 	return 0;
+     0032 2100                      1-  649     	MOVIA	0x00
+     0033                           1-  650     _00466_DS_:
+                                    1-  651     	.line	421, "main.c"; 	}
+                                    1-  652     	RETURN	
+     0033 0010                      3-   26 m1      ret
+                                    1-  653     ; exit point of _keyRead
+                                    1-  655     ;***
+                                    1-  656     ;  pBlock Stats: dbName = C
+                                    1-  657     ;***
+                                    1-  658     ;has an exit
+                                    1-  659     ;1 compiler assigned register :
+                                    1-  660     ;   r0x101C
+                                    1-  661     ;; Starting pCode block
+                                    1-  662     .segment "code"; module=main, function=_KeyScan
+                                    1-  664     ;local variable name mapping:
+     0000                           1-  666     _KeyScan:
+                                    1-  667     ; 2 exit points
+                                    1-  668     	.line	383, "main.c"; 	KeyStatus = ~PORTB;
+     0000 07rr                      1-  669     	COMR	_PORTB,W
+                                    1-  670     ;;1	MOVAR	r0x101C
+                                    1-  671     	.line	386, "main.c"; 	}
+                                    1-  672     	RETURN	
+     0001 0010                      3-   26 m1      ret
+                                    1-  673     ; exit point of _KeyScan
+                                    1-  675     ;***
+                                    1-  676     ;  pBlock Stats: dbName = C
+                                    1-  677     ;***
+                                    1-  678     ;has an exit
+                                    1-  679     ;; Starting pCode block
+                                    1-  680     .segment "code"; module=main, function=_pwmStop
+     0000                           1-  682     _pwmStop:
+                                    1-  683     ; 2 exit points
+                                    1-  684     	.line	371, "main.c"; 	T1CR1 = C_TMR1_Dis;
+     0000 0200                      1-  685     	CLRA	
+     0001 002r                      1-  686     	SFUN	_T1CR1
+                                    1-  687     	.line	372, "main.c"; 	PWM1DUTY = 0;
+     0002 002r                      1-  688     	SFUN	_PWM1DUTY
+                                    1-  689     	.line	373, "main.c"; 	PORTB &= 0xFB;	//关闭
+     0003 1Drr                      1-  690     	BCR	_PORTB,2
+                                    1-  691     	.line	374, "main.c"; 	}
+                                    1-  692     	RETURN	
+     0004 0010                      3-   26 m1      ret
+                                    1-  693     ; exit point of _pwmStop
+                                    1-  695     ;***
+                                    1-  696     ;  pBlock Stats: dbName = C
+                                    1-  697     ;***
+                                    1-  698     ;has an exit
+                                    1-  699     ;; Starting pCode block
+                                    1-  700     .segment "code"; module=main, function=_pwmStart
+     0000                           1-  702     _pwmStart:
+                                    1-  703     ; 2 exit points
+                                    1-  704     	.line	362, "main.c"; 	TMR1 = 0x11;							//频率为110K
+     0000 2111                      1-  705     	MOVIA	0x11
+     0001 002r                      1-  706     	SFUN	_TMR1
+                                    1-  707     	.line	363, "main.c"; 	PWM1DUTY = 0x08;				// 		
+     0002 2108                      1-  708     	MOVIA	0x08
+     0003 002r                      1-  709     	SFUN	_PWM1DUTY
+                                    1-  710     	.line	365, "main.c"; 	T1CR2 = C_TMR1_ClkSrc_Inst | C_PS1_Div2;	// Enable Prescaler1, Prescaler1 dividing rate = 1:2, Timer1 clock source is instruction clock 
+     0004 0200                      1-  711     	CLRA	
+     0005 002r                      1-  712     	SFUN	_T1CR2
+                                    1-  713     	.line	366, "main.c"; 	T1CR1 = C_PWM1_En | C_TMR1_Reload | C_TMR1_En;	// PWM1 output will be present on PB6 , PWM1 output is active high, reloaded from TMR1, non-stop mode
+     0006 2183                      1-  714     	MOVIA	0x83
+     0007 002r                      1-  715     	SFUN	_T1CR1
+                                    1-  716     	.line	367, "main.c"; 	}
+                                    1-  717     	RETURN	
+     0008 0010                      3-   26 m1      ret
+                                    1-  718     ; exit point of _pwmStart
+                                    1-  720     ;***
+                                    1-  721     ;  pBlock Stats: dbName = C
+                                    1-  722     ;***
+                                    1-  723     ;3 compiler assigned registers:
+                                    1-  724     ;   r0x101D
+                                    1-  725     ;   STK00
+                                    1-  726     ;   r0x101E
+                                    1-  727     ;; Starting pCode block
+                                    1-  728     .segment "code"; module=main, function=_setPWMduty
+                                    1-  730     ;local variable name mapping:
+     0000                           1-  733     _setPWMduty:
+                                    1-  734     ; 0 exit points
+                                    1-  735     	.line	348, "main.c"; 	void setPWMduty(char portPin,char duty)
+     0000 00rr                      1-  736     	MOVAR	r0x101D
+     0001 01rr                      1-  737     	MOVR	STK00,W
+     0002 00rr                      1-  738     	MOVAR	r0x101E
+                                    1-  739     	.line	350, "main.c"; 	if(ledCount <= duty)
+     0003 01rr                      1-  740     	MOVR	_ledCount,W
+     0004 04rr                      1-  741     	SUBAR	r0x101E,W
+     0005 0803                      1-  742     	BTRSS	STATUS,0
+     0006 3rrr                      1-  743     	LGOTO	_00433_DS_
+                                    1-  744     	.line	351, "main.c"; 	PORTB &= (~portPin);
+     0007 07rr                      1-  745     	COMR	r0x101D,W
+     0008 00rr                      1-  746     	MOVAR	r0x101E
+     0009 10rr                      1-  747     	ANDAR	_PORTB,F
+     000A 3rrr                      1-  748     	LGOTO	_00434_DS_
+     000B                           1-  749     _00433_DS_:
+                                    1-  750     	.line	353, "main.c"; 	PORTB |= portPin;
+     000B 01rr                      1-  751     	MOVR	r0x101D,W
+     000C 11rr                      1-  752     	IORAR	_PORTB,F
+     000D                           1-  753     _00434_DS_:
+                                    1-  754     	.line	354, "main.c"; 	if(ledCount == 100)
+     000D 01rr                      1-  755     	MOVR	_ledCount,W
+     000E 2464                      1-  756     	XORIA	0x64
+     000F 0D03                      1-  757     	BTRSC	STATUS,2
+                                    1-  758     	.line	355, "main.c"; 	ledCount = 0;
+     0010 02rr                      1-  759     	CLRR	_ledCount
+                                    1-  760     	.line	356, "main.c"; 	}
+                                    1-  761     	RETURN	
+     0011 0010                      3-   26 m1      ret
+                                    1-  763     ;***
+                                    1-  764     ;  pBlock Stats: dbName = C
+                                    1-  765     ;***
+                                    1-  766     ;functions called:
+                                    1-  767     ;   _delay
+                                    1-  768     ;   _gotoSleep
+                                    1-  769     ;   _delay
+                                    1-  770     ;   _gotoSleep
+                                    1-  771     ;3 compiler assigned registers:
+                                    1-  772     ;   STK00
+                                    1-  773     ;   r0x101F
+                                    1-  774     ;   r0x1020
+                                    1-  775     ;; Starting pCode block
+                                    1-  776     .segment "code"; module=main, function=_checkLVD
+     0000                           1-  778     _checkLVD:
+                                    1-  779     ; 0 exit points
+                                    1-  780     	.line	329, "main.c"; 	PCON1 = C_LVD_3P0V | C_TMR0_En;
+     0000 2115                      1-  781     	MOVIA	0x15
+     0001 000r                      1-  782     	IOST	_PCON1
+                                    1-  783     	.line	330, "main.c"; 	delay(80);
+     0002 2150                      1-  784     	MOVIA	0x50
+     0003 00rr                      1-  785     	MOVAR	STK00
+     0004 2100                      1-  786     	MOVIA	0x00
+     0005 2rrr                      1-  787     	LCALL	_delay
+                                    1-  788     	.line	332, "main.c"; 	if((PCON1 >> 6)&1)
+     0006 001r                      1-  789     	IOSTR	_PCON1
+                                    1-  790     ;;1	MOVAR	r0x101F
+     0007 2240                      1-  791     	ANDIA	0x40
+     0008 0903                      1-  792     	BTRSS	STATUS,2
+     0009 2101                      1-  793     	MOVIA	0x01
+     000A 00rr                      1-  794     	MOVAR	r0x1020
+     000B 01rr                      1-  795     	MOVR	r0x1020,W
+     000C 0D03                      1-  796     	BTRSC	STATUS,2
+     000D 3rrr                      1-  797     	LGOTO	_00425_DS_
+                                    1-  798     	.line	334, "main.c"; 	if(workStep)
+     000E 01rr                      1-  799     	MOVR	_workStep,W
+     000F 0D03                      1-  800     	BTRSC	STATUS,2
+     0010 3rrr                      1-  801     	LGOTO	_00427_DS_
+                                    1-  802     	.line	335, "main.c"; 	PWM1DUTY = 0x08;	//45%
+     0011 2108                      1-  803     	MOVIA	0x08
+     0012 002r                      1-  804     	SFUN	_PWM1DUTY
+     0013 3rrr                      1-  805     	LGOTO	_00427_DS_
+     0014                           1-  806     _00425_DS_:
+                                    1-  807     	.line	339, "main.c"; 	workStep = 0;
+     0014 02rr                      1-  808     	CLRR	_workStep
+                                    1-  809     	.line	340, "main.c"; 	PORTB = 0xFB;
+     0015 21FB                      1-  810     	MOVIA	0xfb
+     0016 00rr                      1-  811     	MOVAR	_PORTB
+                                    1-  812     	.line	341, "main.c"; 	if(++sleepDelay >= 10)
+     0017 05rr                      1-  813     	INCR	_sleepDelay,F
+                                    1-  814     ;;unsigned compare: left < lit (0xA=10), size=1
+     0018 210A                      1-  815     	MOVIA	0x0a
+     0019 04rr                      1-  816     	SUBAR	_sleepDelay,W
+     001A 0C03                      1-  817     	BTRSC	STATUS,0
+                                    1-  818     	.line	342, "main.c"; 	gotoSleep();
+     001B 2rrr                      1-  819     	LCALL	_gotoSleep
+     001C                           1-  820     _00427_DS_:
+                                    1-  821     	.line	344, "main.c"; 	}
+                                    1-  822     	RETURN	
+     001C 0010                      3-   26 m1      ret
+                                    1-  824     ;***
+                                    1-  825     ;  pBlock Stats: dbName = C
+                                    1-  826     ;***
+                                    1-  827     ;has an exit
+                                    1-  828     ;functions called:
+                                    1-  829     ;   __moduint
+                                    1-  830     ;   __moduint
+                                    1-  831     ;5 compiler assigned registers:
+                                    1-  832     ;   STK02
+                                    1-  833     ;   STK01
+                                    1-  834     ;   STK00
+                                    1-  835     ;   r0x1021
+                                    1-  836     ;   r0x1022
+                                    1-  837     ;; Starting pCode block
+                                    1-  838     .segment "code"; module=main, function=_ledCon
+     0000                           1-  840     _ledCon:
+                                    1-  841     ; 2 exit points
+                                    1-  842     	.line	248, "main.c"; 	if(count60s % 5 == 0)
+     0000 2105                      1-  843     	MOVIA	0x05
+     0001 00rr                      1-  844     	MOVAR	STK02
+     0002 2100                      1-  845     	MOVIA	0x00
+     0003 00rr                      1-  846     	MOVAR	STK01
+     0004 01rr                      1-  847     	MOVR	_count60s,W
+     0005 00rr                      1-  848     	MOVAR	STK00
+     0006 01rr                      1-  849     	MOVR	(_count60s + 1),W
+     0007 2rrr                      1-  850     	LCALL	__moduint
+                                    1-  851     ;;1	MOVAR	r0x1021
+     0008 11rr                      1-  852     	IORAR	STK00,W
+     0009 0903                      1-  853     	BTRSS	STATUS,2
+     000A 3rrr                      1-  854     	LGOTO	_00341_DS_
+                                    1-  855     ;;unsigned compare: left < lit (0x1F4=500), size=2
+                                    1-  856     	.line	251, "main.c"; 	if(count60s < 500)
+     000B 2101                      1-  857     	MOVIA	0x01
+     000C 04rr                      1-  858     	SUBAR	(_count60s + 1),W
+     000D 0903                      1-  859     	BTRSS	STATUS,2
+     000E 3rrr                      1-  860     	LGOTO	_00400_DS_
+     000F 21F4                      1-  861     	MOVIA	0xf4
+     0010 04rr                      1-  862     	SUBAR	_count60s,W
+     0011                           1-  863     _00400_DS_:
+     0011 0C03                      1-  864     	BTRSC	STATUS,0
+     0012 3rrr                      1-  865     	LGOTO	_00338_DS_
+                                    1-  866     	.line	253, "main.c"; 	RDUTY = GDUTY = 20;
+     0013 2114                      1-  867     	MOVIA	0x14
+     0014 00rr                      1-  868     	MOVAR	_GDUTY
+     0015 00rr                      1-  869     	MOVAR	_RDUTY
+                                    1-  870     	.line	254, "main.c"; 	BDUTY = 100;
+     0016 2164                      1-  871     	MOVIA	0x64
+     0017 00rr                      1-  872     	MOVAR	_BDUTY
+     0018 3rrr                      1-  873     	LGOTO	_00341_DS_
+                                    1-  874     ;;unsigned compare: left < lit (0x258=600), size=2
+     0019                           1-  875     _00338_DS_:
+                                    1-  876     	.line	256, "main.c"; 	else if(count60s < 600)
+     0019 2102                      1-  877     	MOVIA	0x02
+     001A 04rr                      1-  878     	SUBAR	(_count60s + 1),W
+     001B 0903                      1-  879     	BTRSS	STATUS,2
+     001C 3rrr                      1-  880     	LGOTO	_00401_DS_
+     001D 2158                      1-  881     	MOVIA	0x58
+     001E 04rr                      1-  882     	SUBAR	_count60s,W
+     001F                           1-  883     _00401_DS_:
+     001F 0C03                      1-  884     	BTRSC	STATUS,0
+     0020 3rrr                      1-  885     	LGOTO	_00335_DS_
+                                    1-  886     	.line	258, "main.c"; 	--RDUTY;
+     0021 06rr                      1-  887     	DECR	_RDUTY,F
+     0022 3rrr                      1-  888     	LGOTO	_00341_DS_
+                                    1-  889     ;;unsigned compare: left < lit (0x3E8=1000), size=2
+     0023                           1-  890     _00335_DS_:
+                                    1-  891     	.line	260, "main.c"; 	else if(count60s < 1000)
+     0023 2103                      1-  892     	MOVIA	0x03
+     0024 04rr                      1-  893     	SUBAR	(_count60s + 1),W
+     0025 0903                      1-  894     	BTRSS	STATUS,2
+     0026 3rrr                      1-  895     	LGOTO	_00402_DS_
+     0027 21E8                      1-  896     	MOVIA	0xe8
+     0028 04rr                      1-  897     	SUBAR	_count60s,W
+     0029                           1-  898     _00402_DS_:
+     0029 0C03                      1-  899     	BTRSC	STATUS,0
+     002A 3rrr                      1-  900     	LGOTO	_00332_DS_
+                                    1-  901     	.line	262, "main.c"; 	RDUTY = 0;
+     002B 02rr                      1-  902     	CLRR	_RDUTY
+                                    1-  903     	.line	263, "main.c"; 	++GDUTY;
+     002C 05rr                      1-  904     	INCR	_GDUTY,F
+     002D 3rrr                      1-  905     	LGOTO	_00341_DS_
+                                    1-  906     ;;unsigned compare: left < lit (0x5DC=1500), size=2
+     002E                           1-  907     _00332_DS_:
+                                    1-  908     	.line	265, "main.c"; 	else if(count60s < 1500)
+     002E 2105                      1-  909     	MOVIA	0x05
+     002F 04rr                      1-  910     	SUBAR	(_count60s + 1),W
+     0030 0903                      1-  911     	BTRSS	STATUS,2
+     0031 3rrr                      1-  912     	LGOTO	_00403_DS_
+     0032 21DC                      1-  913     	MOVIA	0xdc
+     0033 04rr                      1-  914     	SUBAR	_count60s,W
+     0034                           1-  915     _00403_DS_:
+     0034 0C03                      1-  916     	BTRSC	STATUS,0
+     0035 3rrr                      1-  917     	LGOTO	_00329_DS_
+                                    1-  918     	.line	267, "main.c"; 	RDUTY = 0;
+     0036 02rr                      1-  919     	CLRR	_RDUTY
+                                    1-  920     	.line	268, "main.c"; 	GDUTY = 100;
+     0037 2164                      1-  921     	MOVIA	0x64
+     0038 00rr                      1-  922     	MOVAR	_GDUTY
+     0039 3rrr                      1-  923     	LGOTO	_00341_DS_
+                                    1-  924     ;;unsigned compare: left < lit (0x76C=1900), size=2
+     003A                           1-  925     _00329_DS_:
+                                    1-  926     	.line	270, "main.c"; 	else if(count60s < 1900)
+     003A 2107                      1-  927     	MOVIA	0x07
+     003B 04rr                      1-  928     	SUBAR	(_count60s + 1),W
+     003C 0903                      1-  929     	BTRSS	STATUS,2
+     003D 3rrr                      1-  930     	LGOTO	_00404_DS_
+     003E 216C                      1-  931     	MOVIA	0x6c
+     003F 04rr                      1-  932     	SUBAR	_count60s,W
+     0040                           1-  933     _00404_DS_:
+     0040 0C03                      1-  934     	BTRSC	STATUS,0
+     0041 3rrr                      1-  935     	LGOTO	_00326_DS_
+                                    1-  936     	.line	272, "main.c"; 	--BDUTY;
+     0042 06rr                      1-  937     	DECR	_BDUTY,F
+     0043 3rrr                      1-  938     	LGOTO	_00341_DS_
+                                    1-  939     ;;unsigned compare: left < lit (0x7D0=2000), size=2
+     0044                           1-  940     _00326_DS_:
+                                    1-  941     	.line	274, "main.c"; 	else if(count60s < 2000)
+     0044 2107                      1-  942     	MOVIA	0x07
+     0045 04rr                      1-  943     	SUBAR	(_count60s + 1),W
+     0046 0903                      1-  944     	BTRSS	STATUS,2
+     0047 3rrr                      1-  945     	LGOTO	_00405_DS_
+     0048 21D0                      1-  946     	MOVIA	0xd0
+     0049 04rr                      1-  947     	SUBAR	_count60s,W
+     004A                           1-  948     _00405_DS_:
+     004A 0C03                      1-  949     	BTRSC	STATUS,0
+     004B 3rrr                      1-  950     	LGOTO	_00323_DS_
+                                    1-  951     	.line	276, "main.c"; 	BDUTY = 20;
+     004C 2114                      1-  952     	MOVIA	0x14
+     004D 00rr                      1-  953     	MOVAR	_BDUTY
+                                    1-  954     	.line	277, "main.c"; 	++RDUTY;
+     004E 05rr                      1-  955     	INCR	_RDUTY,F
+     004F 3rrr                      1-  956     	LGOTO	_00341_DS_
+                                    1-  957     ;;unsigned compare: left < lit (0x9C4=2500), size=2
+     0050                           1-  958     _00323_DS_:
+                                    1-  959     	.line	279, "main.c"; 	else if(count60s < 2500)
+     0050 2109                      1-  960     	MOVIA	0x09
+     0051 04rr                      1-  961     	SUBAR	(_count60s + 1),W
+     0052 0903                      1-  962     	BTRSS	STATUS,2
+     0053 3rrr                      1-  963     	LGOTO	_00406_DS_
+     0054 21C4                      1-  964     	MOVIA	0xc4
+     0055 04rr                      1-  965     	SUBAR	_count60s,W
+     0056                           1-  966     _00406_DS_:
+     0056 0C03                      1-  967     	BTRSC	STATUS,0
+     0057 3rrr                      1-  968     	LGOTO	_00320_DS_
+                                    1-  969     	.line	281, "main.c"; 	RDUTY = 20;
+     0058 2114                      1-  970     	MOVIA	0x14
+     0059 00rr                      1-  971     	MOVAR	_RDUTY
+     005A 3rrr                      1-  972     	LGOTO	_00341_DS_
+                                    1-  973     ;;unsigned compare: left < lit (0xA28=2600), size=2
+     005B                           1-  974     _00320_DS_:
+                                    1-  975     	.line	283, "main.c"; 	else if(count60s < 2600)
+     005B 210A                      1-  976     	MOVIA	0x0a
+     005C 04rr                      1-  977     	SUBAR	(_count60s + 1),W
+     005D 0903                      1-  978     	BTRSS	STATUS,2
+     005E 3rrr                      1-  979     	LGOTO	_00407_DS_
+     005F 2128                      1-  980     	MOVIA	0x28
+     0060 04rr                      1-  981     	SUBAR	_count60s,W
+     0061                           1-  982     _00407_DS_:
+     0061 0C03                      1-  983     	BTRSC	STATUS,0
+     0062 3rrr                      1-  984     	LGOTO	_00317_DS_
+                                    1-  985     	.line	285, "main.c"; 	--BDUTY;
+     0063 06rr                      1-  986     	DECR	_BDUTY,F
+     0064 3rrr                      1-  987     	LGOTO	_00341_DS_
+                                    1-  988     ;;unsigned compare: left < lit (0xBB8=3000), size=2
+     0065                           1-  989     _00317_DS_:
+                                    1-  990     	.line	287, "main.c"; 	else if(count60s < 3000)
+     0065 210B                      1-  991     	MOVIA	0x0b
+     0066 04rr                      1-  992     	SUBAR	(_count60s + 1),W
+     0067 0903                      1-  993     	BTRSS	STATUS,2
+     0068 3rrr                      1-  994     	LGOTO	_00408_DS_
+     0069 21B8                      1-  995     	MOVIA	0xb8
+     006A 04rr                      1-  996     	SUBAR	_count60s,W
+     006B                           1-  997     _00408_DS_:
+     006B 0C03                      1-  998     	BTRSC	STATUS,0
+     006C 3rrr                      1-  999     	LGOTO	_00314_DS_
+                                    1- 1000     	.line	289, "main.c"; 	BDUTY = 0;
+     006D 02rr                      1- 1001     	CLRR	_BDUTY
+                                    1- 1002     	.line	290, "main.c"; 	++RDUTY;
+     006E 05rr                      1- 1003     	INCR	_RDUTY,F
+     006F 3rrr                      1- 1004     	LGOTO	_00341_DS_
+                                    1- 1005     ;;unsigned compare: left < lit (0xDAC=3500), size=2
+     0070                           1- 1006     _00314_DS_:
+                                    1- 1007     	.line	292, "main.c"; 	else if(count60s < 3500)
+     0070 210D                      1- 1008     	MOVIA	0x0d
+     0071 04rr                      1- 1009     	SUBAR	(_count60s + 1),W
+     0072 0903                      1- 1010     	BTRSS	STATUS,2
+     0073 3rrr                      1- 1011     	LGOTO	_00409_DS_
+     0074 21AC                      1- 1012     	MOVIA	0xac
+     0075 04rr                      1- 1013     	SUBAR	_count60s,W
+     0076                           1- 1014     _00409_DS_:
+     0076 0C03                      1- 1015     	BTRSC	STATUS,0
+     0077 3rrr                      1- 1016     	LGOTO	_00311_DS_
+                                    1- 1017     	.line	294, "main.c"; 	RDUTY = 100;
+     0078 2164                      1- 1018     	MOVIA	0x64
+     0079 00rr                      1- 1019     	MOVAR	_RDUTY
+     007A 3rrr                      1- 1020     	LGOTO	_00341_DS_
+                                    1- 1021     ;;unsigned compare: left < lit (0xFA0=4000), size=2
+     007B                           1- 1022     _00311_DS_:
+                                    1- 1023     	.line	296, "main.c"; 	else if(count60s < 4000)
+     007B 210F                      1- 1024     	MOVIA	0x0f
+     007C 04rr                      1- 1025     	SUBAR	(_count60s + 1),W
+     007D 0903                      1- 1026     	BTRSS	STATUS,2
+     007E 3rrr                      1- 1027     	LGOTO	_00410_DS_
+     007F 21A0                      1- 1028     	MOVIA	0xa0
+     0080 04rr                      1- 1029     	SUBAR	_count60s,W
+     0081                           1- 1030     _00410_DS_:
+     0081 0C03                      1- 1031     	BTRSC	STATUS,0
+     0082 3rrr                      1- 1032     	LGOTO	_00308_DS_
+                                    1- 1033     	.line	298, "main.c"; 	--GDUTY;
+     0083 06rr                      1- 1034     	DECR	_GDUTY,F
+     0084 3rrr                      1- 1035     	LGOTO	_00341_DS_
+                                    1- 1036     ;;unsigned compare: left < lit (0x1194=4500), size=2
+     0085                           1- 1037     _00308_DS_:
+                                    1- 1038     	.line	300, "main.c"; 	else if(count60s < 4500)
+     0085 2111                      1- 1039     	MOVIA	0x11
+     0086 04rr                      1- 1040     	SUBAR	(_count60s + 1),W
+     0087 0903                      1- 1041     	BTRSS	STATUS,2
+     0088 3rrr                      1- 1042     	LGOTO	_00411_DS_
+     0089 2194                      1- 1043     	MOVIA	0x94
+     008A 04rr                      1- 1044     	SUBAR	_count60s,W
+     008B                           1- 1045     _00411_DS_:
+     008B 0C03                      1- 1046     	BTRSC	STATUS,0
+     008C 3rrr                      1- 1047     	LGOTO	_00305_DS_
+                                    1- 1048     	.line	302, "main.c"; 	GDUTY = 0;
+     008D 02rr                      1- 1049     	CLRR	_GDUTY
+     008E 3rrr                      1- 1050     	LGOTO	_00341_DS_
+                                    1- 1051     ;;unsigned compare: left < lit (0x1388=5000), size=2
+     008F                           1- 1052     _00305_DS_:
+                                    1- 1053     	.line	304, "main.c"; 	else if(count60s < 5000)
+     008F 2113                      1- 1054     	MOVIA	0x13
+     0090 04rr                      1- 1055     	SUBAR	(_count60s + 1),W
+     0091 0903                      1- 1056     	BTRSS	STATUS,2
+     0092 3rrr                      1- 1057     	LGOTO	_00412_DS_
+     0093 2188                      1- 1058     	MOVIA	0x88
+     0094 04rr                      1- 1059     	SUBAR	_count60s,W
+     0095                           1- 1060     _00412_DS_:
+     0095 0C03                      1- 1061     	BTRSC	STATUS,0
+     0096 3rrr                      1- 1062     	LGOTO	_00302_DS_
+                                    1- 1063     	.line	306, "main.c"; 	++BDUTY;
+     0097 05rr                      1- 1064     	INCR	_BDUTY,F
+     0098 3rrr                      1- 1065     	LGOTO	_00341_DS_
+                                    1- 1066     ;;unsigned compare: left < lit (0x157C=5500), size=2
+     0099                           1- 1067     _00302_DS_:
+                                    1- 1068     	.line	308, "main.c"; 	else if(count60s < 5500)
+     0099 2115                      1- 1069     	MOVIA	0x15
+     009A 04rr                      1- 1070     	SUBAR	(_count60s + 1),W
+     009B 0903                      1- 1071     	BTRSS	STATUS,2
+     009C 3rrr                      1- 1072     	LGOTO	_00413_DS_
+     009D 217C                      1- 1073     	MOVIA	0x7c
+     009E 04rr                      1- 1074     	SUBAR	_count60s,W
+     009F                           1- 1075     _00413_DS_:
+     009F 0C03                      1- 1076     	BTRSC	STATUS,0
+     00A0 3rrr                      1- 1077     	LGOTO	_00299_DS_
+                                    1- 1078     	.line	310, "main.c"; 	BDUTY = 100;
+     00A1 2164                      1- 1079     	MOVIA	0x64
+     00A2 00rr                      1- 1080     	MOVAR	_BDUTY
+     00A3 3rrr                      1- 1081     	LGOTO	_00341_DS_
+                                    1- 1082     ;;unsigned compare: left < lit (0x170C=5900), size=2
+     00A4                           1- 1083     _00299_DS_:
+                                    1- 1084     	.line	312, "main.c"; 	else if(count60s < 5900)
+     00A4 2117                      1- 1085     	MOVIA	0x17
+     00A5 04rr                      1- 1086     	SUBAR	(_count60s + 1),W
+     00A6 0903                      1- 1087     	BTRSS	STATUS,2
+     00A7 3rrr                      1- 1088     	LGOTO	_00414_DS_
+     00A8 210C                      1- 1089     	MOVIA	0x0c
+     00A9 04rr                      1- 1090     	SUBAR	_count60s,W
+     00AA                           1- 1091     _00414_DS_:
+     00AA 0C03                      1- 1092     	BTRSC	STATUS,0
+     00AB 3rrr                      1- 1093     	LGOTO	_00296_DS_
+                                    1- 1094     	.line	314, "main.c"; 	--RDUTY;
+     00AC 06rr                      1- 1095     	DECR	_RDUTY,F
+     00AD 3rrr                      1- 1096     	LGOTO	_00341_DS_
+                                    1- 1097     ;;unsigned compare: left < lit (0x1770=6000), size=2
+     00AE                           1- 1098     _00296_DS_:
+                                    1- 1099     	.line	316, "main.c"; 	else if(count60s < 6000)
+     00AE 2117                      1- 1100     	MOVIA	0x17
+     00AF 04rr                      1- 1101     	SUBAR	(_count60s + 1),W
+     00B0 0903                      1- 1102     	BTRSS	STATUS,2
+     00B1 3rrr                      1- 1103     	LGOTO	_00415_DS_
+     00B2 2170                      1- 1104     	MOVIA	0x70
+     00B3 04rr                      1- 1105     	SUBAR	_count60s,W
+     00B4                           1- 1106     _00415_DS_:
+     00B4 0C03                      1- 1107     	BTRSC	STATUS,0
+     00B5 3rrr                      1- 1108     	LGOTO	_00341_DS_
+                                    1- 1109     	.line	318, "main.c"; 	RDUTY = 20;
+     00B6 2114                      1- 1110     	MOVIA	0x14
+     00B7 00rr                      1- 1111     	MOVAR	_RDUTY
+                                    1- 1112     	.line	319, "main.c"; 	++GDUTY;
+     00B8 05rr                      1- 1113     	INCR	_GDUTY,F
+     00B9                           1- 1114     _00341_DS_:
+                                    1- 1115     	.line	322, "main.c"; 	if(++count60s == 6000)
+     00B9 05rr                      1- 1116     	INCR	_count60s,F
+     00BA 0D03                      1- 1117     	BTRSC	STATUS,2
+     00BB 05rr                      1- 1118     	INCR	(_count60s + 1),F
+     00BC 01rr                      1- 1119     	MOVR	_count60s,W
+     00BD 2470                      1- 1120     	XORIA	0x70
+     00BE 0903                      1- 1121     	BTRSS	STATUS,2
+     00BF 3rrr                      1- 1122     	LGOTO	_00344_DS_
+     00C0 01rr                      1- 1123     	MOVR	(_count60s + 1),W
+     00C1 2417                      1- 1124     	XORIA	0x17
+     00C2 0903                      1- 1125     	BTRSS	STATUS,2
+     00C3 3rrr                      1- 1126     	LGOTO	_00344_DS_
+                                    1- 1127     	.line	323, "main.c"; 	count60s = 0;
+     00C4 02rr                      1- 1128     	CLRR	_count60s
+     00C5 02rr                      1- 1129     	CLRR	(_count60s + 1)
+     00C6                           1- 1130     _00344_DS_:
+                                    1- 1131     	.line	324, "main.c"; 	}
+                                    1- 1132     	RETURN	
+     00C6 0010                      3-   26 m1      ret
+                                    1- 1133     ; exit point of _ledCon
+                                    1- 1135     ;***
+                                    1- 1136     ;  pBlock Stats: dbName = C
+                                    1- 1137     ;***
+                                    1- 1138     ;has an exit
+                                    1- 1139     ;functions called:
+                                    1- 1140     ;   _gotoSleep
+                                    1- 1141     ;   _pwmStop
+                                    1- 1142     ;   _pwmStart
+                                    1- 1143     ;   _pwmStop
+                                    1- 1144     ;   _ledCon
+                                    1- 1145     ;   _gotoSleep
+                                    1- 1146     ;   _pwmStop
+                                    1- 1147     ;   _pwmStart
+                                    1- 1148     ;   _pwmStop
+                                    1- 1149     ;   _ledCon
+                                    1- 1150     ;2 compiler assigned registers:
+                                    1- 1151     ;   r0x1023
+                                    1- 1152     ;   r0x1024
+                                    1- 1153     ;; Starting pCode block
+                                    1- 1154     .segment "code"; module=main, function=_delayCon
+     0000                           1- 1156     _delayCon:
+                                    1- 1157     ; 2 exit points
+                                    1- 1158     	.line	169, "main.c"; 	if(++count500ms == 50)
+     0000 05rr                      1- 1159     	INCR	_count500ms,F
+     0001 0D03                      1- 1160     	BTRSC	STATUS,2
+     0002 05rr                      1- 1161     	INCR	(_count500ms + 1),F
+     0003 01rr                      1- 1162     	MOVR	_count500ms,W
+     0004 2432                      1- 1163     	XORIA	0x32
+     0005 0903                      1- 1164     	BTRSS	STATUS,2
+     0006 3rrr                      1- 1165     	LGOTO	_00177_DS_
+     0007 01rr                      1- 1166     	MOVR	(_count500ms + 1),W
+     0008 2400                      1- 1167     	XORIA	0x00
+     0009 0903                      1- 1168     	BTRSS	STATUS,2
+     000A 3rrr                      1- 1169     	LGOTO	_00177_DS_
+                                    1- 1170     	.line	171, "main.c"; 	count500ms = 0;
+     000B 02rr                      1- 1171     	CLRR	_count500ms
+     000C 02rr                      1- 1172     	CLRR	(_count500ms + 1)
+                                    1- 1173     	.line	172, "main.c"; 	count4Hour++;
+     000D 05rr                      1- 1174     	INCR	_count4Hour,F
+     000E 0D03                      1- 1175     	BTRSC	STATUS,2
+     000F 05rr                      1- 1176     	INCR	(_count4Hour + 1),F
+                                    1- 1177     ;;unsigned compare: left < lit (0x7080=28800), size=2
+                                    1- 1178     	.line	174, "main.c"; 	if(count4Hour >= 28800 || (workStep == 0 && (!ledFlag) && (PORTB & 0x08)))
+     0010 2170                      1- 1179     	MOVIA	0x70
+     0011 04rr                      1- 1180     	SUBAR	(_count4Hour + 1),W
+     0012 0903                      1- 1181     	BTRSS	STATUS,2
+     0013 3rrr                      1- 1182     	LGOTO	_00279_DS_
+     0014 2180                      1- 1183     	MOVIA	0x80
+     0015 04rr                      1- 1184     	SUBAR	_count4Hour,W
+     0016                           1- 1185     _00279_DS_:
+     0016 0C03                      1- 1186     	BTRSC	STATUS,0
+     0017 3rrr                      1- 1187     	LGOTO	_00171_DS_
+     0018 01rr                      1- 1188     	MOVR	_workStep,W
+     0019 0903                      1- 1189     	BTRSS	STATUS,2
+     001A 3rrr                      1- 1190     	LGOTO	_00177_DS_
+     001B 01rr                      1- 1191     	MOVR	_ledFlag,W
+     001C 0903                      1- 1192     	BTRSS	STATUS,2
+     001D 3rrr                      1- 1193     	LGOTO	_00177_DS_
+     001E 09rr                      1- 1194     	BTRSS	_PORTB,3
+     001F 3rrr                      1- 1195     	LGOTO	_00177_DS_
+     0020                           1- 1196     _00171_DS_:
+                                    1- 1197     	.line	176, "main.c"; 	PORTB |= 0x20;
+     0020 1Arr                      1- 1198     	BSR	_PORTB,5
+                                    1- 1199     	.line	177, "main.c"; 	if(++sleepDelay >= 10)
+     0021 05rr                      1- 1200     	INCR	_sleepDelay,F
+                                    1- 1201     ;;unsigned compare: left < lit (0xA=10), size=1
+     0022 210A                      1- 1202     	MOVIA	0x0a
+     0023 04rr                      1- 1203     	SUBAR	_sleepDelay,W
+     0024 0C03                      1- 1204     	BTRSC	STATUS,0
+                                    1- 1205     	.line	178, "main.c"; 	gotoSleep();
+     0025 2rrr                      1- 1206     	LCALL	_gotoSleep
+     0026                           1- 1207     _00177_DS_:
+                                    1- 1208     	.line	182, "main.c"; 	if(workStep == 2)
+     0026 01rr                      1- 1209     	MOVR	_workStep,W
+     0027 2402                      1- 1210     	XORIA	0x02
+     0028 0903                      1- 1211     	BTRSS	STATUS,2
+     0029 3rrr                      1- 1212     	LGOTO	_00187_DS_
+                                    1- 1213     	.line	184, "main.c"; 	if(!count500ms)
+     002A 01rr                      1- 1214     	MOVR	_count500ms,W
+     002B 11rr                      1- 1215     	IORAR	(_count500ms + 1),W
+     002C 0903                      1- 1216     	BTRSS	STATUS,2
+     002D 3rrr                      1- 1217     	LGOTO	_00188_DS_
+                                    1- 1218     	.line	186, "main.c"; 	if(step2Count == 20)
+     002E 01rr                      1- 1219     	MOVR	_step2Count,W
+     002F 2414                      1- 1220     	XORIA	0x14
+     0030 0D03                      1- 1221     	BTRSC	STATUS,2
+                                    1- 1222     	.line	187, "main.c"; 	pwmStop();
+     0031 2rrr                      1- 1223     	LCALL	_pwmStop
+                                    1- 1224     	.line	188, "main.c"; 	if(step2Count >= 30)
+     0032 211E                      1- 1225     	MOVIA	0x1e
+     0033 04rr                      1- 1226     	SUBAR	_step2Count,W
+     0034 0803                      1- 1227     	BTRSS	STATUS,0
+     0035 3rrr                      1- 1228     	LGOTO	_00181_DS_
+                                    1- 1229     	.line	190, "main.c"; 	step2Count = 0;
+     0036 02rr                      1- 1230     	CLRR	_step2Count
+                                    1- 1231     	.line	191, "main.c"; 	pwmStart();
+     0037 2rrr                      1- 1232     	LCALL	_pwmStart
+     0038                           1- 1233     _00181_DS_:
+                                    1- 1234     	.line	193, "main.c"; 	step2Count++;
+     0038 05rr                      1- 1235     	INCR	_step2Count,F
+     0039 3rrr                      1- 1236     	LGOTO	_00188_DS_
+     003A                           1- 1237     _00187_DS_:
+                                    1- 1238     	.line	196, "main.c"; 	else if(workStep == 0)
+     003A 01rr                      1- 1239     	MOVR	_workStep,W
+     003B 0D03                      1- 1240     	BTRSC	STATUS,2
+                                    1- 1241     	.line	198, "main.c"; 	pwmStop();
+     003C 2rrr                      1- 1242     	LCALL	_pwmStop
+     003D                           1- 1243     _00188_DS_:
+                                    1- 1244     	.line	202, "main.c"; 	if(ledFlag)
+     003D 01rr                      1- 1245     	MOVR	_ledFlag,W
+     003E 0D03                      1- 1246     	BTRSC	STATUS,2
+     003F 3rrr                      1- 1247     	LGOTO	_00215_DS_
+                                    1- 1248     	.line	204, "main.c"; 	ledCon();
+     0040 2rrr                      1- 1249     	LCALL	_ledCon
+                                    1- 1250     	.line	205, "main.c"; 	startFlag = 0;
+     0041 02rr                      1- 1251     	CLRR	_startFlag
+     0042 3rrr                      1- 1252     	LGOTO	_00217_DS_
+     0043                           1- 1253     _00215_DS_:
+                                    1- 1254     	.line	209, "main.c"; 	if(startFlag)
+     0043 01rr                      1- 1255     	MOVR	_startFlag,W
+     0044 0D03                      1- 1256     	BTRSC	STATUS,2
+     0045 3rrr                      1- 1257     	LGOTO	_00212_DS_
+                                    1- 1258     ;;unsigned compare: left < lit (0x32=50), size=2
+                                    1- 1259     	.line	212, "main.c"; 	if(count60s < 50)
+     0046 2100                      1- 1260     	MOVIA	0x00
+     0047 04rr                      1- 1261     	SUBAR	(_count60s + 1),W
+     0048 0903                      1- 1262     	BTRSS	STATUS,2
+     0049 3rrr                      1- 1263     	LGOTO	_00282_DS_
+     004A 2132                      1- 1264     	MOVIA	0x32
+     004B 04rr                      1- 1265     	SUBAR	_count60s,W
+     004C                           1- 1266     _00282_DS_:
+     004C 0C03                      1- 1267     	BTRSC	STATUS,0
+     004D 3rrr                      1- 1268     	LGOTO	_00204_DS_
+                                    1- 1269     	.line	213, "main.c"; 	PORTB &= ~0x02;
+     004E 1Crr                      1- 1270     	BCR	_PORTB,1
+     004F 3rrr                      1- 1271     	LGOTO	_00205_DS_
+                                    1- 1272     ;;unsigned compare: left < lit (0x64=100), size=2
+     0050                           1- 1273     _00204_DS_:
+                                    1- 1274     	.line	214, "main.c"; 	else if(count60s < 100)
+     0050 2100                      1- 1275     	MOVIA	0x00
+     0051 04rr                      1- 1276     	SUBAR	(_count60s + 1),W
+     0052 0903                      1- 1277     	BTRSS	STATUS,2
+     0053 3rrr                      1- 1278     	LGOTO	_00283_DS_
+     0054 2164                      1- 1279     	MOVIA	0x64
+     0055 04rr                      1- 1280     	SUBAR	_count60s,W
+     0056                           1- 1281     _00283_DS_:
+     0056 0C03                      1- 1282     	BTRSC	STATUS,0
+     0057 3rrr                      1- 1283     	LGOTO	_00201_DS_
+                                    1- 1284     	.line	215, "main.c"; 	PORTB |= 0xFB;
+     0058 21FB                      1- 1285     	MOVIA	0xfb
+     0059 11rr                      1- 1286     	IORAR	_PORTB,F
+     005A 3rrr                      1- 1287     	LGOTO	_00205_DS_
+                                    1- 1288     ;;unsigned compare: left < lit (0x96=150), size=2
+     005B                           1- 1289     _00201_DS_:
+                                    1- 1290     	.line	216, "main.c"; 	else if(count60s < 150)
+     005B 2100                      1- 1291     	MOVIA	0x00
+     005C 04rr                      1- 1292     	SUBAR	(_count60s + 1),W
+     005D 0903                      1- 1293     	BTRSS	STATUS,2
+     005E 3rrr                      1- 1294     	LGOTO	_00284_DS_
+     005F 2196                      1- 1295     	MOVIA	0x96
+     0060 04rr                      1- 1296     	SUBAR	_count60s,W
+     0061                           1- 1297     _00284_DS_:
+     0061 0C03                      1- 1298     	BTRSC	STATUS,0
+     0062 3rrr                      1- 1299     	LGOTO	_00198_DS_
+                                    1- 1300     	.line	217, "main.c"; 	PORTB &= ~0x20;
+     0063 1Err                      1- 1301     	BCR	_PORTB,5
+     0064 3rrr                      1- 1302     	LGOTO	_00205_DS_
+                                    1- 1303     ;;unsigned compare: left < lit (0xC8=200), size=2
+     0065                           1- 1304     _00198_DS_:
+                                    1- 1305     	.line	218, "main.c"; 	else if(count60s < 200)
+     0065 2100                      1- 1306     	MOVIA	0x00
+     0066 04rr                      1- 1307     	SUBAR	(_count60s + 1),W
+     0067 0903                      1- 1308     	BTRSS	STATUS,2
+     0068 3rrr                      1- 1309     	LGOTO	_00285_DS_
+     0069 21C8                      1- 1310     	MOVIA	0xc8
+     006A 04rr                      1- 1311     	SUBAR	_count60s,W
+     006B                           1- 1312     _00285_DS_:
+     006B 0C03                      1- 1313     	BTRSC	STATUS,0
+     006C 3rrr                      1- 1314     	LGOTO	_00195_DS_
+                                    1- 1315     	.line	219, "main.c"; 	PORTB |= 0xFB;
+     006D 21FB                      1- 1316     	MOVIA	0xfb
+     006E 11rr                      1- 1317     	IORAR	_PORTB,F
+     006F 3rrr                      1- 1318     	LGOTO	_00205_DS_
+                                    1- 1319     ;;unsigned compare: left < lit (0xFA=250), size=2
+     0070                           1- 1320     _00195_DS_:
+                                    1- 1321     	.line	220, "main.c"; 	else if(count60s < 250)
+     0070 2100                      1- 1322     	MOVIA	0x00
+     0071 04rr                      1- 1323     	SUBAR	(_count60s + 1),W
+     0072 0903                      1- 1324     	BTRSS	STATUS,2
+     0073 3rrr                      1- 1325     	LGOTO	_00286_DS_
+     0074 21FA                      1- 1326     	MOVIA	0xfa
+     0075 04rr                      1- 1327     	SUBAR	_count60s,W
+     0076                           1- 1328     _00286_DS_:
+     0076 0C03                      1- 1329     	BTRSC	STATUS,0
+     0077 3rrr                      1- 1330     	LGOTO	_00192_DS_
+                                    1- 1331     	.line	221, "main.c"; 	PORTB &= ~0x10;
+     0078 1Err                      1- 1332     	BCR	_PORTB,4
+     0079 3rrr                      1- 1333     	LGOTO	_00205_DS_
+                                    1- 1334     ;;unsigned compare: left < lit (0x12C=300), size=2
+     007A                           1- 1335     _00192_DS_:
+                                    1- 1336     	.line	222, "main.c"; 	else if(count60s < 300)
+     007A 2101                      1- 1337     	MOVIA	0x01
+     007B 04rr                      1- 1338     	SUBAR	(_count60s + 1),W
+     007C 0903                      1- 1339     	BTRSS	STATUS,2
+     007D 3rrr                      1- 1340     	LGOTO	_00287_DS_
+     007E 212C                      1- 1341     	MOVIA	0x2c
+     007F 04rr                      1- 1342     	SUBAR	_count60s,W
+     0080                           1- 1343     _00287_DS_:
+     0080 0C03                      1- 1344     	BTRSC	STATUS,0
+     0081 3rrr                      1- 1345     	LGOTO	_00205_DS_
+                                    1- 1346     	.line	223, "main.c"; 	PORTB |= 0xFB;
+     0082 21FB                      1- 1347     	MOVIA	0xfb
+     0083 11rr                      1- 1348     	IORAR	_PORTB,F
+     0084                           1- 1349     _00205_DS_:
+                                    1- 1350     	.line	224, "main.c"; 	if(++count60s >= 300)
+     0084 05rr                      1- 1351     	INCR	_count60s,F
+     0085 0D03                      1- 1352     	BTRSC	STATUS,2
+     0086 05rr                      1- 1353     	INCR	(_count60s + 1),F
+                                    1- 1354     ;;unsigned compare: left < lit (0x12C=300), size=2
+     0087 2101                      1- 1355     	MOVIA	0x01
+     0088 04rr                      1- 1356     	SUBAR	(_count60s + 1),W
+     0089 0903                      1- 1357     	BTRSS	STATUS,2
+     008A 3rrr                      1- 1358     	LGOTO	_00288_DS_
+     008B 212C                      1- 1359     	MOVIA	0x2c
+     008C 04rr                      1- 1360     	SUBAR	_count60s,W
+     008D                           1- 1361     _00288_DS_:
+     008D 0803                      1- 1362     	BTRSS	STATUS,0
+     008E 3rrr                      1- 1363     	LGOTO	_00217_DS_
+                                    1- 1364     	.line	226, "main.c"; 	startFlag = 0;
+     008F 02rr                      1- 1365     	CLRR	_startFlag
+                                    1- 1366     	.line	227, "main.c"; 	count60s = 0;
+     0090 02rr                      1- 1367     	CLRR	_count60s
+     0091 02rr                      1- 1368     	CLRR	(_count60s + 1)
+     0092 3rrr                      1- 1369     	LGOTO	_00217_DS_
+     0093                           1- 1370     _00212_DS_:
+                                    1- 1371     	.line	233, "main.c"; 	if((~PORTB) & 0x08)
+     0093 01rr                      1- 1372     	MOVR	_PORTB,W
+     0094 00rr                      1- 1373     	MOVAR	r0x1023
+     0095 02rr                      1- 1374     	CLRR	r0x1024
+     0096 07rr                      1- 1375     	COMR	r0x1023,W
+     0097 00rr                      1- 1376     	MOVAR	r0x1023
+     0098 07rr                      1- 1377     	COMR	r0x1024,W
+     0099 00rr                      1- 1378     	MOVAR	r0x1024
+     009A 09rr                      1- 1379     	BTRSS	r0x1023,3
+     009B 3rrr                      1- 1380     	LGOTO	_00209_DS_
+                                    1- 1381     	.line	235, "main.c"; 	PORTB &= ~0x02;
+     009C 1Crr                      1- 1382     	BCR	_PORTB,1
+                                    1- 1383     	.line	236, "main.c"; 	PORTB |= 0xF9;
+     009D 21F9                      1- 1384     	MOVIA	0xf9
+     009E 11rr                      1- 1385     	IORAR	_PORTB,F
+     009F 3rrr                      1- 1386     	LGOTO	_00217_DS_
+     00A0                           1- 1387     _00209_DS_:
+                                    1- 1388     	.line	239, "main.c"; 	PORTB |= 0xFB;
+     00A0 21FB                      1- 1389     	MOVIA	0xfb
+     00A1 11rr                      1- 1390     	IORAR	_PORTB,F
+     00A2                           1- 1391     _00217_DS_:
+                                    1- 1392     	.line	244, "main.c"; 	}
+                                    1- 1393     	RETURN	
+     00A2 0010                      3-   26 m1      ret
+                                    1- 1394     ; exit point of _delayCon
+                                    1- 1396     ;***
+                                    1- 1397     ;  pBlock Stats: dbName = C
+                                    1- 1398     ;***
+                                    1- 1399     ;has an exit
+                                    1- 1400     ;functions called:
+                                    1- 1401     ;   _pwmStop
+                                    1- 1402     ;   _pwmStop
+                                    1- 1403     ;; Starting pCode block
+                                    1- 1404     .segment "code"; module=main, function=_gotoSleep
+     0000                           1- 1406     _gotoSleep:
+                                    1- 1407     ; 2 exit points
+                                    1- 1408     	.line	150, "main.c"; 	count4Hour = 0;
+     0000 02rr                      1- 1409     	CLRR	_count4Hour
+     0001 02rr                      1- 1410     	CLRR	(_count4Hour + 1)
+                                    1- 1411     	.line	151, "main.c"; 	pwmStop();
+     0002 2rrr                      1- 1412     	LCALL	_pwmStop
+                                    1- 1413     	.line	152, "main.c"; 	sleepDelay = 0;
+     0003 02rr                      1- 1414     	CLRR	_sleepDelay
+                                    1- 1415     	.line	153, "main.c"; 	workStep = 0;
+     0004 02rr                      1- 1416     	CLRR	_workStep
+                                    1- 1417     	.line	154, "main.c"; 	BWUCON = 0x09;
+     0005 2109                      1- 1418     	MOVIA	0x09
+     0006 00rr                      1- 1419     	MOVAR	_BWUCON
+                                    1- 1420     	.line	155, "main.c"; 	INTE =  C_INT_TMR1 | C_INT_PBKey;
+     0007 210A                      1- 1421     	MOVIA	0x0a
+     0008 00rr                      1- 1422     	MOVAR	_INTE
+                                    1- 1423     	.line	156, "main.c"; 	PCON =  C_LVR_En;	
+     0009 2108                      1- 1424     	MOVIA	0x08
+     000A 00rr                      1- 1425     	MOVAR	_PCON
+                                    1- 1426     	.line	157, "main.c"; 	INTF = 0;								// Clear all interrupt flags
+     000B 02rr                      1- 1427     	CLRR	_INTF
+                                    1- 1428     	.line	158, "main.c"; 	CLRWDT();
+     000C 0002                      1- 1429     	clrwdt
+                                    1- 1430     	.line	159, "main.c"; 	SLEEP();
+     000D 0001                      1- 1431     	sleep
+                                    1- 1432     	.line	160, "main.c"; 	INTE =  C_INT_TMR0 | C_INT_TMR1;	// Enable Timer0、Timer1、WDT overflow interrupt
+     000E 2109                      1- 1433     	MOVIA	0x09
+     000F 00rr                      1- 1434     	MOVAR	_INTE
+                                    1- 1435     	.line	161, "main.c"; 	INTF = 0;
+     0010 02rr                      1- 1436     	CLRR	_INTF
+                                    1- 1437     	.line	163, "main.c"; 	PCON = C_WDT_En | C_LVR_En | C_LVD_En;				// Enable WDT ,  Enable LVR
+     0011 21A8                      1- 1438     	MOVIA	0xa8
+     0012 00rr                      1- 1439     	MOVAR	_PCON
+                                    1- 1440     	.line	164, "main.c"; 	}
+                                    1- 1441     	RETURN	
+     0013 0010                      3-   26 m1      ret
+                                    1- 1442     ; exit point of _gotoSleep
+                                    1- 1445     ;	code size estimation:
+                                    1- 1446     ;	  648+    0 =   648 instructions ( 1296 byte)
+                                    1- 1448     	end
+                                    1- 1448     	end
+
+SYMBOL TABLE            TYPE     VALUE
+___sdcc_saved_fsr       Label    00000000
+___sdcc_saved_stk00     Label    00000000
+___sdcc_saved_stk01     Label    00000000
+__CHECKSUM_ADDR__       Label    00000000
+__moduint               Label    00000000
+__nyc_ny8_startup       Label    00000000
+__PIN_COUNT__           Constant 00000006
+__PROCESSOR__           Constant 00800515
+__sdcc_interrupt        Label    00000000
+_00106_DS_              Label    00000022
+_00110_DS_              Label    00000029
+_00112_DS_              Label    0000002D
+_00126_DS_              Label    00000037
+_00127_DS_              Label    00000044
+_00132_DS_              Label    00000018
+_00171_DS_              Label    00000020
+_00177_DS_              Label    00000026
+_00181_DS_              Label    00000038
+_00187_DS_              Label    0000003A
+_00188_DS_              Label    0000003D
+_00192_DS_              Label    0000007A
+_00195_DS_              Label    00000070
+_00198_DS_              Label    00000065
+_00201_DS_              Label    0000005B
+_00204_DS_              Label    00000050
+_00205_DS_              Label    00000084
+_00209_DS_              Label    000000A0
+_00212_DS_              Label    00000093
+_00215_DS_              Label    00000043
+_00217_DS_              Label    000000A2
+_00279_DS_              Label    00000016
+_00282_DS_              Label    0000004C
+_00283_DS_              Label    00000056
+_00284_DS_              Label    00000061
+_00285_DS_              Label    0000006B
+_00286_DS_              Label    00000076
+_00287_DS_              Label    00000080
+_00288_DS_              Label    0000008D
+_00296_DS_              Label    000000AE
+_00299_DS_              Label    000000A4
+_00302_DS_              Label    00000099
+_00305_DS_              Label    0000008F
+_00308_DS_              Label    00000085
+_00311_DS_              Label    0000007B
+_00314_DS_              Label    00000070
+_00317_DS_              Label    00000065
+_00320_DS_              Label    0000005B
+_00323_DS_              Label    00000050
+_00326_DS_              Label    00000044
+_00329_DS_              Label    0000003A
+_00332_DS_              Label    0000002E
+_00335_DS_              Label    00000023
+_00338_DS_              Label    00000019
+_00341_DS_              Label    000000B9
+_00344_DS_              Label    000000C6
+_00400_DS_              Label    00000011
+_00401_DS_              Label    0000001F
+_00402_DS_              Label    00000029
+_00403_DS_              Label    00000034
+_00404_DS_              Label    00000040
+_00405_DS_              Label    0000004A
+_00406_DS_              Label    00000056
+_00407_DS_              Label    00000061
+_00408_DS_              Label    0000006B
+_00409_DS_              Label    00000076
+_00410_DS_              Label    00000081
+_00411_DS_              Label    0000008B
+_00412_DS_              Label    00000095
+_00413_DS_              Label    0000009F
+_00414_DS_              Label    000000AA
+_00415_DS_              Label    000000B4
+_00425_DS_              Label    00000014
+_00427_DS_              Label    0000001C
+_00433_DS_              Label    0000000B
+_00434_DS_              Label    0000000D
+_00461_DS_              Label    00000024
+_00462_DS_              Label    00000030
+_00464_DS_              Label    00000017
+_00465_DS_              Label    00000032
+_00466_DS_              Label    00000033
+_00483_DS_              Label    0000000B
+_00484_DS_              Label    0000001D
+_00485_DS_              Label    0000002A
+_00492_DS_              Label    00000005
+_00494_DS_              Label    00000011
+_00503_DS_              Label    0000000B
+_BDUTY                  Label    00000000
+_BODCON                 Label    00000000
+_BPHCON                 Label    00000000
+_BPHCONbits             Label    00000000
+_BPLCON                 Label    00000000
+_BPLCONbits             Label    00000000
+_BWUCON                 Label    00000000
+_BWUCONbits             Label    00000000
+_BZ1CR                  Label    00000000
+_checkLVD               Label    00000000
+_count4Hour             Label    00000000
+_count500ms             Label    00000000
+_count60s               Label    00000000
+_delay                  Label    00000000
+_delayCon               Label    00000000
+_FSR                    Label    00000000
+_GDUTY                  Label    00000000
+_gotoSleep              Label    00000000
+_INDF                   Label    00000000
+_intCount               Label    00000000
+_INTE                   Label    00000000
+_INTEbits               Label    00000000
+_INTF                   Label    00000000
+_INTFbits               Label    00000000
+_IntFlag                Label    00000000
+_IOSTB                  Label    00000000
+_IRCR                   Label    00000000
+_isr                    Label    00000000
+_keyCount               Label    00000000
+_keyRead                Label    00000000
+_KeyScan                Label    00000000
+_KeyStatus              Label    00000000
+_ledCon                 Label    00000000
+_ledCount               Label    00000000
+_ledFlag                Label    00000000
+_longPressFlag          Label    00000000
+_main                   Label    00000000
+_OSCCR                  Label    00000000
+_PCHBUF                 Label    00000000
+_PCL                    Label    00000000
+_PCON                   Label    00000000
+_PCON1                  Label    00000000
+_PCONbits               Label    00000000
+_PORTB                  Label    00000000
+_PORTBbits              Label    00000000
+_PS0CV                  Label    00000000
+_PS1CV                  Label    00000000
+_PWM1DUTY               Label    00000000
+_pwmStart               Label    00000000
+_pwmStop                Label    00000000
+_RDUTY                  Label    00000000
+_setPWMduty             Label    00000000
+_sleepDelay             Label    00000000
+_startFlag              Label    00000000
+_STATUS                 Label    00000000
+_step2Count             Label    00000000
+_T0MD                   Label    00000000
+_T1CR1                  Label    00000000
+_T1CR2                  Label    00000000
+_TBHD                   Label    00000000
+_TBHP                   Label    00000000
+_TMR0                   Label    00000000
+_TMR1                   Label    00000000
+_workStep               Label    00000000
+ENABLE_RAM_BANK         Variable 00000000
+END_OF_INTERRUPT        Label    0000003B
+F                       Constant 00000001
+FSR                     Constant 00000004
+INDF                    Constant 00000000
+PCHBUF                  Constant 0000000A
+PCL                     Constant 00000002
+PSAVE                   Label    00000000
+r0x1018                 Label    00000000
+r0x1019                 Label    00000000
+r0x101A                 Label    00000000
+r0x101B                 Label    00000000
+r0x101D                 Label    00000000
+r0x101E                 Label    00000000
+r0x1020                 Label    00000000
+r0x1023                 Label    00000000
+r0x1024                 Label    00000000
+r0x1025                 Label    00000000
+r0x1026                 Label    00000000
+SSAVE                   Label    00000001
+STATUS                  Constant 00000003
+STK00                   Label    00000007
+STK01                   Label    00000006
+STK02                   Label    00000005
+STK03                   Label    00000004
+STK04                   Label    00000003
+W                       Constant 00000000
+WSAVE                   Label    00000002
+
+
+SOURCE FILE TABLE
+001 main.s
+002 ny8a051f.inc
+003 common.inc
+004 main.c
+
+PROCESSOR    = NY8A051F (8 bits)
+PROGRAM ROM  = 0x00000000 - 0x000003FF
+DATA ROM     = 0x00000000 - 0x000003FF
+RESERVED MEM = 0x00000400 - 0x00000410
+SRAM / SFR   = 0x00000000 - 0x00000000

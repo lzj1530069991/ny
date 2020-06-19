@@ -1,0 +1,383 @@
+
+                    Nyquest Technology Co., Ltd.
+
+NYASM 2.25
+
+    ADDR  OPCODE/VALUE              LINE   TAG  SOURCE                   STATEMENT    
+
+                                    1-    1     ;--------------------------------------------------------
+                                    1-    2     ; File Created by SDCC : free open source ANSI-C Compiler
+                                    1-    3     ; Version 3.7.1 #0 (MSVC)
+                                    1-    4     ;--------------------------------------------------------
+                                    1-    5     ; NY8A port
+                                    1-    6     ;--------------------------------------------------------
+                                    1-    7     	.file	"key.c"
+                                    1-    8     	list	p=NY8B062D,c=on
+                                    1-    9     	#include "ny8b062d.inc"
+                                    1-   11     ;--------------------------------------------------------
+                                    1-   12     ; external declarations
+                                    1-   13     ;--------------------------------------------------------
+                                    1-   14     	extern	_PORTAbits
+                                    1-   15     	extern	_PORTBbits
+                                    1-   16     	extern	_PCONbits
+                                    1-   17     	extern	_BWUCONbits
+                                    1-   18     	extern	_ABPLCONbits
+                                    1-   19     	extern	_BPHCONbits
+                                    1-   20     	extern	_INTEbits
+                                    1-   21     	extern	_INTFbits
+                                    1-   22     	extern	_ADMDbits
+                                    1-   23     	extern	_ADRbits
+                                    1-   24     	extern	_ADVREFHbits
+                                    1-   25     	extern	_ADCRbits
+                                    1-   26     	extern	_AWUCONbits
+                                    1-   27     	extern	_PACONbits
+                                    1-   28     	extern	_INTEDGbits
+                                    1-   29     	extern	_ANAENbits
+                                    1-   30     	extern	_RFCbits
+                                    1-   31     	extern	_INTE2bits
+                                    1-   32     	extern	_INDF
+                                    1-   33     	extern	_TMR0
+                                    1-   34     	extern	_PCL
+                                    1-   35     	extern	_STATUS
+                                    1-   36     	extern	_FSR
+                                    1-   37     	extern	_PORTA
+                                    1-   38     	extern	_PORTB
+                                    1-   39     	extern	_PCON
+                                    1-   40     	extern	_BWUCON
+                                    1-   41     	extern	_PCHBUF
+                                    1-   42     	extern	_ABPLCON
+                                    1-   43     	extern	_BPHCON
+                                    1-   44     	extern	_INTE
+                                    1-   45     	extern	_INTF
+                                    1-   46     	extern	_ADMD
+                                    1-   47     	extern	_ADR
+                                    1-   48     	extern	_ADD
+                                    1-   49     	extern	_ADVREFH
+                                    1-   50     	extern	_ADCR
+                                    1-   51     	extern	_AWUCON
+                                    1-   52     	extern	_PACON
+                                    1-   53     	extern	_INTEDG
+                                    1-   54     	extern	_TMRH
+                                    1-   55     	extern	_ANAEN
+                                    1-   56     	extern	_RFC
+                                    1-   57     	extern	_TM3RH
+                                    1-   58     	extern	_INTE2
+                                    1-   59     	extern	_TMR1
+                                    1-   60     	extern	_T1CR1
+                                    1-   61     	extern	_T1CR2
+                                    1-   62     	extern	_PWM1DUTY
+                                    1-   63     	extern	_PS1CV
+                                    1-   64     	extern	_BZ1CR
+                                    1-   65     	extern	_IRCR
+                                    1-   66     	extern	_TBHP
+                                    1-   67     	extern	_TBHD
+                                    1-   68     	extern	_TMR2
+                                    1-   69     	extern	_T2CR1
+                                    1-   70     	extern	_T2CR2
+                                    1-   71     	extern	_PWM2DUTY
+                                    1-   72     	extern	_PS2CV
+                                    1-   73     	extern	_BZ2CR
+                                    1-   74     	extern	_OSCCR
+                                    1-   75     	extern	_TMR3
+                                    1-   76     	extern	_T3CR1
+                                    1-   77     	extern	_T3CR2
+                                    1-   78     	extern	_PWM3DUTY
+                                    1-   79     	extern	_PS3CV
+                                    1-   80     	extern	_BZ3CR
+                                    1-   81     	extern	_IOSTA
+                                    1-   82     	extern	_IOSTB
+                                    1-   83     	extern	_APHCON
+                                    1-   84     	extern	_PS0CV
+                                    1-   85     	extern	_BODCON
+                                    1-   86     	extern	_CMPCR
+                                    1-   87     	extern	_PCON1
+                                    1-   88     	extern	_T0MD
+                                    1-   90     	extern PSAVE
+                                    1-   91     	extern SSAVE
+                                    1-   92     	extern WSAVE
+                                    1-   93     	extern STK12
+                                    1-   94     	extern STK11
+                                    1-   95     	extern STK10
+                                    1-   96     	extern STK09
+                                    1-   97     	extern STK08
+                                    1-   98     	extern STK07
+                                    1-   99     	extern STK06
+                                    1-  100     	extern STK05
+                                    1-  101     	extern STK04
+                                    1-  102     	extern STK03
+                                    1-  103     	extern STK02
+                                    1-  104     	extern STK01
+                                    1-  105     	extern STK00
+                                    1-  106     ;--------------------------------------------------------
+                                    1-  107     ; global declarations
+                                    1-  108     ;--------------------------------------------------------
+                                    1-  109     	extern	_keyRead
+                                    1-  110     	extern	_KeyScan
+                                    1-  111     	extern	_keyCount
+                                    1-  112     	extern	_longPressFlag
+                                    1-  114     ;--------------------------------------------------------
+                                    1-  115     ; global definitions
+                                    1-  116     ;--------------------------------------------------------
+                                    1-  117     ;--------------------------------------------------------
+                                    1-  118     ; absolute symbol definitions
+                                    1-  119     ;--------------------------------------------------------
+                                    1-  120     ;--------------------------------------------------------
+                                    1-  121     ; compiler-defined variables
+                                    1-  122     ;--------------------------------------------------------
+                                    1-  123     .segment "uninit"
+     0000                           1-  124     r0x1002:
+                                    1-  125     	.res	1
+                                    1-  126     ;--------------------------------------------------------
+                                    1-  127     ; initialized data
+                                    1-  128     ;--------------------------------------------------------
+                                    1-  130     .segment "idata"
+     0000                           1-  131     _keyCount:
+     0000 0000                      1-  132     	dw	0x00
+                                    1-  136     .segment "idata"
+     0000                           1-  137     _longPressFlag:
+     0000 0000                      1-  138     	dw	0x00
+                                    1-  141     ;--------------------------------------------------------
+                                    1-  142     ; overlayable items in internal ram 
+                                    1-  143     ;--------------------------------------------------------
+                                    1-  144     ;	udata_ovr
+                                    1-  145     ;--------------------------------------------------------
+                                    1-  146     ; code
+                                    1-  147     ;--------------------------------------------------------
+                                    1-  148     ;***
+                                    1-  149     ;  pBlock Stats: dbName = C
+                                    1-  150     ;***
+                                    1-  151     ;has an exit
+                                    1-  152     ;1 compiler assigned register :
+                                    1-  153     ;   r0x1002
+                                    1-  154     ;; Starting pCode block
+                                    1-  155     .segment "code"; module=key, function=_keyRead
+                                    1-  157     ;local variable name mapping:
+     0000                           1-  159     _keyRead:
+                                    1-  160     ; 2 exit points
+                                    1-  161     	.line	25, "key.c"; 	char keyRead(char KeyStatus)	
+                                    1-  162     	BANKSEL	r0x1002
+     0000 rrrr                      3-   71 m1      .banksel ram_address
+     0001 00rr                      1-  163     	MOVAR	r0x1002
+                                    1-  164     	.line	27, "key.c"; 	if (KeyStatus)
+     0002 01rr                      1-  165     	MOVR	r0x1002,W
+     0003 0D03                      1-  166     	BTRSC	STATUS,2
+     0004 3rrr                      1-  167     	LGOTO	_00119_DS_
+                                    1-  168     	.line	29, "key.c"; 	keyCount++;
+                                    1-  169     	BANKSEL	_keyCount
+     0005 rrrr                      3-   71 m1      .banksel ram_address
+     0006 05rr                      1-  170     	INCR	_keyCount,F
+                                    1-  171     ;;unsigned compare: left < lit (0xC8=200), size=1
+                                    1-  172     	.line	30, "key.c"; 	if(keyCount >= 200)
+     0007 21C8                      1-  173     	MOVIA	0xc8
+     0008 04rr                      1-  174     	SUBAR	_keyCount,W
+     0009 0803                      1-  175     	BTRSS	STATUS,0
+     000A 3rrr                      1-  176     	LGOTO	_00120_DS_
+                                    1-  177     	.line	32, "key.c"; 	keyCount = 200;
+     000B 21C8                      1-  178     	MOVIA	0xc8
+     000C 00rr                      1-  179     	MOVAR	_keyCount
+                                    1-  180     	.line	33, "key.c"; 	if(!longPressFlag)
+                                    1-  181     	BANKSEL	_longPressFlag
+     000D rrrr                      3-   71 m1      .banksel ram_address
+     000E 01rr                      1-  182     	MOVR	_longPressFlag,W
+     000F 0903                      1-  183     	BTRSS	STATUS,2
+     0010 3rrr                      1-  184     	LGOTO	_00120_DS_
+                                    1-  185     	.line	35, "key.c"; 	longPressFlag = 1;
+     0011 2101                      1-  186     	MOVIA	0x01
+     0012 00rr                      1-  187     	MOVAR	_longPressFlag
+                                    1-  188     	.line	36, "key.c"; 	return 2;
+     0013 2102                      1-  189     	MOVIA	0x02
+     0014 3rrr                      1-  190     	LGOTO	_00121_DS_
+                                    1-  191     ;;unsigned compare: left < lit (0xC8=200), size=1
+     0015                           1-  192     _00119_DS_:
+                                    1-  193     	.line	42, "key.c"; 	if(keyCount >= 200)
+     0015 21C8                      1-  194     	MOVIA	0xc8
+                                    1-  195     	BANKSEL	_keyCount
+     0016 rrrr                      3-   71 m1      .banksel ram_address
+     0017 04rr                      1-  196     	SUBAR	_keyCount,W
+     0018 0803                      1-  197     	BTRSS	STATUS,0
+     0019 3rrr                      1-  198     	LGOTO	_00116_DS_
+                                    1-  199     	.line	44, "key.c"; 	keyCount = 0;
+     001A 02rr                      1-  200     	CLRR	_keyCount
+                                    1-  201     	.line	45, "key.c"; 	longPressFlag = 0;
+                                    1-  202     	BANKSEL	_longPressFlag
+     001B rrrr                      3-   71 m1      .banksel ram_address
+     001C 02rr                      1-  203     	CLRR	_longPressFlag
+                                    1-  204     	.line	46, "key.c"; 	return	0;
+     001D 2100                      1-  205     	MOVIA	0x00
+     001E 3rrr                      1-  206     	LGOTO	_00121_DS_
+                                    1-  207     ;;unsigned compare: left < lit (0x8=8), size=1
+     001F                           1-  208     _00116_DS_:
+                                    1-  209     	.line	48, "key.c"; 	else if(keyCount >= 8)
+     001F 2108                      1-  210     	MOVIA	0x08
+                                    1-  211     	BANKSEL	_keyCount
+     0020 rrrr                      3-   71 m1      .banksel ram_address
+     0021 04rr                      1-  212     	SUBAR	_keyCount,W
+     0022 0803                      1-  213     	BTRSS	STATUS,0
+     0023 3rrr                      1-  214     	LGOTO	_00117_DS_
+                                    1-  215     	.line	50, "key.c"; 	keyCount = 0;
+     0024 02rr                      1-  216     	CLRR	_keyCount
+                                    1-  217     	.line	51, "key.c"; 	return	1;
+     0025 2101                      1-  218     	MOVIA	0x01
+     0026 3rrr                      1-  219     	LGOTO	_00121_DS_
+     0027                           1-  220     _00117_DS_:
+                                    1-  221     	.line	53, "key.c"; 	keyCount = 0;
+                                    1-  222     	BANKSEL	_keyCount
+     0027 rrrr                      3-   71 m1      .banksel ram_address
+     0028 02rr                      1-  223     	CLRR	_keyCount
+     0029                           1-  224     _00120_DS_:
+                                    1-  225     	.line	55, "key.c"; 	return 0;
+     0029 2100                      1-  226     	MOVIA	0x00
+     002A                           1-  227     _00121_DS_:
+                                    1-  228     	.line	56, "key.c"; 	}	
+                                    1-  229     	RETURN	
+     002A 0010                      3-   26 m1      ret
+                                    1-  230     ; exit point of _keyRead
+                                    1-  232     ;***
+                                    1-  233     ;  pBlock Stats: dbName = C
+                                    1-  234     ;***
+                                    1-  235     ;has an exit
+                                    1-  236     ;1 compiler assigned register :
+                                    1-  237     ;   r0x1003
+                                    1-  238     ;; Starting pCode block
+                                    1-  239     .segment "code"; module=key, function=_KeyScan
+                                    1-  241     ;local variable name mapping:
+     0000                           1-  243     _KeyScan:
+                                    1-  244     ; 2 exit points
+                                    1-  245     	.line	18, "key.c"; 	KeyStatus = ~PORTA;
+     0000 07rr                      1-  246     	COMR	_PORTA,W
+                                    1-  247     ;;1	MOVAR	r0x1003
+                                    1-  248     	.line	21, "key.c"; 	}
+                                    1-  249     	RETURN	
+     0001 0010                      3-   26 m1      ret
+                                    1-  250     ; exit point of _KeyScan
+                                    1-  253     ;	code size estimation:
+                                    1-  254     ;	   38+    7 =    45 instructions (  104 byte)
+                                    1-  256     	end
+                                    1-  256     	end
+
+SYMBOL TABLE            TYPE     VALUE
+__CHECKSUM_ADDR__       Label    00000000
+__PIN_COUNT__           Constant 0000000E
+__PROCESSOR__           Constant 00810623
+_00116_DS_              Label    0000001F
+_00117_DS_              Label    00000027
+_00119_DS_              Label    00000015
+_00120_DS_              Label    00000029
+_00121_DS_              Label    0000002A
+_ABPLCON                Label    00000000
+_ABPLCONbits            Label    00000000
+_ADCR                   Label    00000000
+_ADCRbits               Label    00000000
+_ADD                    Label    00000000
+_ADMD                   Label    00000000
+_ADMDbits               Label    00000000
+_ADR                    Label    00000000
+_ADRbits                Label    00000000
+_ADVREFH                Label    00000000
+_ADVREFHbits            Label    00000000
+_ANAEN                  Label    00000000
+_ANAENbits              Label    00000000
+_APHCON                 Label    00000000
+_AWUCON                 Label    00000000
+_AWUCONbits             Label    00000000
+_BODCON                 Label    00000000
+_BPHCON                 Label    00000000
+_BPHCONbits             Label    00000000
+_BWUCON                 Label    00000000
+_BWUCONbits             Label    00000000
+_BZ1CR                  Label    00000000
+_BZ2CR                  Label    00000000
+_BZ3CR                  Label    00000000
+_CMPCR                  Label    00000000
+_FSR                    Label    00000000
+_INDF                   Label    00000000
+_INTE                   Label    00000000
+_INTE2                  Label    00000000
+_INTE2bits              Label    00000000
+_INTEbits               Label    00000000
+_INTEDG                 Label    00000000
+_INTEDGbits             Label    00000000
+_INTF                   Label    00000000
+_INTFbits               Label    00000000
+_IOSTA                  Label    00000000
+_IOSTB                  Label    00000000
+_IRCR                   Label    00000000
+_keyCount               Label    00000000
+_keyRead                Label    00000000
+_KeyScan                Label    00000000
+_longPressFlag          Label    00000000
+_OSCCR                  Label    00000000
+_PACON                  Label    00000000
+_PACONbits              Label    00000000
+_PCHBUF                 Label    00000000
+_PCL                    Label    00000000
+_PCON                   Label    00000000
+_PCON1                  Label    00000000
+_PCONbits               Label    00000000
+_PORTA                  Label    00000000
+_PORTAbits              Label    00000000
+_PORTB                  Label    00000000
+_PORTBbits              Label    00000000
+_PS0CV                  Label    00000000
+_PS1CV                  Label    00000000
+_PS2CV                  Label    00000000
+_PS3CV                  Label    00000000
+_PWM1DUTY               Label    00000000
+_PWM2DUTY               Label    00000000
+_PWM3DUTY               Label    00000000
+_RFC                    Label    00000000
+_RFCbits                Label    00000000
+_STATUS                 Label    00000000
+_T0MD                   Label    00000000
+_T1CR1                  Label    00000000
+_T1CR2                  Label    00000000
+_T2CR1                  Label    00000000
+_T2CR2                  Label    00000000
+_T3CR1                  Label    00000000
+_T3CR2                  Label    00000000
+_TBHD                   Label    00000000
+_TBHP                   Label    00000000
+_TM3RH                  Label    00000000
+_TMR0                   Label    00000000
+_TMR1                   Label    00000000
+_TMR2                   Label    00000000
+_TMR3                   Label    00000000
+_TMRH                   Label    00000000
+ENABLE_RAM_BANK         Constant 00000001
+F                       Constant 00000001
+FSR                     Constant 00000004
+INDF                    Constant 00000000
+PCHBUF                  Constant 0000000A
+PCL                     Constant 00000002
+PSAVE                   Label    00000000
+r0x1002                 Label    00000000
+SSAVE                   Label    00000000
+STATUS                  Constant 00000003
+STK00                   Label    00000000
+STK01                   Label    00000000
+STK02                   Label    00000000
+STK03                   Label    00000000
+STK04                   Label    00000000
+STK05                   Label    00000000
+STK06                   Label    00000000
+STK07                   Label    00000000
+STK08                   Label    00000000
+STK09                   Label    00000000
+STK10                   Label    00000000
+STK11                   Label    00000000
+STK12                   Label    00000000
+W                       Constant 00000000
+WSAVE                   Label    00000000
+
+
+SOURCE FILE TABLE
+001 key.s
+002 ny8b062d.inc
+003 common.inc
+004 key.c
+
+PROCESSOR    = NY8B062D (8 bits)
+PROGRAM ROM  = 0x00000000 - 0x000007FF
+DATA ROM     = 0x00000000 - 0x000007FF
+RESERVED MEM = 0x00000800 - 0x00000810
+SRAM / SFR   = 0x00000000 - 0x00000000
