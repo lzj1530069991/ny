@@ -2,6 +2,7 @@
 #include "ny8_constant.h"
 #include "common.h"
 #define UPDATE_REG(x)	__asm__("MOVR _" #x ",F")
+#define reversebit(x, y)  x^=(1<<y)
 
 u16t	intCount = 0;
 u8t IntFlag = 0;
@@ -14,6 +15,8 @@ u8t count100 = 0;
 u8t addFlag = 0;
 u16t waitCount = 0;
 u16t chrgCount = 0;//充电灯计数
+u8t sleepCount = 0;
+extern unsigned int keyCount;
 
 void keyCon();
 void outCon();	
@@ -66,10 +69,25 @@ void main()
         	continue;			//1ms执行一次
         IntFlag = 0;
 		keyCon();
-		outCon();
-		ledCon();
+		ledCon();	
 		if(checkLVD())
-			gotoSleep(0x23);
+		{
+			if(count100 < 50)
+				PORTB &= 0xF7;
+			else
+				PORTB |= 0x08;
+			if(++count100 == 100)	//100ms
+			{
+				count100 = 0;
+				if(++sleepCount >= 35)
+					gotoSleep(0x23);
+			}
+		
+		}
+		else
+		{
+			outCon();
+		}
 	}
 
 
@@ -80,17 +98,38 @@ void ledCon()
 {
 	if(PORTB & 0x02 )
 	{
-		PORTB |= 0x08;
-		chrgCount = 0;
-		addFlag = 0;
-		chrgDuty = 0;
-		if(!workStep)
-			gotoSleep(0x23);
+		//PORTB |= 0x08;
+
+		if(PORTB & 0x20)
+		{
+			chrgCount = 0;
+			addFlag = 0;
+			chrgDuty = 0;
+			if(!workStep)
+			{
+				if(++count100 == 100)	//100ms
+				{
+					count100 = 0;
+					if(++sleepCount >= 35 && keyCount == 0)
+						gotoSleep(0x23);
+				}
+			}
+		}
+		else
+		{
+			//充满了，常亮
+			PORTB &= 0xF7;
+			chrgCount = 0;
+			addFlag = 0;
+			chrgDuty = 0;
+			workStep = 0;
+		}
 	}
 	else
 	{
 		if(PORTB & 0x20)
 		{
+			workStep = 0;
 			//充电中
 			if(chrgCount > 90 && chrgCount%32 == 0)
 			{
@@ -109,14 +148,7 @@ void ledCon()
 				addFlag = ~addFlag;
 			}
 		}
-		else
-		{
-			//充满了，常亮
-			PORTB &= 0xF7;
-			chrgCount = 0;
-			addFlag = 0;
-			chrgDuty = 0;
-		}
+		
 		
 	}
 }
@@ -124,7 +156,10 @@ void ledCon()
 
 void outCon()
 {
-	
+	if(workStep)
+		PORTB &= 0xF7;
+	else
+		PORTB |= 0x08;
 	
 	switch(workStep)
 	{
@@ -163,10 +198,7 @@ void outCon()
 			break;
 	}
 	
-	if(workStep)
-		PORTB &= 0xF7;
-	else
-		PORTB |= 0x08;
+	
 }
 
 void Led10()

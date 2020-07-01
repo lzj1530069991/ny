@@ -14,6 +14,7 @@
 
 unsigned int	keyCount = 0;//消抖计数
 unsigned char longPressFlag = 0;
+extern unsigned char sleepCount;
 
 
 void initTimer0()
@@ -102,6 +103,7 @@ void gotoSleep(char wakeKey)
 	PWM1DUTY = 0;
 	PORTB = 0x08;
 	keyCount = 0;
+	sleepCount = 0;
 	//BWUCON = 0x08;		//PB3唤醒
 	BWUCON = wakeKey;
 	INTE =  C_INT_TMR0 | C_INT_PBKey;
