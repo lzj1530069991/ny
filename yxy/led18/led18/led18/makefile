@@ -1,11 +1,11 @@
 ICBODY       := NY8A053D
-CLIENT_NAME  := ºãµÂµç×Ó
-CB_FILE      := HengDeLed.cb
+CLIENT_NAME  := yxy
+CB_FILE      := led18.cb
 HOST_TOOL    := NYIDE 3.91
-USER_C       := main.c 
+USER_C       := main.c codeDriver.c eeprom.c 
 LIBS         :=  
 USER_ASM     := 
-OUT_NAME     := HengDeLed
+OUT_NAME     := led18
 CC_PATH      := C:\Nyquest\NYC_NY8
 TEMP_FOLDER  := 
 
@@ -25,7 +25,7 @@ AR := nyar
 
 LDFLAGS     := -p $(ICBODY) --client "$(CLIENT_NAME)" -L "$(CC_PATH)/lib"      \
                -g -M --riffbin --elf --disasm          \
-               --host "$(HOST_TOOL)" --cinit --no-programchecksum             \
+               --host "$(HOST_TOOL)" --cinit --programchecksum             \
                --codechecksum --opt-banksel  --w-no 32797 --lang en-us
 
 CFLAGS      := -mny8 --errfmt-ny -p$(ICBODY) -D__CPU_$(ICBODY) --debug \

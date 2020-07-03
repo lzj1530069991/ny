@@ -1,0 +1,288 @@
+
+                    Nyquest Technology Co., Ltd.
+
+NYASM 2.25
+
+    ADDR  OPCODE/VALUE              LINE   TAG  SOURCE                   STATEMENT    
+
+                                    1-    1     ;--------------------------------------------------------
+                                    1-    2     ; File Created by SDCC : free open source ANSI-C Compiler
+                                    1-    3     ; Version 3.7.1 #0 (MSVC)
+                                    1-    4     ;--------------------------------------------------------
+                                    1-    5     ; NY8A port
+                                    1-    6     ;--------------------------------------------------------
+                                    1-    7     	.file	"main.c"
+                                    1-    8     	list	p=NY8A053D,c=on
+                                    1-    9     	#include "ny8a053d.inc"
+                                    1-   11     ;--------------------------------------------------------
+                                    1-   12     ; external declarations
+                                    1-   13     ;--------------------------------------------------------
+                                    1-   14     	extern	_Delay10Us
+                                    1-   15     	extern	_SDAOutput
+                                    1-   16     	extern	_SDAInput
+                                    1-   17     	extern	_Start24C02
+                                    1-   18     	extern	_Stop24C02
+                                    1-   19     	extern	_SendAck
+                                    1-   20     	extern	_SendNoAck
+                                    1-   21     	extern	_RecvAck
+                                    1-   22     	extern	_SendByte
+                                    1-   23     	extern	_ReadByte
+                                    1-   24     	extern	_readWordStep
+                                    1-   25     	extern	_writeWordStep
+                                    1-   26     	extern	_sendtoLast
+                                    1-   27     	extern	_sendRGB
+                                    1-   28     	extern	_SendCodeByte
+                                    1-   29     	extern	_sendCodeZERO
+                                    1-   30     	extern	_sendCodeONE
+                                    1-   31     	extern	_DelaySend
+                                    1-   32     	extern	_PORTAbits
+                                    1-   33     	extern	_PORTBbits
+                                    1-   34     	extern	_PCONbits
+                                    1-   35     	extern	_BWUCONbits
+                                    1-   36     	extern	_ABPLCONbits
+                                    1-   37     	extern	_BPHCONbits
+                                    1-   38     	extern	_INTEbits
+                                    1-   39     	extern	_INTFbits
+                                    1-   40     	extern	_INDF
+                                    1-   41     	extern	_TMR0
+                                    1-   42     	extern	_PCL
+                                    1-   43     	extern	_STATUS
+                                    1-   44     	extern	_FSR
+                                    1-   45     	extern	_PORTA
+                                    1-   46     	extern	_PORTB
+                                    1-   47     	extern	_PCON
+                                    1-   48     	extern	_BWUCON
+                                    1-   49     	extern	_PCHBUF
+                                    1-   50     	extern	_ABPLCON
+                                    1-   51     	extern	_BPHCON
+                                    1-   52     	extern	_INTE
+                                    1-   53     	extern	_INTF
+                                    1-   54     	extern	_TMR1
+                                    1-   55     	extern	_T1CR1
+                                    1-   56     	extern	_T1CR2
+                                    1-   57     	extern	_PWM1DUTY
+                                    1-   58     	extern	_PS1CV
+                                    1-   59     	extern	_BZ1CR
+                                    1-   60     	extern	_IRCR
+                                    1-   61     	extern	_TBHP
+                                    1-   62     	extern	_TBHD
+                                    1-   63     	extern	_OSCCR
+                                    1-   64     	extern	_IOSTA
+                                    1-   65     	extern	_IOSTB
+                                    1-   66     	extern	_PS0CV
+                                    1-   67     	extern	_BODCON
+                                    1-   68     	extern	_PCON1
+                                    1-   69     	extern	_T0MD
+                                    1-   70     	extern	__nyc_ny8_startup
+                                    1-   71     ;--------------------------------------------------------
+                                    1-   72     ; global declarations
+                                    1-   73     ;--------------------------------------------------------
+                                    1-   74     	extern	_main
+                                    1-   76     	extern PSAVE
+                                    1-   77     	extern SSAVE
+                                    1-   78     	extern WSAVE
+                                    1-   79     	extern STK12
+                                    1-   80     	extern STK11
+                                    1-   81     	extern STK10
+                                    1-   82     	extern STK09
+                                    1-   83     	extern STK08
+                                    1-   84     	extern STK07
+                                    1-   85     	extern STK06
+                                    1-   86     	extern STK05
+                                    1-   87     	extern STK04
+                                    1-   88     	extern STK03
+                                    1-   89     	extern STK02
+                                    1-   90     	extern STK01
+                                    1-   91     	extern STK00
+                                    1-   93     .segment "uninit", 0x20000020
+ 20000020                           1-   94     PSAVE:
+                                    1-   95     	.res 1
+ 20000021                           1-   96     SSAVE:
+                                    1-   97     	.res 1
+ 20000022                           1-   98     WSAVE:
+                                    1-   99     	.res 1
+ 20000023                           1-  100     STK12:
+                                    1-  101     	.res 1
+ 20000024                           1-  102     STK11:
+                                    1-  103     	.res 1
+ 20000025                           1-  104     STK10:
+                                    1-  105     	.res 1
+ 20000026                           1-  106     STK09:
+                                    1-  107     	.res 1
+ 20000027                           1-  108     STK08:
+                                    1-  109     	.res 1
+ 20000028                           1-  110     STK07:
+                                    1-  111     	.res 1
+ 20000029                           1-  112     STK06:
+                                    1-  113     	.res 1
+ 2000002A                           1-  114     STK05:
+                                    1-  115     	.res 1
+ 2000002B                           1-  116     STK04:
+                                    1-  117     	.res 1
+ 2000002C                           1-  118     STK03:
+                                    1-  119     	.res 1
+ 2000002D                           1-  120     STK02:
+                                    1-  121     	.res 1
+ 2000002E                           1-  122     STK01:
+                                    1-  123     	.res 1
+ 2000002F                           1-  124     STK00:
+                                    1-  125     	.res 1
+                                    1-  127     ;--------------------------------------------------------
+                                    1-  128     ; global definitions
+                                    1-  129     ;--------------------------------------------------------
+                                    1-  130     ;--------------------------------------------------------
+                                    1-  131     ; absolute symbol definitions
+                                    1-  132     ;--------------------------------------------------------
+                                    1-  133     ;--------------------------------------------------------
+                                    1-  134     ; compiler-defined variables
+                                    1-  135     ;--------------------------------------------------------
+                                    1-  136     ;--------------------------------------------------------
+                                    1-  137     ; initialized data
+                                    1-  138     ;--------------------------------------------------------
+                                    1-  139     ;--------------------------------------------------------
+                                    1-  140     ; overlayable items in internal ram 
+                                    1-  141     ;--------------------------------------------------------
+                                    1-  142     ;	udata_ovr
+                                    1-  143     ;--------------------------------------------------------
+                                    1-  144     ; reset vector 
+                                    1-  145     ;--------------------------------------------------------
+                                    1-  146     ORG	0x0000
+     0000 3rrr                      1-  147     	LGOTO	__nyc_ny8_startup
+                                    1-  148     ;--------------------------------------------------------
+                                    1-  149     ; code
+                                    1-  150     ;--------------------------------------------------------
+                                    1-  151     ;***
+                                    1-  152     ;  pBlock Stats: dbName = M
+                                    1-  153     ;***
+                                    1-  154     ;has an exit
+                                    1-  155     ;functions called:
+                                    1-  156     ;   _sendtoLast
+                                    1-  157     ;   _sendtoLast
+                                    1-  158     ;3 compiler assigned registers:
+                                    1-  159     ;   STK02
+                                    1-  160     ;   STK01
+                                    1-  161     ;   STK00
+                                    1-  162     ;; Starting pCode block
+                                    1-  163     .segment "code"; module=main, function=_main
+     0000                           1-  165     _main:
+                                    1-  166     ; 2 exit points
+     0000                           1-  167     _00106_DS_:
+                                    1-  168     	.line	33, "main.c"; 	sendtoLast(18,0xFF,0x00,0xFF);
+     0000 21FF                      1-  169     	MOVIA	0xff
+     0001 00rr                      1-  170     	MOVAR	STK02
+     0002 2100                      1-  171     	MOVIA	0x00
+     0003 00rr                      1-  172     	MOVAR	STK01
+     0004 21FF                      1-  173     	MOVIA	0xff
+     0005 00rr                      1-  174     	MOVAR	STK00
+     0006 2112                      1-  175     	MOVIA	0x12
+     0007 2rrr                      1-  176     	LCALL	_sendtoLast
+     0008 3rrr                      1-  177     	LGOTO	_00106_DS_
+                                    1-  178     	.line	35, "main.c"; 	}
+                                    1-  179     	RETURN	
+     0009 0010                      3-   26 m1      ret
+                                    1-  180     ; exit point of _main
+                                    1-  183     ;	code size estimation:
+                                    1-  184     ;	   10+    0 =    10 instructions (   20 byte)
+                                    1-  186     	end
+                                    1-  186     	end
+
+SYMBOL TABLE            TYPE     VALUE
+__CHECKSUM_ADDR__       Label    00000000
+__nyc_ny8_startup       Label    00000000
+__PIN_COUNT__           Constant 0000000C
+__PROCESSOR__           Constant 00800533
+_00106_DS_              Label    00000000
+_ABPLCON                Label    00000000
+_ABPLCONbits            Label    00000000
+_BODCON                 Label    00000000
+_BPHCON                 Label    00000000
+_BPHCONbits             Label    00000000
+_BWUCON                 Label    00000000
+_BWUCONbits             Label    00000000
+_BZ1CR                  Label    00000000
+_Delay10Us              Label    00000000
+_DelaySend              Label    00000000
+_FSR                    Label    00000000
+_INDF                   Label    00000000
+_INTE                   Label    00000000
+_INTEbits               Label    00000000
+_INTF                   Label    00000000
+_INTFbits               Label    00000000
+_IOSTA                  Label    00000000
+_IOSTB                  Label    00000000
+_IRCR                   Label    00000000
+_main                   Label    00000000
+_OSCCR                  Label    00000000
+_PCHBUF                 Label    00000000
+_PCL                    Label    00000000
+_PCON                   Label    00000000
+_PCON1                  Label    00000000
+_PCONbits               Label    00000000
+_PORTA                  Label    00000000
+_PORTAbits              Label    00000000
+_PORTB                  Label    00000000
+_PORTBbits              Label    00000000
+_PS0CV                  Label    00000000
+_PS1CV                  Label    00000000
+_PWM1DUTY               Label    00000000
+_ReadByte               Label    00000000
+_readWordStep           Label    00000000
+_RecvAck                Label    00000000
+_SDAInput               Label    00000000
+_SDAOutput              Label    00000000
+_SendAck                Label    00000000
+_SendByte               Label    00000000
+_SendCodeByte           Label    00000000
+_sendCodeONE            Label    00000000
+_sendCodeZERO           Label    00000000
+_SendNoAck              Label    00000000
+_sendRGB                Label    00000000
+_sendtoLast             Label    00000000
+_Start24C02             Label    00000000
+_STATUS                 Label    00000000
+_Stop24C02              Label    00000000
+_T0MD                   Label    00000000
+_T1CR1                  Label    00000000
+_T1CR2                  Label    00000000
+_TBHD                   Label    00000000
+_TBHP                   Label    00000000
+_TMR0                   Label    00000000
+_TMR1                   Label    00000000
+_writeWordStep          Label    00000000
+ENABLE_RAM_BANK         Constant 00000001
+F                       Constant 00000001
+FSR                     Constant 00000004
+INDF                    Constant 00000000
+PCHBUF                  Constant 0000000A
+PCL                     Constant 00000002
+PSAVE                   Label    00000000
+SSAVE                   Label    00000001
+STATUS                  Constant 00000003
+STK00                   Label    0000000F
+STK01                   Label    0000000E
+STK02                   Label    0000000D
+STK03                   Label    0000000C
+STK04                   Label    0000000B
+STK05                   Label    0000000A
+STK06                   Label    00000009
+STK07                   Label    00000008
+STK08                   Label    00000007
+STK09                   Label    00000006
+STK10                   Label    00000005
+STK11                   Label    00000004
+STK12                   Label    00000003
+W                       Constant 00000000
+WSAVE                   Label    00000002
+
+
+SOURCE FILE TABLE
+001 main.s
+002 ny8a053d.inc
+003 common.inc
+004 main.c
+
+PROCESSOR    = NY8A053D (8 bits)
+PROGRAM ROM  = 0x00000000 - 0x000003FF
+DATA ROM     = 0x00000000 - 0x000003FF
+RESERVED MEM = 0x00000400 - 0x00000410
+SRAM / SFR   = 0x00000000 - 0x00000000
