@@ -11,6 +11,8 @@
 ;--------------------------------------------------------
 ; external declarations
 ;--------------------------------------------------------
+	extern	_sendCodeZERO
+	extern	_sendCodeONE
 	extern	_PORTAbits
 	extern	_PORTBbits
 	extern	_PCONbits
@@ -69,9 +71,7 @@
 ;--------------------------------------------------------
 ; global declarations
 ;--------------------------------------------------------
-	extern	_DelaySend
-	extern	_sendCodeZERO
-	extern	_sendCodeONE
+	extern	_Delay80us
 	extern	_SendCodeByte
 	extern	_sendRGB
 	extern	_sendtoLast
@@ -85,9 +85,6 @@
 ;--------------------------------------------------------
 ; compiler-defined variables
 ;--------------------------------------------------------
-.segment "uninit"
-r0x1005:
-	.res	1
 .segment "uninit"
 r0x1006:
 	.res	1
@@ -107,10 +104,10 @@ r0x100A:
 r0x100B:
 	.res	1
 .segment "uninit"
-r0x100D:
+r0x100C:
 	.res	1
 .segment "uninit"
-r0x1002:
+r0x100E:
 	.res	1
 .segment "uninit"
 r0x1003:
@@ -119,10 +116,16 @@ r0x1003:
 r0x1004:
 	.res	1
 .segment "uninit"
-r0x1000:
+r0x1005:
 	.res	1
 .segment "uninit"
 r0x1001:
+	.res	1
+.segment "uninit"
+r0x1002:
+	.res	1
+.segment "uninit"
+r0x1000:
 	.res	1
 ;--------------------------------------------------------
 ; initialized data
@@ -138,11 +141,117 @@ r0x1001:
 ;  pBlock Stats: dbName = C
 ;***
 ;has an exit
+;1 compiler assigned register :
+;   r0x1000
 ;; Starting pCode block
-.segment "code"; module=codeDriver, function=_DelaySend
-	.debuginfo subprogram _DelaySend
-_DelaySend:
+.segment "code"; module=codeDriver, function=_Delay80us
+	.debuginfo subprogram _Delay80us
+;local variable name mapping:
+	.debuginfo variable _i=r0x1000
+_Delay80us:
 ; 2 exit points
+	.line	85, "codeDriver.c"; 	for(unsigned char i=0;i<80;i++)
+	BANKSEL	r0x1000
+	CLRR	r0x1000
+;;unsigned compare: left < lit (0x50=80), size=1
+_00140_DS_:
+	MOVIA	0x50
+	BANKSEL	r0x1000
+	SUBAR	r0x1000,W
+	BTRSC	STATUS,0
+	LGOTO	_00142_DS_
+	.line	86, "codeDriver.c"; 	NOP();
+	nop
+	.line	85, "codeDriver.c"; 	for(unsigned char i=0;i<80;i++)
+	BANKSEL	r0x1000
+	INCR	r0x1000,F
+	LGOTO	_00140_DS_
+_00142_DS_:
+	.line	87, "codeDriver.c"; 	}
+	RETURN	
+; exit point of _Delay80us
+
+;***
+;  pBlock Stats: dbName = C
+;***
+;has an exit
+;2 compiler assigned registers:
+;   r0x1001
+;   r0x1002
+;; Starting pCode block
+.segment "code"; module=codeDriver, function=_SendCodeByte
+	.debuginfo subprogram _SendCodeByte
+;local variable name mapping:
+	.debuginfo variable _data=r0x1001
+	.debuginfo variable _i=r0x1002
+_SendCodeByte:
+; 2 exit points
+	.line	33, "codeDriver.c"; 	void SendCodeByte(unsigned char data)
+	BANKSEL	r0x1001
+	MOVAR	r0x1001
+	.line	35, "codeDriver.c"; 	for(unsigned char i=8;i>0;i--)
+	MOVIA	0x08
+	BANKSEL	r0x1002
+	MOVAR	r0x1002
+_00132_DS_:
+	BANKSEL	r0x1002
+	MOVR	r0x1002,W
+	BTRSC	STATUS,2
+	LGOTO	_00130_DS_
+	.line	37, "codeDriver.c"; 	data = data<<1;
+	BCR	STATUS,0
+	BANKSEL	r0x1001
+	RLR	r0x1001,F
+	.line	38, "codeDriver.c"; 	if(D)
+	BTRSS	STATUS,0
+	LGOTO	_00128_DS_
+	.line	40, "codeDriver.c"; 	PB0 = 0;
+	BANKSEL	_PORTB
+	BCR	_PORTB,0
+	.line	41, "codeDriver.c"; 	NOP();
+	nop
+	.line	42, "codeDriver.c"; 	NOP();
+	nop
+	.line	43, "codeDriver.c"; 	NOP();
+	nop
+	.line	44, "codeDriver.c"; 	NOP();
+	nop
+	.line	45, "codeDriver.c"; 	NOP();
+	nop
+	.line	46, "codeDriver.c"; 	NOP();
+	nop
+	.line	47, "codeDriver.c"; 	NOP();
+	nop
+	.line	48, "codeDriver.c"; 	NOP();
+	nop
+	.line	49, "codeDriver.c"; 	NOP();
+	nop
+	.line	50, "codeDriver.c"; 	PB0 = 1;
+	BANKSEL	_PORTB
+	BSR	_PORTB,0
+	.line	51, "codeDriver.c"; 	NOP();
+	nop
+	.line	52, "codeDriver.c"; 	NOP();
+	nop
+	.line	53, "codeDriver.c"; 	NOP();
+	nop
+	.line	54, "codeDriver.c"; 	NOP();
+	nop
+	.line	55, "codeDriver.c"; 	NOP();
+	nop
+	LGOTO	_00133_DS_
+_00128_DS_:
+	.line	59, "codeDriver.c"; 	PB0 = 1;
+	BANKSEL	_PORTB
+	BSR	_PORTB,0
+	.line	60, "codeDriver.c"; 	NOP();
+	nop
+	.line	61, "codeDriver.c"; 	NOP();
+	nop
+	.line	62, "codeDriver.c"; 	NOP();
+	nop
+	.line	63, "codeDriver.c"; 	NOP();
+	nop
 	.line	64, "codeDriver.c"; 	NOP();
 	nop
 	.line	65, "codeDriver.c"; 	NOP();
@@ -153,106 +262,29 @@ _DelaySend:
 	nop
 	.line	68, "codeDriver.c"; 	NOP();
 	nop
-	.line	69, "codeDriver.c"; 	NOP();
-	nop
-	.line	70, "codeDriver.c"; 	}
-	RETURN	
-; exit point of _DelaySend
-
-;***
-;  pBlock Stats: dbName = C
-;***
-;has an exit
-;; Starting pCode block
-.segment "code"; module=codeDriver, function=_sendCodeZERO
-	.debuginfo subprogram _sendCodeZERO
-_sendCodeZERO:
-; 2 exit points
-	.line	56, "codeDriver.c"; 	PB0 = 0;
+	.line	69, "codeDriver.c"; 	PB0 = 0;
 	BANKSEL	_PORTB
 	BCR	_PORTB,0
-	.line	57, "codeDriver.c"; 	NOP();
+	.line	70, "codeDriver.c"; 	NOP();
 	nop
-	.line	58, "codeDriver.c"; 	PB0 = 1;
-	BANKSEL	_PORTB
-	BSR	_PORTB,0
-	.line	59, "codeDriver.c"; 	}
-	RETURN	
-; exit point of _sendCodeZERO
-
-;***
-;  pBlock Stats: dbName = C
-;***
-;has an exit
-;; Starting pCode block
-.segment "code"; module=codeDriver, function=_sendCodeONE
-	.debuginfo subprogram _sendCodeONE
-_sendCodeONE:
-; 2 exit points
-	.line	48, "codeDriver.c"; 	PB0 = 1;
-	BANKSEL	_PORTB
-	BSR	_PORTB,0
-	.line	49, "codeDriver.c"; 	NOP();
+	.line	71, "codeDriver.c"; 	NOP();
 	nop
-	.line	50, "codeDriver.c"; 	PB0 = 0;
-	BANKSEL	_PORTB
-	BCR	_PORTB,0
-	.line	51, "codeDriver.c"; 	}
-	RETURN	
-; exit point of _sendCodeONE
-
-;***
-;  pBlock Stats: dbName = C
-;***
-;has an exit
-;functions called:
-;   _sendCodeONE
-;   _sendCodeZERO
-;   _sendCodeONE
-;   _sendCodeZERO
-;2 compiler assigned registers:
-;   r0x1000
-;   r0x1001
-;; Starting pCode block
-.segment "code"; module=codeDriver, function=_SendCodeByte
-	.debuginfo subprogram _SendCodeByte
-;local variable name mapping:
-	.debuginfo variable _data=r0x1000
-	.debuginfo variable _i=r0x1001
-_SendCodeByte:
-; 2 exit points
-	.line	33, "codeDriver.c"; 	void SendCodeByte(unsigned char data)
-	BANKSEL	r0x1000
-	MOVAR	r0x1000
-	.line	35, "codeDriver.c"; 	for(unsigned char i=8;i>0;i--)
-	MOVIA	0x08
-	BANKSEL	r0x1001
-	MOVAR	r0x1001
-_00132_DS_:
-	BANKSEL	r0x1001
-	MOVR	r0x1001,W
-	BTRSC	STATUS,2
-	LGOTO	_00134_DS_
-	.line	37, "codeDriver.c"; 	data = data<<1;
-	BCR	STATUS,0
-	BANKSEL	r0x1000
-	RLR	r0x1000,F
-	.line	38, "codeDriver.c"; 	if(D)
-	BTRSS	STATUS,0
-	LGOTO	_00128_DS_
-	.line	39, "codeDriver.c"; 	sendCodeONE();
-	LCALL	_sendCodeONE
-	LGOTO	_00133_DS_
-_00128_DS_:
-	.line	41, "codeDriver.c"; 	sendCodeZERO();
-	LCALL	_sendCodeZERO
+	.line	72, "codeDriver.c"; 	NOP();
+	nop
+	.line	73, "codeDriver.c"; 	NOP();
+	nop
+	.line	74, "codeDriver.c"; 	NOP();
+	nop
 _00133_DS_:
 	.line	35, "codeDriver.c"; 	for(unsigned char i=8;i>0;i--)
-	BANKSEL	r0x1001
-	DECR	r0x1001,F
+	BANKSEL	r0x1002
+	DECR	r0x1002,F
 	LGOTO	_00132_DS_
-_00134_DS_:
-	.line	43, "codeDriver.c"; 	}
+_00130_DS_:
+	.line	77, "codeDriver.c"; 	PB0 = 0;
+	BANKSEL	_PORTB
+	BCR	_PORTB,0
+	.line	78, "codeDriver.c"; 	}
 	RETURN	
 ; exit point of _SendCodeByte
 
@@ -268,40 +300,40 @@ _00134_DS_:
 ;   _SendCodeByte
 ;   _SendCodeByte
 ;5 compiler assigned registers:
-;   r0x1002
-;   STK00
 ;   r0x1003
-;   STK01
+;   STK00
 ;   r0x1004
+;   STK01
+;   r0x1005
 ;; Starting pCode block
 .segment "code"; module=codeDriver, function=_sendRGB
 	.debuginfo subprogram _sendRGB
 ;local variable name mapping:
-	.debuginfo variable _colorR=r0x1002
-	.debuginfo variable _colorG=r0x1003
-	.debuginfo variable _colorB=r0x1004
+	.debuginfo variable _colorR=r0x1003
+	.debuginfo variable _colorG=r0x1004
+	.debuginfo variable _colorB=r0x1005
 _sendRGB:
 ; 2 exit points
 	.line	23, "codeDriver.c"; 	void sendRGB(unsigned char colorR,unsigned char colorG,unsigned char colorB)
-	BANKSEL	r0x1002
-	MOVAR	r0x1002
-	MOVR	STK00,W
 	BANKSEL	r0x1003
 	MOVAR	r0x1003
-	MOVR	STK01,W
+	MOVR	STK00,W
 	BANKSEL	r0x1004
 	MOVAR	r0x1004
+	MOVR	STK01,W
+	BANKSEL	r0x1005
+	MOVAR	r0x1005
 	.line	25, "codeDriver.c"; 	SendCodeByte(colorR);
-	BANKSEL	r0x1002
-	MOVR	r0x1002,W
-	LCALL	_SendCodeByte
-	.line	26, "codeDriver.c"; 	SendCodeByte(colorG);
 	BANKSEL	r0x1003
 	MOVR	r0x1003,W
 	LCALL	_SendCodeByte
-	.line	27, "codeDriver.c"; 	SendCodeByte(colorB);
+	.line	26, "codeDriver.c"; 	SendCodeByte(colorG);
 	BANKSEL	r0x1004
 	MOVR	r0x1004,W
+	LCALL	_SendCodeByte
+	.line	27, "codeDriver.c"; 	SendCodeByte(colorB);
+	BANKSEL	r0x1005
+	MOVR	r0x1005,W
 	LCALL	_SendCodeByte
 	.line	28, "codeDriver.c"; 	}
 	RETURN	
@@ -313,102 +345,102 @@ _sendRGB:
 ;has an exit
 ;functions called:
 ;   _sendRGB
-;   _DelaySend
+;   _Delay80us
 ;   _sendRGB
-;   _DelaySend
+;   _Delay80us
 ;12 compiler assigned registers:
-;   r0x1005
-;   STK00
 ;   r0x1006
-;   STK01
+;   STK00
 ;   r0x1007
-;   STK02
+;   STK01
 ;   r0x1008
+;   STK02
 ;   r0x1009
 ;   r0x100A
 ;   r0x100B
 ;   r0x100C
 ;   r0x100D
+;   r0x100E
 ;; Starting pCode block
 .segment "code"; module=codeDriver, function=_sendtoLast
 	.debuginfo subprogram _sendtoLast
 ;local variable name mapping:
-	.debuginfo variable _ledNub=r0x1005
-	.debuginfo variable _colorR=r0x1006
-	.debuginfo variable _colorG=r0x1007
-	.debuginfo variable _colorB=r0x1008
-	.debuginfo variable _i[0]=r0x1009
-	.debuginfo variable _i[1]=r0x100A
+	.debuginfo variable _ledNub=r0x1006
+	.debuginfo variable _colorR=r0x1007
+	.debuginfo variable _colorG=r0x1008
+	.debuginfo variable _colorB=r0x1009
+	.debuginfo variable _i[0]=r0x100A
+	.debuginfo variable _i[1]=r0x100B
 _sendtoLast:
 ; 2 exit points
 	.line	13, "codeDriver.c"; 	void sendtoLast(char ledNub,unsigned char colorR,unsigned char colorG,unsigned char colorB)
-	BANKSEL	r0x1005
-	MOVAR	r0x1005
-	MOVR	STK00,W
 	BANKSEL	r0x1006
 	MOVAR	r0x1006
-	MOVR	STK01,W
+	MOVR	STK00,W
 	BANKSEL	r0x1007
 	MOVAR	r0x1007
-	MOVR	STK02,W
+	MOVR	STK01,W
 	BANKSEL	r0x1008
 	MOVAR	r0x1008
-	.line	15, "codeDriver.c"; 	for(int i=0;i<ledNub;i++)
+	MOVR	STK02,W
 	BANKSEL	r0x1009
-	CLRR	r0x1009
+	MOVAR	r0x1009
+	.line	15, "codeDriver.c"; 	for(int i=0;i<ledNub;i++)
 	BANKSEL	r0x100A
 	CLRR	r0x100A
+	BANKSEL	r0x100B
+	CLRR	r0x100B
 _00107_DS_:
-	BANKSEL	r0x1005
-	MOVR	r0x1005,W
-	BANKSEL	r0x100B
-	MOVAR	r0x100B
-;;1	CLRR	r0x100C
-	BANKSEL	r0x100A
-	MOVR	r0x100A,W
-	ADDIA	0x80
-	BANKSEL	r0x100D
-	MOVAR	r0x100D
-	MOVIA	0x00
-	ADDIA	0x80
-	SUBAR	r0x100D,W
-	BTRSS	STATUS,2
-	LGOTO	_00118_DS_
-	BANKSEL	r0x100B
-	MOVR	r0x100B,W
-	BANKSEL	r0x1009
-	SUBAR	r0x1009,W
-_00118_DS_:
-	BTRSC	STATUS,0
-	LGOTO	_00109_DS_
-	.line	17, "codeDriver.c"; 	sendRGB(colorR,colorG,colorB);
-	BANKSEL	r0x1008
-	MOVR	r0x1008,W
-	MOVAR	STK01
-	BANKSEL	r0x1007
-	MOVR	r0x1007,W
-	MOVAR	STK00
 	BANKSEL	r0x1006
 	MOVR	r0x1006,W
-	LCALL	_sendRGB
-	.line	18, "codeDriver.c"; 	DelaySend();
-	LCALL	_DelaySend
-	.line	15, "codeDriver.c"; 	for(int i=0;i<ledNub;i++)
-	BANKSEL	r0x1009
-	INCR	r0x1009,F
+	BANKSEL	r0x100C
+	MOVAR	r0x100C
+;;1	CLRR	r0x100D
+	BANKSEL	r0x100B
+	MOVR	r0x100B,W
+	ADDIA	0x80
+	BANKSEL	r0x100E
+	MOVAR	r0x100E
+	MOVIA	0x00
+	ADDIA	0x80
+	SUBAR	r0x100E,W
 	BTRSS	STATUS,2
-	LGOTO	_00001_DS_
+	LGOTO	_00118_DS_
+	BANKSEL	r0x100C
+	MOVR	r0x100C,W
+	BANKSEL	r0x100A
+	SUBAR	r0x100A,W
+_00118_DS_:
+	BTRSC	STATUS,0
+	LGOTO	_00105_DS_
+	.line	17, "codeDriver.c"; 	sendRGB(colorR,colorG,colorB);
+	BANKSEL	r0x1009
+	MOVR	r0x1009,W
+	MOVAR	STK01
+	BANKSEL	r0x1008
+	MOVR	r0x1008,W
+	MOVAR	STK00
+	BANKSEL	r0x1007
+	MOVR	r0x1007,W
+	LCALL	_sendRGB
+	.line	15, "codeDriver.c"; 	for(int i=0;i<ledNub;i++)
 	BANKSEL	r0x100A
 	INCR	r0x100A,F
+	BTRSS	STATUS,2
+	LGOTO	_00001_DS_
+	BANKSEL	r0x100B
+	INCR	r0x100B,F
 _00001_DS_:
 	LGOTO	_00107_DS_
-_00109_DS_:
+_00105_DS_:
+	.line	19, "codeDriver.c"; 	Delay80us();
+	LCALL	_Delay80us
 	.line	20, "codeDriver.c"; 	}
 	RETURN	
 ; exit point of _sendtoLast
 
 
 ;	code size estimation:
-;	   71+   32 =   103 instructions (  270 byte)
+;	   75+   36 =   111 instructions (  294 byte)
 
 	end

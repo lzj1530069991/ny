@@ -1,8 +1,8 @@
 ICBODY       := NY8A053D
 CLIENT_NAME  := yxy
 CB_FILE      := led18.cb
-HOST_TOOL    := NYIDE 3.91
-USER_C       := main.c codeDriver.c eeprom.c 
+HOST_TOOL    := NYIDE 3.92
+USER_C       := codeDriver.c eeprom.c main.c 
 LIBS         :=  
 USER_ASM     := 
 OUT_NAME     := led18

@@ -15,8 +15,8 @@ void sendtoLast(char ledNub,unsigned char colorR,unsigned char colorG,unsigned c
 	for(int i=0;i<ledNub;i++)
 	{
 		sendRGB(colorR,colorG,colorB);
-		DelaySend();
 	}
+	Delay80us();
 }
 
 
@@ -36,35 +36,53 @@ void SendCodeByte(unsigned char data)
 	{
 		data = data<<1;
 		if(D)
-			sendCodeONE();
+		{
+			PB0 = 0;
+			NOP();
+			NOP();
+			NOP();
+			NOP();
+			NOP();
+			NOP();
+			NOP();
+			NOP();
+			NOP();
+			PB0 = 1;
+			NOP();
+			NOP();
+			NOP();
+			NOP();
+			NOP();
+		}
 		else
-			sendCodeZERO();
+		{
+			PB0 = 1;
+			NOP();
+			NOP();
+			NOP();
+			NOP();
+			NOP();
+			NOP();
+			NOP();
+			NOP();
+			NOP();
+			PB0 = 0;
+			NOP();
+			NOP();
+			NOP();
+			NOP();
+			NOP();
+		}
 	}
-}
-
-
-void sendCodeONE()
-{
-	PB0 = 1;
-	NOP();
 	PB0 = 0;
 }
 
 
-void sendCodeZERO()
-{
-	PB0 = 0;
-	NOP();
-	PB0 = 1;
-}
 
 
-void DelaySend(void)
+void Delay80us()
 {
-	NOP();
-	NOP();
-	NOP();
-	NOP();
-	NOP();
-	NOP();
+	for(unsigned char i=0;i<80;i++)
+		NOP();
 }
+
