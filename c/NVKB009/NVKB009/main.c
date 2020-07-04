@@ -79,7 +79,7 @@ void isr(void) __interrupt(0)
 	}
 	if(INTFbits.PBIF)
 	{ 
-		INTF= (unsigned char)~(C_INT_PBKey);	// Clear PABIF(PortB input change interrupt flag bit)		
+		INTF= (unsigned char)~(C_INT_PBKey);	// Clear PABIF(PortB input change interrupt flag bit)
 	}
 		
 	INTF = 0;

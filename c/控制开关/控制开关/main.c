@@ -8,11 +8,12 @@
 
 u8t	intCount = 0;
 u8t IntFlag = 0;
-u16t keyClick = 0;
+u8t keyClick = 0;
 u8t workStep = 0;		// 1 2 3  10  高 中 低 预热
 u16t	keyCount = 0;//消抖计数
 u8t longPressFlag = 0;
 u16t count = 0;//计时
+u8t timeCount = 0;		//4s计时
 
 void init();
 char keyRead(char KeyStatus);
@@ -62,10 +63,26 @@ void main(void)
 void outCon()
 {
 
+	if(workStep == 10)
+	{
+		if(timeCount >= 45)
+		{
+			workStep = 2;	//3分钟后进入中档	
+		}
+	}
+	
+	if(++count >= 400)
+	{
+		count = 0;
+		PORTB |= 0x04;	//PB2输出为高
+		if(workStep == 10)
+			timeCount++;
+	}
+	
 	switch(workStep)
 	{
 		case 0:
-			if((!keyCount) &&++count == 200)
+			if((!keyCount) &&count >= 200)
 				gotoSleep();
 		break;
 		case 1:
@@ -85,31 +102,18 @@ void outCon()
 			break;
 		case 10:
 			PORTB |= 0x04;	//PB2输出为高
+			if(count == 50 || count == 0  || count == 100 || count == 150 || count == 200 || count == 250 || count == 300 || count == 350)
+				PORTB ^= 0x20;
 			break;
 	}
 	
-	if(workStep > 0 && workStep < 4)
-	{
-		if(++count == 400)
-		{
-			count = 0;
-			PORTB |= 0x04;	//PB2输出为高
-		}
-	}
+
 }
 
 
 void processKey()
 {
 	keyClick = keyRead((~PORTB)&0x01);
-	if(workStep == 10)
-	{
-		PORTB &= ~0x32;
-		if(--count == 0)
-		{
-			workStep = 2;	//3分钟后进入中档
-		}
-	}
 	if(keyClick == 1 && workStep)
 	{
 		count = 0;
@@ -130,7 +134,8 @@ void processKey()
 		else
 		{
 			workStep = 10;//预热模式
-			count = 18000;
+			count = 0;
+			timeCount = 0;
 		}
 	}
 	else if(keyClick == 3)
@@ -175,6 +180,8 @@ char keyRead(char KeyStatus)
 		{
 			if(keyCount >= 3000)
 			{
+				keyCount = 0;
+				longPressFlag = 0;
 				return 3;	//30S超时
 			}
 			if(!longPressFlag)
@@ -189,7 +196,6 @@ char keyRead(char KeyStatus)
 		if(keyCount >= 300)
 		{
 			keyCount = 0;
-			longPressFlag = 0;
 			return	0;
 		}
 		else if(keyCount >= 8)
@@ -198,6 +204,7 @@ char keyRead(char KeyStatus)
 			return	1;
 		}
 		keyCount = 0;
+		longPressFlag = 0;
 	}
 	return 0;
 }

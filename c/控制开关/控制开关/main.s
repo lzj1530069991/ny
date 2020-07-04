@@ -61,6 +61,7 @@
 	extern	_keyCount
 	extern	_longPressFlag
 	extern	_count
+	extern	_timeCount
 
 	extern PSAVE
 	extern SSAVE
@@ -146,8 +147,8 @@ _IntFlag:
 
 .segment "idata"
 _keyClick:
-	dw	0x00, 0x00
-	.debuginfo gvariable name=_keyClick,2byte,array=0,entsize=2,ext=1
+	dw	0x00
+	.debuginfo gvariable name=_keyClick,1byte,array=0,entsize=1,ext=1
 
 
 .segment "idata"
@@ -172,6 +173,12 @@ _longPressFlag:
 _count:
 	dw	0x00, 0x00
 	.debuginfo gvariable name=_count,2byte,array=0,entsize=2,ext=1
+
+
+.segment "idata"
+_timeCount:
+	dw	0x00
+	.debuginfo gvariable name=_timeCount,1byte,array=0,entsize=1,ext=1
 
 ;--------------------------------------------------------
 ; overlayable items in internal ram 
@@ -199,7 +206,7 @@ __sdcc_interrupt:
 ;; Starting pCode block
 _isr:
 ; 0 exit points
-	.line	23, "main.c"; 	void isr(void) __interrupt(0)
+	.line	24, "main.c"; 	void isr(void) __interrupt(0)
 	MOVAR	WSAVE
 	SWAPR	STATUS,W
 	CLRR	STATUS
@@ -213,35 +220,35 @@ _isr:
 	MOVAR	___sdcc_saved_stk00
 	MOVR	STK01,W
 	MOVAR	___sdcc_saved_stk01
-	.line	25, "main.c"; 	if(INTFbits.T0IF)
+	.line	26, "main.c"; 	if(INTFbits.T0IF)
 	BTRSS	_INTFbits,0
 	LGOTO	_00108_DS_
-	.line	27, "main.c"; 	TMR0 = 65;
+	.line	28, "main.c"; 	TMR0 = 65;
 	MOVIA	0x41
 	MOVAR	_TMR0
-	.line	28, "main.c"; 	intCount++;
+	.line	29, "main.c"; 	intCount++;
 	INCR	_intCount,F
-	.line	29, "main.c"; 	if(intCount == 100)
+	.line	30, "main.c"; 	if(intCount == 100)
 	MOVR	_intCount,W
 	XORIA	0x64
 	BTRSS	STATUS,2
 	LGOTO	_00108_DS_
-	.line	31, "main.c"; 	intCount = 0;
+	.line	32, "main.c"; 	intCount = 0;
 	CLRR	_intCount
-	.line	32, "main.c"; 	IntFlag = 1;
+	.line	33, "main.c"; 	IntFlag = 1;
 	MOVIA	0x01
 	MOVAR	_IntFlag
 _00108_DS_:
-	.line	35, "main.c"; 	if(INTFbits.PBIF)
+	.line	36, "main.c"; 	if(INTFbits.PBIF)
 	BTRSS	_INTFbits,1
 	LGOTO	_00110_DS_
-	.line	37, "main.c"; 	INTF= (unsigned char)~(C_INT_PBKey);	// Clear PABIF(PortB input change interrupt flag bit)		
+	.line	38, "main.c"; 	INTF= (unsigned char)~(C_INT_PBKey);	// Clear PABIF(PortB input change interrupt flag bit)		
 	MOVIA	0xfd
 	MOVAR	_INTF
 _00110_DS_:
-	.line	40, "main.c"; 	INTF = 0;
+	.line	41, "main.c"; 	INTF = 0;
 	CLRR	_INTF
-	.line	42, "main.c"; 	}
+	.line	43, "main.c"; 	}
 	MOVR	___sdcc_saved_stk01,W
 	MOVAR	STK01
 	MOVR	___sdcc_saved_stk00,W
@@ -277,23 +284,23 @@ END_OF_INTERRUPT:
 	.debuginfo subprogram _main
 _main:
 ; 2 exit points
-	.line	47, "main.c"; 	init();
+	.line	48, "main.c"; 	init();
 	LCALL	_init
 _00118_DS_:
-	.line	51, "main.c"; 	CLRWDT(); 
+	.line	52, "main.c"; 	CLRWDT(); 
 	clrwdt
-	.line	52, "main.c"; 	if(!IntFlag)
+	.line	53, "main.c"; 	if(!IntFlag)
 	MOVR	_IntFlag,W
 	BTRSC	STATUS,2
 	LGOTO	_00118_DS_
-	.line	54, "main.c"; 	IntFlag = 0;
+	.line	55, "main.c"; 	IntFlag = 0;
 	CLRR	_IntFlag
-	.line	55, "main.c"; 	processKey();
+	.line	56, "main.c"; 	processKey();
 	LCALL	_processKey
-	.line	56, "main.c"; 	outCon();
+	.line	57, "main.c"; 	outCon();
 	LCALL	_outCon
 	LGOTO	_00118_DS_
-	.line	60, "main.c"; 	}
+	.line	61, "main.c"; 	}
 	RETURN	
 ; exit point of _main
 
@@ -306,41 +313,41 @@ _00118_DS_:
 	.debuginfo subprogram _gotoSleep
 _gotoSleep:
 ; 2 exit points
-	.line	209, "main.c"; 	PORTB = 0x01; 
+	.line	216, "main.c"; 	PORTB = 0x01; 
 	MOVIA	0x01
 	MOVAR	_PORTB
-	.line	210, "main.c"; 	keyCount = 0;
+	.line	217, "main.c"; 	keyCount = 0;
 	CLRR	_keyCount
 	CLRR	(_keyCount + 1)
-	.line	211, "main.c"; 	count = 0;
+	.line	218, "main.c"; 	count = 0;
 	CLRR	_count
 	CLRR	(_count + 1)
-	.line	212, "main.c"; 	BWUCON = 0x01;		//PB0唤醒
+	.line	219, "main.c"; 	BWUCON = 0x01;		//PB0唤醒
 	MOVIA	0x01
 	MOVAR	_BWUCON
-	.line	213, "main.c"; 	INTE =  C_INT_TMR0 | C_INT_PBKey;
+	.line	220, "main.c"; 	INTE =  C_INT_TMR0 | C_INT_PBKey;
 	MOVIA	0x03
 	MOVAR	_INTE
-	.line	214, "main.c"; 	PCON =  C_LVR_En;	
+	.line	221, "main.c"; 	PCON =  C_LVR_En;	
 	MOVIA	0x08
 	MOVAR	_PCON
-	.line	215, "main.c"; 	INTF = 0;								// Clear all interrupt flags
+	.line	222, "main.c"; 	INTF = 0;								// Clear all interrupt flags
 	CLRR	_INTF
-	.line	216, "main.c"; 	CLRWDT();
+	.line	223, "main.c"; 	CLRWDT();
 	clrwdt
-	.line	217, "main.c"; 	SLEEP();
+	.line	224, "main.c"; 	SLEEP();
 	sleep
-	.line	218, "main.c"; 	INTE =  C_INT_TMR0;	// Enable Timer0、Timer1、WDT overflow interrupt
+	.line	225, "main.c"; 	INTE =  C_INT_TMR0;	// Enable Timer0、Timer1、WDT overflow interrupt
 	MOVIA	0x01
 	MOVAR	_INTE
-	.line	219, "main.c"; 	INTF = 0;
+	.line	226, "main.c"; 	INTF = 0;
 	CLRR	_INTF
-	.line	221, "main.c"; 	PCON = C_WDT_En | C_LVR_En;				// Enable WDT ,  Enable LVR
+	.line	228, "main.c"; 	PCON = C_WDT_En | C_LVR_En;				// Enable WDT ,  Enable LVR
 	MOVIA	0x88
 	MOVAR	_PCON
-	.line	222, "main.c"; 	PCON |= 0x10;			//PA5关闭上拉
+	.line	229, "main.c"; 	PCON |= 0x10;			//PA5关闭上拉
 	BSR	_PCON,4
-	.line	223, "main.c"; 	}
+	.line	230, "main.c"; 	}
 	RETURN	
 ; exit point of _gotoSleep
 
@@ -357,99 +364,104 @@ _gotoSleep:
 	.debuginfo variable _KeyStatus=r0x100D
 _keyRead:
 ; 2 exit points
-	.line	169, "main.c"; 	char keyRead(char KeyStatus)	
+	.line	174, "main.c"; 	char keyRead(char KeyStatus)	
 	MOVAR	r0x100D
-	.line	171, "main.c"; 	if (KeyStatus)
+	.line	176, "main.c"; 	if (KeyStatus)
 	MOVR	r0x100D,W
 	BTRSC	STATUS,2
-	LGOTO	_00232_DS_
-	.line	173, "main.c"; 	keyCount++;
+	LGOTO	_00273_DS_
+	.line	178, "main.c"; 	keyCount++;
 	INCR	_keyCount,F
 	BTRSC	STATUS,2
 	INCR	(_keyCount + 1),F
 ;;unsigned compare: left < lit (0x12C=300), size=2
-	.line	174, "main.c"; 	if(keyCount >= 300)
+	.line	179, "main.c"; 	if(keyCount >= 300)
 	MOVIA	0x01
 	SUBAR	(_keyCount + 1),W
 	BTRSS	STATUS,2
-	LGOTO	_00254_DS_
+	LGOTO	_00295_DS_
 	MOVIA	0x2c
 	SUBAR	_keyCount,W
-_00254_DS_:
+_00295_DS_:
 	BTRSS	STATUS,0
-	LGOTO	_00233_DS_
+	LGOTO	_00274_DS_
 ;;unsigned compare: left < lit (0xBB8=3000), size=2
-	.line	176, "main.c"; 	if(keyCount >= 3000)
+	.line	181, "main.c"; 	if(keyCount >= 3000)
 	MOVIA	0x0b
 	SUBAR	(_keyCount + 1),W
 	BTRSS	STATUS,2
-	LGOTO	_00255_DS_
+	LGOTO	_00296_DS_
 	MOVIA	0xb8
 	SUBAR	_keyCount,W
-_00255_DS_:
+_00296_DS_:
 	BTRSS	STATUS,0
-	LGOTO	_00221_DS_
-	.line	178, "main.c"; 	return 3;	//30S超时
+	LGOTO	_00262_DS_
+	.line	183, "main.c"; 	keyCount = 0;
+	CLRR	_keyCount
+	CLRR	(_keyCount + 1)
+	.line	184, "main.c"; 	longPressFlag = 0;
+	CLRR	_longPressFlag
+	.line	185, "main.c"; 	return 3;	//30S超时
 	MOVIA	0x03
-	LGOTO	_00234_DS_
-_00221_DS_:
-	.line	180, "main.c"; 	if(!longPressFlag)
+	LGOTO	_00275_DS_
+_00262_DS_:
+	.line	187, "main.c"; 	if(!longPressFlag)
 	MOVR	_longPressFlag,W
 	BTRSS	STATUS,2
-	LGOTO	_00233_DS_
-	.line	182, "main.c"; 	longPressFlag = 1;
+	LGOTO	_00274_DS_
+	.line	189, "main.c"; 	longPressFlag = 1;
 	MOVIA	0x01
 	MOVAR	_longPressFlag
-	.line	183, "main.c"; 	return 2;
+	.line	190, "main.c"; 	return 2;
 	MOVIA	0x02
-	LGOTO	_00234_DS_
+	LGOTO	_00275_DS_
 ;;unsigned compare: left < lit (0x12C=300), size=2
-_00232_DS_:
-	.line	189, "main.c"; 	if(keyCount >= 300)
+_00273_DS_:
+	.line	196, "main.c"; 	if(keyCount >= 300)
 	MOVIA	0x01
 	SUBAR	(_keyCount + 1),W
 	BTRSS	STATUS,2
-	LGOTO	_00256_DS_
+	LGOTO	_00297_DS_
 	MOVIA	0x2c
 	SUBAR	_keyCount,W
-_00256_DS_:
+_00297_DS_:
 	BTRSS	STATUS,0
-	LGOTO	_00229_DS_
-	.line	191, "main.c"; 	keyCount = 0;
+	LGOTO	_00270_DS_
+	.line	198, "main.c"; 	keyCount = 0;
 	CLRR	_keyCount
 	CLRR	(_keyCount + 1)
-	.line	192, "main.c"; 	longPressFlag = 0;
-	CLRR	_longPressFlag
-	.line	193, "main.c"; 	return	0;
+	.line	199, "main.c"; 	return	0;
 	MOVIA	0x00
-	LGOTO	_00234_DS_
+	LGOTO	_00275_DS_
 ;;unsigned compare: left < lit (0x8=8), size=2
-_00229_DS_:
-	.line	195, "main.c"; 	else if(keyCount >= 8)
+_00270_DS_:
+	.line	201, "main.c"; 	else if(keyCount >= 8)
 	MOVIA	0x00
 	SUBAR	(_keyCount + 1),W
 	BTRSS	STATUS,2
-	LGOTO	_00257_DS_
+	LGOTO	_00298_DS_
 	MOVIA	0x08
 	SUBAR	_keyCount,W
-_00257_DS_:
+_00298_DS_:
 	BTRSS	STATUS,0
-	LGOTO	_00230_DS_
-	.line	197, "main.c"; 	keyCount = 0;
+	LGOTO	_00271_DS_
+	.line	203, "main.c"; 	keyCount = 0;
 	CLRR	_keyCount
 	CLRR	(_keyCount + 1)
-	.line	198, "main.c"; 	return	1;
+	.line	204, "main.c"; 	return	1;
 	MOVIA	0x01
-	LGOTO	_00234_DS_
-_00230_DS_:
-	.line	200, "main.c"; 	keyCount = 0;
+	LGOTO	_00275_DS_
+_00271_DS_:
+	.line	206, "main.c"; 	keyCount = 0;
 	CLRR	_keyCount
 	CLRR	(_keyCount + 1)
-_00233_DS_:
-	.line	202, "main.c"; 	return 0;
+	.line	207, "main.c"; 	longPressFlag = 0;
+	CLRR	_longPressFlag
+_00274_DS_:
+	.line	209, "main.c"; 	return 0;
 	MOVIA	0x00
-_00234_DS_:
-	.line	203, "main.c"; 	}
+_00275_DS_:
+	.line	210, "main.c"; 	}
 	RETURN	
 ; exit point of _keyRead
 
@@ -462,43 +474,43 @@ _00234_DS_:
 	.debuginfo subprogram _init
 _init:
 ; 2 exit points
-	.line	145, "main.c"; 	PORTB = 0x00;         
+	.line	150, "main.c"; 	PORTB = 0x00;         
 	CLRR	_PORTB
-	.line	146, "main.c"; 	IOSTB =  C_PB0_Input;								// Set PB to output mode
+	.line	151, "main.c"; 	IOSTB =  C_PB0_Input;								// Set PB to output mode
 	MOVIA	0x01
 	IOST	_IOSTB
-	.line	147, "main.c"; 	BPHCON = 0xFE;
+	.line	152, "main.c"; 	BPHCON = 0xFE;
 	MOVIA	0xfe
 	MOVAR	_BPHCON
-	.line	148, "main.c"; 	BPLCON = 0xFF;
+	.line	153, "main.c"; 	BPLCON = 0xFF;
 	MOVIA	0xff
 	MOVAR	_BPLCON
-	.line	149, "main.c"; 	PORTB = 0x01;                           	
+	.line	154, "main.c"; 	PORTB = 0x01;                           	
 	MOVIA	0x01
 	MOVAR	_PORTB
-	.line	153, "main.c"; 	PCON = C_WDT_En | C_LVR_En;				// Enable WDT & LVR
+	.line	158, "main.c"; 	PCON = C_WDT_En | C_LVR_En;				// Enable WDT & LVR
 	MOVIA	0x88
 	MOVAR	_PCON
-	.line	154, "main.c"; 	INTE =  C_INT_TMR0;	// Enable Timer0、Timer1、WDT overflow interrupt
+	.line	159, "main.c"; 	INTE =  C_INT_TMR0;	// Enable Timer0、Timer1、WDT overflow interrupt
 	MOVIA	0x01
 	MOVAR	_INTE
-	.line	155, "main.c"; 	INTF = 0;
+	.line	160, "main.c"; 	INTF = 0;
 	CLRR	_INTF
-	.line	158, "main.c"; 	PCON1 = C_TMR0_Dis;
+	.line	163, "main.c"; 	PCON1 = C_TMR0_Dis;
 	CLRA	
 	IOST	_PCON1
-	.line	160, "main.c"; 	TMR0 = 55;
+	.line	165, "main.c"; 	TMR0 = 55;
 	MOVIA	0x37
 	MOVAR	_TMR0
-	.line	161, "main.c"; 	T0MD =  C_PS0_TMR0 | C_PS0_Div2;
+	.line	166, "main.c"; 	T0MD =  C_PS0_TMR0 | C_PS0_Div2;
 	CLRA	
 	T0MD	
-	.line	163, "main.c"; 	PCON1 = C_TMR0_En;
+	.line	168, "main.c"; 	PCON1 = C_TMR0_En;
 	MOVIA	0x01
 	IOST	_PCON1
-	.line	165, "main.c"; 	ENI();
+	.line	170, "main.c"; 	ENI();
 	ENI
-	.line	166, "main.c"; 	}
+	.line	171, "main.c"; 	}
 	RETURN	
 ; exit point of _init
 
@@ -520,111 +532,75 @@ _init:
 	.debuginfo subprogram _processKey
 _processKey:
 ; 2 exit points
-	.line	104, "main.c"; 	keyClick = keyRead((~PORTB)&0x01);
+	.line	116, "main.c"; 	keyClick = keyRead((~PORTB)&0x01);
 	COMR	_PORTB,W
 	MOVAR	r0x100E
 	MOVIA	0x01
 	ANDAR	r0x100E,F
 	MOVR	r0x100E,W
 	LCALL	_keyRead
-	MOVAR	r0x100E
 	MOVAR	_keyClick
-	CLRR	(_keyClick + 1)
-	.line	105, "main.c"; 	if(workStep == 10)
-	MOVR	_workStep,W
-	XORIA	0x0a
-	BTRSS	STATUS,2
-	LGOTO	_00196_DS_
-	.line	107, "main.c"; 	PORTB &= ~0x32;
-	MOVIA	0xcd
-	ANDAR	_PORTB,F
-	.line	108, "main.c"; 	if(--count == 0)
-	MOVIA	0xff
-	ADDAR	_count,F
-	BTRSS	STATUS,0
-	DECR	(_count + 1),F
-	MOVR	_count,W
-	IORAR	(_count + 1),W
-	BTRSS	STATUS,2
-	LGOTO	_00196_DS_
-	.line	110, "main.c"; 	workStep = 2;	//3分钟后进入中档
-	MOVIA	0x02
-	MOVAR	_workStep
-_00196_DS_:
-	.line	113, "main.c"; 	if(keyClick == 1 && workStep)
-	MOVR	_keyClick,W
+	.line	117, "main.c"; 	if(keyClick == 1 && workStep)
 	XORIA	0x01
 	BTRSS	STATUS,2
-	LGOTO	_00208_DS_
-	MOVR	(_keyClick + 1),W
-	XORIA	0x00
-	BTRSS	STATUS,2
-	LGOTO	_00208_DS_
+	LGOTO	_00249_DS_
 	MOVR	_workStep,W
 	BTRSC	STATUS,2
-	LGOTO	_00208_DS_
-	.line	115, "main.c"; 	count = 0;
+	LGOTO	_00249_DS_
+	.line	119, "main.c"; 	count = 0;
 	CLRR	_count
 	CLRR	(_count + 1)
-	.line	116, "main.c"; 	PORTB &= ~0x32;
+	.line	120, "main.c"; 	PORTB &= ~0x32;
 	MOVIA	0xcd
 	ANDAR	_PORTB,F
-	.line	117, "main.c"; 	if(++workStep >= 4)
+	.line	121, "main.c"; 	if(++workStep >= 4)
 	INCR	_workStep,F
 ;;unsigned compare: left < lit (0x4=4), size=1
 	MOVIA	0x04
 	SUBAR	_workStep,W
 	BTRSS	STATUS,0
-	LGOTO	_00211_DS_
-	.line	119, "main.c"; 	workStep = 1;
+	LGOTO	_00252_DS_
+	.line	123, "main.c"; 	workStep = 1;
 	MOVIA	0x01
 	MOVAR	_workStep
-	LGOTO	_00211_DS_
-_00208_DS_:
-	.line	123, "main.c"; 	else if(keyClick == 2)
+	LGOTO	_00252_DS_
+_00249_DS_:
+	.line	127, "main.c"; 	else if(keyClick == 2)
 	MOVR	_keyClick,W
 	XORIA	0x02
 	BTRSS	STATUS,2
-	LGOTO	_00205_DS_
-	MOVR	(_keyClick + 1),W
-	XORIA	0x00
-	BTRSS	STATUS,2
-	LGOTO	_00205_DS_
-	.line	125, "main.c"; 	if(workStep)
+	LGOTO	_00246_DS_
+	.line	129, "main.c"; 	if(workStep)
 	MOVR	_workStep,W
 	BTRSC	STATUS,2
-	LGOTO	_00200_DS_
-	.line	127, "main.c"; 	workStep = 0;	//关机
+	LGOTO	_00241_DS_
+	.line	131, "main.c"; 	workStep = 0;	//关机
 	CLRR	_workStep
-	.line	128, "main.c"; 	gotoSleep();
+	.line	132, "main.c"; 	gotoSleep();
 	LCALL	_gotoSleep
-	LGOTO	_00211_DS_
-_00200_DS_:
-	.line	132, "main.c"; 	workStep = 10;//预热模式
+	LGOTO	_00252_DS_
+_00241_DS_:
+	.line	136, "main.c"; 	workStep = 10;//预热模式
 	MOVIA	0x0a
 	MOVAR	_workStep
-	.line	133, "main.c"; 	count = 18000;
-	MOVIA	0x50
-	MOVAR	_count
-	MOVIA	0x46
-	MOVAR	(_count + 1)
-	LGOTO	_00211_DS_
-_00205_DS_:
-	.line	136, "main.c"; 	else if(keyClick == 3)
+	.line	137, "main.c"; 	count = 0;
+	CLRR	_count
+	CLRR	(_count + 1)
+	.line	138, "main.c"; 	timeCount = 0;
+	CLRR	_timeCount
+	LGOTO	_00252_DS_
+_00246_DS_:
+	.line	141, "main.c"; 	else if(keyClick == 3)
 	MOVR	_keyClick,W
 	XORIA	0x03
 	BTRSS	STATUS,2
-	LGOTO	_00211_DS_
-	MOVR	(_keyClick + 1),W
-	XORIA	0x00
-	BTRSS	STATUS,2
-	LGOTO	_00211_DS_
-	.line	138, "main.c"; 	workStep = 0;	//超时关机
+	LGOTO	_00252_DS_
+	.line	143, "main.c"; 	workStep = 0;	//超时关机
 	CLRR	_workStep
-	.line	139, "main.c"; 	gotoSleep();
+	.line	144, "main.c"; 	gotoSleep();
 	LCALL	_gotoSleep
-_00211_DS_:
-	.line	141, "main.c"; 	}
+_00252_DS_:
+	.line	146, "main.c"; 	}
 	RETURN	
 ; exit point of _processKey
 
@@ -640,133 +616,217 @@ _00211_DS_:
 	.debuginfo subprogram _outCon
 _outCon:
 ; 2 exit points
-	.line	65, "main.c"; 	switch(workStep)
+	.line	66, "main.c"; 	if(workStep == 10)
 	MOVR	_workStep,W
+	XORIA	0x0a
+	BTRSS	STATUS,2
+	LGOTO	_00126_DS_
+;;unsigned compare: left < lit (0x2D=45), size=1
+	.line	68, "main.c"; 	if(timeCount >= 45)
+	MOVIA	0x2d
+	SUBAR	_timeCount,W
+	BTRSS	STATUS,0
+	LGOTO	_00126_DS_
+	.line	70, "main.c"; 	workStep = 2;	//3分钟后进入中档	
+	MOVIA	0x02
+	MOVAR	_workStep
+_00126_DS_:
+	.line	74, "main.c"; 	if(++count >= 400)
+	INCR	_count,F
 	BTRSC	STATUS,2
-	LGOTO	_00123_DS_
-	MOVR	_workStep,W
-	XORIA	0x01
-	BTRSC	STATUS,2
-	LGOTO	_00127_DS_
-	MOVR	_workStep,W
-	XORIA	0x02
-	BTRSC	STATUS,2
+	INCR	(_count + 1),F
+;;unsigned compare: left < lit (0x190=400), size=2
+	MOVIA	0x01
+	SUBAR	(_count + 1),W
+	BTRSS	STATUS,2
+	LGOTO	_00221_DS_
+	MOVIA	0x90
+	SUBAR	_count,W
+_00221_DS_:
+	BTRSS	STATUS,0
 	LGOTO	_00130_DS_
-	MOVR	_workStep,W
-	XORIA	0x03
-	BTRSC	STATUS,2
-	LGOTO	_00133_DS_
+	.line	76, "main.c"; 	count = 0;
+	CLRR	_count
+	CLRR	(_count + 1)
+	.line	77, "main.c"; 	PORTB |= 0x04;	//PB2输出为高
+	BSR	_PORTB,2
+	.line	78, "main.c"; 	if(workStep == 10)
 	MOVR	_workStep,W
 	XORIA	0x0a
 	BTRSC	STATUS,2
-	LGOTO	_00136_DS_
-	LGOTO	_00137_DS_
-_00123_DS_:
-	.line	68, "main.c"; 	if((!keyCount) &&++count == 200)
+	.line	79, "main.c"; 	timeCount++;
+	INCR	_timeCount,F
+_00130_DS_:
+	.line	82, "main.c"; 	switch(workStep)
+	MOVR	_workStep,W
+	BTRSC	STATUS,2
+	LGOTO	_00131_DS_
+	MOVR	_workStep,W
+	XORIA	0x01
+	BTRSC	STATUS,2
+	LGOTO	_00135_DS_
+	MOVR	_workStep,W
+	XORIA	0x02
+	BTRSC	STATUS,2
+	LGOTO	_00138_DS_
+	MOVR	_workStep,W
+	XORIA	0x03
+	BTRSC	STATUS,2
+	LGOTO	_00141_DS_
+	MOVR	_workStep,W
+	XORIA	0x0a
+	BTRSC	STATUS,2
+	LGOTO	_00144_DS_
+	LGOTO	_00155_DS_
+_00131_DS_:
+	.line	85, "main.c"; 	if((!keyCount) &&count >= 200)
 	MOVR	_keyCount,W
 	IORAR	(_keyCount + 1),W
 	BTRSS	STATUS,2
-	LGOTO	_00137_DS_
-	INCR	_count,F
-	BTRSC	STATUS,2
-	INCR	(_count + 1),F
-	MOVR	_count,W
-	XORIA	0xc8
+	LGOTO	_00155_DS_
+;;unsigned compare: left < lit (0xC8=200), size=2
+	MOVIA	0x00
+	SUBAR	(_count + 1),W
 	BTRSS	STATUS,2
-	LGOTO	_00137_DS_
-	MOVR	(_count + 1),W
-	XORIA	0x00
-	BTRSS	STATUS,2
-	LGOTO	_00137_DS_
-	.line	69, "main.c"; 	gotoSleep();
+	LGOTO	_00227_DS_
+	MOVIA	0xc8
+	SUBAR	_count,W
+_00227_DS_:
+	BTRSS	STATUS,0
+	LGOTO	_00155_DS_
+	.line	86, "main.c"; 	gotoSleep();
 	LCALL	_gotoSleep
-	.line	70, "main.c"; 	break;
-	LGOTO	_00137_DS_
-_00127_DS_:
-	.line	72, "main.c"; 	PORTB |= 0x20;
+	.line	87, "main.c"; 	break;
+	LGOTO	_00155_DS_
+_00135_DS_:
+	.line	89, "main.c"; 	PORTB |= 0x20;
 	BSR	_PORTB,5
-	.line	73, "main.c"; 	if(count == 300)
+	.line	90, "main.c"; 	if(count == 300)
 	MOVR	_count,W
 	XORIA	0x2c
 	BTRSS	STATUS,2
-	LGOTO	_00137_DS_
+	LGOTO	_00155_DS_
 	MOVR	(_count + 1),W
 	XORIA	0x01
 	BTRSS	STATUS,2
-	LGOTO	_00137_DS_
-	.line	74, "main.c"; 	PORTB &= 0xFB;	//PB2输出低
+	LGOTO	_00155_DS_
+	.line	91, "main.c"; 	PORTB &= 0xFB;	//PB2输出低
 	BCR	_PORTB,2
-	.line	75, "main.c"; 	break;
-	LGOTO	_00137_DS_
-_00130_DS_:
-	.line	77, "main.c"; 	PORTB |= 0x10;
+	.line	92, "main.c"; 	break;
+	LGOTO	_00155_DS_
+_00138_DS_:
+	.line	94, "main.c"; 	PORTB |= 0x10;
 	BSR	_PORTB,4
-	.line	78, "main.c"; 	if(count == 200)
+	.line	95, "main.c"; 	if(count == 200)
 	MOVR	_count,W
 	XORIA	0xc8
 	BTRSS	STATUS,2
-	LGOTO	_00137_DS_
+	LGOTO	_00155_DS_
 	MOVR	(_count + 1),W
 	XORIA	0x00
 	BTRSS	STATUS,2
-	LGOTO	_00137_DS_
-	.line	79, "main.c"; 	PORTB &= 0xFB;	//PB2输出低
+	LGOTO	_00155_DS_
+	.line	96, "main.c"; 	PORTB &= 0xFB;	//PB2输出低
 	BCR	_PORTB,2
-	.line	80, "main.c"; 	break;
-	LGOTO	_00137_DS_
-_00133_DS_:
-	.line	82, "main.c"; 	PORTB |= 0x02;
+	.line	97, "main.c"; 	break;
+	LGOTO	_00155_DS_
+_00141_DS_:
+	.line	99, "main.c"; 	PORTB |= 0x02;
 	BSR	_PORTB,1
-	.line	83, "main.c"; 	if(count == 100)
+	.line	100, "main.c"; 	if(count == 100)
 	MOVR	_count,W
 	XORIA	0x64
 	BTRSS	STATUS,2
-	LGOTO	_00137_DS_
+	LGOTO	_00155_DS_
 	MOVR	(_count + 1),W
 	XORIA	0x00
 	BTRSS	STATUS,2
-	LGOTO	_00137_DS_
-	.line	84, "main.c"; 	PORTB &= 0xFB;	//PB2输出低
+	LGOTO	_00155_DS_
+	.line	101, "main.c"; 	PORTB &= 0xFB;	//PB2输出低
 	BCR	_PORTB,2
-	.line	85, "main.c"; 	break;
-	LGOTO	_00137_DS_
-_00136_DS_:
-	.line	87, "main.c"; 	PORTB |= 0x04;	//PB2输出为高
+	.line	102, "main.c"; 	break;
+	LGOTO	_00155_DS_
+_00144_DS_:
+	.line	104, "main.c"; 	PORTB |= 0x04;	//PB2输出为高
 	BSR	_PORTB,2
-_00137_DS_:
-	.line	91, "main.c"; 	if(workStep > 0 && workStep < 4)
-	MOVR	_workStep,W
-	BTRSC	STATUS,2
-	LGOTO	_00143_DS_
-;;unsigned compare: left < lit (0x4=4), size=1
-	MOVIA	0x04
-	SUBAR	_workStep,W
-	BTRSC	STATUS,0
-	LGOTO	_00143_DS_
-	.line	93, "main.c"; 	if(++count == 400)
-	INCR	_count,F
-	BTRSC	STATUS,2
-	INCR	(_count + 1),F
+	.line	105, "main.c"; 	if(count == 50 || count == 0  || count == 100 || count == 150 || count == 200 || count == 250 || count == 300 || count == 350)
 	MOVR	_count,W
-	XORIA	0x90
+	XORIA	0x32
 	BTRSS	STATUS,2
-	LGOTO	_00143_DS_
+	LGOTO	_00228_DS_
+	MOVR	(_count + 1),W
+	XORIA	0x00
+	BTRSC	STATUS,2
+	LGOTO	_00145_DS_
+_00228_DS_:
+	MOVR	_count,W
+	IORAR	(_count + 1),W
+	BTRSC	STATUS,2
+	LGOTO	_00145_DS_
+	MOVR	_count,W
+	XORIA	0x64
+	BTRSS	STATUS,2
+	LGOTO	_00229_DS_
+	MOVR	(_count + 1),W
+	XORIA	0x00
+	BTRSC	STATUS,2
+	LGOTO	_00145_DS_
+_00229_DS_:
+	MOVR	_count,W
+	XORIA	0x96
+	BTRSS	STATUS,2
+	LGOTO	_00230_DS_
+	MOVR	(_count + 1),W
+	XORIA	0x00
+	BTRSC	STATUS,2
+	LGOTO	_00145_DS_
+_00230_DS_:
+	MOVR	_count,W
+	XORIA	0xc8
+	BTRSS	STATUS,2
+	LGOTO	_00231_DS_
+	MOVR	(_count + 1),W
+	XORIA	0x00
+	BTRSC	STATUS,2
+	LGOTO	_00145_DS_
+_00231_DS_:
+	MOVR	_count,W
+	XORIA	0xfa
+	BTRSS	STATUS,2
+	LGOTO	_00232_DS_
+	MOVR	(_count + 1),W
+	XORIA	0x00
+	BTRSC	STATUS,2
+	LGOTO	_00145_DS_
+_00232_DS_:
+	MOVR	_count,W
+	XORIA	0x2c
+	BTRSS	STATUS,2
+	LGOTO	_00233_DS_
+	MOVR	(_count + 1),W
+	XORIA	0x01
+	BTRSC	STATUS,2
+	LGOTO	_00145_DS_
+_00233_DS_:
+	MOVR	_count,W
+	XORIA	0x5e
+	BTRSS	STATUS,2
+	LGOTO	_00155_DS_
 	MOVR	(_count + 1),W
 	XORIA	0x01
 	BTRSS	STATUS,2
-	LGOTO	_00143_DS_
-	.line	95, "main.c"; 	count = 0;
-	CLRR	_count
-	CLRR	(_count + 1)
-	.line	96, "main.c"; 	PORTB |= 0x04;	//PB2输出为高
-	BSR	_PORTB,2
-_00143_DS_:
-	.line	99, "main.c"; 	}
+	LGOTO	_00155_DS_
+_00145_DS_:
+	.line	106, "main.c"; 	PORTB ^= 0x20;
+	MOVIA	0x20
+	XORAR	_PORTB,F
+_00155_DS_:
+	.line	111, "main.c"; 	}
 	RETURN	
 ; exit point of _outCon
 
 
 ;	code size estimation:
-;	  330+    0 =   330 instructions (  660 byte)
+;	  367+    0 =   367 instructions (  734 byte)
 
 	end

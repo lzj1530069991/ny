@@ -21,6 +21,14 @@
 #define resetbit(x, y)  x&=~(1<<y)
 #define reversebit(x, y)  x^=(1<<y)
 
+#define MAXTE 3158		//55度
+#define MINTE 3016		//50度
+
+//#define MAXTE 3075		//52度
+//#define MINTE 2953		//48度
+
+//#define MAXTE 2953		//48度
+//#define MINTE 2853		//45度
 
 uint16_t  R_AIN0_DATA;	
 uint8_t R_AIN0_DATA_LB;	
@@ -102,13 +110,13 @@ void checkAD()
         R_AIN0_DATA += R_AIN0_DATA_LB;		// R_AIN0_DATA + R_AIN0_DATA_LB
         R_AIN0_DATA >>=3;					// R_AIN0_DATA divided 8
 		
-		if(R_AIN0_DATA < 3016)
+		if(R_AIN0_DATA < MINTE)			
 		{
 			setbit(PORTA, 2);		// 小于 50度 加热打开
 			setbit(PORTB, 3);		//LED灯打开
 	
 		}
-		else if(R_AIN0_DATA > 3158)
+		else if(R_AIN0_DATA > MAXTE)
 		{
 			resetbit(PORTB, 3);		//LED灯关闭
 			resetbit(PORTA, 2);		//大于 55度 加热关闭

@@ -1,0 +1,899 @@
+
+                    Nyquest Technology Co., Ltd.
+
+NYASM 2.25
+
+    ADDR  OPCODE/VALUE              LINE   TAG  SOURCE                   STATEMENT    
+
+                                    1-    1     ;--------------------------------------------------------
+                                    1-    2     ; File Created by SDCC : free open source ANSI-C Compiler
+                                    1-    3     ; Version 3.7.1 #0 (MSVC)
+                                    1-    4     ;--------------------------------------------------------
+                                    1-    5     ; NY8A port
+                                    1-    6     ;--------------------------------------------------------
+                                    1-    7     	.file	"main.c"
+                                    1-    8     	list	p=NY8B062D,c=on
+                                    1-    9     	#include "ny8b062d.inc"
+                                    1-   11     ;--------------------------------------------------------
+                                    1-   12     ; external declarations
+                                    1-   13     ;--------------------------------------------------------
+                                    1-   14     	extern	_delay
+                                    1-   15     	extern	_keyRead
+                                    1-   16     	extern	_gotoSleep
+                                    1-   17     	extern	_checkLVD
+                                    1-   18     	extern	_initTimer0
+                                    1-   19     	extern	_initAD
+                                    1-   20     	extern	_ADConvert
+                                    1-   21     	extern	_checkAD
+                                    1-   22     	extern	_delayUs
+                                    1-   23     	extern	_F_wait_eoc
+                                    1-   24     	extern	_PORTAbits
+                                    1-   25     	extern	_PORTBbits
+                                    1-   26     	extern	_PCONbits
+                                    1-   27     	extern	_BWUCONbits
+                                    1-   28     	extern	_ABPLCONbits
+                                    1-   29     	extern	_BPHCONbits
+                                    1-   30     	extern	_INTEbits
+                                    1-   31     	extern	_INTFbits
+                                    1-   32     	extern	_ADMDbits
+                                    1-   33     	extern	_ADRbits
+                                    1-   34     	extern	_ADVREFHbits
+                                    1-   35     	extern	_ADCRbits
+                                    1-   36     	extern	_AWUCONbits
+                                    1-   37     	extern	_PACONbits
+                                    1-   38     	extern	_INTEDGbits
+                                    1-   39     	extern	_ANAENbits
+                                    1-   40     	extern	_RFCbits
+                                    1-   41     	extern	_INTE2bits
+                                    1-   42     	extern	_INDF
+                                    1-   43     	extern	_TMR0
+                                    1-   44     	extern	_PCL
+                                    1-   45     	extern	_STATUS
+                                    1-   46     	extern	_FSR
+                                    1-   47     	extern	_PORTA
+                                    1-   48     	extern	_PORTB
+                                    1-   49     	extern	_PCON
+                                    1-   50     	extern	_BWUCON
+                                    1-   51     	extern	_PCHBUF
+                                    1-   52     	extern	_ABPLCON
+                                    1-   53     	extern	_BPHCON
+                                    1-   54     	extern	_INTE
+                                    1-   55     	extern	_INTF
+                                    1-   56     	extern	_ADMD
+                                    1-   57     	extern	_ADR
+                                    1-   58     	extern	_ADD
+                                    1-   59     	extern	_ADVREFH
+                                    1-   60     	extern	_ADCR
+                                    1-   61     	extern	_AWUCON
+                                    1-   62     	extern	_PACON
+                                    1-   63     	extern	_INTEDG
+                                    1-   64     	extern	_TMRH
+                                    1-   65     	extern	_ANAEN
+                                    1-   66     	extern	_RFC
+                                    1-   67     	extern	_TM3RH
+                                    1-   68     	extern	_INTE2
+                                    1-   69     	extern	_TMR1
+                                    1-   70     	extern	_T1CR1
+                                    1-   71     	extern	_T1CR2
+                                    1-   72     	extern	_PWM1DUTY
+                                    1-   73     	extern	_PS1CV
+                                    1-   74     	extern	_BZ1CR
+                                    1-   75     	extern	_IRCR
+                                    1-   76     	extern	_TBHP
+                                    1-   77     	extern	_TBHD
+                                    1-   78     	extern	_TMR2
+                                    1-   79     	extern	_T2CR1
+                                    1-   80     	extern	_T2CR2
+                                    1-   81     	extern	_PWM2DUTY
+                                    1-   82     	extern	_PS2CV
+                                    1-   83     	extern	_BZ2CR
+                                    1-   84     	extern	_OSCCR
+                                    1-   85     	extern	_TMR3
+                                    1-   86     	extern	_T3CR1
+                                    1-   87     	extern	_T3CR2
+                                    1-   88     	extern	_PWM3DUTY
+                                    1-   89     	extern	_PS3CV
+                                    1-   90     	extern	_BZ3CR
+                                    1-   91     	extern	_IOSTA
+                                    1-   92     	extern	_IOSTB
+                                    1-   93     	extern	_APHCON
+                                    1-   94     	extern	_PS0CV
+                                    1-   95     	extern	_BODCON
+                                    1-   96     	extern	_CMPCR
+                                    1-   97     	extern	_PCON1
+                                    1-   98     	extern	_T0MD
+                                    1-   99     	extern	___sdcc_saved_fsr
+                                    1-  100     	extern	___sdcc_saved_stk00
+                                    1-  101     	extern	___sdcc_saved_stk01
+                                    1-  102     	extern	__nyc_ny8_startup
+                                    1-  103     ;--------------------------------------------------------
+                                    1-  104     ; global declarations
+                                    1-  105     ;--------------------------------------------------------
+                                    1-  106     	extern	_led2OFF
+                                    1-  107     	extern	_led2ON
+                                    1-  108     	extern	_led1OFF
+                                    1-  109     	extern	_led1ON
+                                    1-  110     	extern	_shanshuo
+                                    1-  111     	extern	_ledCon
+                                    1-  112     	extern	_chrgCon
+                                    1-  113     	extern	_isr
+                                    1-  114     	extern	_main
+                                    1-  115     	extern	_R_AIN1_DATA_HB
+                                    1-  116     	extern	_R_AIN1_DATA_LB
+                                    1-  117     	extern	_intCount
+                                    1-  118     	extern	_IntFlag
+                                    1-  119     	extern	_protectState
+                                    1-  120     	extern	_led1State
+                                    1-  121     	extern	_led2State
+                                    1-  122     	extern	_ledCount
+                                    1-  123     	extern	_sstime
+                                    1-  124     	extern	_chrgState
+                                    1-  125     	extern	_ADdataLB
+                                    1-  126     	extern	_ADdata
+                                    1-  128     	extern PSAVE
+                                    1-  129     	extern SSAVE
+                                    1-  130     	extern WSAVE
+                                    1-  131     	extern STK12
+                                    1-  132     	extern STK11
+                                    1-  133     	extern STK10
+                                    1-  134     	extern STK09
+                                    1-  135     	extern STK08
+                                    1-  136     	extern STK07
+                                    1-  137     	extern STK06
+                                    1-  138     	extern STK05
+                                    1-  139     	extern STK04
+                                    1-  140     	extern STK03
+                                    1-  141     	extern STK02
+                                    1-  142     	extern STK01
+                                    1-  143     	extern STK00
+                                    1-  145     .segment "uninit", 0x20000040
+ 20000040                           1-  146     PSAVE:
+                                    1-  147     	.res 1
+ 20000041                           1-  148     SSAVE:
+                                    1-  149     	.res 1
+ 20000042                           1-  150     WSAVE:
+                                    1-  151     	.res 1
+ 20000043                           1-  152     STK12:
+                                    1-  153     	.res 1
+ 20000044                           1-  154     STK11:
+                                    1-  155     	.res 1
+ 20000045                           1-  156     STK10:
+                                    1-  157     	.res 1
+ 20000046                           1-  158     STK09:
+                                    1-  159     	.res 1
+ 20000047                           1-  160     STK08:
+                                    1-  161     	.res 1
+ 20000048                           1-  162     STK07:
+                                    1-  163     	.res 1
+ 20000049                           1-  164     STK06:
+                                    1-  165     	.res 1
+ 2000004A                           1-  166     STK05:
+                                    1-  167     	.res 1
+ 2000004B                           1-  168     STK04:
+                                    1-  169     	.res 1
+ 2000004C                           1-  170     STK03:
+                                    1-  171     	.res 1
+ 2000004D                           1-  172     STK02:
+                                    1-  173     	.res 1
+ 2000004E                           1-  174     STK01:
+                                    1-  175     	.res 1
+ 2000004F                           1-  176     STK00:
+                                    1-  177     	.res 1
+                                    1-  179     ;--------------------------------------------------------
+                                    1-  180     ; global definitions
+                                    1-  181     ;--------------------------------------------------------
+                                    1-  182     .segment "uninit"
+     0000                           1-  183     _R_AIN1_DATA_HB:
+                                    1-  184     	.res	1
+                                    1-  187     .segment "uninit"
+     0000                           1-  188     _R_AIN1_DATA_LB:
+                                    1-  189     	.res	1
+                                    1-  192     .segment "uninit"
+     0000                           1-  193     _ADdataLB:
+                                    1-  194     	.res	3
+                                    1-  197     .segment "uninit"
+     0000                           1-  198     _ADdata:
+                                    1-  199     	.res	3
+                                    1-  202     ;--------------------------------------------------------
+                                    1-  203     ; absolute symbol definitions
+                                    1-  204     ;--------------------------------------------------------
+                                    1-  205     ;--------------------------------------------------------
+                                    1-  206     ; compiler-defined variables
+                                    1-  207     ;--------------------------------------------------------
+                                    1-  208     .segment "uninit"
+     0000                           1-  209     r0x1012:
+                                    1-  210     	.res	1
+                                    1-  211     .segment "uninit"
+     0000                           1-  212     r0x1011:
+                                    1-  213     	.res	1
+                                    1-  214     ;--------------------------------------------------------
+                                    1-  215     ; initialized data
+                                    1-  216     ;--------------------------------------------------------
+                                    1-  218     .segment "idata"
+     0000                           1-  219     _intCount:
+     0000 0000                      1-  220     	dw	0x00
+                                    1-  224     .segment "idata"
+     0000                           1-  225     _IntFlag:
+     0000 0000                      1-  226     	dw	0x00
+                                    1-  230     .segment "idata"
+     0000                           1-  231     _protectState:
+     0000 0000                      1-  232     	dw	0x00
+                                    1-  236     .segment "idata"
+     0000                           1-  237     _led1State:
+     0000 0000                      1-  238     	dw	0x00
+                                    1-  242     .segment "idata"
+     0000                           1-  243     _led2State:
+     0000 0000                      1-  244     	dw	0x00
+                                    1-  248     .segment "idata"
+     0000                           1-  249     _ledCount:
+     0000 0000                      1-  250     	dw	0x00
+                                    1-  254     .segment "idata"
+     0000                           1-  255     _sstime:
+     0000 0000                      1-  256     	dw	0x00
+                                    1-  260     .segment "idata"
+     0000                           1-  261     _chrgState:
+     0000 0000                      1-  262     	dw	0x00
+                                    1-  265     ;--------------------------------------------------------
+                                    1-  266     ; overlayable items in internal ram 
+                                    1-  267     ;--------------------------------------------------------
+                                    1-  268     ;	udata_ovr
+                                    1-  269     ;--------------------------------------------------------
+                                    1-  270     ; reset vector 
+                                    1-  271     ;--------------------------------------------------------
+                                    1-  272     ORG	0x0000
+     0000 3rrr                      1-  273     	LGOTO	__nyc_ny8_startup
+                                    1-  274     ;--------------------------------------------------------
+                                    1-  275     ; interrupt and initialization code
+                                    1-  276     ;--------------------------------------------------------
+                                    1-  277     ORG 0x0008
+     0008 3rrr                      1-  278     	lgoto	__sdcc_interrupt
+                                    1-  280     .segment "code"
+     0000                           1-  281     __sdcc_interrupt:
+                                    1-  282     ;***
+                                    1-  283     ;  pBlock Stats: dbName = I
+                                    1-  284     ;***
+                                    1-  285     ;2 compiler assigned registers:
+                                    1-  286     ;   STK00
+                                    1-  287     ;   STK01
+                                    1-  288     ;; Starting pCode block
+     0000                           1-  289     _isr:
+                                    1-  290     ; 0 exit points
+                                    1-  291     	.line	34, "main.c"; 	void isr(void) __interrupt(0)
+     0000 00rr                      1-  292     	MOVAR	WSAVE
+     0001 1503                      1-  293     	SWAPR	STATUS,W
+     0002 0283                      1-  294     	CLRR	STATUS
+     0003 00rr                      1-  295     	MOVAR	SSAVE
+     0004 010A                      1-  296     	MOVR	PCHBUF,W
+     0005 028A                      1-  297     	CLRR	PCHBUF
+     0006 00rr                      1-  298     	MOVAR	PSAVE
+     0007 0104                      1-  299     	MOVR	FSR,W
+                                    1-  300     	BANKSEL	___sdcc_saved_fsr
+     0008 rrrr                      3-   71 m1      .banksel ram_address
+     0009 00rr                      1-  301     	MOVAR	___sdcc_saved_fsr
+     000A 01rr                      1-  302     	MOVR	STK00,W
+                                    1-  303     	BANKSEL	___sdcc_saved_stk00
+     000B rrrr                      3-   71 m1      .banksel ram_address
+     000C 00rr                      1-  304     	MOVAR	___sdcc_saved_stk00
+     000D 01rr                      1-  305     	MOVR	STK01,W
+                                    1-  306     	BANKSEL	___sdcc_saved_stk01
+     000E rrrr                      3-   71 m1      .banksel ram_address
+     000F 00rr                      1-  307     	MOVAR	___sdcc_saved_stk01
+                                    1-  308     	.line	36, "main.c"; 	if(INTFbits.T0IF)
+     0010 08rr                      1-  309     	BTRSS	_INTFbits,0
+     0011 3rrr                      1-  310     	LGOTO	_00108_DS_
+                                    1-  311     	.line	38, "main.c"; 	TMR0 = 55;
+     0012 2137                      1-  312     	MOVIA	0x37
+     0013 00rr                      1-  313     	MOVAR	_TMR0
+                                    1-  314     	.line	39, "main.c"; 	intCount++;
+                                    1-  315     	BANKSEL	_intCount
+     0014 rrrr                      3-   71 m1      .banksel ram_address
+     0015 05rr                      1-  316     	INCR	_intCount,F
+                                    1-  317     	.line	40, "main.c"; 	if(intCount == 100)
+     0016 01rr                      1-  318     	MOVR	_intCount,W
+     0017 2464                      1-  319     	XORIA	0x64
+     0018 0903                      1-  320     	BTRSS	STATUS,2
+     0019 3rrr                      1-  321     	LGOTO	_00108_DS_
+                                    1-  322     	.line	42, "main.c"; 	intCount = 0;
+     001A 02rr                      1-  323     	CLRR	_intCount
+                                    1-  324     	.line	43, "main.c"; 	IntFlag = 1;
+     001B 2101                      1-  325     	MOVIA	0x01
+                                    1-  326     	BANKSEL	_IntFlag
+     001C rrrr                      3-   71 m1      .banksel ram_address
+     001D 00rr                      1-  327     	MOVAR	_IntFlag
+     001E                           1-  328     _00108_DS_:
+                                    1-  329     	.line	46, "main.c"; 	if(INTFbits.PABIF)
+     001E 08rr                      1-  330     	BTRSS	_INTFbits,1
+     001F 3rrr                      1-  331     	LGOTO	_00110_DS_
+                                    1-  332     	.line	48, "main.c"; 	INTF= (unsigned char)~(C_INT_PABKey);	// Clear PABIF(PortB input change interrupt flag bit)		
+     0020 21FD                      1-  333     	MOVIA	0xfd
+     0021 00rr                      1-  334     	MOVAR	_INTF
+     0022                           1-  335     _00110_DS_:
+                                    1-  336     	.line	51, "main.c"; 	INTF = 0;
+     0022 02rr                      1-  337     	CLRR	_INTF
+                                    1-  338     	.line	53, "main.c"; 	}
+                                    1-  339     	BANKSEL	___sdcc_saved_stk01
+     0023 rrrr                      3-   71 m1      .banksel ram_address
+     0024 01rr                      1-  340     	MOVR	___sdcc_saved_stk01,W
+     0025 00rr                      1-  341     	MOVAR	STK01
+                                    1-  342     	BANKSEL	___sdcc_saved_stk00
+     0026 rrrr                      3-   71 m1      .banksel ram_address
+     0027 01rr                      1-  343     	MOVR	___sdcc_saved_stk00,W
+     0028 00rr                      1-  344     	MOVAR	STK00
+                                    1-  345     	BANKSEL	___sdcc_saved_fsr
+     0029 rrrr                      3-   71 m1      .banksel ram_address
+     002A 01rr                      1-  346     	MOVR	___sdcc_saved_fsr,W
+     002B 0084                      1-  347     	MOVAR	FSR
+     002C 01rr                      1-  348     	MOVR	PSAVE,W
+     002D 008A                      1-  349     	MOVAR	PCHBUF
+     002E 0283                      1-  350     	CLRR	STATUS
+     002F 15rr                      1-  351     	SWAPR	SSAVE,W
+     0030 0083                      1-  352     	MOVAR	STATUS
+     0031 15rr                      1-  353     	SWAPR	WSAVE,F
+     0032 15rr                      1-  354     	SWAPR	WSAVE,W
+     0033                           1-  355     END_OF_INTERRUPT:
+     0033 0011                      1-  356     	RETIE	
+                                    1-  358     ;--------------------------------------------------------
+                                    1-  359     ; code
+                                    1-  360     ;--------------------------------------------------------
+                                    1-  361     ;***
+                                    1-  362     ;  pBlock Stats: dbName = M
+                                    1-  363     ;***
+                                    1-  364     ;has an exit
+                                    1-  365     ;functions called:
+                                    1-  366     ;   _initTimer0
+                                    1-  367     ;   _initAD
+                                    1-  368     ;   _chrgCon
+                                    1-  369     ;   _ledCon
+                                    1-  370     ;   _checkAD
+                                    1-  371     ;   _initTimer0
+                                    1-  372     ;   _initAD
+                                    1-  373     ;   _chrgCon
+                                    1-  374     ;   _ledCon
+                                    1-  375     ;   _checkAD
+                                    1-  376     ;6 compiler assigned registers:
+                                    1-  377     ;   STK05
+                                    1-  378     ;   STK04
+                                    1-  379     ;   STK03
+                                    1-  380     ;   STK02
+                                    1-  381     ;   STK01
+                                    1-  382     ;   STK00
+                                    1-  383     ;; Starting pCode block
+                                    1-  384     .segment "code"; module=main, function=_main
+     0000                           1-  386     _main:
+                                    1-  387     ; 2 exit points
+                                    1-  388     	.line	58, "main.c"; 	initTimer0();
+     0000 2rrr                      1-  389     	LCALL	_initTimer0
+                                    1-  390     	.line	59, "main.c"; 	initAD(0x10);
+     0001 2110                      1-  391     	MOVIA	0x10
+     0002 2rrr                      1-  392     	LCALL	_initAD
+     0003                           1-  393     _00118_DS_:
+                                    1-  394     	.line	62, "main.c"; 	CLRWDT(); 
+     0003 0002                      1-  395     	clrwdt
+                                    1-  396     	.line	63, "main.c"; 	if(!IntFlag)
+                                    1-  397     	BANKSEL	_IntFlag
+     0004 rrrr                      3-   71 m1      .banksel ram_address
+     0005 01rr                      1-  398     	MOVR	_IntFlag,W
+     0006 0D03                      1-  399     	BTRSC	STATUS,2
+     0007 3rrr                      1-  400     	LGOTO	_00118_DS_
+                                    1-  401     	.line	65, "main.c"; 	IntFlag = 0;
+     0008 02rr                      1-  402     	CLRR	_IntFlag
+                                    1-  403     	.line	66, "main.c"; 	chrgCon();
+     0009 2rrr                      1-  404     	LCALL	_chrgCon
+                                    1-  405     	.line	67, "main.c"; 	ledCon();  
+     000A 2rrr                      1-  406     	LCALL	_ledCon
+                                    1-  407     	.line	68, "main.c"; 	checkAD(C_Quarter_VDD,ADdataLB,ADdata);
+                                    1-  408     	BANKSEL	_ADdata
+     000B rrrr                      3-   71 m1      .banksel ram_address
+     000C 01rr                      1-  409     	MOVR	_ADdata,W
+     000D 00rr                      1-  410     	MOVAR	STK05
+     000E 01rr                      1-  411     	MOVR	(_ADdata + 1),W
+     000F 00rr                      1-  412     	MOVAR	STK04
+     0010 01rr                      1-  413     	MOVR	(_ADdata + 2),W
+     0011 00rr                      1-  414     	MOVAR	STK03
+                                    1-  415     	BANKSEL	_ADdataLB
+     0012 rrrr                      3-   71 m1      .banksel ram_address
+     0013 01rr                      1-  416     	MOVR	_ADdataLB,W
+     0014 00rr                      1-  417     	MOVAR	STK02
+     0015 01rr                      1-  418     	MOVR	(_ADdataLB + 1),W
+     0016 00rr                      1-  419     	MOVAR	STK01
+     0017 01rr                      1-  420     	MOVR	(_ADdataLB + 2),W
+     0018 00rr                      1-  421     	MOVAR	STK00
+     0019 210B                      1-  422     	MOVIA	0x0b
+     001A 2rrr                      1-  423     	LCALL	_checkAD
+     001B 3rrr                      1-  424     	LGOTO	_00118_DS_
+                                    1-  425     	.line	70, "main.c"; 	}
+                                    1-  426     	RETURN	
+     001C 0010                      3-   26 m1      ret
+                                    1-  427     ; exit point of _main
+                                    1-  429     ;***
+                                    1-  430     ;  pBlock Stats: dbName = C
+                                    1-  431     ;***
+                                    1-  432     ;has an exit
+                                    1-  433     ;; Starting pCode block
+                                    1-  434     .segment "code"; module=main, function=_led2OFF
+     0000                           1-  436     _led2OFF:
+                                    1-  437     ; 2 exit points
+                                    1-  438     	.line	179, "main.c"; 	PORTA |= 0x01;
+     0000 18rr                      1-  439     	BSR	_PORTA,0
+                                    1-  440     	.line	180, "main.c"; 	}
+                                    1-  441     	RETURN	
+     0001 0010                      3-   26 m1      ret
+                                    1-  442     ; exit point of _led2OFF
+                                    1-  444     ;***
+                                    1-  445     ;  pBlock Stats: dbName = C
+                                    1-  446     ;***
+                                    1-  447     ;has an exit
+                                    1-  448     ;; Starting pCode block
+                                    1-  449     .segment "code"; module=main, function=_led2ON
+     0000                           1-  451     _led2ON:
+                                    1-  452     ; 2 exit points
+                                    1-  453     	.line	174, "main.c"; 	PORTA &= 0xFE;
+     0000 1Crr                      1-  454     	BCR	_PORTA,0
+                                    1-  455     	.line	175, "main.c"; 	}
+                                    1-  456     	RETURN	
+     0001 0010                      3-   26 m1      ret
+                                    1-  457     ; exit point of _led2ON
+                                    1-  459     ;***
+                                    1-  460     ;  pBlock Stats: dbName = C
+                                    1-  461     ;***
+                                    1-  462     ;has an exit
+                                    1-  463     ;; Starting pCode block
+                                    1-  464     .segment "code"; module=main, function=_led1OFF
+     0000                           1-  466     _led1OFF:
+                                    1-  467     ; 2 exit points
+                                    1-  468     	.line	169, "main.c"; 	PORTA |= 0x02;
+     0000 18rr                      1-  469     	BSR	_PORTA,1
+                                    1-  470     	.line	170, "main.c"; 	}
+                                    1-  471     	RETURN	
+     0001 0010                      3-   26 m1      ret
+                                    1-  472     ; exit point of _led1OFF
+                                    1-  474     ;***
+                                    1-  475     ;  pBlock Stats: dbName = C
+                                    1-  476     ;***
+                                    1-  477     ;has an exit
+                                    1-  478     ;; Starting pCode block
+                                    1-  479     .segment "code"; module=main, function=_led1ON
+     0000                           1-  481     _led1ON:
+                                    1-  482     ; 2 exit points
+                                    1-  483     	.line	164, "main.c"; 	PORTA &= 0xFD;
+     0000 1Crr                      1-  484     	BCR	_PORTA,1
+                                    1-  485     	.line	165, "main.c"; 	}
+                                    1-  486     	RETURN	
+     0001 0010                      3-   26 m1      ret
+                                    1-  487     ; exit point of _led1ON
+                                    1-  489     ;***
+                                    1-  490     ;  pBlock Stats: dbName = C
+                                    1-  491     ;***
+                                    1-  492     ;has an exit
+                                    1-  493     ;functions called:
+                                    1-  494     ;   _led1ON
+                                    1-  495     ;   _led2OFF
+                                    1-  496     ;   _led1OFF
+                                    1-  497     ;   _led2ON
+                                    1-  498     ;   _led1ON
+                                    1-  499     ;   _led2OFF
+                                    1-  500     ;   _led1OFF
+                                    1-  501     ;   _led2ON
+                                    1-  502     ;; Starting pCode block
+                                    1-  503     .segment "code"; module=main, function=_shanshuo
+     0000                           1-  505     _shanshuo:
+                                    1-  506     ; 2 exit points
+                                    1-  507     ;;unsigned compare: left < lit (0x32=50), size=1
+                                    1-  508     	.line	132, "main.c"; 	if(ledCount < 50)
+     0000 2132                      1-  509     	MOVIA	0x32
+                                    1-  510     	BANKSEL	_ledCount
+     0001 rrrr                      3-   71 m1      .banksel ram_address
+     0002 04rr                      1-  511     	SUBAR	_ledCount,W
+     0003 0C03                      1-  512     	BTRSC	STATUS,0
+     0004 3rrr                      1-  513     	LGOTO	_00161_DS_
+                                    1-  514     	.line	134, "main.c"; 	if(led1State == 3)
+                                    1-  515     	BANKSEL	_led1State
+     0005 rrrr                      3-   71 m1      .banksel ram_address
+     0006 01rr                      1-  516     	MOVR	_led1State,W
+     0007 2403                      1-  517     	XORIA	0x03
+     0008 0D03                      1-  518     	BTRSC	STATUS,2
+                                    1-  519     	.line	135, "main.c"; 	led1ON();
+     0009 2rrr                      1-  520     	LCALL	_led1ON
+                                    1-  521     	.line	136, "main.c"; 	if(led2State == 3)
+                                    1-  522     	BANKSEL	_led2State
+     000A rrrr                      3-   71 m1      .banksel ram_address
+     000B 01rr                      1-  523     	MOVR	_led2State,W
+     000C 2403                      1-  524     	XORIA	0x03
+     000D 0903                      1-  525     	BTRSS	STATUS,2
+     000E 3rrr                      1-  526     	LGOTO	_00162_DS_
+                                    1-  527     	.line	137, "main.c"; 	led2OFF();
+     000F 2rrr                      1-  528     	LCALL	_led2OFF
+     0010 3rrr                      1-  529     	LGOTO	_00162_DS_
+     0011                           1-  530     _00161_DS_:
+                                    1-  531     	.line	141, "main.c"; 	if(led1State == 3)
+                                    1-  532     	BANKSEL	_led1State
+     0011 rrrr                      3-   71 m1      .banksel ram_address
+     0012 01rr                      1-  533     	MOVR	_led1State,W
+     0013 2403                      1-  534     	XORIA	0x03
+     0014 0D03                      1-  535     	BTRSC	STATUS,2
+                                    1-  536     	.line	142, "main.c"; 	led1OFF();
+     0015 2rrr                      1-  537     	LCALL	_led1OFF
+                                    1-  538     	.line	143, "main.c"; 	if(led2State == 3)
+                                    1-  539     	BANKSEL	_led2State
+     0016 rrrr                      3-   71 m1      .banksel ram_address
+     0017 01rr                      1-  540     	MOVR	_led2State,W
+     0018 2403                      1-  541     	XORIA	0x03
+     0019 0D03                      1-  542     	BTRSC	STATUS,2
+                                    1-  543     	.line	144, "main.c"; 	led2ON();
+     001A 2rrr                      1-  544     	LCALL	_led2ON
+     001B                           1-  545     _00162_DS_:
+                                    1-  546     	.line	147, "main.c"; 	if(++ledCount == 100)
+                                    1-  547     	BANKSEL	_ledCount
+     001B rrrr                      3-   71 m1      .banksel ram_address
+     001C 05rr                      1-  548     	INCR	_ledCount,F
+     001D 01rr                      1-  549     	MOVR	_ledCount,W
+     001E 2464                      1-  550     	XORIA	0x64
+     001F 0903                      1-  551     	BTRSS	STATUS,2
+     0020 3rrr                      1-  552     	LGOTO	_00167_DS_
+                                    1-  553     	.line	149, "main.c"; 	ledCount = 0;
+     0021 02rr                      1-  554     	CLRR	_ledCount
+                                    1-  555     	.line	150, "main.c"; 	sstime--;		//闪烁次数减1
+                                    1-  556     	BANKSEL	_sstime
+     0022 rrrr                      3-   71 m1      .banksel ram_address
+     0023 17rr                      1-  557     	DECRSZ	_sstime,F
+                                    1-  558     	.line	151, "main.c"; 	if(sstime == 0)
+     0024 3rrr                      1-  559     	LGOTO	_00167_DS_
+                                    1-  560     	.line	153, "main.c"; 	led1State = 0;	//LED关灯状态
+                                    1-  561     	BANKSEL	_led1State
+     0025 rrrr                      3-   71 m1      .banksel ram_address
+     0026 02rr                      1-  562     	CLRR	_led1State
+                                    1-  563     	.line	154, "main.c"; 	led2State = 0;	//LED关灯状态
+                                    1-  564     	BANKSEL	_led2State
+     0027 rrrr                      3-   71 m1      .banksel ram_address
+     0028 02rr                      1-  565     	CLRR	_led2State
+     0029                           1-  566     _00167_DS_:
+                                    1-  567     	.line	157, "main.c"; 	}
+                                    1-  568     	RETURN	
+     0029 0010                      3-   26 m1      ret
+                                    1-  569     ; exit point of _shanshuo
+                                    1-  571     ;***
+                                    1-  572     ;  pBlock Stats: dbName = C
+                                    1-  573     ;***
+                                    1-  574     ;functions called:
+                                    1-  575     ;   _shanshuo
+                                    1-  576     ;   _shanshuo
+                                    1-  577     ;1 compiler assigned register :
+                                    1-  578     ;   r0x1011
+                                    1-  579     ;; Starting pCode block
+                                    1-  580     .segment "code"; module=main, function=_ledCon
+     0000                           1-  582     _ledCon:
+                                    1-  583     ; 0 exit points
+                                    1-  584     	.line	104, "main.c"; 	if(getbit(PORTB, 0))
+     0000 01rr                      1-  585     	MOVR	_PORTB,W
+     0001 2201                      1-  586     	ANDIA	0x01
+                                    1-  587     	BANKSEL	r0x1011
+     0002 rrrr                      3-   71 m1      .banksel ram_address
+     0003 00rr                      1-  588     	MOVAR	r0x1011
+     0004 01rr                      1-  589     	MOVR	r0x1011,W
+     0005 0D03                      1-  590     	BTRSC	STATUS,2
+     0006 3rrr                      1-  591     	LGOTO	_00143_DS_
+                                    1-  592     	.line	106, "main.c"; 	if(protectState)
+                                    1-  593     	BANKSEL	_protectState
+     0007 rrrr                      3-   71 m1      .banksel ram_address
+     0008 01rr                      1-  594     	MOVR	_protectState,W
+     0009 0D03                      1-  595     	BTRSC	STATUS,2
+     000A 3rrr                      1-  596     	LGOTO	_00139_DS_
+                                    1-  597     	.line	109, "main.c"; 	sstime = 5;
+     000B 2105                      1-  598     	MOVIA	0x05
+                                    1-  599     	BANKSEL	_sstime
+     000C rrrr                      3-   71 m1      .banksel ram_address
+     000D 00rr                      1-  600     	MOVAR	_sstime
+                                    1-  601     	.line	110, "main.c"; 	led1State = 3;
+     000E 2103                      1-  602     	MOVIA	0x03
+                                    1-  603     	BANKSEL	_led1State
+     000F rrrr                      3-   71 m1      .banksel ram_address
+     0010 00rr                      1-  604     	MOVAR	_led1State
+     0011                           1-  605     _00139_DS_:
+                                    1-  606     	.line	112, "main.c"; 	protectState = 0;	//KEY2断开
+                                    1-  607     	BANKSEL	_protectState
+     0011 rrrr                      3-   71 m1      .banksel ram_address
+     0012 02rr                      1-  608     	CLRR	_protectState
+     0013 3rrr                      1-  609     	LGOTO	_00144_DS_
+     0014                           1-  610     _00143_DS_:
+                                    1-  611     	.line	116, "main.c"; 	if(protectState == 0)
+                                    1-  612     	BANKSEL	_protectState
+     0014 rrrr                      3-   71 m1      .banksel ram_address
+     0015 01rr                      1-  613     	MOVR	_protectState,W
+     0016 0903                      1-  614     	BTRSS	STATUS,2
+     0017 3rrr                      1-  615     	LGOTO	_00141_DS_
+                                    1-  616     	.line	119, "main.c"; 	sstime = 5;
+     0018 2105                      1-  617     	MOVIA	0x05
+                                    1-  618     	BANKSEL	_sstime
+     0019 rrrr                      3-   71 m1      .banksel ram_address
+     001A 00rr                      1-  619     	MOVAR	_sstime
+                                    1-  620     	.line	120, "main.c"; 	led2State = 3;
+     001B 2103                      1-  621     	MOVIA	0x03
+                                    1-  622     	BANKSEL	_led2State
+     001C rrrr                      3-   71 m1      .banksel ram_address
+     001D 00rr                      1-  623     	MOVAR	_led2State
+     001E                           1-  624     _00141_DS_:
+                                    1-  625     	.line	122, "main.c"; 	protectState = 1;	//KEY2闭合
+     001E 2101                      1-  626     	MOVIA	0x01
+                                    1-  627     	BANKSEL	_protectState
+     001F rrrr                      3-   71 m1      .banksel ram_address
+     0020 00rr                      1-  628     	MOVAR	_protectState
+     0021                           1-  629     _00144_DS_:
+                                    1-  630     	.line	124, "main.c"; 	if(sstime)
+                                    1-  631     	BANKSEL	_sstime
+     0021 rrrr                      3-   71 m1      .banksel ram_address
+     0022 01rr                      1-  632     	MOVR	_sstime,W
+     0023 0903                      1-  633     	BTRSS	STATUS,2
+                                    1-  634     	.line	125, "main.c"; 	shanshuo();
+     0024 2rrr                      1-  635     	LCALL	_shanshuo
+                                    1-  636     	.line	126, "main.c"; 	}
+                                    1-  637     	RETURN	
+     0025 0010                      3-   26 m1      ret
+                                    1-  639     ;***
+                                    1-  640     ;  pBlock Stats: dbName = C
+                                    1-  641     ;***
+                                    1-  642     ;has an exit
+                                    1-  643     ;functions called:
+                                    1-  644     ;   _led2ON
+                                    1-  645     ;   _led1OFF
+                                    1-  646     ;   _led1ON
+                                    1-  647     ;   _led2OFF
+                                    1-  648     ;   _led2ON
+                                    1-  649     ;   _led1OFF
+                                    1-  650     ;   _led1ON
+                                    1-  651     ;   _led2OFF
+                                    1-  652     ;1 compiler assigned register :
+                                    1-  653     ;   r0x1012
+                                    1-  654     ;; Starting pCode block
+                                    1-  655     .segment "code"; module=main, function=_chrgCon
+     0000                           1-  657     _chrgCon:
+                                    1-  658     ; 2 exit points
+                                    1-  659     	.line	74, "main.c"; 	if(getbit(PORTA,6))
+     0000 01rr                      1-  660     	MOVR	_PORTA,W
+     0001 2240                      1-  661     	ANDIA	0x40
+     0002 0903                      1-  662     	BTRSS	STATUS,2
+     0003 2101                      1-  663     	MOVIA	0x01
+                                    1-  664     	BANKSEL	r0x1012
+     0004 rrrr                      3-   71 m1      .banksel ram_address
+     0005 00rr                      1-  665     	MOVAR	r0x1012
+     0006 01rr                      1-  666     	MOVR	r0x1012,W
+     0007 0D03                      1-  667     	BTRSC	STATUS,2
+     0008 3rrr                      1-  668     	LGOTO	_00127_DS_
+                                    1-  669     	.line	77, "main.c"; 	if(!getbit(PORTA,7))
+     0009 01rr                      1-  670     	MOVR	_PORTA,W
+     000A 2280                      1-  671     	ANDIA	0x80
+     000B 0903                      1-  672     	BTRSS	STATUS,2
+     000C 2101                      1-  673     	MOVIA	0x01
+     000D 00rr                      1-  674     	MOVAR	r0x1012
+     000E 01rr                      1-  675     	MOVR	r0x1012,W
+     000F 0903                      1-  676     	BTRSS	STATUS,2
+     0010 3rrr                      1-  677     	LGOTO	_00124_DS_
+                                    1-  678     	.line	79, "main.c"; 	led2ON();
+     0011 2rrr                      1-  679     	LCALL	_led2ON
+                                    1-  680     	.line	80, "main.c"; 	led1OFF();
+     0012 2rrr                      1-  681     	LCALL	_led1OFF
+                                    1-  682     	.line	81, "main.c"; 	chrgState = 2;
+     0013 2102                      1-  683     	MOVIA	0x02
+                                    1-  684     	BANKSEL	_chrgState
+     0014 rrrr                      3-   71 m1      .banksel ram_address
+     0015 00rr                      1-  685     	MOVAR	_chrgState
+     0016 3rrr                      1-  686     	LGOTO	_00127_DS_
+     0017                           1-  687     _00124_DS_:
+                                    1-  688     	.line	84, "main.c"; 	chrgState = 0;
+                                    1-  689     	BANKSEL	_chrgState
+     0017 rrrr                      3-   71 m1      .banksel ram_address
+     0018 02rr                      1-  690     	CLRR	_chrgState
+     0019                           1-  691     _00127_DS_:
+                                    1-  692     	.line	87, "main.c"; 	if(getbit(PORTA,7))
+     0019 01rr                      1-  693     	MOVR	_PORTA,W
+     001A 2280                      1-  694     	ANDIA	0x80
+     001B 0903                      1-  695     	BTRSS	STATUS,2
+     001C 2101                      1-  696     	MOVIA	0x01
+                                    1-  697     	BANKSEL	r0x1012
+     001D rrrr                      3-   71 m1      .banksel ram_address
+     001E 00rr                      1-  698     	MOVAR	r0x1012
+     001F 01rr                      1-  699     	MOVR	r0x1012,W
+     0020 0D03                      1-  700     	BTRSC	STATUS,2
+     0021 3rrr                      1-  701     	LGOTO	_00133_DS_
+                                    1-  702     	.line	90, "main.c"; 	if(!getbit(PORTA,6))
+     0022 01rr                      1-  703     	MOVR	_PORTA,W
+     0023 2240                      1-  704     	ANDIA	0x40
+     0024 0903                      1-  705     	BTRSS	STATUS,2
+     0025 2101                      1-  706     	MOVIA	0x01
+     0026 00rr                      1-  707     	MOVAR	r0x1012
+     0027 01rr                      1-  708     	MOVR	r0x1012,W
+     0028 0903                      1-  709     	BTRSS	STATUS,2
+     0029 3rrr                      1-  710     	LGOTO	_00129_DS_
+                                    1-  711     	.line	92, "main.c"; 	led1ON();
+     002A 2rrr                      1-  712     	LCALL	_led1ON
+                                    1-  713     	.line	93, "main.c"; 	led2OFF();
+     002B 2rrr                      1-  714     	LCALL	_led2OFF
+                                    1-  715     	.line	94, "main.c"; 	chrgState = 1;
+     002C 2101                      1-  716     	MOVIA	0x01
+                                    1-  717     	BANKSEL	_chrgState
+     002D rrrr                      3-   71 m1      .banksel ram_address
+     002E 00rr                      1-  718     	MOVAR	_chrgState
+     002F 3rrr                      1-  719     	LGOTO	_00133_DS_
+     0030                           1-  720     _00129_DS_:
+                                    1-  721     	.line	97, "main.c"; 	chrgState = 0;
+                                    1-  722     	BANKSEL	_chrgState
+     0030 rrrr                      3-   71 m1      .banksel ram_address
+     0031 02rr                      1-  723     	CLRR	_chrgState
+     0032                           1-  724     _00133_DS_:
+                                    1-  725     	.line	99, "main.c"; 	}
+                                    1-  726     	RETURN	
+     0032 0010                      3-   26 m1      ret
+                                    1-  727     ; exit point of _chrgCon
+                                    1-  730     ;	code size estimation:
+                                    1-  731     ;	  183+   36 =   219 instructions (  510 byte)
+                                    1-  733     	end
+                                    1-  733     	end
+
+SYMBOL TABLE            TYPE     VALUE
+___sdcc_saved_fsr       Label    00000000
+___sdcc_saved_stk00     Label    00000000
+___sdcc_saved_stk01     Label    00000000
+__CHECKSUM_ADDR__       Label    00000000
+__nyc_ny8_startup       Label    00000000
+__PIN_COUNT__           Constant 0000000E
+__PROCESSOR__           Constant 00810623
+__sdcc_interrupt        Label    00000000
+_00108_DS_              Label    0000001E
+_00110_DS_              Label    00000022
+_00118_DS_              Label    00000003
+_00124_DS_              Label    00000017
+_00127_DS_              Label    00000019
+_00129_DS_              Label    00000030
+_00133_DS_              Label    00000032
+_00139_DS_              Label    00000011
+_00141_DS_              Label    0000001E
+_00143_DS_              Label    00000014
+_00144_DS_              Label    00000021
+_00161_DS_              Label    00000011
+_00162_DS_              Label    0000001B
+_00167_DS_              Label    00000029
+_ABPLCON                Label    00000000
+_ABPLCONbits            Label    00000000
+_ADConvert              Label    00000000
+_ADCR                   Label    00000000
+_ADCRbits               Label    00000000
+_ADD                    Label    00000000
+_ADdata                 Label    00000000
+_ADdataLB               Label    00000000
+_ADMD                   Label    00000000
+_ADMDbits               Label    00000000
+_ADR                    Label    00000000
+_ADRbits                Label    00000000
+_ADVREFH                Label    00000000
+_ADVREFHbits            Label    00000000
+_ANAEN                  Label    00000000
+_ANAENbits              Label    00000000
+_APHCON                 Label    00000000
+_AWUCON                 Label    00000000
+_AWUCONbits             Label    00000000
+_BODCON                 Label    00000000
+_BPHCON                 Label    00000000
+_BPHCONbits             Label    00000000
+_BWUCON                 Label    00000000
+_BWUCONbits             Label    00000000
+_BZ1CR                  Label    00000000
+_BZ2CR                  Label    00000000
+_BZ3CR                  Label    00000000
+_checkAD                Label    00000000
+_checkLVD               Label    00000000
+_chrgCon                Label    00000000
+_chrgState              Label    00000000
+_CMPCR                  Label    00000000
+_delay                  Label    00000000
+_delayUs                Label    00000000
+_F_wait_eoc             Label    00000000
+_FSR                    Label    00000000
+_gotoSleep              Label    00000000
+_INDF                   Label    00000000
+_initAD                 Label    00000000
+_initTimer0             Label    00000000
+_intCount               Label    00000000
+_INTE                   Label    00000000
+_INTE2                  Label    00000000
+_INTE2bits              Label    00000000
+_INTEbits               Label    00000000
+_INTEDG                 Label    00000000
+_INTEDGbits             Label    00000000
+_INTF                   Label    00000000
+_INTFbits               Label    00000000
+_IntFlag                Label    00000000
+_IOSTA                  Label    00000000
+_IOSTB                  Label    00000000
+_IRCR                   Label    00000000
+_isr                    Label    00000000
+_keyRead                Label    00000000
+_led1OFF                Label    00000000
+_led1ON                 Label    00000000
+_led1State              Label    00000000
+_led2OFF                Label    00000000
+_led2ON                 Label    00000000
+_led2State              Label    00000000
+_ledCon                 Label    00000000
+_ledCount               Label    00000000
+_main                   Label    00000000
+_OSCCR                  Label    00000000
+_PACON                  Label    00000000
+_PACONbits              Label    00000000
+_PCHBUF                 Label    00000000
+_PCL                    Label    00000000
+_PCON                   Label    00000000
+_PCON1                  Label    00000000
+_PCONbits               Label    00000000
+_PORTA                  Label    00000000
+_PORTAbits              Label    00000000
+_PORTB                  Label    00000000
+_PORTBbits              Label    00000000
+_protectState           Label    00000000
+_PS0CV                  Label    00000000
+_PS1CV                  Label    00000000
+_PS2CV                  Label    00000000
+_PS3CV                  Label    00000000
+_PWM1DUTY               Label    00000000
+_PWM2DUTY               Label    00000000
+_PWM3DUTY               Label    00000000
+_R_AIN1_DATA_HB         Label    00000000
+_R_AIN1_DATA_LB         Label    00000000
+_RFC                    Label    00000000
+_RFCbits                Label    00000000
+_shanshuo               Label    00000000
+_sstime                 Label    00000000
+_STATUS                 Label    00000000
+_T0MD                   Label    00000000
+_T1CR1                  Label    00000000
+_T1CR2                  Label    00000000
+_T2CR1                  Label    00000000
+_T2CR2                  Label    00000000
+_T3CR1                  Label    00000000
+_T3CR2                  Label    00000000
+_TBHD                   Label    00000000
+_TBHP                   Label    00000000
+_TM3RH                  Label    00000000
+_TMR0                   Label    00000000
+_TMR1                   Label    00000000
+_TMR2                   Label    00000000
+_TMR3                   Label    00000000
+_TMRH                   Label    00000000
+ENABLE_RAM_BANK         Constant 00000001
+END_OF_INTERRUPT        Label    00000033
+F                       Constant 00000001
+FSR                     Constant 00000004
+INDF                    Constant 00000000
+PCHBUF                  Constant 0000000A
+PCL                     Constant 00000002
+PSAVE                   Label    00000000
+r0x1011                 Label    00000000
+r0x1012                 Label    00000000
+SSAVE                   Label    00000001
+STATUS                  Constant 00000003
+STK00                   Label    0000000F
+STK01                   Label    0000000E
+STK02                   Label    0000000D
+STK03                   Label    0000000C
+STK04                   Label    0000000B
+STK05                   Label    0000000A
+STK06                   Label    00000009
+STK07                   Label    00000008
+STK08                   Label    00000007
+STK09                   Label    00000006
+STK10                   Label    00000005
+STK11                   Label    00000004
+STK12                   Label    00000003
+W                       Constant 00000000
+WSAVE                   Label    00000002
+
+
+SOURCE FILE TABLE
+001 main.s
+002 ny8b062d.inc
+003 common.inc
+004 main.c
+
+PROCESSOR    = NY8B062D (8 bits)
+PROGRAM ROM  = 0x00000000 - 0x000007FF
+DATA ROM     = 0x00000000 - 0x000007FF
+RESERVED MEM = 0x00000800 - 0x00000810
+SRAM / SFR   = 0x00000000 - 0x00000000

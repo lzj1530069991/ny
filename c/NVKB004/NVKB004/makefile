@@ -1,7 +1,7 @@
 ICBODY       := NY8A051F
 CLIENT_NAME  := NVK
 CB_FILE      := NVKB004.cb
-HOST_TOOL    := NYIDE 3.92
+HOST_TOOL    := NYIDE 3.91
 USER_C       := main.c 
 LIBS         :=  
 USER_ASM     := 
@@ -26,13 +26,13 @@ AR := nyar
 LDFLAGS     := -p $(ICBODY) --client "$(CLIENT_NAME)" -L "$(CC_PATH)/lib"      \
                -g -M --riffbin --elf --disasm          \
                --host "$(HOST_TOOL)" --cinit --no-programchecksum             \
-               --codechecksum --opt-banksel  --w-no 32797 --lang en-us
+               --codechecksum --opt-banksel  --w-no 32797 --lang zh-cn
 
 CFLAGS      := -mny8 --errfmt-ny -p$(ICBODY) -D__CPU_$(ICBODY) --debug \
                -I"$(CC_PATH)/include" -I"C:\Nyquest\NYIDE\\include\NY8 C"  -MD --stack-size 16  \
                 --backup-stk 2 
 
-ASFLAGS     := -p $(ICBODY) -g -l --w-no 32797 --lang en-us  \
+ASFLAGS     := -p $(ICBODY) -g -l --w-no 32797 --lang zh-cn  \
                -I "$(CC_PATH)/inc"
 
 DEPS        := $(patsubst %.c,%.d, $(USER_C))
