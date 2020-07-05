@@ -17,471 +17,666 @@ NYASM 2.25
                                     1-   11     ;--------------------------------------------------------
                                     1-   12     ; external declarations
                                     1-   13     ;--------------------------------------------------------
-                                    1-   14     	extern	_sendCodeZERO
-                                    1-   15     	extern	_sendCodeONE
-                                    1-   16     	extern	_PORTAbits
-                                    1-   17     	extern	_PORTBbits
-                                    1-   18     	extern	_PCONbits
-                                    1-   19     	extern	_BWUCONbits
-                                    1-   20     	extern	_ABPLCONbits
-                                    1-   21     	extern	_BPHCONbits
-                                    1-   22     	extern	_INTEbits
-                                    1-   23     	extern	_INTFbits
-                                    1-   24     	extern	_INDF
-                                    1-   25     	extern	_TMR0
-                                    1-   26     	extern	_PCL
-                                    1-   27     	extern	_STATUS
-                                    1-   28     	extern	_FSR
-                                    1-   29     	extern	_PORTA
-                                    1-   30     	extern	_PORTB
-                                    1-   31     	extern	_PCON
-                                    1-   32     	extern	_BWUCON
-                                    1-   33     	extern	_PCHBUF
-                                    1-   34     	extern	_ABPLCON
-                                    1-   35     	extern	_BPHCON
-                                    1-   36     	extern	_INTE
-                                    1-   37     	extern	_INTF
-                                    1-   38     	extern	_TMR1
-                                    1-   39     	extern	_T1CR1
-                                    1-   40     	extern	_T1CR2
-                                    1-   41     	extern	_PWM1DUTY
-                                    1-   42     	extern	_PS1CV
-                                    1-   43     	extern	_BZ1CR
-                                    1-   44     	extern	_IRCR
-                                    1-   45     	extern	_TBHP
-                                    1-   46     	extern	_TBHD
-                                    1-   47     	extern	_OSCCR
-                                    1-   48     	extern	_IOSTA
-                                    1-   49     	extern	_IOSTB
-                                    1-   50     	extern	_PS0CV
-                                    1-   51     	extern	_BODCON
-                                    1-   52     	extern	_PCON1
-                                    1-   53     	extern	_T0MD
-                                    1-   55     	extern PSAVE
-                                    1-   56     	extern SSAVE
-                                    1-   57     	extern WSAVE
-                                    1-   58     	extern STK12
-                                    1-   59     	extern STK11
-                                    1-   60     	extern STK10
-                                    1-   61     	extern STK09
-                                    1-   62     	extern STK08
-                                    1-   63     	extern STK07
-                                    1-   64     	extern STK06
-                                    1-   65     	extern STK05
-                                    1-   66     	extern STK04
-                                    1-   67     	extern STK03
-                                    1-   68     	extern STK02
-                                    1-   69     	extern STK01
-                                    1-   70     	extern STK00
+                                    1-   14     	extern	_PORTAbits
+                                    1-   15     	extern	_PORTBbits
+                                    1-   16     	extern	_PCONbits
+                                    1-   17     	extern	_BWUCONbits
+                                    1-   18     	extern	_ABPLCONbits
+                                    1-   19     	extern	_BPHCONbits
+                                    1-   20     	extern	_INTEbits
+                                    1-   21     	extern	_INTFbits
+                                    1-   22     	extern	_INDF
+                                    1-   23     	extern	_TMR0
+                                    1-   24     	extern	_PCL
+                                    1-   25     	extern	_STATUS
+                                    1-   26     	extern	_FSR
+                                    1-   27     	extern	_PORTA
+                                    1-   28     	extern	_PORTB
+                                    1-   29     	extern	_PCON
+                                    1-   30     	extern	_BWUCON
+                                    1-   31     	extern	_PCHBUF
+                                    1-   32     	extern	_ABPLCON
+                                    1-   33     	extern	_BPHCON
+                                    1-   34     	extern	_INTE
+                                    1-   35     	extern	_INTF
+                                    1-   36     	extern	_TMR1
+                                    1-   37     	extern	_T1CR1
+                                    1-   38     	extern	_T1CR2
+                                    1-   39     	extern	_PWM1DUTY
+                                    1-   40     	extern	_PS1CV
+                                    1-   41     	extern	_BZ1CR
+                                    1-   42     	extern	_IRCR
+                                    1-   43     	extern	_TBHP
+                                    1-   44     	extern	_TBHD
+                                    1-   45     	extern	_OSCCR
+                                    1-   46     	extern	_IOSTA
+                                    1-   47     	extern	_IOSTB
+                                    1-   48     	extern	_PS0CV
+                                    1-   49     	extern	_BODCON
+                                    1-   50     	extern	_PCON1
+                                    1-   51     	extern	_T0MD
+                                    1-   53     	extern PSAVE
+                                    1-   54     	extern SSAVE
+                                    1-   55     	extern WSAVE
+                                    1-   56     	extern STK12
+                                    1-   57     	extern STK11
+                                    1-   58     	extern STK10
+                                    1-   59     	extern STK09
+                                    1-   60     	extern STK08
+                                    1-   61     	extern STK07
+                                    1-   62     	extern STK06
+                                    1-   63     	extern STK05
+                                    1-   64     	extern STK04
+                                    1-   65     	extern STK03
+                                    1-   66     	extern STK02
+                                    1-   67     	extern STK01
+                                    1-   68     	extern STK00
+                                    1-   69     ;--------------------------------------------------------
+                                    1-   70     ; global declarations
                                     1-   71     ;--------------------------------------------------------
-                                    1-   72     ; global declarations
-                                    1-   73     ;--------------------------------------------------------
-                                    1-   74     	extern	_Delay80us
-                                    1-   75     	extern	_SendCodeByte
-                                    1-   76     	extern	_sendRGB
-                                    1-   77     	extern	_sendtoLast
+                                    1-   72     	extern	_Delay80us
+                                    1-   73     	extern	_sendRGB
+                                    1-   74     	extern	_sendtoLast
+                                    1-   76     ;--------------------------------------------------------
+                                    1-   77     ; global definitions
+                                    1-   78     ;--------------------------------------------------------
                                     1-   79     ;--------------------------------------------------------
-                                    1-   80     ; global definitions
+                                    1-   80     ; absolute symbol definitions
                                     1-   81     ;--------------------------------------------------------
                                     1-   82     ;--------------------------------------------------------
-                                    1-   83     ; absolute symbol definitions
+                                    1-   83     ; compiler-defined variables
                                     1-   84     ;--------------------------------------------------------
-                                    1-   85     ;--------------------------------------------------------
-                                    1-   86     ; compiler-defined variables
-                                    1-   87     ;--------------------------------------------------------
+                                    1-   85     .segment "uninit"
+     0000                           1-   86     r0x100C:
+                                    1-   87     	.res	1
                                     1-   88     .segment "uninit"
-     0000                           1-   89     r0x1006:
+     0000                           1-   89     r0x100D:
                                     1-   90     	.res	1
                                     1-   91     .segment "uninit"
-     0000                           1-   92     r0x1007:
+     0000                           1-   92     r0x100E:
                                     1-   93     	.res	1
                                     1-   94     .segment "uninit"
-     0000                           1-   95     r0x1008:
+     0000                           1-   95     r0x100F:
                                     1-   96     	.res	1
                                     1-   97     .segment "uninit"
-     0000                           1-   98     r0x1009:
+     0000                           1-   98     r0x1010:
                                     1-   99     	.res	1
                                     1-  100     .segment "uninit"
-     0000                           1-  101     r0x100A:
+     0000                           1-  101     r0x1011:
                                     1-  102     	.res	1
                                     1-  103     .segment "uninit"
-     0000                           1-  104     r0x100B:
+     0000                           1-  104     r0x1012:
                                     1-  105     	.res	1
                                     1-  106     .segment "uninit"
-     0000                           1-  107     r0x100C:
+     0000                           1-  107     r0x1014:
                                     1-  108     	.res	1
                                     1-  109     .segment "uninit"
-     0000                           1-  110     r0x100E:
+     0000                           1-  110     r0x1001:
                                     1-  111     	.res	1
                                     1-  112     .segment "uninit"
-     0000                           1-  113     r0x1003:
+     0000                           1-  113     r0x1002:
                                     1-  114     	.res	1
                                     1-  115     .segment "uninit"
-     0000                           1-  116     r0x1004:
+     0000                           1-  116     r0x1003:
                                     1-  117     	.res	1
                                     1-  118     .segment "uninit"
-     0000                           1-  119     r0x1005:
+     0000                           1-  119     r0x1004:
                                     1-  120     	.res	1
                                     1-  121     .segment "uninit"
-     0000                           1-  122     r0x1001:
+     0000                           1-  122     r0x1005:
                                     1-  123     	.res	1
                                     1-  124     .segment "uninit"
-     0000                           1-  125     r0x1002:
+     0000                           1-  125     r0x1006:
                                     1-  126     	.res	1
                                     1-  127     .segment "uninit"
-     0000                           1-  128     r0x1000:
+     0000                           1-  128     r0x1007:
                                     1-  129     	.res	1
-                                    1-  130     ;--------------------------------------------------------
-                                    1-  131     ; initialized data
-                                    1-  132     ;--------------------------------------------------------
-                                    1-  133     ;--------------------------------------------------------
-                                    1-  134     ; overlayable items in internal ram 
-                                    1-  135     ;--------------------------------------------------------
-                                    1-  136     ;	udata_ovr
-                                    1-  137     ;--------------------------------------------------------
-                                    1-  138     ; code
-                                    1-  139     ;--------------------------------------------------------
-                                    1-  140     ;***
-                                    1-  141     ;  pBlock Stats: dbName = C
-                                    1-  142     ;***
-                                    1-  143     ;has an exit
-                                    1-  144     ;1 compiler assigned register :
-                                    1-  145     ;   r0x1000
-                                    1-  146     ;; Starting pCode block
-                                    1-  147     .segment "code"; module=codeDriver, function=_Delay80us
-                                    1-  149     ;local variable name mapping:
-     0000                           1-  151     _Delay80us:
-                                    1-  152     ; 2 exit points
-                                    1-  153     	.line	85, "codeDriver.c"; 	for(unsigned char i=0;i<80;i++)
-                                    1-  154     	BANKSEL	r0x1000
+                                    1-  130     .segment "uninit"
+     0000                           1-  131     r0x1008:
+                                    1-  132     	.res	1
+                                    1-  133     .segment "uninit"
+     0000                           1-  134     r0x1009:
+                                    1-  135     	.res	1
+                                    1-  136     .segment "uninit"
+     0000                           1-  137     r0x100B:
+                                    1-  138     	.res	1
+                                    1-  139     .segment "uninit"
+     0000                           1-  140     r0x100A:
+                                    1-  141     	.res	1
+                                    1-  142     .segment "uninit"
+     0000                           1-  143     r0x1000:
+                                    1-  144     	.res	1
+                                    1-  145     ;--------------------------------------------------------
+                                    1-  146     ; initialized data
+                                    1-  147     ;--------------------------------------------------------
+                                    1-  148     ;--------------------------------------------------------
+                                    1-  149     ; overlayable items in internal ram 
+                                    1-  150     ;--------------------------------------------------------
+                                    1-  151     ;	udata_ovr
+                                    1-  152     ;--------------------------------------------------------
+                                    1-  153     ; code
+                                    1-  154     ;--------------------------------------------------------
+                                    1-  155     ;***
+                                    1-  156     ;  pBlock Stats: dbName = C
+                                    1-  157     ;***
+                                    1-  158     ;has an exit
+                                    1-  159     ;1 compiler assigned register :
+                                    1-  160     ;   r0x1000
+                                    1-  161     ;; Starting pCode block
+                                    1-  162     .segment "code"; module=codeDriver, function=_Delay80us
+                                    1-  164     ;local variable name mapping:
+     0000                           1-  166     _Delay80us:
+                                    1-  167     ; 2 exit points
+                                    1-  168     	.line	79, "codeDriver.c"; 	for(unsigned char i=0;i<80;i++)
+                                    1-  169     	BANKSEL	r0x1000
      0000 rrrr                      3-   71 m1      .banksel ram_address
-     0001 02rr                      1-  155     	CLRR	r0x1000
-                                    1-  156     ;;unsigned compare: left < lit (0x50=80), size=1
-     0002                           1-  157     _00140_DS_:
-     0002 2150                      1-  158     	MOVIA	0x50
-                                    1-  159     	BANKSEL	r0x1000
+     0001 02rr                      1-  170     	CLRR	r0x1000
+                                    1-  171     ;;unsigned compare: left < lit (0x50=80), size=1
+     0002                           1-  172     _00136_DS_:
+     0002 2150                      1-  173     	MOVIA	0x50
+                                    1-  174     	BANKSEL	r0x1000
      0003 rrrr                      3-   71 m1      .banksel ram_address
-     0004 04rr                      1-  160     	SUBAR	r0x1000,W
-     0005 0C03                      1-  161     	BTRSC	STATUS,0
-     0006 3rrr                      1-  162     	LGOTO	_00142_DS_
-                                    1-  163     	.line	86, "codeDriver.c"; 	NOP();
-     0007 0000                      1-  164     	nop
-                                    1-  165     	.line	85, "codeDriver.c"; 	for(unsigned char i=0;i<80;i++)
-                                    1-  166     	BANKSEL	r0x1000
+     0004 04rr                      1-  175     	SUBAR	r0x1000,W
+     0005 0C03                      1-  176     	BTRSC	STATUS,0
+     0006 3rrr                      1-  177     	LGOTO	_00138_DS_
+                                    1-  178     	.line	80, "codeDriver.c"; 	NOP();
+     0007 0000                      1-  179     	nop
+                                    1-  180     	.line	79, "codeDriver.c"; 	for(unsigned char i=0;i<80;i++)
+                                    1-  181     	BANKSEL	r0x1000
      0008 rrrr                      3-   71 m1      .banksel ram_address
-     0009 05rr                      1-  167     	INCR	r0x1000,F
-     000A 3rrr                      1-  168     	LGOTO	_00140_DS_
-     000B                           1-  169     _00142_DS_:
-                                    1-  170     	.line	87, "codeDriver.c"; 	}
-                                    1-  171     	RETURN	
+     0009 05rr                      1-  182     	INCR	r0x1000,F
+     000A 3rrr                      1-  183     	LGOTO	_00136_DS_
+     000B                           1-  184     _00138_DS_:
+                                    1-  185     	.line	81, "codeDriver.c"; 	}
+                                    1-  186     	RETURN	
      000B 0010                      3-   26 m1      ret
-                                    1-  172     ; exit point of _Delay80us
-                                    1-  174     ;***
-                                    1-  175     ;  pBlock Stats: dbName = C
-                                    1-  176     ;***
-                                    1-  177     ;has an exit
-                                    1-  178     ;2 compiler assigned registers:
-                                    1-  179     ;   r0x1001
-                                    1-  180     ;   r0x1002
-                                    1-  181     ;; Starting pCode block
-                                    1-  182     .segment "code"; module=codeDriver, function=_SendCodeByte
-                                    1-  184     ;local variable name mapping:
-     0000                           1-  187     _SendCodeByte:
-                                    1-  188     ; 2 exit points
-                                    1-  189     	.line	33, "codeDriver.c"; 	void SendCodeByte(unsigned char data)
-                                    1-  190     	BANKSEL	r0x1001
+                                    1-  187     ; exit point of _Delay80us
+                                    1-  189     ;***
+                                    1-  190     ;  pBlock Stats: dbName = C
+                                    1-  191     ;***
+                                    1-  192     ;has an exit
+                                    1-  193     ;13 compiler assigned registers:
+                                    1-  194     ;   r0x1001
+                                    1-  195     ;   STK00
+                                    1-  196     ;   r0x1002
+                                    1-  197     ;   STK01
+                                    1-  198     ;   r0x1003
+                                    1-  199     ;   r0x1004
+                                    1-  200     ;   r0x1005
+                                    1-  201     ;   r0x1006
+                                    1-  202     ;   r0x1007
+                                    1-  203     ;   r0x1008
+                                    1-  204     ;   r0x1009
+                                    1-  205     ;   r0x100A
+                                    1-  206     ;   r0x100B
+                                    1-  207     ;; Starting pCode block
+                                    1-  208     .segment "code"; module=codeDriver, function=_sendRGB
+                                    1-  210     ;local variable name mapping:
+     0000                           1-  219     _sendRGB:
+                                    1-  220     ; 2 exit points
+                                    1-  221     	.line	23, "codeDriver.c"; 	void sendRGB(unsigned char colorR,unsigned char colorG,unsigned char colorB)
+                                    1-  222     	BANKSEL	r0x1001
      0000 rrrr                      3-   71 m1      .banksel ram_address
-     0001 00rr                      1-  191     	MOVAR	r0x1001
-                                    1-  192     	.line	35, "codeDriver.c"; 	for(unsigned char i=8;i>0;i--)
-     0002 2108                      1-  193     	MOVIA	0x08
-                                    1-  194     	BANKSEL	r0x1002
+     0001 00rr                      1-  223     	MOVAR	r0x1001
+     0002 01rr                      1-  224     	MOVR	STK00,W
+                                    1-  225     	BANKSEL	r0x1002
      0003 rrrr                      3-   71 m1      .banksel ram_address
-     0004 00rr                      1-  195     	MOVAR	r0x1002
-     0005                           1-  196     _00132_DS_:
-                                    1-  197     	BANKSEL	r0x1002
-     0005 rrrr                      3-   71 m1      .banksel ram_address
-     0006 01rr                      1-  198     	MOVR	r0x1002,W
-     0007 0D03                      1-  199     	BTRSC	STATUS,2
-     0008 3rrr                      1-  200     	LGOTO	_00130_DS_
-                                    1-  201     	.line	37, "codeDriver.c"; 	data = data<<1;
-     0009 1C03                      1-  202     	BCR	STATUS,0
-                                    1-  203     	BANKSEL	r0x1001
-     000A rrrr                      3-   71 m1      .banksel ram_address
-     000B 14rr                      1-  204     	RLR	r0x1001,F
-                                    1-  205     	.line	38, "codeDriver.c"; 	if(D)
-     000C 0803                      1-  206     	BTRSS	STATUS,0
-     000D 3rrr                      1-  207     	LGOTO	_00128_DS_
-                                    1-  208     	.line	40, "codeDriver.c"; 	PB0 = 0;
-                                    1-  209     	BANKSEL	_PORTB
-     000E rrrr                      3-   71 m1      .banksel ram_address
-     000F 1Crr                      1-  210     	BCR	_PORTB,0
-                                    1-  211     	.line	41, "codeDriver.c"; 	NOP();
-     0010 0000                      1-  212     	nop
-                                    1-  213     	.line	42, "codeDriver.c"; 	NOP();
-     0011 0000                      1-  214     	nop
-                                    1-  215     	.line	43, "codeDriver.c"; 	NOP();
-     0012 0000                      1-  216     	nop
-                                    1-  217     	.line	44, "codeDriver.c"; 	NOP();
-     0013 0000                      1-  218     	nop
-                                    1-  219     	.line	45, "codeDriver.c"; 	NOP();
-     0014 0000                      1-  220     	nop
-                                    1-  221     	.line	46, "codeDriver.c"; 	NOP();
-     0015 0000                      1-  222     	nop
-                                    1-  223     	.line	47, "codeDriver.c"; 	NOP();
-     0016 0000                      1-  224     	nop
-                                    1-  225     	.line	48, "codeDriver.c"; 	NOP();
-     0017 0000                      1-  226     	nop
-                                    1-  227     	.line	49, "codeDriver.c"; 	NOP();
-     0018 0000                      1-  228     	nop
-                                    1-  229     	.line	50, "codeDriver.c"; 	PB0 = 1;
-                                    1-  230     	BANKSEL	_PORTB
-     0019 rrrr                      3-   71 m1      .banksel ram_address
-     001A 18rr                      1-  231     	BSR	_PORTB,0
-                                    1-  232     	.line	51, "codeDriver.c"; 	NOP();
-     001B 0000                      1-  233     	nop
-                                    1-  234     	.line	52, "codeDriver.c"; 	NOP();
-     001C 0000                      1-  235     	nop
-                                    1-  236     	.line	53, "codeDriver.c"; 	NOP();
-     001D 0000                      1-  237     	nop
-                                    1-  238     	.line	54, "codeDriver.c"; 	NOP();
-     001E 0000                      1-  239     	nop
-                                    1-  240     	.line	55, "codeDriver.c"; 	NOP();
-     001F 0000                      1-  241     	nop
-     0020 3rrr                      1-  242     	LGOTO	_00133_DS_
-     0021                           1-  243     _00128_DS_:
-                                    1-  244     	.line	59, "codeDriver.c"; 	PB0 = 1;
-                                    1-  245     	BANKSEL	_PORTB
-     0021 rrrr                      3-   71 m1      .banksel ram_address
-     0022 18rr                      1-  246     	BSR	_PORTB,0
-                                    1-  247     	.line	60, "codeDriver.c"; 	NOP();
-     0023 0000                      1-  248     	nop
-                                    1-  249     	.line	61, "codeDriver.c"; 	NOP();
-     0024 0000                      1-  250     	nop
-                                    1-  251     	.line	62, "codeDriver.c"; 	NOP();
-     0025 0000                      1-  252     	nop
-                                    1-  253     	.line	63, "codeDriver.c"; 	NOP();
-     0026 0000                      1-  254     	nop
-                                    1-  255     	.line	64, "codeDriver.c"; 	NOP();
-     0027 0000                      1-  256     	nop
-                                    1-  257     	.line	65, "codeDriver.c"; 	NOP();
-     0028 0000                      1-  258     	nop
-                                    1-  259     	.line	66, "codeDriver.c"; 	NOP();
-     0029 0000                      1-  260     	nop
-                                    1-  261     	.line	67, "codeDriver.c"; 	NOP();
-     002A 0000                      1-  262     	nop
-                                    1-  263     	.line	68, "codeDriver.c"; 	NOP();
-     002B 0000                      1-  264     	nop
-                                    1-  265     	.line	69, "codeDriver.c"; 	PB0 = 0;
-                                    1-  266     	BANKSEL	_PORTB
-     002C rrrr                      3-   71 m1      .banksel ram_address
-     002D 1Crr                      1-  267     	BCR	_PORTB,0
-                                    1-  268     	.line	70, "codeDriver.c"; 	NOP();
-     002E 0000                      1-  269     	nop
-                                    1-  270     	.line	71, "codeDriver.c"; 	NOP();
-     002F 0000                      1-  271     	nop
-                                    1-  272     	.line	72, "codeDriver.c"; 	NOP();
-     0030 0000                      1-  273     	nop
-                                    1-  274     	.line	73, "codeDriver.c"; 	NOP();
-     0031 0000                      1-  275     	nop
-                                    1-  276     	.line	74, "codeDriver.c"; 	NOP();
-     0032 0000                      1-  277     	nop
-     0033                           1-  278     _00133_DS_:
-                                    1-  279     	.line	35, "codeDriver.c"; 	for(unsigned char i=8;i>0;i--)
-                                    1-  280     	BANKSEL	r0x1002
-     0033 rrrr                      3-   71 m1      .banksel ram_address
-     0034 06rr                      1-  281     	DECR	r0x1002,F
-     0035 3rrr                      1-  282     	LGOTO	_00132_DS_
-     0036                           1-  283     _00130_DS_:
-                                    1-  284     	.line	77, "codeDriver.c"; 	PB0 = 0;
-                                    1-  285     	BANKSEL	_PORTB
-     0036 rrrr                      3-   71 m1      .banksel ram_address
-     0037 1Crr                      1-  286     	BCR	_PORTB,0
-                                    1-  287     	.line	78, "codeDriver.c"; 	}
-                                    1-  288     	RETURN	
-     0038 0010                      3-   26 m1      ret
-                                    1-  289     ; exit point of _SendCodeByte
-                                    1-  291     ;***
-                                    1-  292     ;  pBlock Stats: dbName = C
-                                    1-  293     ;***
-                                    1-  294     ;has an exit
-                                    1-  295     ;functions called:
-                                    1-  296     ;   _SendCodeByte
-                                    1-  297     ;   _SendCodeByte
-                                    1-  298     ;   _SendCodeByte
-                                    1-  299     ;   _SendCodeByte
-                                    1-  300     ;   _SendCodeByte
-                                    1-  301     ;   _SendCodeByte
-                                    1-  302     ;5 compiler assigned registers:
-                                    1-  303     ;   r0x1003
-                                    1-  304     ;   STK00
-                                    1-  305     ;   r0x1004
-                                    1-  306     ;   STK01
-                                    1-  307     ;   r0x1005
-                                    1-  308     ;; Starting pCode block
-                                    1-  309     .segment "code"; module=codeDriver, function=_sendRGB
-                                    1-  311     ;local variable name mapping:
-     0000                           1-  315     _sendRGB:
-                                    1-  316     ; 2 exit points
-                                    1-  317     	.line	23, "codeDriver.c"; 	void sendRGB(unsigned char colorR,unsigned char colorG,unsigned char colorB)
-                                    1-  318     	BANKSEL	r0x1003
-     0000 rrrr                      3-   71 m1      .banksel ram_address
-     0001 00rr                      1-  319     	MOVAR	r0x1003
-     0002 01rr                      1-  320     	MOVR	STK00,W
-                                    1-  321     	BANKSEL	r0x1004
-     0003 rrrr                      3-   71 m1      .banksel ram_address
-     0004 00rr                      1-  322     	MOVAR	r0x1004
-     0005 01rr                      1-  323     	MOVR	STK01,W
-                                    1-  324     	BANKSEL	r0x1005
+     0004 00rr                      1-  226     	MOVAR	r0x1002
+     0005 01rr                      1-  227     	MOVR	STK01,W
+                                    1-  228     	BANKSEL	r0x1003
      0006 rrrr                      3-   71 m1      .banksel ram_address
-     0007 00rr                      1-  325     	MOVAR	r0x1005
-                                    1-  326     	.line	25, "codeDriver.c"; 	SendCodeByte(colorR);
-                                    1-  327     	BANKSEL	r0x1003
+     0007 00rr                      1-  229     	MOVAR	r0x1003
+                                    1-  230     	.line	25, "codeDriver.c"; 	long tempColor = colorR;
+                                    1-  231     	BANKSEL	r0x1001
      0008 rrrr                      3-   71 m1      .banksel ram_address
-     0009 01rr                      1-  328     	MOVR	r0x1003,W
-     000A 2rrr                      1-  329     	LCALL	_SendCodeByte
-                                    1-  330     	.line	26, "codeDriver.c"; 	SendCodeByte(colorG);
-                                    1-  331     	BANKSEL	r0x1004
-     000B rrrr                      3-   71 m1      .banksel ram_address
-     000C 01rr                      1-  332     	MOVR	r0x1004,W
-     000D 2rrr                      1-  333     	LCALL	_SendCodeByte
-                                    1-  334     	.line	27, "codeDriver.c"; 	SendCodeByte(colorB);
-                                    1-  335     	BANKSEL	r0x1005
+     0009 01rr                      1-  232     	MOVR	r0x1001,W
+                                    1-  233     	BANKSEL	r0x1005
+     000A rrrr                      3-   71 m1      .banksel ram_address
+     000B 02rr                      1-  234     	CLRR	r0x1005
+                                    1-  235     	BANKSEL	r0x1006
+     000C rrrr                      3-   71 m1      .banksel ram_address
+     000D 02rr                      1-  236     	CLRR	r0x1006
+                                    1-  237     	BANKSEL	r0x1007
      000E rrrr                      3-   71 m1      .banksel ram_address
-     000F 01rr                      1-  336     	MOVR	r0x1005,W
-     0010 2rrr                      1-  337     	LCALL	_SendCodeByte
-                                    1-  338     	.line	28, "codeDriver.c"; 	}
-                                    1-  339     	RETURN	
-     0011 0010                      3-   26 m1      ret
-                                    1-  340     ; exit point of _sendRGB
-                                    1-  342     ;***
-                                    1-  343     ;  pBlock Stats: dbName = C
-                                    1-  344     ;***
-                                    1-  345     ;has an exit
-                                    1-  346     ;functions called:
-                                    1-  347     ;   _sendRGB
-                                    1-  348     ;   _Delay80us
-                                    1-  349     ;   _sendRGB
-                                    1-  350     ;   _Delay80us
-                                    1-  351     ;12 compiler assigned registers:
-                                    1-  352     ;   r0x1006
-                                    1-  353     ;   STK00
-                                    1-  354     ;   r0x1007
-                                    1-  355     ;   STK01
-                                    1-  356     ;   r0x1008
-                                    1-  357     ;   STK02
-                                    1-  358     ;   r0x1009
-                                    1-  359     ;   r0x100A
-                                    1-  360     ;   r0x100B
-                                    1-  361     ;   r0x100C
-                                    1-  362     ;   r0x100D
-                                    1-  363     ;   r0x100E
-                                    1-  364     ;; Starting pCode block
-                                    1-  365     .segment "code"; module=codeDriver, function=_sendtoLast
-                                    1-  367     ;local variable name mapping:
-     0000                           1-  374     _sendtoLast:
-                                    1-  375     ; 2 exit points
-                                    1-  376     	.line	13, "codeDriver.c"; 	void sendtoLast(char ledNub,unsigned char colorR,unsigned char colorG,unsigned char colorB)
-                                    1-  377     	BANKSEL	r0x1006
-     0000 rrrr                      3-   71 m1      .banksel ram_address
-     0001 00rr                      1-  378     	MOVAR	r0x1006
-     0002 01rr                      1-  379     	MOVR	STK00,W
-                                    1-  380     	BANKSEL	r0x1007
-     0003 rrrr                      3-   71 m1      .banksel ram_address
-     0004 00rr                      1-  381     	MOVAR	r0x1007
-     0005 01rr                      1-  382     	MOVR	STK01,W
-                                    1-  383     	BANKSEL	r0x1008
-     0006 rrrr                      3-   71 m1      .banksel ram_address
-     0007 00rr                      1-  384     	MOVAR	r0x1008
-     0008 01rr                      1-  385     	MOVR	STK02,W
-                                    1-  386     	BANKSEL	r0x1009
-     0009 rrrr                      3-   71 m1      .banksel ram_address
-     000A 00rr                      1-  387     	MOVAR	r0x1009
-                                    1-  388     	.line	15, "codeDriver.c"; 	for(int i=0;i<ledNub;i++)
-                                    1-  389     	BANKSEL	r0x100A
-     000B rrrr                      3-   71 m1      .banksel ram_address
-     000C 02rr                      1-  390     	CLRR	r0x100A
-                                    1-  391     	BANKSEL	r0x100B
-     000D rrrr                      3-   71 m1      .banksel ram_address
-     000E 02rr                      1-  392     	CLRR	r0x100B
-     000F                           1-  393     _00107_DS_:
-                                    1-  394     	BANKSEL	r0x1006
-     000F rrrr                      3-   71 m1      .banksel ram_address
-     0010 01rr                      1-  395     	MOVR	r0x1006,W
-                                    1-  396     	BANKSEL	r0x100C
-     0011 rrrr                      3-   71 m1      .banksel ram_address
-     0012 00rr                      1-  397     	MOVAR	r0x100C
-                                    1-  398     ;;1	CLRR	r0x100D
-                                    1-  399     	BANKSEL	r0x100B
-     0013 rrrr                      3-   71 m1      .banksel ram_address
-     0014 01rr                      1-  400     	MOVR	r0x100B,W
-     0015 2580                      1-  401     	ADDIA	0x80
-                                    1-  402     	BANKSEL	r0x100E
+     000F 02rr                      1-  238     	CLRR	r0x1007
+     0010 2100                      1-  239     	MOVIA	0x00
+     0011 00rr                      1-  240     	MOVAR	r0x1007
+                                    1-  241     	BANKSEL	r0x1006
+     0012 rrrr                      3-   71 m1      .banksel ram_address
+     0013 00rr                      1-  242     	MOVAR	r0x1006
+                                    1-  243     ;;100	MOVR	r0x1004,W
+                                    1-  244     	BANKSEL	r0x1001
+     0014 rrrr                      3-   71 m1      .banksel ram_address
+     0015 01rr                      1-  245     	MOVR	r0x1001,W
+                                    1-  246     	BANKSEL	r0x1004
      0016 rrrr                      3-   71 m1      .banksel ram_address
-     0017 00rr                      1-  403     	MOVAR	r0x100E
-     0018 2100                      1-  404     	MOVIA	0x00
-     0019 2580                      1-  405     	ADDIA	0x80
-     001A 04rr                      1-  406     	SUBAR	r0x100E,W
-     001B 0903                      1-  407     	BTRSS	STATUS,2
-     001C 3rrr                      1-  408     	LGOTO	_00118_DS_
-                                    1-  409     	BANKSEL	r0x100C
-     001D rrrr                      3-   71 m1      .banksel ram_address
-     001E 01rr                      1-  410     	MOVR	r0x100C,W
-                                    1-  411     	BANKSEL	r0x100A
-     001F rrrr                      3-   71 m1      .banksel ram_address
-     0020 04rr                      1-  412     	SUBAR	r0x100A,W
-     0021                           1-  413     _00118_DS_:
-     0021 0C03                      1-  414     	BTRSC	STATUS,0
-     0022 3rrr                      1-  415     	LGOTO	_00105_DS_
-                                    1-  416     	.line	17, "codeDriver.c"; 	sendRGB(colorR,colorG,colorB);
-                                    1-  417     	BANKSEL	r0x1009
+     0017 00rr                      1-  247     	MOVAR	r0x1004
+                                    1-  248     	BANKSEL	r0x1005
+     0018 rrrr                      3-   71 m1      .banksel ram_address
+     0019 00rr                      1-  249     	MOVAR	r0x1005
+                                    1-  250     	BANKSEL	r0x1004
+     001A rrrr                      3-   71 m1      .banksel ram_address
+     001B 02rr                      1-  251     	CLRR	r0x1004
+                                    1-  252     	.line	27, "codeDriver.c"; 	tempColor+=colorG;
+                                    1-  253     	BANKSEL	r0x1002
+     001C rrrr                      3-   71 m1      .banksel ram_address
+     001D 01rr                      1-  254     	MOVR	r0x1002,W
+                                    1-  255     	BANKSEL	r0x1001
+     001E rrrr                      3-   71 m1      .banksel ram_address
+     001F 00rr                      1-  256     	MOVAR	r0x1001
+                                    1-  257     	BANKSEL	r0x1008
+     0020 rrrr                      3-   71 m1      .banksel ram_address
+     0021 02rr                      1-  258     	CLRR	r0x1008
+                                    1-  259     ;;101	MOVR	r0x1001,W
+     0022 2100                      1-  260     	MOVIA	0x00
+                                    1-  261     	BANKSEL	r0x1009
      0023 rrrr                      3-   71 m1      .banksel ram_address
-     0024 01rr                      1-  418     	MOVR	r0x1009,W
-     0025 00rr                      1-  419     	MOVAR	STK01
-                                    1-  420     	BANKSEL	r0x1008
-     0026 rrrr                      3-   71 m1      .banksel ram_address
-     0027 01rr                      1-  421     	MOVR	r0x1008,W
-     0028 00rr                      1-  422     	MOVAR	STK00
-                                    1-  423     	BANKSEL	r0x1007
+     0024 00rr                      1-  262     	MOVAR	r0x1009
+     0025 0Frr                      1-  263     	BTRSC	r0x1009,7
+     0026 21FF                      1-  264     	MOVIA	0xff
+                                    1-  265     	BANKSEL	r0x100A
+     0027 rrrr                      3-   71 m1      .banksel ram_address
+     0028 00rr                      1-  266     	MOVAR	r0x100A
+                                    1-  267     	BANKSEL	r0x100B
      0029 rrrr                      3-   71 m1      .banksel ram_address
-     002A 01rr                      1-  424     	MOVR	r0x1007,W
-     002B 2rrr                      1-  425     	LCALL	_sendRGB
-                                    1-  426     	.line	15, "codeDriver.c"; 	for(int i=0;i<ledNub;i++)
-                                    1-  427     	BANKSEL	r0x100A
+     002A 00rr                      1-  268     	MOVAR	r0x100B
+                                    1-  269     	BANKSEL	r0x1002
+     002B rrrr                      3-   71 m1      .banksel ram_address
+     002C 01rr                      1-  270     	MOVR	r0x1002,W
+                                    1-  271     	BANKSEL	r0x1004
+     002D rrrr                      3-   71 m1      .banksel ram_address
+     002E 03rr                      1-  272     	ADDAR	r0x1004,F
+                                    1-  273     	BANKSEL	r0x1009
+     002F rrrr                      3-   71 m1      .banksel ram_address
+     0030 01rr                      1-  274     	MOVR	r0x1009,W
+     0031 0C03                      1-  275     	BTRSC	STATUS,0
+     0032 05rr                      1-  276     	INCR	r0x1009,W
+     0033 0D03                      1-  277     	BTRSC	STATUS,2
+     0034 3rrr                      1-  278     	LGOTO	_00001_DS_
+                                    1-  279     	BANKSEL	r0x1005
+     0035 rrrr                      3-   71 m1      .banksel ram_address
+     0036 03rr                      1-  280     	ADDAR	r0x1005,F
+     0037                           1-  281     _00001_DS_:
+                                    1-  282     	BANKSEL	r0x100B
+     0037 rrrr                      3-   71 m1      .banksel ram_address
+     0038 01rr                      1-  283     	MOVR	r0x100B,W
+     0039 0C03                      1-  284     	BTRSC	STATUS,0
+     003A 05rr                      1-  285     	INCR	r0x100B,W
+     003B 0D03                      1-  286     	BTRSC	STATUS,2
+     003C 3rrr                      1-  287     	LGOTO	_00002_DS_
+                                    1-  288     	BANKSEL	r0x1006
+     003D rrrr                      3-   71 m1      .banksel ram_address
+     003E 03rr                      1-  289     	ADDAR	r0x1006,F
+     003F                           1-  290     _00002_DS_:
+                                    1-  291     	BANKSEL	r0x100A
+     003F rrrr                      3-   71 m1      .banksel ram_address
+     0040 01rr                      1-  292     	MOVR	r0x100A,W
+     0041 0C03                      1-  293     	BTRSC	STATUS,0
+     0042 05rr                      1-  294     	INCR	r0x100A,W
+     0043 0D03                      1-  295     	BTRSC	STATUS,2
+     0044 3rrr                      1-  296     	LGOTO	_00003_DS_
+                                    1-  297     	BANKSEL	r0x1007
+     0045 rrrr                      3-   71 m1      .banksel ram_address
+     0046 03rr                      1-  298     	ADDAR	r0x1007,F
+     0047                           1-  299     _00003_DS_:
+                                    1-  300     	.line	28, "codeDriver.c"; 	tempColor = tempColor<<8;
+                                    1-  301     	BANKSEL	r0x1006
+     0047 rrrr                      3-   71 m1      .banksel ram_address
+     0048 01rr                      1-  302     	MOVR	r0x1006,W
+                                    1-  303     	BANKSEL	r0x1007
+     0049 rrrr                      3-   71 m1      .banksel ram_address
+     004A 00rr                      1-  304     	MOVAR	r0x1007
+                                    1-  305     	BANKSEL	r0x1005
+     004B rrrr                      3-   71 m1      .banksel ram_address
+     004C 01rr                      1-  306     	MOVR	r0x1005,W
+                                    1-  307     	BANKSEL	r0x1006
+     004D rrrr                      3-   71 m1      .banksel ram_address
+     004E 00rr                      1-  308     	MOVAR	r0x1006
+                                    1-  309     	BANKSEL	r0x1004
+     004F rrrr                      3-   71 m1      .banksel ram_address
+     0050 01rr                      1-  310     	MOVR	r0x1004,W
+                                    1-  311     	BANKSEL	r0x1005
+     0051 rrrr                      3-   71 m1      .banksel ram_address
+     0052 00rr                      1-  312     	MOVAR	r0x1005
+                                    1-  313     	BANKSEL	r0x1004
+     0053 rrrr                      3-   71 m1      .banksel ram_address
+     0054 02rr                      1-  314     	CLRR	r0x1004
+                                    1-  315     	.line	29, "codeDriver.c"; 	tempColor+=colorB;
+                                    1-  316     	BANKSEL	r0x1003
+     0055 rrrr                      3-   71 m1      .banksel ram_address
+     0056 01rr                      1-  317     	MOVR	r0x1003,W
+                                    1-  318     	BANKSEL	r0x1001
+     0057 rrrr                      3-   71 m1      .banksel ram_address
+     0058 00rr                      1-  319     	MOVAR	r0x1001
+                                    1-  320     	BANKSEL	r0x1002
+     0059 rrrr                      3-   71 m1      .banksel ram_address
+     005A 02rr                      1-  321     	CLRR	r0x1002
+                                    1-  322     ;;99	MOVR	r0x1001,W
+     005B 2100                      1-  323     	MOVIA	0x00
+                                    1-  324     	BANKSEL	r0x1008
+     005C rrrr                      3-   71 m1      .banksel ram_address
+     005D 00rr                      1-  325     	MOVAR	r0x1008
+     005E 0Frr                      1-  326     	BTRSC	r0x1008,7
+     005F 21FF                      1-  327     	MOVIA	0xff
+                                    1-  328     	BANKSEL	r0x100B
+     0060 rrrr                      3-   71 m1      .banksel ram_address
+     0061 00rr                      1-  329     	MOVAR	r0x100B
+                                    1-  330     	BANKSEL	r0x1009
+     0062 rrrr                      3-   71 m1      .banksel ram_address
+     0063 00rr                      1-  331     	MOVAR	r0x1009
+                                    1-  332     	BANKSEL	r0x1003
+     0064 rrrr                      3-   71 m1      .banksel ram_address
+     0065 01rr                      1-  333     	MOVR	r0x1003,W
+                                    1-  334     	BANKSEL	r0x1004
+     0066 rrrr                      3-   71 m1      .banksel ram_address
+     0067 03rr                      1-  335     	ADDAR	r0x1004,F
+                                    1-  336     	BANKSEL	r0x1008
+     0068 rrrr                      3-   71 m1      .banksel ram_address
+     0069 01rr                      1-  337     	MOVR	r0x1008,W
+     006A 0C03                      1-  338     	BTRSC	STATUS,0
+     006B 05rr                      1-  339     	INCR	r0x1008,W
+     006C 0D03                      1-  340     	BTRSC	STATUS,2
+     006D 3rrr                      1-  341     	LGOTO	_00004_DS_
+                                    1-  342     	BANKSEL	r0x1005
+     006E rrrr                      3-   71 m1      .banksel ram_address
+     006F 03rr                      1-  343     	ADDAR	r0x1005,F
+     0070                           1-  344     _00004_DS_:
+                                    1-  345     	BANKSEL	r0x1009
+     0070 rrrr                      3-   71 m1      .banksel ram_address
+     0071 01rr                      1-  346     	MOVR	r0x1009,W
+     0072 0C03                      1-  347     	BTRSC	STATUS,0
+     0073 05rr                      1-  348     	INCR	r0x1009,W
+     0074 0D03                      1-  349     	BTRSC	STATUS,2
+     0075 3rrr                      1-  350     	LGOTO	_00005_DS_
+                                    1-  351     	BANKSEL	r0x1006
+     0076 rrrr                      3-   71 m1      .banksel ram_address
+     0077 03rr                      1-  352     	ADDAR	r0x1006,F
+     0078                           1-  353     _00005_DS_:
+                                    1-  354     	BANKSEL	r0x100B
+     0078 rrrr                      3-   71 m1      .banksel ram_address
+     0079 01rr                      1-  355     	MOVR	r0x100B,W
+     007A 0C03                      1-  356     	BTRSC	STATUS,0
+     007B 05rr                      1-  357     	INCR	r0x100B,W
+     007C 0D03                      1-  358     	BTRSC	STATUS,2
+     007D 3rrr                      1-  359     	LGOTO	_00006_DS_
+                                    1-  360     	BANKSEL	r0x1007
+     007E rrrr                      3-   71 m1      .banksel ram_address
+     007F 03rr                      1-  361     	ADDAR	r0x1007,F
+     0080                           1-  362     _00006_DS_:
+                                    1-  363     	.line	30, "codeDriver.c"; 	tempColor = tempColor<<8;
+                                    1-  364     	BANKSEL	r0x1006
+     0080 rrrr                      3-   71 m1      .banksel ram_address
+     0081 01rr                      1-  365     	MOVR	r0x1006,W
+                                    1-  366     	BANKSEL	r0x1007
+     0082 rrrr                      3-   71 m1      .banksel ram_address
+     0083 00rr                      1-  367     	MOVAR	r0x1007
+                                    1-  368     	BANKSEL	r0x1005
+     0084 rrrr                      3-   71 m1      .banksel ram_address
+     0085 01rr                      1-  369     	MOVR	r0x1005,W
+                                    1-  370     	BANKSEL	r0x1006
+     0086 rrrr                      3-   71 m1      .banksel ram_address
+     0087 00rr                      1-  371     	MOVAR	r0x1006
+                                    1-  372     	BANKSEL	r0x1004
+     0088 rrrr                      3-   71 m1      .banksel ram_address
+     0089 01rr                      1-  373     	MOVR	r0x1004,W
+                                    1-  374     	BANKSEL	r0x1005
+     008A rrrr                      3-   71 m1      .banksel ram_address
+     008B 00rr                      1-  375     	MOVAR	r0x1005
+                                    1-  376     	BANKSEL	r0x1004
+     008C rrrr                      3-   71 m1      .banksel ram_address
+     008D 02rr                      1-  377     	CLRR	r0x1004
+                                    1-  378     	.line	31, "codeDriver.c"; 	for(unsigned char i=24;i>0;i--)
+     008E 2118                      1-  379     	MOVIA	0x18
+                                    1-  380     	BANKSEL	r0x1001
+     008F rrrr                      3-   71 m1      .banksel ram_address
+     0090 00rr                      1-  381     	MOVAR	r0x1001
+     0091                           1-  382     _00128_DS_:
+                                    1-  383     	BANKSEL	r0x1001
+     0091 rrrr                      3-   71 m1      .banksel ram_address
+     0092 01rr                      1-  384     	MOVR	r0x1001,W
+     0093 0D03                      1-  385     	BTRSC	STATUS,2
+     0094 3rrr                      1-  386     	LGOTO	_00126_DS_
+                                    1-  387     	.line	33, "codeDriver.c"; 	tempColor = tempColor<<1;
+     0095 1C03                      1-  388     	BCR	STATUS,0
+                                    1-  389     	BANKSEL	r0x1004
+     0096 rrrr                      3-   71 m1      .banksel ram_address
+     0097 14rr                      1-  390     	RLR	r0x1004,F
+                                    1-  391     	BANKSEL	r0x1005
+     0098 rrrr                      3-   71 m1      .banksel ram_address
+     0099 14rr                      1-  392     	RLR	r0x1005,F
+                                    1-  393     	BANKSEL	r0x1006
+     009A rrrr                      3-   71 m1      .banksel ram_address
+     009B 14rr                      1-  394     	RLR	r0x1006,F
+                                    1-  395     	BANKSEL	r0x1007
+     009C rrrr                      3-   71 m1      .banksel ram_address
+     009D 14rr                      1-  396     	RLR	r0x1007,F
+                                    1-  397     	.line	34, "codeDriver.c"; 	if(D)
+     009E 0803                      1-  398     	BTRSS	STATUS,0
+     009F 3rrr                      1-  399     	LGOTO	_00124_DS_
+                                    1-  400     	.line	36, "codeDriver.c"; 	PB0 = 0;
+                                    1-  401     	BANKSEL	_PORTB
+     00A0 rrrr                      3-   71 m1      .banksel ram_address
+     00A1 1Crr                      1-  402     	BCR	_PORTB,0
+                                    1-  403     	.line	37, "codeDriver.c"; 	NOP();
+     00A2 0000                      1-  404     	nop
+                                    1-  405     	.line	38, "codeDriver.c"; 	NOP();
+     00A3 0000                      1-  406     	nop
+                                    1-  407     	.line	39, "codeDriver.c"; 	NOP();
+     00A4 0000                      1-  408     	nop
+                                    1-  409     	.line	40, "codeDriver.c"; 	NOP();
+     00A5 0000                      1-  410     	nop
+                                    1-  411     	.line	41, "codeDriver.c"; 	NOP();
+     00A6 0000                      1-  412     	nop
+                                    1-  413     	.line	42, "codeDriver.c"; 	NOP();
+     00A7 0000                      1-  414     	nop
+                                    1-  415     	.line	43, "codeDriver.c"; 	NOP();
+     00A8 0000                      1-  416     	nop
+                                    1-  417     	.line	44, "codeDriver.c"; 	NOP();
+     00A9 0000                      1-  418     	nop
+                                    1-  419     	.line	45, "codeDriver.c"; 	NOP();
+     00AA 0000                      1-  420     	nop
+                                    1-  421     	.line	46, "codeDriver.c"; 	PB0 = 1;
+                                    1-  422     	BANKSEL	_PORTB
+     00AB rrrr                      3-   71 m1      .banksel ram_address
+     00AC 18rr                      1-  423     	BSR	_PORTB,0
+                                    1-  424     	.line	47, "codeDriver.c"; 	NOP();
+     00AD 0000                      1-  425     	nop
+                                    1-  426     	.line	48, "codeDriver.c"; 	NOP();
+     00AE 0000                      1-  427     	nop
+                                    1-  428     	.line	49, "codeDriver.c"; 	NOP();
+     00AF 0000                      1-  429     	nop
+                                    1-  430     	.line	50, "codeDriver.c"; 	NOP();
+     00B0 0000                      1-  431     	nop
+                                    1-  432     	.line	51, "codeDriver.c"; 	NOP();
+     00B1 0000                      1-  433     	nop
+     00B2 3rrr                      1-  434     	LGOTO	_00129_DS_
+     00B3                           1-  435     _00124_DS_:
+                                    1-  436     	.line	55, "codeDriver.c"; 	PB0 = 1;
+                                    1-  437     	BANKSEL	_PORTB
+     00B3 rrrr                      3-   71 m1      .banksel ram_address
+     00B4 18rr                      1-  438     	BSR	_PORTB,0
+                                    1-  439     	.line	56, "codeDriver.c"; 	NOP();
+     00B5 0000                      1-  440     	nop
+                                    1-  441     	.line	57, "codeDriver.c"; 	NOP();
+     00B6 0000                      1-  442     	nop
+                                    1-  443     	.line	58, "codeDriver.c"; 	NOP();
+     00B7 0000                      1-  444     	nop
+                                    1-  445     	.line	59, "codeDriver.c"; 	NOP();
+     00B8 0000                      1-  446     	nop
+                                    1-  447     	.line	60, "codeDriver.c"; 	NOP();
+     00B9 0000                      1-  448     	nop
+                                    1-  449     	.line	61, "codeDriver.c"; 	NOP();
+     00BA 0000                      1-  450     	nop
+                                    1-  451     	.line	62, "codeDriver.c"; 	NOP();
+     00BB 0000                      1-  452     	nop
+                                    1-  453     	.line	63, "codeDriver.c"; 	NOP();
+     00BC 0000                      1-  454     	nop
+                                    1-  455     	.line	64, "codeDriver.c"; 	NOP();
+     00BD 0000                      1-  456     	nop
+                                    1-  457     	.line	65, "codeDriver.c"; 	PB0 = 0;
+                                    1-  458     	BANKSEL	_PORTB
+     00BE rrrr                      3-   71 m1      .banksel ram_address
+     00BF 1Crr                      1-  459     	BCR	_PORTB,0
+                                    1-  460     	.line	66, "codeDriver.c"; 	NOP();
+     00C0 0000                      1-  461     	nop
+                                    1-  462     	.line	67, "codeDriver.c"; 	NOP();
+     00C1 0000                      1-  463     	nop
+                                    1-  464     	.line	68, "codeDriver.c"; 	NOP();
+     00C2 0000                      1-  465     	nop
+                                    1-  466     	.line	69, "codeDriver.c"; 	NOP();
+     00C3 0000                      1-  467     	nop
+                                    1-  468     	.line	70, "codeDriver.c"; 	NOP();
+     00C4 0000                      1-  469     	nop
+     00C5                           1-  470     _00129_DS_:
+                                    1-  471     	.line	31, "codeDriver.c"; 	for(unsigned char i=24;i>0;i--)
+                                    1-  472     	BANKSEL	r0x1001
+     00C5 rrrr                      3-   71 m1      .banksel ram_address
+     00C6 06rr                      1-  473     	DECR	r0x1001,F
+     00C7 3rrr                      1-  474     	LGOTO	_00128_DS_
+     00C8                           1-  475     _00126_DS_:
+                                    1-  476     	.line	73, "codeDriver.c"; 	PB0 = 0;
+                                    1-  477     	BANKSEL	_PORTB
+     00C8 rrrr                      3-   71 m1      .banksel ram_address
+     00C9 1Crr                      1-  478     	BCR	_PORTB,0
+                                    1-  479     	.line	74, "codeDriver.c"; 	}
+                                    1-  480     	RETURN	
+     00CA 0010                      3-   26 m1      ret
+                                    1-  481     ; exit point of _sendRGB
+                                    1-  483     ;***
+                                    1-  484     ;  pBlock Stats: dbName = C
+                                    1-  485     ;***
+                                    1-  486     ;has an exit
+                                    1-  487     ;functions called:
+                                    1-  488     ;   _sendRGB
+                                    1-  489     ;   _Delay80us
+                                    1-  490     ;   _sendRGB
+                                    1-  491     ;   _Delay80us
+                                    1-  492     ;12 compiler assigned registers:
+                                    1-  493     ;   r0x100C
+                                    1-  494     ;   STK00
+                                    1-  495     ;   r0x100D
+                                    1-  496     ;   STK01
+                                    1-  497     ;   r0x100E
+                                    1-  498     ;   STK02
+                                    1-  499     ;   r0x100F
+                                    1-  500     ;   r0x1010
+                                    1-  501     ;   r0x1011
+                                    1-  502     ;   r0x1012
+                                    1-  503     ;   r0x1013
+                                    1-  504     ;   r0x1014
+                                    1-  505     ;; Starting pCode block
+                                    1-  506     .segment "code"; module=codeDriver, function=_sendtoLast
+                                    1-  508     ;local variable name mapping:
+     0000                           1-  515     _sendtoLast:
+                                    1-  516     ; 2 exit points
+                                    1-  517     	.line	13, "codeDriver.c"; 	void sendtoLast(char ledNub,unsigned char colorR,unsigned char colorG,unsigned char colorB)
+                                    1-  518     	BANKSEL	r0x100C
+     0000 rrrr                      3-   71 m1      .banksel ram_address
+     0001 00rr                      1-  519     	MOVAR	r0x100C
+     0002 01rr                      1-  520     	MOVR	STK00,W
+                                    1-  521     	BANKSEL	r0x100D
+     0003 rrrr                      3-   71 m1      .banksel ram_address
+     0004 00rr                      1-  522     	MOVAR	r0x100D
+     0005 01rr                      1-  523     	MOVR	STK01,W
+                                    1-  524     	BANKSEL	r0x100E
+     0006 rrrr                      3-   71 m1      .banksel ram_address
+     0007 00rr                      1-  525     	MOVAR	r0x100E
+     0008 01rr                      1-  526     	MOVR	STK02,W
+                                    1-  527     	BANKSEL	r0x100F
+     0009 rrrr                      3-   71 m1      .banksel ram_address
+     000A 00rr                      1-  528     	MOVAR	r0x100F
+                                    1-  529     	.line	15, "codeDriver.c"; 	for(int i=0;i<ledNub;i++)
+                                    1-  530     	BANKSEL	r0x1010
+     000B rrrr                      3-   71 m1      .banksel ram_address
+     000C 02rr                      1-  531     	CLRR	r0x1010
+                                    1-  532     	BANKSEL	r0x1011
+     000D rrrr                      3-   71 m1      .banksel ram_address
+     000E 02rr                      1-  533     	CLRR	r0x1011
+     000F                           1-  534     _00107_DS_:
+                                    1-  535     	BANKSEL	r0x100C
+     000F rrrr                      3-   71 m1      .banksel ram_address
+     0010 01rr                      1-  536     	MOVR	r0x100C,W
+                                    1-  537     	BANKSEL	r0x1012
+     0011 rrrr                      3-   71 m1      .banksel ram_address
+     0012 00rr                      1-  538     	MOVAR	r0x1012
+                                    1-  539     ;;1	CLRR	r0x1013
+                                    1-  540     	BANKSEL	r0x1011
+     0013 rrrr                      3-   71 m1      .banksel ram_address
+     0014 01rr                      1-  541     	MOVR	r0x1011,W
+     0015 2580                      1-  542     	ADDIA	0x80
+                                    1-  543     	BANKSEL	r0x1014
+     0016 rrrr                      3-   71 m1      .banksel ram_address
+     0017 00rr                      1-  544     	MOVAR	r0x1014
+     0018 2100                      1-  545     	MOVIA	0x00
+     0019 2580                      1-  546     	ADDIA	0x80
+     001A 04rr                      1-  547     	SUBAR	r0x1014,W
+     001B 0903                      1-  548     	BTRSS	STATUS,2
+     001C 3rrr                      1-  549     	LGOTO	_00118_DS_
+                                    1-  550     	BANKSEL	r0x1012
+     001D rrrr                      3-   71 m1      .banksel ram_address
+     001E 01rr                      1-  551     	MOVR	r0x1012,W
+                                    1-  552     	BANKSEL	r0x1010
+     001F rrrr                      3-   71 m1      .banksel ram_address
+     0020 04rr                      1-  553     	SUBAR	r0x1010,W
+     0021                           1-  554     _00118_DS_:
+     0021 0C03                      1-  555     	BTRSC	STATUS,0
+     0022 3rrr                      1-  556     	LGOTO	_00105_DS_
+                                    1-  557     	.line	17, "codeDriver.c"; 	sendRGB(colorR,colorG,colorB);
+                                    1-  558     	BANKSEL	r0x100F
+     0023 rrrr                      3-   71 m1      .banksel ram_address
+     0024 01rr                      1-  559     	MOVR	r0x100F,W
+     0025 00rr                      1-  560     	MOVAR	STK01
+                                    1-  561     	BANKSEL	r0x100E
+     0026 rrrr                      3-   71 m1      .banksel ram_address
+     0027 01rr                      1-  562     	MOVR	r0x100E,W
+     0028 00rr                      1-  563     	MOVAR	STK00
+                                    1-  564     	BANKSEL	r0x100D
+     0029 rrrr                      3-   71 m1      .banksel ram_address
+     002A 01rr                      1-  565     	MOVR	r0x100D,W
+     002B 2rrr                      1-  566     	LCALL	_sendRGB
+                                    1-  567     	.line	15, "codeDriver.c"; 	for(int i=0;i<ledNub;i++)
+                                    1-  568     	BANKSEL	r0x1010
      002C rrrr                      3-   71 m1      .banksel ram_address
-     002D 05rr                      1-  428     	INCR	r0x100A,F
-     002E 0903                      1-  429     	BTRSS	STATUS,2
-     002F 3rrr                      1-  430     	LGOTO	_00001_DS_
-                                    1-  431     	BANKSEL	r0x100B
+     002D 05rr                      1-  569     	INCR	r0x1010,F
+     002E 0903                      1-  570     	BTRSS	STATUS,2
+     002F 3rrr                      1-  571     	LGOTO	_00007_DS_
+                                    1-  572     	BANKSEL	r0x1011
      0030 rrrr                      3-   71 m1      .banksel ram_address
-     0031 05rr                      1-  432     	INCR	r0x100B,F
-     0032                           1-  433     _00001_DS_:
-     0032 3rrr                      1-  434     	LGOTO	_00107_DS_
-     0033                           1-  435     _00105_DS_:
-                                    1-  436     	.line	19, "codeDriver.c"; 	Delay80us();
-     0033 2rrr                      1-  437     	LCALL	_Delay80us
-                                    1-  438     	.line	20, "codeDriver.c"; 	}
-                                    1-  439     	RETURN	
+     0031 05rr                      1-  573     	INCR	r0x1011,F
+     0032                           1-  574     _00007_DS_:
+     0032 3rrr                      1-  575     	LGOTO	_00107_DS_
+     0033                           1-  576     _00105_DS_:
+                                    1-  577     	.line	19, "codeDriver.c"; 	Delay80us();
+     0033 2rrr                      1-  578     	LCALL	_Delay80us
+                                    1-  579     	.line	20, "codeDriver.c"; 	}
+                                    1-  580     	RETURN	
      0034 0010                      3-   26 m1      ret
-                                    1-  440     ; exit point of _sendtoLast
-                                    1-  443     ;	code size estimation:
-                                    1-  444     ;	   75+   36 =   111 instructions (  294 byte)
-                                    1-  446     	end
-                                    1-  446     	end
+                                    1-  581     ; exit point of _sendtoLast
+                                    1-  584     ;	code size estimation:
+                                    1-  585     ;	  153+   86 =   239 instructions (  650 byte)
+                                    1-  587     	end
+                                    1-  587     	end
 
 SYMBOL TABLE            TYPE     VALUE
 __CHECKSUM_ADDR__       Label    00000000
 __PIN_COUNT__           Constant 0000000C
 __PROCESSOR__           Constant 00800533
-_00001_DS_              Label    00000032
+_00001_DS_              Label    00000037
+_00002_DS_              Label    0000003F
+_00003_DS_              Label    00000047
+_00004_DS_              Label    00000070
+_00005_DS_              Label    00000078
+_00006_DS_              Label    00000080
+_00007_DS_              Label    00000032
 _00105_DS_              Label    00000033
 _00107_DS_              Label    0000000F
 _00118_DS_              Label    00000021
-_00128_DS_              Label    00000021
-_00130_DS_              Label    00000036
-_00132_DS_              Label    00000005
-_00133_DS_              Label    00000033
-_00140_DS_              Label    00000002
-_00142_DS_              Label    0000000B
+_00124_DS_              Label    000000B3
+_00126_DS_              Label    000000C8
+_00128_DS_              Label    00000091
+_00129_DS_              Label    000000C5
+_00136_DS_              Label    00000002
+_00138_DS_              Label    0000000B
 _ABPLCON                Label    00000000
 _ABPLCONbits            Label    00000000
 _BODCON                 Label    00000000
@@ -513,9 +708,6 @@ _PORTBbits              Label    00000000
 _PS0CV                  Label    00000000
 _PS1CV                  Label    00000000
 _PWM1DUTY               Label    00000000
-_SendCodeByte           Label    00000000
-_sendCodeONE            Label    00000000
-_sendCodeZERO           Label    00000000
 _sendRGB                Label    00000000
 _sendtoLast             Label    00000000
 _STATUS                 Label    00000000
@@ -546,7 +738,13 @@ r0x1009                 Label    00000000
 r0x100A                 Label    00000000
 r0x100B                 Label    00000000
 r0x100C                 Label    00000000
+r0x100D                 Label    00000000
 r0x100E                 Label    00000000
+r0x100F                 Label    00000000
+r0x1010                 Label    00000000
+r0x1011                 Label    00000000
+r0x1012                 Label    00000000
+r0x1014                 Label    00000000
 SSAVE                   Label    00000000
 STATUS                  Constant 00000003
 STK00                   Label    00000000

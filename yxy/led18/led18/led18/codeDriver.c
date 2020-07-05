@@ -22,19 +22,15 @@ void sendtoLast(char ledNub,unsigned char colorR,unsigned char colorG,unsigned c
 
 void sendRGB(unsigned char colorR,unsigned char colorG,unsigned char colorB)
 {
-	SendCodeByte(colorR);
-	SendCodeByte(colorG);
-	SendCodeByte(colorB);
-}
-
-
-
-
-void SendCodeByte(unsigned char data)
-{
-	for(unsigned char i=8;i>0;i--)
+	long tempColor = colorR;
+	tempColor = tempColor<<8;
+	tempColor+=colorG;
+	tempColor = tempColor<<8;
+	tempColor+=colorB;
+	tempColor = tempColor<<8;
+	for(unsigned char i=24;i>0;i--)
 	{
-		data = data<<1;
+		tempColor = tempColor<<1;
 		if(D)
 		{
 			PB0 = 0;
@@ -76,8 +72,6 @@ void SendCodeByte(unsigned char data)
 	}
 	PB0 = 0;
 }
-
-
 
 
 void Delay80us()

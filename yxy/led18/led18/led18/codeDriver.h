@@ -20,8 +20,6 @@ __sbit D = STATUS:0;
 
 void sendtoLast(char ledNub,unsigned char colorR,unsigned char colorG,unsigned char colorB);
 void sendRGB(unsigned char colorR,unsigned char colorG,unsigned char colorB);
-void SendCodeByte(unsigned char data);
-void sendCodeZERO();
-void sendCodeONE();
+//void SendCodeByte(unsigned char data);
 void Delay80us();
 #endif
