@@ -720,11 +720,11 @@ _ledMode3:
 	SUBAR	_lockLedCount,W
 	BTRSC	STATUS,0
 	LGOTO	_00251_DS_
-	.line	312, "main.c"; 	PORTA &= 0xF0;
-	MOVIA	0xf0
+	.line	312, "main.c"; 	PORTA &= 0x10;
+	MOVIA	0x10
 	ANDAR	_PORTA,F
-	.line	313, "main.c"; 	PORTB &= 0x3F;
-	MOVIA	0x3f
+	.line	313, "main.c"; 	PORTB &= 0x07;
+	MOVIA	0x07
 	ANDAR	_PORTB,F
 	LGOTO	_00253_DS_
 ;;unsigned compare: left < lit (0xA=10), size=1
@@ -735,11 +735,10 @@ _00251_DS_:
 	SUBAR	_lockLedCount,W
 	BTRSC	STATUS,0
 	LGOTO	_00253_DS_
-	.line	317, "main.c"; 	PORTA |= 0x0F;
-	MOVIA	0x0f
-	IORAR	_PORTA,F
-	.line	318, "main.c"; 	PORTB |= 0xC0;
-	MOVIA	0xc0
+	.line	317, "main.c"; 	PORTA |= 0x01;
+	BSR	_PORTA,0
+	.line	318, "main.c"; 	PORTB |= 0xF8;
+	MOVIA	0xf8
 	IORAR	_PORTB,F
 _00253_DS_:
 	.line	320, "main.c"; 	}
@@ -804,8 +803,8 @@ _00235_DS_:
 	LGOTO	_00232_DS_
 	.line	254, "main.c"; 	setbit(PORTB,6);
 	BSR	_PORTB,6
-	.line	255, "main.c"; 	resetbit(PORTA,1);
-	BCR	_PORTA,1
+	.line	255, "main.c"; 	resetbit(PORTB,5);
+	BCR	_PORTB,5
 	LGOTO	_00243_DS_
 ;;swapping arguments (AOP_TYPEs 1/3)
 ;;unsigned compare: left >= lit (0x1A=26), size=1
@@ -816,10 +815,10 @@ _00232_DS_:
 	SUBAR	_lockLedCount,W
 	BTRSC	STATUS,0
 	LGOTO	_00229_DS_
-	.line	259, "main.c"; 	setbit(PORTA,1);
-	BSR	_PORTA,1
-	.line	260, "main.c"; 	resetbit(PORTA,2);
-	BCR	_PORTA,2
+	.line	259, "main.c"; 	setbit(PORTB,5);
+	BSR	_PORTB,5
+	.line	260, "main.c"; 	resetbit(PORTB,4);
+	BCR	_PORTB,4
 	LGOTO	_00243_DS_
 ;;swapping arguments (AOP_TYPEs 1/3)
 ;;unsigned compare: left >= lit (0x1F=31), size=1
@@ -830,10 +829,10 @@ _00229_DS_:
 	SUBAR	_lockLedCount,W
 	BTRSC	STATUS,0
 	LGOTO	_00226_DS_
-	.line	264, "main.c"; 	setbit(PORTA,2);
-	BSR	_PORTA,2
-	.line	265, "main.c"; 	resetbit(PORTA,3);
-	BCR	_PORTA,3
+	.line	264, "main.c"; 	setbit(PORTB,4);
+	BSR	_PORTB,4
+	.line	265, "main.c"; 	resetbit(PORTB,3);
+	BCR	_PORTB,3
 	LGOTO	_00243_DS_
 ;;swapping arguments (AOP_TYPEs 1/3)
 ;;unsigned compare: left >= lit (0x24=36), size=1
@@ -844,8 +843,8 @@ _00226_DS_:
 	SUBAR	_lockLedCount,W
 	BTRSC	STATUS,0
 	LGOTO	_00223_DS_
-	.line	269, "main.c"; 	setbit(PORTA,3);
-	BSR	_PORTA,3
+	.line	269, "main.c"; 	setbit(PORTB,3);
+	BSR	_PORTB,3
 	LGOTO	_00243_DS_
 ;;swapping arguments (AOP_TYPEs 1/3)
 ;;unsigned compare: left >= lit (0x29=41), size=1
@@ -856,10 +855,10 @@ _00223_DS_:
 	SUBAR	_lockLedCount,W
 	BTRSC	STATUS,0
 	LGOTO	_00220_DS_
-	.line	273, "main.c"; 	setbit(PORTA,2);
-	BSR	_PORTA,2
-	.line	274, "main.c"; 	resetbit(PORTA,3);
-	BCR	_PORTA,3
+	.line	273, "main.c"; 	setbit(PORTB,4);
+	BSR	_PORTB,4
+	.line	274, "main.c"; 	resetbit(PORTB,3);
+	BCR	_PORTB,3
 	LGOTO	_00243_DS_
 ;;swapping arguments (AOP_TYPEs 1/3)
 ;;unsigned compare: left >= lit (0x2E=46), size=1
@@ -870,10 +869,10 @@ _00220_DS_:
 	SUBAR	_lockLedCount,W
 	BTRSC	STATUS,0
 	LGOTO	_00217_DS_
-	.line	278, "main.c"; 	setbit(PORTA,3);
-	BSR	_PORTA,3
-	.line	279, "main.c"; 	resetbit(PORTA,2);
-	BCR	_PORTA,2
+	.line	278, "main.c"; 	setbit(PORTB,3);
+	BSR	_PORTB,3
+	.line	279, "main.c"; 	resetbit(PORTB,4);
+	BCR	_PORTB,4
 	LGOTO	_00243_DS_
 ;;swapping arguments (AOP_TYPEs 1/3)
 ;;unsigned compare: left >= lit (0x33=51), size=1
@@ -884,10 +883,10 @@ _00217_DS_:
 	SUBAR	_lockLedCount,W
 	BTRSC	STATUS,0
 	LGOTO	_00214_DS_
-	.line	283, "main.c"; 	setbit(PORTA,2);
-	BSR	_PORTA,2
-	.line	284, "main.c"; 	resetbit(PORTA,1);
-	BCR	_PORTA,1
+	.line	283, "main.c"; 	setbit(PORTB,4);
+	BSR	_PORTB,4
+	.line	284, "main.c"; 	resetbit(PORTB,5);
+	BCR	_PORTB,5
 	LGOTO	_00243_DS_
 ;;swapping arguments (AOP_TYPEs 1/3)
 ;;unsigned compare: left >= lit (0x38=56), size=1
@@ -898,8 +897,8 @@ _00214_DS_:
 	SUBAR	_lockLedCount,W
 	BTRSC	STATUS,0
 	LGOTO	_00211_DS_
-	.line	288, "main.c"; 	setbit(PORTA,1);
-	BSR	_PORTA,1
+	.line	288, "main.c"; 	setbit(PORTB,5);
+	BSR	_PORTB,5
 	.line	289, "main.c"; 	resetbit(PORTB,6);
 	BCR	_PORTB,6
 	LGOTO	_00243_DS_
@@ -999,8 +998,8 @@ _00189_DS_:
 	LGOTO	_00186_DS_
 	.line	217, "main.c"; 	setbit(PORTB,6);
 	BSR	_PORTB,6
-	.line	218, "main.c"; 	resetbit(PORTA,1);
-	BCR	_PORTA,1
+	.line	218, "main.c"; 	resetbit(PORTB,5);
+	BCR	_PORTB,5
 	LGOTO	_00197_DS_
 ;;unsigned compare: left < lit (0x19=25), size=1
 _00186_DS_:
@@ -1010,10 +1009,10 @@ _00186_DS_:
 	SUBAR	_lockLedCount,W
 	BTRSC	STATUS,0
 	LGOTO	_00183_DS_
-	.line	222, "main.c"; 	setbit(PORTA,1);
-	BSR	_PORTA,1
-	.line	223, "main.c"; 	resetbit(PORTA,2);
-	BCR	_PORTA,2
+	.line	222, "main.c"; 	setbit(PORTB,5);
+	BSR	_PORTB,5
+	.line	223, "main.c"; 	resetbit(PORTB,4);
+	BCR	_PORTB,4
 	LGOTO	_00197_DS_
 ;;unsigned compare: left < lit (0x1E=30), size=1
 _00183_DS_:
@@ -1023,10 +1022,10 @@ _00183_DS_:
 	SUBAR	_lockLedCount,W
 	BTRSC	STATUS,0
 	LGOTO	_00180_DS_
-	.line	227, "main.c"; 	setbit(PORTA,2);
-	BSR	_PORTA,2
-	.line	228, "main.c"; 	resetbit(PORTA,3);
-	BCR	_PORTA,3
+	.line	227, "main.c"; 	setbit(PORTB,4);
+	BSR	_PORTB,4
+	.line	228, "main.c"; 	resetbit(PORTB,3);
+	BCR	_PORTB,3
 	LGOTO	_00197_DS_
 ;;unsigned compare: left < lit (0x23=35), size=1
 _00180_DS_:
@@ -1035,8 +1034,8 @@ _00180_DS_:
 	BANKSEL	_lockLedCount
 	SUBAR	_lockLedCount,W
 	BTRSS	STATUS,0
-	.line	232, "main.c"; 	setbit(PORTA,3);
-	BSR	_PORTA,3
+	.line	232, "main.c"; 	setbit(PORTB,3);
+	BSR	_PORTB,3
 _00197_DS_:
 	.line	235, "main.c"; 	}
 	RETURN	
@@ -1136,11 +1135,10 @@ _00133_DS_:
 	SUBAR	_lockLedCount,W
 	BTRSS	STATUS,0
 	LGOTO	_00172_DS_
-	.line	121, "main.c"; 	PORTA |= 0x0F;
-	MOVIA	0x0f
-	IORAR	_PORTA,F
-	.line	122, "main.c"; 	PORTB |= 0xC0;
-	MOVIA	0xc0
+	.line	121, "main.c"; 	PORTA |= 0x01;
+	BSR	_PORTA,0
+	.line	122, "main.c"; 	PORTB |= 0xF8;
+	MOVIA	0xf8
 	IORAR	_PORTB,F
 	.line	123, "main.c"; 	lockLedCount = 0;
 	CLRR	_lockLedCount
@@ -1161,11 +1159,11 @@ _00170_DS_:
 	SUBAR	_lockLedCount,W
 	BTRSC	STATUS,0
 	LGOTO	_00144_DS_
-	.line	137, "main.c"; 	PORTA &= 0xF0;
-	MOVIA	0xf0
+	.line	137, "main.c"; 	PORTA &= 0x10;
+	MOVIA	0x10
 	ANDAR	_PORTA,F
-	.line	138, "main.c"; 	PORTB &= 0x3F;
-	MOVIA	0x3f
+	.line	138, "main.c"; 	PORTB &= 0x07;
+	MOVIA	0x07
 	ANDAR	_PORTB,F
 	LGOTO	_00145_DS_
 ;;unsigned compare: left < lit (0x21=33), size=1
@@ -1176,11 +1174,10 @@ _00144_DS_:
 	SUBAR	_lockLedCount,W
 	BTRSC	STATUS,0
 	LGOTO	_00145_DS_
-	.line	142, "main.c"; 	PORTA |= 0x0F;
-	MOVIA	0x0f
-	IORAR	_PORTA,F
-	.line	143, "main.c"; 	PORTB |= 0xC0;
-	MOVIA	0xc0
+	.line	142, "main.c"; 	PORTA |= 0x01;
+	BSR	_PORTA,0
+	.line	143, "main.c"; 	PORTB |= 0xF8;
+	MOVIA	0xf8
 	IORAR	_PORTB,F
 _00145_DS_:
 	.line	146, "main.c"; 	if(++lockLedCount >= 33)
@@ -1259,22 +1256,21 @@ _00154_DS_:
 	MOVR	_countLed,W
 	BTRSS	STATUS,2
 	LGOTO	_00156_DS_
-	.line	174, "main.c"; 	PORTA &= 0xF0;
-	MOVIA	0xf0
+	.line	174, "main.c"; 	PORTA &= 0x10;
+	MOVIA	0x10
 	ANDAR	_PORTA,F
-	.line	175, "main.c"; 	PORTB &= 0x3F;
-	MOVIA	0x3f
+	.line	175, "main.c"; 	PORTB &= 0x07;
+	MOVIA	0x07
 	ANDAR	_PORTB,F
 	.line	176, "main.c"; 	countLed = 1;
 	MOVIA	0x01
 	MOVAR	_countLed
 	LGOTO	_00161_DS_
 _00156_DS_:
-	.line	180, "main.c"; 	PORTA |= 0x0F;
-	MOVIA	0x0f
-	IORAR	_PORTA,F
-	.line	181, "main.c"; 	PORTB |= 0xC0;
-	MOVIA	0xc0
+	.line	180, "main.c"; 	PORTA |= 0x01;
+	BSR	_PORTA,0
+	.line	181, "main.c"; 	PORTB |= 0xF8;
+	MOVIA	0xf8
 	IORAR	_PORTB,F
 	.line	182, "main.c"; 	countLed = 0;
 	BANKSEL	_countLed
@@ -1288,11 +1284,10 @@ _00161_DS_:
 	SUBAR	_lockLedCount,W
 	BTRSS	STATUS,0
 	LGOTO	_00172_DS_
-	.line	188, "main.c"; 	PORTA |= 0x0F;
-	MOVIA	0x0f
-	IORAR	_PORTA,F
-	.line	189, "main.c"; 	PORTB |= 0xC0;
-	MOVIA	0xc0
+	.line	188, "main.c"; 	PORTA |= 0x01;
+	BSR	_PORTA,0
+	.line	189, "main.c"; 	PORTB |= 0xF8;
+	MOVIA	0xf8
 	IORAR	_PORTB,F
 	.line	190, "main.c"; 	countLed = 0;
 	BANKSEL	_countLed
@@ -1310,6 +1305,6 @@ _00172_DS_:
 
 
 ;	code size estimation:
-;	  513+  107 =   620 instructions ( 1454 byte)
+;	  508+  107 =   615 instructions ( 1444 byte)
 
 	end

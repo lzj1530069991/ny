@@ -731,11 +731,11 @@ NYASM 2.25
      0002 04rr                      1-  720     	SUBAR	_lockLedCount,W
      0003 0C03                      1-  721     	BTRSC	STATUS,0
      0004 3rrr                      1-  722     	LGOTO	_00251_DS_
-                                    1-  723     	.line	312, "main.c"; 	PORTA &= 0xF0;
-     0005 21F0                      1-  724     	MOVIA	0xf0
+                                    1-  723     	.line	312, "main.c"; 	PORTA &= 0x10;
+     0005 2110                      1-  724     	MOVIA	0x10
      0006 10rr                      1-  725     	ANDAR	_PORTA,F
-                                    1-  726     	.line	313, "main.c"; 	PORTB &= 0x3F;
-     0007 213F                      1-  727     	MOVIA	0x3f
+                                    1-  726     	.line	313, "main.c"; 	PORTB &= 0x07;
+     0007 2107                      1-  727     	MOVIA	0x07
      0008 10rr                      1-  728     	ANDAR	_PORTB,F
      0009 3rrr                      1-  729     	LGOTO	_00253_DS_
                                     1-  730     ;;unsigned compare: left < lit (0xA=10), size=1
@@ -747,634 +747,629 @@ NYASM 2.25
      000C 04rr                      1-  735     	SUBAR	_lockLedCount,W
      000D 0C03                      1-  736     	BTRSC	STATUS,0
      000E 3rrr                      1-  737     	LGOTO	_00253_DS_
-                                    1-  738     	.line	317, "main.c"; 	PORTA |= 0x0F;
-     000F 210F                      1-  739     	MOVIA	0x0f
-     0010 11rr                      1-  740     	IORAR	_PORTA,F
-                                    1-  741     	.line	318, "main.c"; 	PORTB |= 0xC0;
-     0011 21C0                      1-  742     	MOVIA	0xc0
-     0012 11rr                      1-  743     	IORAR	_PORTB,F
-     0013                           1-  744     _00253_DS_:
-                                    1-  745     	.line	320, "main.c"; 	}
-                                    1-  746     	RETURN	
-     0013 0010                      3-   26 m1      ret
-                                    1-  747     ; exit point of _ledMode3
-                                    1-  749     ;***
-                                    1-  750     ;  pBlock Stats: dbName = C
-                                    1-  751     ;***
-                                    1-  752     ;; Starting pCode block
-                                    1-  753     .segment "code"; module=main, function=_ledMode2
-     0000                           1-  755     _ledMode2:
-                                    1-  756     ; 0 exit points
-                                    1-  757     ;;swapping arguments (AOP_TYPEs 1/3)
-                                    1-  758     ;;unsigned compare: left >= lit (0x6=6), size=1
-                                    1-  759     	.line	240, "main.c"; 	if(lockLedCount <= 5)
-     0000 2106                      1-  760     	MOVIA	0x06
-                                    1-  761     	BANKSEL	_lockLedCount
+                                    1-  738     	.line	317, "main.c"; 	PORTA |= 0x01;
+     000F 18rr                      1-  739     	BSR	_PORTA,0
+                                    1-  740     	.line	318, "main.c"; 	PORTB |= 0xF8;
+     0010 21F8                      1-  741     	MOVIA	0xf8
+     0011 11rr                      1-  742     	IORAR	_PORTB,F
+     0012                           1-  743     _00253_DS_:
+                                    1-  744     	.line	320, "main.c"; 	}
+                                    1-  745     	RETURN	
+     0012 0010                      3-   26 m1      ret
+                                    1-  746     ; exit point of _ledMode3
+                                    1-  748     ;***
+                                    1-  749     ;  pBlock Stats: dbName = C
+                                    1-  750     ;***
+                                    1-  751     ;; Starting pCode block
+                                    1-  752     .segment "code"; module=main, function=_ledMode2
+     0000                           1-  754     _ledMode2:
+                                    1-  755     ; 0 exit points
+                                    1-  756     ;;swapping arguments (AOP_TYPEs 1/3)
+                                    1-  757     ;;unsigned compare: left >= lit (0x6=6), size=1
+                                    1-  758     	.line	240, "main.c"; 	if(lockLedCount <= 5)
+     0000 2106                      1-  759     	MOVIA	0x06
+                                    1-  760     	BANKSEL	_lockLedCount
      0001 rrrr                      3-   71 m1      .banksel ram_address
-     0002 04rr                      1-  762     	SUBAR	_lockLedCount,W
-     0003 0C03                      1-  763     	BTRSC	STATUS,0
-     0004 3rrr                      1-  764     	LGOTO	_00241_DS_
-                                    1-  765     	.line	241, "main.c"; 	resetbit(PORTA,0);
-     0005 1Crr                      1-  766     	BCR	_PORTA,0
-     0006 3rrr                      1-  767     	LGOTO	_00243_DS_
-                                    1-  768     ;;swapping arguments (AOP_TYPEs 1/3)
-                                    1-  769     ;;unsigned compare: left >= lit (0xB=11), size=1
-     0007                           1-  770     _00241_DS_:
-                                    1-  771     	.line	242, "main.c"; 	else if(lockLedCount <= 10)
-     0007 210B                      1-  772     	MOVIA	0x0b
-                                    1-  773     	BANKSEL	_lockLedCount
+     0002 04rr                      1-  761     	SUBAR	_lockLedCount,W
+     0003 0C03                      1-  762     	BTRSC	STATUS,0
+     0004 3rrr                      1-  763     	LGOTO	_00241_DS_
+                                    1-  764     	.line	241, "main.c"; 	resetbit(PORTA,0);
+     0005 1Crr                      1-  765     	BCR	_PORTA,0
+     0006 3rrr                      1-  766     	LGOTO	_00243_DS_
+                                    1-  767     ;;swapping arguments (AOP_TYPEs 1/3)
+                                    1-  768     ;;unsigned compare: left >= lit (0xB=11), size=1
+     0007                           1-  769     _00241_DS_:
+                                    1-  770     	.line	242, "main.c"; 	else if(lockLedCount <= 10)
+     0007 210B                      1-  771     	MOVIA	0x0b
+                                    1-  772     	BANKSEL	_lockLedCount
      0008 rrrr                      3-   71 m1      .banksel ram_address
-     0009 04rr                      1-  774     	SUBAR	_lockLedCount,W
-     000A 0C03                      1-  775     	BTRSC	STATUS,0
-     000B 3rrr                      1-  776     	LGOTO	_00238_DS_
-                                    1-  777     	.line	244, "main.c"; 	setbit(PORTA,0);
-     000C 18rr                      1-  778     	BSR	_PORTA,0
-                                    1-  779     	.line	245, "main.c"; 	resetbit(PORTB,7);
-     000D 1Frr                      1-  780     	BCR	_PORTB,7
-     000E 3rrr                      1-  781     	LGOTO	_00243_DS_
-                                    1-  782     ;;swapping arguments (AOP_TYPEs 1/3)
-                                    1-  783     ;;unsigned compare: left >= lit (0x10=16), size=1
-     000F                           1-  784     _00238_DS_:
-                                    1-  785     	.line	247, "main.c"; 	else if(lockLedCount <= 15)
-     000F 2110                      1-  786     	MOVIA	0x10
-                                    1-  787     	BANKSEL	_lockLedCount
+     0009 04rr                      1-  773     	SUBAR	_lockLedCount,W
+     000A 0C03                      1-  774     	BTRSC	STATUS,0
+     000B 3rrr                      1-  775     	LGOTO	_00238_DS_
+                                    1-  776     	.line	244, "main.c"; 	setbit(PORTA,0);
+     000C 18rr                      1-  777     	BSR	_PORTA,0
+                                    1-  778     	.line	245, "main.c"; 	resetbit(PORTB,7);
+     000D 1Frr                      1-  779     	BCR	_PORTB,7
+     000E 3rrr                      1-  780     	LGOTO	_00243_DS_
+                                    1-  781     ;;swapping arguments (AOP_TYPEs 1/3)
+                                    1-  782     ;;unsigned compare: left >= lit (0x10=16), size=1
+     000F                           1-  783     _00238_DS_:
+                                    1-  784     	.line	247, "main.c"; 	else if(lockLedCount <= 15)
+     000F 2110                      1-  785     	MOVIA	0x10
+                                    1-  786     	BANKSEL	_lockLedCount
      0010 rrrr                      3-   71 m1      .banksel ram_address
-     0011 04rr                      1-  788     	SUBAR	_lockLedCount,W
-     0012 0C03                      1-  789     	BTRSC	STATUS,0
-     0013 3rrr                      1-  790     	LGOTO	_00235_DS_
-                                    1-  791     	.line	249, "main.c"; 	setbit(PORTB,7);
-     0014 1Brr                      1-  792     	BSR	_PORTB,7
-                                    1-  793     	.line	250, "main.c"; 	resetbit(PORTB,6);
-     0015 1Frr                      1-  794     	BCR	_PORTB,6
-     0016 3rrr                      1-  795     	LGOTO	_00243_DS_
-                                    1-  796     ;;swapping arguments (AOP_TYPEs 1/3)
-                                    1-  797     ;;unsigned compare: left >= lit (0x15=21), size=1
-     0017                           1-  798     _00235_DS_:
-                                    1-  799     	.line	252, "main.c"; 	else if(lockLedCount <= 20)
-     0017 2115                      1-  800     	MOVIA	0x15
-                                    1-  801     	BANKSEL	_lockLedCount
+     0011 04rr                      1-  787     	SUBAR	_lockLedCount,W
+     0012 0C03                      1-  788     	BTRSC	STATUS,0
+     0013 3rrr                      1-  789     	LGOTO	_00235_DS_
+                                    1-  790     	.line	249, "main.c"; 	setbit(PORTB,7);
+     0014 1Brr                      1-  791     	BSR	_PORTB,7
+                                    1-  792     	.line	250, "main.c"; 	resetbit(PORTB,6);
+     0015 1Frr                      1-  793     	BCR	_PORTB,6
+     0016 3rrr                      1-  794     	LGOTO	_00243_DS_
+                                    1-  795     ;;swapping arguments (AOP_TYPEs 1/3)
+                                    1-  796     ;;unsigned compare: left >= lit (0x15=21), size=1
+     0017                           1-  797     _00235_DS_:
+                                    1-  798     	.line	252, "main.c"; 	else if(lockLedCount <= 20)
+     0017 2115                      1-  799     	MOVIA	0x15
+                                    1-  800     	BANKSEL	_lockLedCount
      0018 rrrr                      3-   71 m1      .banksel ram_address
-     0019 04rr                      1-  802     	SUBAR	_lockLedCount,W
-     001A 0C03                      1-  803     	BTRSC	STATUS,0
-     001B 3rrr                      1-  804     	LGOTO	_00232_DS_
-                                    1-  805     	.line	254, "main.c"; 	setbit(PORTB,6);
-     001C 1Brr                      1-  806     	BSR	_PORTB,6
-                                    1-  807     	.line	255, "main.c"; 	resetbit(PORTA,1);
-     001D 1Crr                      1-  808     	BCR	_PORTA,1
-     001E 3rrr                      1-  809     	LGOTO	_00243_DS_
-                                    1-  810     ;;swapping arguments (AOP_TYPEs 1/3)
-                                    1-  811     ;;unsigned compare: left >= lit (0x1A=26), size=1
-     001F                           1-  812     _00232_DS_:
-                                    1-  813     	.line	257, "main.c"; 	else if(lockLedCount <= 25)
-     001F 211A                      1-  814     	MOVIA	0x1a
-                                    1-  815     	BANKSEL	_lockLedCount
+     0019 04rr                      1-  801     	SUBAR	_lockLedCount,W
+     001A 0C03                      1-  802     	BTRSC	STATUS,0
+     001B 3rrr                      1-  803     	LGOTO	_00232_DS_
+                                    1-  804     	.line	254, "main.c"; 	setbit(PORTB,6);
+     001C 1Brr                      1-  805     	BSR	_PORTB,6
+                                    1-  806     	.line	255, "main.c"; 	resetbit(PORTB,5);
+     001D 1Err                      1-  807     	BCR	_PORTB,5
+     001E 3rrr                      1-  808     	LGOTO	_00243_DS_
+                                    1-  809     ;;swapping arguments (AOP_TYPEs 1/3)
+                                    1-  810     ;;unsigned compare: left >= lit (0x1A=26), size=1
+     001F                           1-  811     _00232_DS_:
+                                    1-  812     	.line	257, "main.c"; 	else if(lockLedCount <= 25)
+     001F 211A                      1-  813     	MOVIA	0x1a
+                                    1-  814     	BANKSEL	_lockLedCount
      0020 rrrr                      3-   71 m1      .banksel ram_address
-     0021 04rr                      1-  816     	SUBAR	_lockLedCount,W
-     0022 0C03                      1-  817     	BTRSC	STATUS,0
-     0023 3rrr                      1-  818     	LGOTO	_00229_DS_
-                                    1-  819     	.line	259, "main.c"; 	setbit(PORTA,1);
-     0024 18rr                      1-  820     	BSR	_PORTA,1
-                                    1-  821     	.line	260, "main.c"; 	resetbit(PORTA,2);
-     0025 1Drr                      1-  822     	BCR	_PORTA,2
-     0026 3rrr                      1-  823     	LGOTO	_00243_DS_
-                                    1-  824     ;;swapping arguments (AOP_TYPEs 1/3)
-                                    1-  825     ;;unsigned compare: left >= lit (0x1F=31), size=1
-     0027                           1-  826     _00229_DS_:
-                                    1-  827     	.line	262, "main.c"; 	else if(lockLedCount <= 30)
-     0027 211F                      1-  828     	MOVIA	0x1f
-                                    1-  829     	BANKSEL	_lockLedCount
+     0021 04rr                      1-  815     	SUBAR	_lockLedCount,W
+     0022 0C03                      1-  816     	BTRSC	STATUS,0
+     0023 3rrr                      1-  817     	LGOTO	_00229_DS_
+                                    1-  818     	.line	259, "main.c"; 	setbit(PORTB,5);
+     0024 1Arr                      1-  819     	BSR	_PORTB,5
+                                    1-  820     	.line	260, "main.c"; 	resetbit(PORTB,4);
+     0025 1Err                      1-  821     	BCR	_PORTB,4
+     0026 3rrr                      1-  822     	LGOTO	_00243_DS_
+                                    1-  823     ;;swapping arguments (AOP_TYPEs 1/3)
+                                    1-  824     ;;unsigned compare: left >= lit (0x1F=31), size=1
+     0027                           1-  825     _00229_DS_:
+                                    1-  826     	.line	262, "main.c"; 	else if(lockLedCount <= 30)
+     0027 211F                      1-  827     	MOVIA	0x1f
+                                    1-  828     	BANKSEL	_lockLedCount
      0028 rrrr                      3-   71 m1      .banksel ram_address
-     0029 04rr                      1-  830     	SUBAR	_lockLedCount,W
-     002A 0C03                      1-  831     	BTRSC	STATUS,0
-     002B 3rrr                      1-  832     	LGOTO	_00226_DS_
-                                    1-  833     	.line	264, "main.c"; 	setbit(PORTA,2);
-     002C 19rr                      1-  834     	BSR	_PORTA,2
-                                    1-  835     	.line	265, "main.c"; 	resetbit(PORTA,3);
-     002D 1Drr                      1-  836     	BCR	_PORTA,3
-     002E 3rrr                      1-  837     	LGOTO	_00243_DS_
-                                    1-  838     ;;swapping arguments (AOP_TYPEs 1/3)
-                                    1-  839     ;;unsigned compare: left >= lit (0x24=36), size=1
-     002F                           1-  840     _00226_DS_:
-                                    1-  841     	.line	267, "main.c"; 	else if(lockLedCount <= 35)
-     002F 2124                      1-  842     	MOVIA	0x24
-                                    1-  843     	BANKSEL	_lockLedCount
+     0029 04rr                      1-  829     	SUBAR	_lockLedCount,W
+     002A 0C03                      1-  830     	BTRSC	STATUS,0
+     002B 3rrr                      1-  831     	LGOTO	_00226_DS_
+                                    1-  832     	.line	264, "main.c"; 	setbit(PORTB,4);
+     002C 1Arr                      1-  833     	BSR	_PORTB,4
+                                    1-  834     	.line	265, "main.c"; 	resetbit(PORTB,3);
+     002D 1Drr                      1-  835     	BCR	_PORTB,3
+     002E 3rrr                      1-  836     	LGOTO	_00243_DS_
+                                    1-  837     ;;swapping arguments (AOP_TYPEs 1/3)
+                                    1-  838     ;;unsigned compare: left >= lit (0x24=36), size=1
+     002F                           1-  839     _00226_DS_:
+                                    1-  840     	.line	267, "main.c"; 	else if(lockLedCount <= 35)
+     002F 2124                      1-  841     	MOVIA	0x24
+                                    1-  842     	BANKSEL	_lockLedCount
      0030 rrrr                      3-   71 m1      .banksel ram_address
-     0031 04rr                      1-  844     	SUBAR	_lockLedCount,W
-     0032 0C03                      1-  845     	BTRSC	STATUS,0
-     0033 3rrr                      1-  846     	LGOTO	_00223_DS_
-                                    1-  847     	.line	269, "main.c"; 	setbit(PORTA,3);
-     0034 19rr                      1-  848     	BSR	_PORTA,3
-     0035 3rrr                      1-  849     	LGOTO	_00243_DS_
-                                    1-  850     ;;swapping arguments (AOP_TYPEs 1/3)
-                                    1-  851     ;;unsigned compare: left >= lit (0x29=41), size=1
-     0036                           1-  852     _00223_DS_:
-                                    1-  853     	.line	271, "main.c"; 	else if(lockLedCount <= 40)
-     0036 2129                      1-  854     	MOVIA	0x29
-                                    1-  855     	BANKSEL	_lockLedCount
+     0031 04rr                      1-  843     	SUBAR	_lockLedCount,W
+     0032 0C03                      1-  844     	BTRSC	STATUS,0
+     0033 3rrr                      1-  845     	LGOTO	_00223_DS_
+                                    1-  846     	.line	269, "main.c"; 	setbit(PORTB,3);
+     0034 19rr                      1-  847     	BSR	_PORTB,3
+     0035 3rrr                      1-  848     	LGOTO	_00243_DS_
+                                    1-  849     ;;swapping arguments (AOP_TYPEs 1/3)
+                                    1-  850     ;;unsigned compare: left >= lit (0x29=41), size=1
+     0036                           1-  851     _00223_DS_:
+                                    1-  852     	.line	271, "main.c"; 	else if(lockLedCount <= 40)
+     0036 2129                      1-  853     	MOVIA	0x29
+                                    1-  854     	BANKSEL	_lockLedCount
      0037 rrrr                      3-   71 m1      .banksel ram_address
-     0038 04rr                      1-  856     	SUBAR	_lockLedCount,W
-     0039 0C03                      1-  857     	BTRSC	STATUS,0
-     003A 3rrr                      1-  858     	LGOTO	_00220_DS_
-                                    1-  859     	.line	273, "main.c"; 	setbit(PORTA,2);
-     003B 19rr                      1-  860     	BSR	_PORTA,2
-                                    1-  861     	.line	274, "main.c"; 	resetbit(PORTA,3);
-     003C 1Drr                      1-  862     	BCR	_PORTA,3
-     003D 3rrr                      1-  863     	LGOTO	_00243_DS_
-                                    1-  864     ;;swapping arguments (AOP_TYPEs 1/3)
-                                    1-  865     ;;unsigned compare: left >= lit (0x2E=46), size=1
-     003E                           1-  866     _00220_DS_:
-                                    1-  867     	.line	276, "main.c"; 	else if(lockLedCount <= 45)
-     003E 212E                      1-  868     	MOVIA	0x2e
-                                    1-  869     	BANKSEL	_lockLedCount
+     0038 04rr                      1-  855     	SUBAR	_lockLedCount,W
+     0039 0C03                      1-  856     	BTRSC	STATUS,0
+     003A 3rrr                      1-  857     	LGOTO	_00220_DS_
+                                    1-  858     	.line	273, "main.c"; 	setbit(PORTB,4);
+     003B 1Arr                      1-  859     	BSR	_PORTB,4
+                                    1-  860     	.line	274, "main.c"; 	resetbit(PORTB,3);
+     003C 1Drr                      1-  861     	BCR	_PORTB,3
+     003D 3rrr                      1-  862     	LGOTO	_00243_DS_
+                                    1-  863     ;;swapping arguments (AOP_TYPEs 1/3)
+                                    1-  864     ;;unsigned compare: left >= lit (0x2E=46), size=1
+     003E                           1-  865     _00220_DS_:
+                                    1-  866     	.line	276, "main.c"; 	else if(lockLedCount <= 45)
+     003E 212E                      1-  867     	MOVIA	0x2e
+                                    1-  868     	BANKSEL	_lockLedCount
      003F rrrr                      3-   71 m1      .banksel ram_address
-     0040 04rr                      1-  870     	SUBAR	_lockLedCount,W
-     0041 0C03                      1-  871     	BTRSC	STATUS,0
-     0042 3rrr                      1-  872     	LGOTO	_00217_DS_
-                                    1-  873     	.line	278, "main.c"; 	setbit(PORTA,3);
-     0043 19rr                      1-  874     	BSR	_PORTA,3
-                                    1-  875     	.line	279, "main.c"; 	resetbit(PORTA,2);
-     0044 1Drr                      1-  876     	BCR	_PORTA,2
-     0045 3rrr                      1-  877     	LGOTO	_00243_DS_
-                                    1-  878     ;;swapping arguments (AOP_TYPEs 1/3)
-                                    1-  879     ;;unsigned compare: left >= lit (0x33=51), size=1
-     0046                           1-  880     _00217_DS_:
-                                    1-  881     	.line	281, "main.c"; 	else if(lockLedCount <= 50)
-     0046 2133                      1-  882     	MOVIA	0x33
-                                    1-  883     	BANKSEL	_lockLedCount
+     0040 04rr                      1-  869     	SUBAR	_lockLedCount,W
+     0041 0C03                      1-  870     	BTRSC	STATUS,0
+     0042 3rrr                      1-  871     	LGOTO	_00217_DS_
+                                    1-  872     	.line	278, "main.c"; 	setbit(PORTB,3);
+     0043 19rr                      1-  873     	BSR	_PORTB,3
+                                    1-  874     	.line	279, "main.c"; 	resetbit(PORTB,4);
+     0044 1Err                      1-  875     	BCR	_PORTB,4
+     0045 3rrr                      1-  876     	LGOTO	_00243_DS_
+                                    1-  877     ;;swapping arguments (AOP_TYPEs 1/3)
+                                    1-  878     ;;unsigned compare: left >= lit (0x33=51), size=1
+     0046                           1-  879     _00217_DS_:
+                                    1-  880     	.line	281, "main.c"; 	else if(lockLedCount <= 50)
+     0046 2133                      1-  881     	MOVIA	0x33
+                                    1-  882     	BANKSEL	_lockLedCount
      0047 rrrr                      3-   71 m1      .banksel ram_address
-     0048 04rr                      1-  884     	SUBAR	_lockLedCount,W
-     0049 0C03                      1-  885     	BTRSC	STATUS,0
-     004A 3rrr                      1-  886     	LGOTO	_00214_DS_
-                                    1-  887     	.line	283, "main.c"; 	setbit(PORTA,2);
-     004B 19rr                      1-  888     	BSR	_PORTA,2
-                                    1-  889     	.line	284, "main.c"; 	resetbit(PORTA,1);
-     004C 1Crr                      1-  890     	BCR	_PORTA,1
-     004D 3rrr                      1-  891     	LGOTO	_00243_DS_
-                                    1-  892     ;;swapping arguments (AOP_TYPEs 1/3)
-                                    1-  893     ;;unsigned compare: left >= lit (0x38=56), size=1
-     004E                           1-  894     _00214_DS_:
-                                    1-  895     	.line	286, "main.c"; 	else if(lockLedCount <= 55)
-     004E 2138                      1-  896     	MOVIA	0x38
-                                    1-  897     	BANKSEL	_lockLedCount
+     0048 04rr                      1-  883     	SUBAR	_lockLedCount,W
+     0049 0C03                      1-  884     	BTRSC	STATUS,0
+     004A 3rrr                      1-  885     	LGOTO	_00214_DS_
+                                    1-  886     	.line	283, "main.c"; 	setbit(PORTB,4);
+     004B 1Arr                      1-  887     	BSR	_PORTB,4
+                                    1-  888     	.line	284, "main.c"; 	resetbit(PORTB,5);
+     004C 1Err                      1-  889     	BCR	_PORTB,5
+     004D 3rrr                      1-  890     	LGOTO	_00243_DS_
+                                    1-  891     ;;swapping arguments (AOP_TYPEs 1/3)
+                                    1-  892     ;;unsigned compare: left >= lit (0x38=56), size=1
+     004E                           1-  893     _00214_DS_:
+                                    1-  894     	.line	286, "main.c"; 	else if(lockLedCount <= 55)
+     004E 2138                      1-  895     	MOVIA	0x38
+                                    1-  896     	BANKSEL	_lockLedCount
      004F rrrr                      3-   71 m1      .banksel ram_address
-     0050 04rr                      1-  898     	SUBAR	_lockLedCount,W
-     0051 0C03                      1-  899     	BTRSC	STATUS,0
-     0052 3rrr                      1-  900     	LGOTO	_00211_DS_
-                                    1-  901     	.line	288, "main.c"; 	setbit(PORTA,1);
-     0053 18rr                      1-  902     	BSR	_PORTA,1
-                                    1-  903     	.line	289, "main.c"; 	resetbit(PORTB,6);
-     0054 1Frr                      1-  904     	BCR	_PORTB,6
-     0055 3rrr                      1-  905     	LGOTO	_00243_DS_
-                                    1-  906     ;;swapping arguments (AOP_TYPEs 1/3)
-                                    1-  907     ;;unsigned compare: left >= lit (0x3D=61), size=1
-     0056                           1-  908     _00211_DS_:
-                                    1-  909     	.line	291, "main.c"; 	else if(lockLedCount <= 60)
-     0056 213D                      1-  910     	MOVIA	0x3d
-                                    1-  911     	BANKSEL	_lockLedCount
+     0050 04rr                      1-  897     	SUBAR	_lockLedCount,W
+     0051 0C03                      1-  898     	BTRSC	STATUS,0
+     0052 3rrr                      1-  899     	LGOTO	_00211_DS_
+                                    1-  900     	.line	288, "main.c"; 	setbit(PORTB,5);
+     0053 1Arr                      1-  901     	BSR	_PORTB,5
+                                    1-  902     	.line	289, "main.c"; 	resetbit(PORTB,6);
+     0054 1Frr                      1-  903     	BCR	_PORTB,6
+     0055 3rrr                      1-  904     	LGOTO	_00243_DS_
+                                    1-  905     ;;swapping arguments (AOP_TYPEs 1/3)
+                                    1-  906     ;;unsigned compare: left >= lit (0x3D=61), size=1
+     0056                           1-  907     _00211_DS_:
+                                    1-  908     	.line	291, "main.c"; 	else if(lockLedCount <= 60)
+     0056 213D                      1-  909     	MOVIA	0x3d
+                                    1-  910     	BANKSEL	_lockLedCount
      0057 rrrr                      3-   71 m1      .banksel ram_address
-     0058 04rr                      1-  912     	SUBAR	_lockLedCount,W
-     0059 0C03                      1-  913     	BTRSC	STATUS,0
-     005A 3rrr                      1-  914     	LGOTO	_00208_DS_
-                                    1-  915     	.line	293, "main.c"; 	setbit(PORTB,6);
-     005B 1Brr                      1-  916     	BSR	_PORTB,6
-                                    1-  917     	.line	294, "main.c"; 	resetbit(PORTB,7);
-     005C 1Frr                      1-  918     	BCR	_PORTB,7
-     005D 3rrr                      1-  919     	LGOTO	_00243_DS_
-                                    1-  920     ;;swapping arguments (AOP_TYPEs 1/3)
-                                    1-  921     ;;unsigned compare: left >= lit (0x42=66), size=1
-     005E                           1-  922     _00208_DS_:
-                                    1-  923     	.line	296, "main.c"; 	else if(lockLedCount <= 65)
-     005E 2142                      1-  924     	MOVIA	0x42
-                                    1-  925     	BANKSEL	_lockLedCount
+     0058 04rr                      1-  911     	SUBAR	_lockLedCount,W
+     0059 0C03                      1-  912     	BTRSC	STATUS,0
+     005A 3rrr                      1-  913     	LGOTO	_00208_DS_
+                                    1-  914     	.line	293, "main.c"; 	setbit(PORTB,6);
+     005B 1Brr                      1-  915     	BSR	_PORTB,6
+                                    1-  916     	.line	294, "main.c"; 	resetbit(PORTB,7);
+     005C 1Frr                      1-  917     	BCR	_PORTB,7
+     005D 3rrr                      1-  918     	LGOTO	_00243_DS_
+                                    1-  919     ;;swapping arguments (AOP_TYPEs 1/3)
+                                    1-  920     ;;unsigned compare: left >= lit (0x42=66), size=1
+     005E                           1-  921     _00208_DS_:
+                                    1-  922     	.line	296, "main.c"; 	else if(lockLedCount <= 65)
+     005E 2142                      1-  923     	MOVIA	0x42
+                                    1-  924     	BANKSEL	_lockLedCount
      005F rrrr                      3-   71 m1      .banksel ram_address
-     0060 04rr                      1-  926     	SUBAR	_lockLedCount,W
-     0061 0C03                      1-  927     	BTRSC	STATUS,0
-     0062 3rrr                      1-  928     	LGOTO	_00205_DS_
-                                    1-  929     	.line	298, "main.c"; 	setbit(PORTB,7);
-     0063 1Brr                      1-  930     	BSR	_PORTB,7
-                                    1-  931     	.line	299, "main.c"; 	resetbit(PORTA,0);
-     0064 1Crr                      1-  932     	BCR	_PORTA,0
-     0065 3rrr                      1-  933     	LGOTO	_00243_DS_
-                                    1-  934     ;;swapping arguments (AOP_TYPEs 1/3)
-                                    1-  935     ;;unsigned compare: left >= lit (0x47=71), size=1
-     0066                           1-  936     _00205_DS_:
-                                    1-  937     	.line	301, "main.c"; 	else if(lockLedCount <= 70)
-     0066 2147                      1-  938     	MOVIA	0x47
-                                    1-  939     	BANKSEL	_lockLedCount
+     0060 04rr                      1-  925     	SUBAR	_lockLedCount,W
+     0061 0C03                      1-  926     	BTRSC	STATUS,0
+     0062 3rrr                      1-  927     	LGOTO	_00205_DS_
+                                    1-  928     	.line	298, "main.c"; 	setbit(PORTB,7);
+     0063 1Brr                      1-  929     	BSR	_PORTB,7
+                                    1-  930     	.line	299, "main.c"; 	resetbit(PORTA,0);
+     0064 1Crr                      1-  931     	BCR	_PORTA,0
+     0065 3rrr                      1-  932     	LGOTO	_00243_DS_
+                                    1-  933     ;;swapping arguments (AOP_TYPEs 1/3)
+                                    1-  934     ;;unsigned compare: left >= lit (0x47=71), size=1
+     0066                           1-  935     _00205_DS_:
+                                    1-  936     	.line	301, "main.c"; 	else if(lockLedCount <= 70)
+     0066 2147                      1-  937     	MOVIA	0x47
+                                    1-  938     	BANKSEL	_lockLedCount
      0067 rrrr                      3-   71 m1      .banksel ram_address
-     0068 04rr                      1-  940     	SUBAR	_lockLedCount,W
-     0069 0803                      1-  941     	BTRSS	STATUS,0
-                                    1-  942     	.line	303, "main.c"; 	setbit(PORTA,0);
-     006A 18rr                      1-  943     	BSR	_PORTA,0
-     006B                           1-  944     _00243_DS_:
-                                    1-  945     	.line	306, "main.c"; 	}
-                                    1-  946     	RETURN	
+     0068 04rr                      1-  939     	SUBAR	_lockLedCount,W
+     0069 0803                      1-  940     	BTRSS	STATUS,0
+                                    1-  941     	.line	303, "main.c"; 	setbit(PORTA,0);
+     006A 18rr                      1-  942     	BSR	_PORTA,0
+     006B                           1-  943     _00243_DS_:
+                                    1-  944     	.line	306, "main.c"; 	}
+                                    1-  945     	RETURN	
      006B 0010                      3-   26 m1      ret
-                                    1-  948     ;***
-                                    1-  949     ;  pBlock Stats: dbName = C
-                                    1-  950     ;***
-                                    1-  951     ;; Starting pCode block
-                                    1-  952     .segment "code"; module=main, function=_ledMode1
-     0000                           1-  954     _ledMode1:
-                                    1-  955     ; 0 exit points
-                                    1-  956     ;;unsigned compare: left < lit (0x5=5), size=1
-                                    1-  957     	.line	203, "main.c"; 	if(lockLedCount < 5)
-     0000 2105                      1-  958     	MOVIA	0x05
-                                    1-  959     	BANKSEL	_lockLedCount
+                                    1-  947     ;***
+                                    1-  948     ;  pBlock Stats: dbName = C
+                                    1-  949     ;***
+                                    1-  950     ;; Starting pCode block
+                                    1-  951     .segment "code"; module=main, function=_ledMode1
+     0000                           1-  953     _ledMode1:
+                                    1-  954     ; 0 exit points
+                                    1-  955     ;;unsigned compare: left < lit (0x5=5), size=1
+                                    1-  956     	.line	203, "main.c"; 	if(lockLedCount < 5)
+     0000 2105                      1-  957     	MOVIA	0x05
+                                    1-  958     	BANKSEL	_lockLedCount
      0001 rrrr                      3-   71 m1      .banksel ram_address
-     0002 04rr                      1-  960     	SUBAR	_lockLedCount,W
-     0003 0C03                      1-  961     	BTRSC	STATUS,0
-     0004 3rrr                      1-  962     	LGOTO	_00195_DS_
-                                    1-  963     	.line	204, "main.c"; 	resetbit(PORTA,0);
-     0005 1Crr                      1-  964     	BCR	_PORTA,0
-     0006 3rrr                      1-  965     	LGOTO	_00197_DS_
-                                    1-  966     ;;unsigned compare: left < lit (0xA=10), size=1
-     0007                           1-  967     _00195_DS_:
-                                    1-  968     	.line	205, "main.c"; 	else if(lockLedCount < 10)
-     0007 210A                      1-  969     	MOVIA	0x0a
-                                    1-  970     	BANKSEL	_lockLedCount
+     0002 04rr                      1-  959     	SUBAR	_lockLedCount,W
+     0003 0C03                      1-  960     	BTRSC	STATUS,0
+     0004 3rrr                      1-  961     	LGOTO	_00195_DS_
+                                    1-  962     	.line	204, "main.c"; 	resetbit(PORTA,0);
+     0005 1Crr                      1-  963     	BCR	_PORTA,0
+     0006 3rrr                      1-  964     	LGOTO	_00197_DS_
+                                    1-  965     ;;unsigned compare: left < lit (0xA=10), size=1
+     0007                           1-  966     _00195_DS_:
+                                    1-  967     	.line	205, "main.c"; 	else if(lockLedCount < 10)
+     0007 210A                      1-  968     	MOVIA	0x0a
+                                    1-  969     	BANKSEL	_lockLedCount
      0008 rrrr                      3-   71 m1      .banksel ram_address
-     0009 04rr                      1-  971     	SUBAR	_lockLedCount,W
-     000A 0C03                      1-  972     	BTRSC	STATUS,0
-     000B 3rrr                      1-  973     	LGOTO	_00192_DS_
-                                    1-  974     	.line	207, "main.c"; 	setbit(PORTA,0);
-     000C 18rr                      1-  975     	BSR	_PORTA,0
-                                    1-  976     	.line	208, "main.c"; 	resetbit(PORTB,7);
-     000D 1Frr                      1-  977     	BCR	_PORTB,7
-     000E 3rrr                      1-  978     	LGOTO	_00197_DS_
-                                    1-  979     ;;unsigned compare: left < lit (0xF=15), size=1
-     000F                           1-  980     _00192_DS_:
-                                    1-  981     	.line	210, "main.c"; 	else if(lockLedCount < 15)
-     000F 210F                      1-  982     	MOVIA	0x0f
-                                    1-  983     	BANKSEL	_lockLedCount
+     0009 04rr                      1-  970     	SUBAR	_lockLedCount,W
+     000A 0C03                      1-  971     	BTRSC	STATUS,0
+     000B 3rrr                      1-  972     	LGOTO	_00192_DS_
+                                    1-  973     	.line	207, "main.c"; 	setbit(PORTA,0);
+     000C 18rr                      1-  974     	BSR	_PORTA,0
+                                    1-  975     	.line	208, "main.c"; 	resetbit(PORTB,7);
+     000D 1Frr                      1-  976     	BCR	_PORTB,7
+     000E 3rrr                      1-  977     	LGOTO	_00197_DS_
+                                    1-  978     ;;unsigned compare: left < lit (0xF=15), size=1
+     000F                           1-  979     _00192_DS_:
+                                    1-  980     	.line	210, "main.c"; 	else if(lockLedCount < 15)
+     000F 210F                      1-  981     	MOVIA	0x0f
+                                    1-  982     	BANKSEL	_lockLedCount
      0010 rrrr                      3-   71 m1      .banksel ram_address
-     0011 04rr                      1-  984     	SUBAR	_lockLedCount,W
-     0012 0C03                      1-  985     	BTRSC	STATUS,0
-     0013 3rrr                      1-  986     	LGOTO	_00189_DS_
-                                    1-  987     	.line	212, "main.c"; 	setbit(PORTB,7);
-     0014 1Brr                      1-  988     	BSR	_PORTB,7
-                                    1-  989     	.line	213, "main.c"; 	resetbit(PORTB,6);
-     0015 1Frr                      1-  990     	BCR	_PORTB,6
-     0016 3rrr                      1-  991     	LGOTO	_00197_DS_
-                                    1-  992     ;;unsigned compare: left < lit (0x14=20), size=1
-     0017                           1-  993     _00189_DS_:
-                                    1-  994     	.line	215, "main.c"; 	else if(lockLedCount < 20)
-     0017 2114                      1-  995     	MOVIA	0x14
-                                    1-  996     	BANKSEL	_lockLedCount
+     0011 04rr                      1-  983     	SUBAR	_lockLedCount,W
+     0012 0C03                      1-  984     	BTRSC	STATUS,0
+     0013 3rrr                      1-  985     	LGOTO	_00189_DS_
+                                    1-  986     	.line	212, "main.c"; 	setbit(PORTB,7);
+     0014 1Brr                      1-  987     	BSR	_PORTB,7
+                                    1-  988     	.line	213, "main.c"; 	resetbit(PORTB,6);
+     0015 1Frr                      1-  989     	BCR	_PORTB,6
+     0016 3rrr                      1-  990     	LGOTO	_00197_DS_
+                                    1-  991     ;;unsigned compare: left < lit (0x14=20), size=1
+     0017                           1-  992     _00189_DS_:
+                                    1-  993     	.line	215, "main.c"; 	else if(lockLedCount < 20)
+     0017 2114                      1-  994     	MOVIA	0x14
+                                    1-  995     	BANKSEL	_lockLedCount
      0018 rrrr                      3-   71 m1      .banksel ram_address
-     0019 04rr                      1-  997     	SUBAR	_lockLedCount,W
-     001A 0C03                      1-  998     	BTRSC	STATUS,0
-     001B 3rrr                      1-  999     	LGOTO	_00186_DS_
-                                    1- 1000     	.line	217, "main.c"; 	setbit(PORTB,6);
-     001C 1Brr                      1- 1001     	BSR	_PORTB,6
-                                    1- 1002     	.line	218, "main.c"; 	resetbit(PORTA,1);
-     001D 1Crr                      1- 1003     	BCR	_PORTA,1
-     001E 3rrr                      1- 1004     	LGOTO	_00197_DS_
-                                    1- 1005     ;;unsigned compare: left < lit (0x19=25), size=1
-     001F                           1- 1006     _00186_DS_:
-                                    1- 1007     	.line	220, "main.c"; 	else if(lockLedCount < 25)
-     001F 2119                      1- 1008     	MOVIA	0x19
-                                    1- 1009     	BANKSEL	_lockLedCount
+     0019 04rr                      1-  996     	SUBAR	_lockLedCount,W
+     001A 0C03                      1-  997     	BTRSC	STATUS,0
+     001B 3rrr                      1-  998     	LGOTO	_00186_DS_
+                                    1-  999     	.line	217, "main.c"; 	setbit(PORTB,6);
+     001C 1Brr                      1- 1000     	BSR	_PORTB,6
+                                    1- 1001     	.line	218, "main.c"; 	resetbit(PORTB,5);
+     001D 1Err                      1- 1002     	BCR	_PORTB,5
+     001E 3rrr                      1- 1003     	LGOTO	_00197_DS_
+                                    1- 1004     ;;unsigned compare: left < lit (0x19=25), size=1
+     001F                           1- 1005     _00186_DS_:
+                                    1- 1006     	.line	220, "main.c"; 	else if(lockLedCount < 25)
+     001F 2119                      1- 1007     	MOVIA	0x19
+                                    1- 1008     	BANKSEL	_lockLedCount
      0020 rrrr                      3-   71 m1      .banksel ram_address
-     0021 04rr                      1- 1010     	SUBAR	_lockLedCount,W
-     0022 0C03                      1- 1011     	BTRSC	STATUS,0
-     0023 3rrr                      1- 1012     	LGOTO	_00183_DS_
-                                    1- 1013     	.line	222, "main.c"; 	setbit(PORTA,1);
-     0024 18rr                      1- 1014     	BSR	_PORTA,1
-                                    1- 1015     	.line	223, "main.c"; 	resetbit(PORTA,2);
-     0025 1Drr                      1- 1016     	BCR	_PORTA,2
-     0026 3rrr                      1- 1017     	LGOTO	_00197_DS_
-                                    1- 1018     ;;unsigned compare: left < lit (0x1E=30), size=1
-     0027                           1- 1019     _00183_DS_:
-                                    1- 1020     	.line	225, "main.c"; 	else if(lockLedCount < 30)
-     0027 211E                      1- 1021     	MOVIA	0x1e
-                                    1- 1022     	BANKSEL	_lockLedCount
+     0021 04rr                      1- 1009     	SUBAR	_lockLedCount,W
+     0022 0C03                      1- 1010     	BTRSC	STATUS,0
+     0023 3rrr                      1- 1011     	LGOTO	_00183_DS_
+                                    1- 1012     	.line	222, "main.c"; 	setbit(PORTB,5);
+     0024 1Arr                      1- 1013     	BSR	_PORTB,5
+                                    1- 1014     	.line	223, "main.c"; 	resetbit(PORTB,4);
+     0025 1Err                      1- 1015     	BCR	_PORTB,4
+     0026 3rrr                      1- 1016     	LGOTO	_00197_DS_
+                                    1- 1017     ;;unsigned compare: left < lit (0x1E=30), size=1
+     0027                           1- 1018     _00183_DS_:
+                                    1- 1019     	.line	225, "main.c"; 	else if(lockLedCount < 30)
+     0027 211E                      1- 1020     	MOVIA	0x1e
+                                    1- 1021     	BANKSEL	_lockLedCount
      0028 rrrr                      3-   71 m1      .banksel ram_address
-     0029 04rr                      1- 1023     	SUBAR	_lockLedCount,W
-     002A 0C03                      1- 1024     	BTRSC	STATUS,0
-     002B 3rrr                      1- 1025     	LGOTO	_00180_DS_
-                                    1- 1026     	.line	227, "main.c"; 	setbit(PORTA,2);
-     002C 19rr                      1- 1027     	BSR	_PORTA,2
-                                    1- 1028     	.line	228, "main.c"; 	resetbit(PORTA,3);
-     002D 1Drr                      1- 1029     	BCR	_PORTA,3
-     002E 3rrr                      1- 1030     	LGOTO	_00197_DS_
-                                    1- 1031     ;;unsigned compare: left < lit (0x23=35), size=1
-     002F                           1- 1032     _00180_DS_:
-                                    1- 1033     	.line	230, "main.c"; 	else if(lockLedCount < 35)
-     002F 2123                      1- 1034     	MOVIA	0x23
-                                    1- 1035     	BANKSEL	_lockLedCount
+     0029 04rr                      1- 1022     	SUBAR	_lockLedCount,W
+     002A 0C03                      1- 1023     	BTRSC	STATUS,0
+     002B 3rrr                      1- 1024     	LGOTO	_00180_DS_
+                                    1- 1025     	.line	227, "main.c"; 	setbit(PORTB,4);
+     002C 1Arr                      1- 1026     	BSR	_PORTB,4
+                                    1- 1027     	.line	228, "main.c"; 	resetbit(PORTB,3);
+     002D 1Drr                      1- 1028     	BCR	_PORTB,3
+     002E 3rrr                      1- 1029     	LGOTO	_00197_DS_
+                                    1- 1030     ;;unsigned compare: left < lit (0x23=35), size=1
+     002F                           1- 1031     _00180_DS_:
+                                    1- 1032     	.line	230, "main.c"; 	else if(lockLedCount < 35)
+     002F 2123                      1- 1033     	MOVIA	0x23
+                                    1- 1034     	BANKSEL	_lockLedCount
      0030 rrrr                      3-   71 m1      .banksel ram_address
-     0031 04rr                      1- 1036     	SUBAR	_lockLedCount,W
-     0032 0803                      1- 1037     	BTRSS	STATUS,0
-                                    1- 1038     	.line	232, "main.c"; 	setbit(PORTA,3);
-     0033 19rr                      1- 1039     	BSR	_PORTA,3
-     0034                           1- 1040     _00197_DS_:
-                                    1- 1041     	.line	235, "main.c"; 	}
-                                    1- 1042     	RETURN	
+     0031 04rr                      1- 1035     	SUBAR	_lockLedCount,W
+     0032 0803                      1- 1036     	BTRSS	STATUS,0
+                                    1- 1037     	.line	232, "main.c"; 	setbit(PORTB,3);
+     0033 19rr                      1- 1038     	BSR	_PORTB,3
+     0034                           1- 1039     _00197_DS_:
+                                    1- 1040     	.line	235, "main.c"; 	}
+                                    1- 1041     	RETURN	
      0034 0010                      3-   26 m1      ret
-                                    1- 1044     ;***
-                                    1- 1045     ;  pBlock Stats: dbName = C
-                                    1- 1046     ;***
-                                    1- 1047     ;has an exit
-                                    1- 1048     ;functions called:
-                                    1- 1049     ;   _ledMode1
+                                    1- 1043     ;***
+                                    1- 1044     ;  pBlock Stats: dbName = C
+                                    1- 1045     ;***
+                                    1- 1046     ;has an exit
+                                    1- 1047     ;functions called:
+                                    1- 1048     ;   _ledMode1
+                                    1- 1049     ;   _ledMode2
                                     1- 1050     ;   _ledMode2
-                                    1- 1051     ;   _ledMode2
-                                    1- 1052     ;   __moduchar
-                                    1- 1053     ;   _ledMode1
+                                    1- 1051     ;   __moduchar
+                                    1- 1052     ;   _ledMode1
+                                    1- 1053     ;   _ledMode2
                                     1- 1054     ;   _ledMode2
-                                    1- 1055     ;   _ledMode2
-                                    1- 1056     ;   __moduchar
-                                    1- 1057     ;2 compiler assigned registers:
-                                    1- 1058     ;   STK00
-                                    1- 1059     ;   r0x1014
-                                    1- 1060     ;; Starting pCode block
-                                    1- 1061     .segment "code"; module=main, function=_ledCon
-     0000                           1- 1063     _ledCon:
-                                    1- 1064     ; 2 exit points
-                                    1- 1065     	.line	90, "main.c"; 	if(!modeFlag)
-                                    1- 1066     	BANKSEL	_modeFlag
+                                    1- 1055     ;   __moduchar
+                                    1- 1056     ;2 compiler assigned registers:
+                                    1- 1057     ;   STK00
+                                    1- 1058     ;   r0x1014
+                                    1- 1059     ;; Starting pCode block
+                                    1- 1060     .segment "code"; module=main, function=_ledCon
+     0000                           1- 1062     _ledCon:
+                                    1- 1063     ; 2 exit points
+                                    1- 1064     	.line	90, "main.c"; 	if(!modeFlag)
+                                    1- 1065     	BANKSEL	_modeFlag
      0000 rrrr                      3-   71 m1      .banksel ram_address
-     0001 01rr                      1- 1067     	MOVR	_modeFlag,W
-     0002 0903                      1- 1068     	BTRSS	STATUS,2
-     0003 3rrr                      1- 1069     	LGOTO	_00170_DS_
-                                    1- 1070     	.line	93, "main.c"; 	if(lockLedFlag)
-                                    1- 1071     	BANKSEL	_lockLedFlag
+     0001 01rr                      1- 1066     	MOVR	_modeFlag,W
+     0002 0903                      1- 1067     	BTRSS	STATUS,2
+     0003 3rrr                      1- 1068     	LGOTO	_00170_DS_
+                                    1- 1069     	.line	93, "main.c"; 	if(lockLedFlag)
+                                    1- 1070     	BANKSEL	_lockLedFlag
      0004 rrrr                      3-   71 m1      .banksel ram_address
-     0005 01rr                      1- 1072     	MOVR	_lockLedFlag,W
-     0006 0D03                      1- 1073     	BTRSC	STATUS,2
-     0007 3rrr                      1- 1074     	LGOTO	_00139_DS_
-                                    1- 1075     	.line	96, "main.c"; 	ledMode1();
-     0008 2rrr                      1- 1076     	LCALL	_ledMode1
-                                    1- 1077     	.line	97, "main.c"; 	if(++lockLedCount >= 35)
-                                    1- 1078     	BANKSEL	_lockLedCount
+     0005 01rr                      1- 1071     	MOVR	_lockLedFlag,W
+     0006 0D03                      1- 1072     	BTRSC	STATUS,2
+     0007 3rrr                      1- 1073     	LGOTO	_00139_DS_
+                                    1- 1074     	.line	96, "main.c"; 	ledMode1();
+     0008 2rrr                      1- 1075     	LCALL	_ledMode1
+                                    1- 1076     	.line	97, "main.c"; 	if(++lockLedCount >= 35)
+                                    1- 1077     	BANKSEL	_lockLedCount
      0009 rrrr                      3-   71 m1      .banksel ram_address
-     000A 05rr                      1- 1079     	INCR	_lockLedCount,F
-                                    1- 1080     ;;unsigned compare: left < lit (0x23=35), size=1
-     000B 2123                      1- 1081     	MOVIA	0x23
-     000C 04rr                      1- 1082     	SUBAR	_lockLedCount,W
-     000D 0803                      1- 1083     	BTRSS	STATUS,0
-     000E 3rrr                      1- 1084     	LGOTO	_00172_DS_
-                                    1- 1085     	.line	99, "main.c"; 	lockLedCount = 0;
-     000F 02rr                      1- 1086     	CLRR	_lockLedCount
-                                    1- 1087     	.line	100, "main.c"; 	if(keyLockFlag)
-                                    1- 1088     	BANKSEL	_keyLockFlag
+     000A 05rr                      1- 1078     	INCR	_lockLedCount,F
+                                    1- 1079     ;;unsigned compare: left < lit (0x23=35), size=1
+     000B 2123                      1- 1080     	MOVIA	0x23
+     000C 04rr                      1- 1081     	SUBAR	_lockLedCount,W
+     000D 0803                      1- 1082     	BTRSS	STATUS,0
+     000E 3rrr                      1- 1083     	LGOTO	_00172_DS_
+                                    1- 1084     	.line	99, "main.c"; 	lockLedCount = 0;
+     000F 02rr                      1- 1085     	CLRR	_lockLedCount
+                                    1- 1086     	.line	100, "main.c"; 	if(keyLockFlag)
+                                    1- 1087     	BANKSEL	_keyLockFlag
      0010 rrrr                      3-   71 m1      .banksel ram_address
-     0011 01rr                      1- 1089     	MOVR	_keyLockFlag,W
-     0012 0D03                      1- 1090     	BTRSC	STATUS,2
-     0013 3rrr                      1- 1091     	LGOTO	_00128_DS_
-                                    1- 1092     	.line	102, "main.c"; 	if(++countLed >= 3)
-                                    1- 1093     	BANKSEL	_countLed
+     0011 01rr                      1- 1088     	MOVR	_keyLockFlag,W
+     0012 0D03                      1- 1089     	BTRSC	STATUS,2
+     0013 3rrr                      1- 1090     	LGOTO	_00128_DS_
+                                    1- 1091     	.line	102, "main.c"; 	if(++countLed >= 3)
+                                    1- 1092     	BANKSEL	_countLed
      0014 rrrr                      3-   71 m1      .banksel ram_address
-     0015 05rr                      1- 1094     	INCR	_countLed,F
-                                    1- 1095     ;;unsigned compare: left < lit (0x3=3), size=1
-     0016 2103                      1- 1096     	MOVIA	0x03
-     0017 04rr                      1- 1097     	SUBAR	_countLed,W
-     0018 0803                      1- 1098     	BTRSS	STATUS,0
-     0019 3rrr                      1- 1099     	LGOTO	_00172_DS_
-                                    1- 1100     	.line	103, "main.c"; 	lockLedFlag = 0;//停止开关闪灯
-                                    1- 1101     	BANKSEL	_lockLedFlag
+     0015 05rr                      1- 1093     	INCR	_countLed,F
+                                    1- 1094     ;;unsigned compare: left < lit (0x3=3), size=1
+     0016 2103                      1- 1095     	MOVIA	0x03
+     0017 04rr                      1- 1096     	SUBAR	_countLed,W
+     0018 0803                      1- 1097     	BTRSS	STATUS,0
+     0019 3rrr                      1- 1098     	LGOTO	_00172_DS_
+                                    1- 1099     	.line	103, "main.c"; 	lockLedFlag = 0;//停止开关闪灯
+                                    1- 1100     	BANKSEL	_lockLedFlag
      001A rrrr                      3-   71 m1      .banksel ram_address
-     001B 02rr                      1- 1102     	CLRR	_lockLedFlag
-     001C 3rrr                      1- 1103     	LGOTO	_00172_DS_
-     001D                           1- 1104     _00128_DS_:
-                                    1- 1105     	.line	106, "main.c"; 	lockLedFlag = 0;//停止开关闪灯
-                                    1- 1106     	BANKSEL	_lockLedFlag
+     001B 02rr                      1- 1101     	CLRR	_lockLedFlag
+     001C 3rrr                      1- 1102     	LGOTO	_00172_DS_
+     001D                           1- 1103     _00128_DS_:
+                                    1- 1104     	.line	106, "main.c"; 	lockLedFlag = 0;//停止开关闪灯
+                                    1- 1105     	BANKSEL	_lockLedFlag
      001D rrrr                      3-   71 m1      .banksel ram_address
-     001E 02rr                      1- 1107     	CLRR	_lockLedFlag
-     001F 3rrr                      1- 1108     	LGOTO	_00172_DS_
-     0020                           1- 1109     _00139_DS_:
-                                    1- 1110     	.line	109, "main.c"; 	else if(ledFlag)
-                                    1- 1111     	BANKSEL	_ledFlag
+     001E 02rr                      1- 1106     	CLRR	_lockLedFlag
+     001F 3rrr                      1- 1107     	LGOTO	_00172_DS_
+     0020                           1- 1108     _00139_DS_:
+                                    1- 1109     	.line	109, "main.c"; 	else if(ledFlag)
+                                    1- 1110     	BANKSEL	_ledFlag
      0020 rrrr                      3-   71 m1      .banksel ram_address
-     0021 01rr                      1- 1112     	MOVR	_ledFlag,W
-     0022 0D03                      1- 1113     	BTRSC	STATUS,2
-     0023 3rrr                      1- 1114     	LGOTO	_00172_DS_
-                                    1- 1115     	.line	111, "main.c"; 	if(!keyLockFlag)
-                                    1- 1116     	BANKSEL	_keyLockFlag
+     0021 01rr                      1- 1111     	MOVR	_ledFlag,W
+     0022 0D03                      1- 1112     	BTRSC	STATUS,2
+     0023 3rrr                      1- 1113     	LGOTO	_00172_DS_
+                                    1- 1114     	.line	111, "main.c"; 	if(!keyLockFlag)
+                                    1- 1115     	BANKSEL	_keyLockFlag
      0024 rrrr                      3-   71 m1      .banksel ram_address
-     0025 01rr                      1- 1117     	MOVR	_keyLockFlag,W
-     0026 0903                      1- 1118     	BTRSS	STATUS,2
-     0027 3rrr                      1- 1119     	LGOTO	_00133_DS_
-                                    1- 1120     	.line	113, "main.c"; 	ledFlag = 0;
-                                    1- 1121     	BANKSEL	_ledFlag
+     0025 01rr                      1- 1116     	MOVR	_keyLockFlag,W
+     0026 0903                      1- 1117     	BTRSS	STATUS,2
+     0027 3rrr                      1- 1118     	LGOTO	_00133_DS_
+                                    1- 1119     	.line	113, "main.c"; 	ledFlag = 0;
+                                    1- 1120     	BANKSEL	_ledFlag
      0028 rrrr                      3-   71 m1      .banksel ram_address
-     0029 02rr                      1- 1122     	CLRR	_ledFlag
-                                    1- 1123     	.line	114, "main.c"; 	lockLedCount = 0;
-                                    1- 1124     	BANKSEL	_lockLedCount
+     0029 02rr                      1- 1121     	CLRR	_ledFlag
+                                    1- 1122     	.line	114, "main.c"; 	lockLedCount = 0;
+                                    1- 1123     	BANKSEL	_lockLedCount
      002A rrrr                      3-   71 m1      .banksel ram_address
-     002B 02rr                      1- 1125     	CLRR	_lockLedCount
-                                    1- 1126     	.line	115, "main.c"; 	return;
-     002C 3rrr                      1- 1127     	LGOTO	_00172_DS_
-     002D                           1- 1128     _00133_DS_:
-                                    1- 1129     	.line	118, "main.c"; 	ledMode2();
-     002D 2rrr                      1- 1130     	LCALL	_ledMode2
-                                    1- 1131     	.line	119, "main.c"; 	if(++lockLedCount >= 70)
-                                    1- 1132     	BANKSEL	_lockLedCount
+     002B 02rr                      1- 1124     	CLRR	_lockLedCount
+                                    1- 1125     	.line	115, "main.c"; 	return;
+     002C 3rrr                      1- 1126     	LGOTO	_00172_DS_
+     002D                           1- 1127     _00133_DS_:
+                                    1- 1128     	.line	118, "main.c"; 	ledMode2();
+     002D 2rrr                      1- 1129     	LCALL	_ledMode2
+                                    1- 1130     	.line	119, "main.c"; 	if(++lockLedCount >= 70)
+                                    1- 1131     	BANKSEL	_lockLedCount
      002E rrrr                      3-   71 m1      .banksel ram_address
-     002F 05rr                      1- 1133     	INCR	_lockLedCount,F
-                                    1- 1134     ;;unsigned compare: left < lit (0x46=70), size=1
-     0030 2146                      1- 1135     	MOVIA	0x46
-     0031 04rr                      1- 1136     	SUBAR	_lockLedCount,W
-     0032 0803                      1- 1137     	BTRSS	STATUS,0
-     0033 3rrr                      1- 1138     	LGOTO	_00172_DS_
-                                    1- 1139     	.line	121, "main.c"; 	PORTA |= 0x0F;
-     0034 210F                      1- 1140     	MOVIA	0x0f
-     0035 11rr                      1- 1141     	IORAR	_PORTA,F
-                                    1- 1142     	.line	122, "main.c"; 	PORTB |= 0xC0;
-     0036 21C0                      1- 1143     	MOVIA	0xc0
-     0037 11rr                      1- 1144     	IORAR	_PORTB,F
-                                    1- 1145     	.line	123, "main.c"; 	lockLedCount = 0;
-     0038 02rr                      1- 1146     	CLRR	_lockLedCount
-                                    1- 1147     	.line	124, "main.c"; 	ledFlag = 0;
-                                    1- 1148     	BANKSEL	_ledFlag
-     0039 rrrr                      3-   71 m1      .banksel ram_address
-     003A 02rr                      1- 1149     	CLRR	_ledFlag
-     003B 3rrr                      1- 1150     	LGOTO	_00172_DS_
-     003C                           1- 1151     _00170_DS_:
-                                    1- 1152     	.line	132, "main.c"; 	if(lockLedFlag)
-                                    1- 1153     	BANKSEL	_lockLedFlag
-     003C rrrr                      3-   71 m1      .banksel ram_address
-     003D 01rr                      1- 1154     	MOVR	_lockLedFlag,W
-     003E 0D03                      1- 1155     	BTRSC	STATUS,2
-     003F 3rrr                      1- 1156     	LGOTO	_00167_DS_
-                                    1- 1157     ;;unsigned compare: left < lit (0x3=3), size=1
-                                    1- 1158     	.line	135, "main.c"; 	if(lockLedCount < 3)
-     0040 2103                      1- 1159     	MOVIA	0x03
-                                    1- 1160     	BANKSEL	_lockLedCount
-     0041 rrrr                      3-   71 m1      .banksel ram_address
-     0042 04rr                      1- 1161     	SUBAR	_lockLedCount,W
-     0043 0C03                      1- 1162     	BTRSC	STATUS,0
-     0044 3rrr                      1- 1163     	LGOTO	_00144_DS_
-                                    1- 1164     	.line	137, "main.c"; 	PORTA &= 0xF0;
-     0045 21F0                      1- 1165     	MOVIA	0xf0
-     0046 10rr                      1- 1166     	ANDAR	_PORTA,F
-                                    1- 1167     	.line	138, "main.c"; 	PORTB &= 0x3F;
-     0047 213F                      1- 1168     	MOVIA	0x3f
-     0048 10rr                      1- 1169     	ANDAR	_PORTB,F
-     0049 3rrr                      1- 1170     	LGOTO	_00145_DS_
-                                    1- 1171     ;;unsigned compare: left < lit (0x21=33), size=1
-     004A                           1- 1172     _00144_DS_:
-                                    1- 1173     	.line	140, "main.c"; 	else if(lockLedCount < 33)
-     004A 2121                      1- 1174     	MOVIA	0x21
-                                    1- 1175     	BANKSEL	_lockLedCount
-     004B rrrr                      3-   71 m1      .banksel ram_address
-     004C 04rr                      1- 1176     	SUBAR	_lockLedCount,W
-     004D 0C03                      1- 1177     	BTRSC	STATUS,0
-     004E 3rrr                      1- 1178     	LGOTO	_00145_DS_
-                                    1- 1179     	.line	142, "main.c"; 	PORTA |= 0x0F;
-     004F 210F                      1- 1180     	MOVIA	0x0f
-     0050 11rr                      1- 1181     	IORAR	_PORTA,F
-                                    1- 1182     	.line	143, "main.c"; 	PORTB |= 0xC0;
-     0051 21C0                      1- 1183     	MOVIA	0xc0
-     0052 11rr                      1- 1184     	IORAR	_PORTB,F
-     0053                           1- 1185     _00145_DS_:
-                                    1- 1186     	.line	146, "main.c"; 	if(++lockLedCount >= 33)
-                                    1- 1187     	BANKSEL	_lockLedCount
-     0053 rrrr                      3-   71 m1      .banksel ram_address
-     0054 05rr                      1- 1188     	INCR	_lockLedCount,F
-                                    1- 1189     ;;unsigned compare: left < lit (0x21=33), size=1
-     0055 2121                      1- 1190     	MOVIA	0x21
-     0056 04rr                      1- 1191     	SUBAR	_lockLedCount,W
-     0057 0803                      1- 1192     	BTRSS	STATUS,0
-     0058 3rrr                      1- 1193     	LGOTO	_00172_DS_
-                                    1- 1194     	.line	148, "main.c"; 	lockLedCount = 0;
-     0059 02rr                      1- 1195     	CLRR	_lockLedCount
-                                    1- 1196     	.line	149, "main.c"; 	if(keyLockFlag)
-                                    1- 1197     	BANKSEL	_keyLockFlag
-     005A rrrr                      3-   71 m1      .banksel ram_address
-     005B 01rr                      1- 1198     	MOVR	_keyLockFlag,W
-     005C 0D03                      1- 1199     	BTRSC	STATUS,2
-     005D 3rrr                      1- 1200     	LGOTO	_00149_DS_
-                                    1- 1201     	.line	151, "main.c"; 	if(++countLed >= 3)
-                                    1- 1202     	BANKSEL	_countLed
-     005E rrrr                      3-   71 m1      .banksel ram_address
-     005F 05rr                      1- 1203     	INCR	_countLed,F
-                                    1- 1204     ;;unsigned compare: left < lit (0x3=3), size=1
-     0060 2103                      1- 1205     	MOVIA	0x03
-     0061 04rr                      1- 1206     	SUBAR	_countLed,W
-     0062 0803                      1- 1207     	BTRSS	STATUS,0
-     0063 3rrr                      1- 1208     	LGOTO	_00172_DS_
-                                    1- 1209     	.line	152, "main.c"; 	lockLedFlag = 0;//停止开关闪灯
-                                    1- 1210     	BANKSEL	_lockLedFlag
-     0064 rrrr                      3-   71 m1      .banksel ram_address
-     0065 02rr                      1- 1211     	CLRR	_lockLedFlag
-     0066 3rrr                      1- 1212     	LGOTO	_00172_DS_
-     0067                           1- 1213     _00149_DS_:
-                                    1- 1214     	.line	155, "main.c"; 	lockLedFlag = 0;//停止开关闪灯
-                                    1- 1215     	BANKSEL	_lockLedFlag
-     0067 rrrr                      3-   71 m1      .banksel ram_address
-     0068 02rr                      1- 1216     	CLRR	_lockLedFlag
-     0069 3rrr                      1- 1217     	LGOTO	_00172_DS_
-     006A                           1- 1218     _00167_DS_:
-                                    1- 1219     	.line	158, "main.c"; 	else if(ledFlag)
-                                    1- 1220     	BANKSEL	_ledFlag
-     006A rrrr                      3-   71 m1      .banksel ram_address
-     006B 01rr                      1- 1221     	MOVR	_ledFlag,W
-     006C 0D03                      1- 1222     	BTRSC	STATUS,2
-     006D 3rrr                      1- 1223     	LGOTO	_00172_DS_
-                                    1- 1224     	.line	160, "main.c"; 	if(!keyLockFlag)
-                                    1- 1225     	BANKSEL	_keyLockFlag
-     006E rrrr                      3-   71 m1      .banksel ram_address
-     006F 01rr                      1- 1226     	MOVR	_keyLockFlag,W
-     0070 0903                      1- 1227     	BTRSS	STATUS,2
-     0071 3rrr                      1- 1228     	LGOTO	_00154_DS_
-                                    1- 1229     	.line	162, "main.c"; 	ledFlag = 0;
-                                    1- 1230     	BANKSEL	_ledFlag
+     002F 05rr                      1- 1132     	INCR	_lockLedCount,F
+                                    1- 1133     ;;unsigned compare: left < lit (0x46=70), size=1
+     0030 2146                      1- 1134     	MOVIA	0x46
+     0031 04rr                      1- 1135     	SUBAR	_lockLedCount,W
+     0032 0803                      1- 1136     	BTRSS	STATUS,0
+     0033 3rrr                      1- 1137     	LGOTO	_00172_DS_
+                                    1- 1138     	.line	121, "main.c"; 	PORTA |= 0x01;
+     0034 18rr                      1- 1139     	BSR	_PORTA,0
+                                    1- 1140     	.line	122, "main.c"; 	PORTB |= 0xF8;
+     0035 21F8                      1- 1141     	MOVIA	0xf8
+     0036 11rr                      1- 1142     	IORAR	_PORTB,F
+                                    1- 1143     	.line	123, "main.c"; 	lockLedCount = 0;
+     0037 02rr                      1- 1144     	CLRR	_lockLedCount
+                                    1- 1145     	.line	124, "main.c"; 	ledFlag = 0;
+                                    1- 1146     	BANKSEL	_ledFlag
+     0038 rrrr                      3-   71 m1      .banksel ram_address
+     0039 02rr                      1- 1147     	CLRR	_ledFlag
+     003A 3rrr                      1- 1148     	LGOTO	_00172_DS_
+     003B                           1- 1149     _00170_DS_:
+                                    1- 1150     	.line	132, "main.c"; 	if(lockLedFlag)
+                                    1- 1151     	BANKSEL	_lockLedFlag
+     003B rrrr                      3-   71 m1      .banksel ram_address
+     003C 01rr                      1- 1152     	MOVR	_lockLedFlag,W
+     003D 0D03                      1- 1153     	BTRSC	STATUS,2
+     003E 3rrr                      1- 1154     	LGOTO	_00167_DS_
+                                    1- 1155     ;;unsigned compare: left < lit (0x3=3), size=1
+                                    1- 1156     	.line	135, "main.c"; 	if(lockLedCount < 3)
+     003F 2103                      1- 1157     	MOVIA	0x03
+                                    1- 1158     	BANKSEL	_lockLedCount
+     0040 rrrr                      3-   71 m1      .banksel ram_address
+     0041 04rr                      1- 1159     	SUBAR	_lockLedCount,W
+     0042 0C03                      1- 1160     	BTRSC	STATUS,0
+     0043 3rrr                      1- 1161     	LGOTO	_00144_DS_
+                                    1- 1162     	.line	137, "main.c"; 	PORTA &= 0x10;
+     0044 2110                      1- 1163     	MOVIA	0x10
+     0045 10rr                      1- 1164     	ANDAR	_PORTA,F
+                                    1- 1165     	.line	138, "main.c"; 	PORTB &= 0x07;
+     0046 2107                      1- 1166     	MOVIA	0x07
+     0047 10rr                      1- 1167     	ANDAR	_PORTB,F
+     0048 3rrr                      1- 1168     	LGOTO	_00145_DS_
+                                    1- 1169     ;;unsigned compare: left < lit (0x21=33), size=1
+     0049                           1- 1170     _00144_DS_:
+                                    1- 1171     	.line	140, "main.c"; 	else if(lockLedCount < 33)
+     0049 2121                      1- 1172     	MOVIA	0x21
+                                    1- 1173     	BANKSEL	_lockLedCount
+     004A rrrr                      3-   71 m1      .banksel ram_address
+     004B 04rr                      1- 1174     	SUBAR	_lockLedCount,W
+     004C 0C03                      1- 1175     	BTRSC	STATUS,0
+     004D 3rrr                      1- 1176     	LGOTO	_00145_DS_
+                                    1- 1177     	.line	142, "main.c"; 	PORTA |= 0x01;
+     004E 18rr                      1- 1178     	BSR	_PORTA,0
+                                    1- 1179     	.line	143, "main.c"; 	PORTB |= 0xF8;
+     004F 21F8                      1- 1180     	MOVIA	0xf8
+     0050 11rr                      1- 1181     	IORAR	_PORTB,F
+     0051                           1- 1182     _00145_DS_:
+                                    1- 1183     	.line	146, "main.c"; 	if(++lockLedCount >= 33)
+                                    1- 1184     	BANKSEL	_lockLedCount
+     0051 rrrr                      3-   71 m1      .banksel ram_address
+     0052 05rr                      1- 1185     	INCR	_lockLedCount,F
+                                    1- 1186     ;;unsigned compare: left < lit (0x21=33), size=1
+     0053 2121                      1- 1187     	MOVIA	0x21
+     0054 04rr                      1- 1188     	SUBAR	_lockLedCount,W
+     0055 0803                      1- 1189     	BTRSS	STATUS,0
+     0056 3rrr                      1- 1190     	LGOTO	_00172_DS_
+                                    1- 1191     	.line	148, "main.c"; 	lockLedCount = 0;
+     0057 02rr                      1- 1192     	CLRR	_lockLedCount
+                                    1- 1193     	.line	149, "main.c"; 	if(keyLockFlag)
+                                    1- 1194     	BANKSEL	_keyLockFlag
+     0058 rrrr                      3-   71 m1      .banksel ram_address
+     0059 01rr                      1- 1195     	MOVR	_keyLockFlag,W
+     005A 0D03                      1- 1196     	BTRSC	STATUS,2
+     005B 3rrr                      1- 1197     	LGOTO	_00149_DS_
+                                    1- 1198     	.line	151, "main.c"; 	if(++countLed >= 3)
+                                    1- 1199     	BANKSEL	_countLed
+     005C rrrr                      3-   71 m1      .banksel ram_address
+     005D 05rr                      1- 1200     	INCR	_countLed,F
+                                    1- 1201     ;;unsigned compare: left < lit (0x3=3), size=1
+     005E 2103                      1- 1202     	MOVIA	0x03
+     005F 04rr                      1- 1203     	SUBAR	_countLed,W
+     0060 0803                      1- 1204     	BTRSS	STATUS,0
+     0061 3rrr                      1- 1205     	LGOTO	_00172_DS_
+                                    1- 1206     	.line	152, "main.c"; 	lockLedFlag = 0;//停止开关闪灯
+                                    1- 1207     	BANKSEL	_lockLedFlag
+     0062 rrrr                      3-   71 m1      .banksel ram_address
+     0063 02rr                      1- 1208     	CLRR	_lockLedFlag
+     0064 3rrr                      1- 1209     	LGOTO	_00172_DS_
+     0065                           1- 1210     _00149_DS_:
+                                    1- 1211     	.line	155, "main.c"; 	lockLedFlag = 0;//停止开关闪灯
+                                    1- 1212     	BANKSEL	_lockLedFlag
+     0065 rrrr                      3-   71 m1      .banksel ram_address
+     0066 02rr                      1- 1213     	CLRR	_lockLedFlag
+     0067 3rrr                      1- 1214     	LGOTO	_00172_DS_
+     0068                           1- 1215     _00167_DS_:
+                                    1- 1216     	.line	158, "main.c"; 	else if(ledFlag)
+                                    1- 1217     	BANKSEL	_ledFlag
+     0068 rrrr                      3-   71 m1      .banksel ram_address
+     0069 01rr                      1- 1218     	MOVR	_ledFlag,W
+     006A 0D03                      1- 1219     	BTRSC	STATUS,2
+     006B 3rrr                      1- 1220     	LGOTO	_00172_DS_
+                                    1- 1221     	.line	160, "main.c"; 	if(!keyLockFlag)
+                                    1- 1222     	BANKSEL	_keyLockFlag
+     006C rrrr                      3-   71 m1      .banksel ram_address
+     006D 01rr                      1- 1223     	MOVR	_keyLockFlag,W
+     006E 0903                      1- 1224     	BTRSS	STATUS,2
+     006F 3rrr                      1- 1225     	LGOTO	_00154_DS_
+                                    1- 1226     	.line	162, "main.c"; 	ledFlag = 0;
+                                    1- 1227     	BANKSEL	_ledFlag
+     0070 rrrr                      3-   71 m1      .banksel ram_address
+     0071 02rr                      1- 1228     	CLRR	_ledFlag
+                                    1- 1229     	.line	163, "main.c"; 	lockLedCount = 0;
+                                    1- 1230     	BANKSEL	_lockLedCount
      0072 rrrr                      3-   71 m1      .banksel ram_address
-     0073 02rr                      1- 1231     	CLRR	_ledFlag
-                                    1- 1232     	.line	163, "main.c"; 	lockLedCount = 0;
-                                    1- 1233     	BANKSEL	_lockLedCount
-     0074 rrrr                      3-   71 m1      .banksel ram_address
-     0075 02rr                      1- 1234     	CLRR	_lockLedCount
-                                    1- 1235     	.line	164, "main.c"; 	return;
-     0076 3rrr                      1- 1236     	LGOTO	_00172_DS_
-     0077                           1- 1237     _00154_DS_:
-                                    1- 1238     	.line	167, "main.c"; 	ledMode2();
-     0077 2rrr                      1- 1239     	LCALL	_ledMode2
-                                    1- 1240     ;;unsigned compare: left < lit (0x46=70), size=1
-                                    1- 1241     	.line	168, "main.c"; 	if(lockLedCount >= 70)
-     0078 2146                      1- 1242     	MOVIA	0x46
-                                    1- 1243     	BANKSEL	_lockLedCount
-     0079 rrrr                      3-   71 m1      .banksel ram_address
-     007A 04rr                      1- 1244     	SUBAR	_lockLedCount,W
-     007B 0803                      1- 1245     	BTRSS	STATUS,0
-     007C 3rrr                      1- 1246     	LGOTO	_00161_DS_
-                                    1- 1247     	.line	170, "main.c"; 	if(lockLedCount % 5 == 0)
-     007D 2105                      1- 1248     	MOVIA	0x05
-     007E 00rr                      1- 1249     	MOVAR	STK00
-     007F 01rr                      1- 1250     	MOVR	_lockLedCount,W
-     0080 2rrr                      1- 1251     	LCALL	__moduchar
-                                    1- 1252     	BANKSEL	r0x1014
-     0081 rrrr                      3-   71 m1      .banksel ram_address
-     0082 00rr                      1- 1253     	MOVAR	r0x1014
-     0083 01rr                      1- 1254     	MOVR	r0x1014,W
-     0084 0903                      1- 1255     	BTRSS	STATUS,2
-     0085 3rrr                      1- 1256     	LGOTO	_00161_DS_
-                                    1- 1257     	.line	172, "main.c"; 	if(countLed == 0)
-                                    1- 1258     	BANKSEL	_countLed
-     0086 rrrr                      3-   71 m1      .banksel ram_address
-     0087 01rr                      1- 1259     	MOVR	_countLed,W
-     0088 0903                      1- 1260     	BTRSS	STATUS,2
-     0089 3rrr                      1- 1261     	LGOTO	_00156_DS_
-                                    1- 1262     	.line	174, "main.c"; 	PORTA &= 0xF0;
-     008A 21F0                      1- 1263     	MOVIA	0xf0
-     008B 10rr                      1- 1264     	ANDAR	_PORTA,F
-                                    1- 1265     	.line	175, "main.c"; 	PORTB &= 0x3F;
-     008C 213F                      1- 1266     	MOVIA	0x3f
-     008D 10rr                      1- 1267     	ANDAR	_PORTB,F
-                                    1- 1268     	.line	176, "main.c"; 	countLed = 1;
-     008E 2101                      1- 1269     	MOVIA	0x01
-     008F 00rr                      1- 1270     	MOVAR	_countLed
-     0090 3rrr                      1- 1271     	LGOTO	_00161_DS_
-     0091                           1- 1272     _00156_DS_:
-                                    1- 1273     	.line	180, "main.c"; 	PORTA |= 0x0F;
-     0091 210F                      1- 1274     	MOVIA	0x0f
-     0092 11rr                      1- 1275     	IORAR	_PORTA,F
-                                    1- 1276     	.line	181, "main.c"; 	PORTB |= 0xC0;
-     0093 21C0                      1- 1277     	MOVIA	0xc0
-     0094 11rr                      1- 1278     	IORAR	_PORTB,F
-                                    1- 1279     	.line	182, "main.c"; 	countLed = 0;
-                                    1- 1280     	BANKSEL	_countLed
-     0095 rrrr                      3-   71 m1      .banksel ram_address
-     0096 02rr                      1- 1281     	CLRR	_countLed
-     0097                           1- 1282     _00161_DS_:
-                                    1- 1283     	.line	186, "main.c"; 	if(++lockLedCount >= 170)
-                                    1- 1284     	BANKSEL	_lockLedCount
-     0097 rrrr                      3-   71 m1      .banksel ram_address
-     0098 05rr                      1- 1285     	INCR	_lockLedCount,F
-                                    1- 1286     ;;unsigned compare: left < lit (0xAA=170), size=1
-     0099 21AA                      1- 1287     	MOVIA	0xaa
-     009A 04rr                      1- 1288     	SUBAR	_lockLedCount,W
-     009B 0803                      1- 1289     	BTRSS	STATUS,0
-     009C 3rrr                      1- 1290     	LGOTO	_00172_DS_
-                                    1- 1291     	.line	188, "main.c"; 	PORTA |= 0x0F;
-     009D 210F                      1- 1292     	MOVIA	0x0f
-     009E 11rr                      1- 1293     	IORAR	_PORTA,F
-                                    1- 1294     	.line	189, "main.c"; 	PORTB |= 0xC0;
-     009F 21C0                      1- 1295     	MOVIA	0xc0
-     00A0 11rr                      1- 1296     	IORAR	_PORTB,F
-                                    1- 1297     	.line	190, "main.c"; 	countLed = 0;
-                                    1- 1298     	BANKSEL	_countLed
+     0073 02rr                      1- 1231     	CLRR	_lockLedCount
+                                    1- 1232     	.line	164, "main.c"; 	return;
+     0074 3rrr                      1- 1233     	LGOTO	_00172_DS_
+     0075                           1- 1234     _00154_DS_:
+                                    1- 1235     	.line	167, "main.c"; 	ledMode2();
+     0075 2rrr                      1- 1236     	LCALL	_ledMode2
+                                    1- 1237     ;;unsigned compare: left < lit (0x46=70), size=1
+                                    1- 1238     	.line	168, "main.c"; 	if(lockLedCount >= 70)
+     0076 2146                      1- 1239     	MOVIA	0x46
+                                    1- 1240     	BANKSEL	_lockLedCount
+     0077 rrrr                      3-   71 m1      .banksel ram_address
+     0078 04rr                      1- 1241     	SUBAR	_lockLedCount,W
+     0079 0803                      1- 1242     	BTRSS	STATUS,0
+     007A 3rrr                      1- 1243     	LGOTO	_00161_DS_
+                                    1- 1244     	.line	170, "main.c"; 	if(lockLedCount % 5 == 0)
+     007B 2105                      1- 1245     	MOVIA	0x05
+     007C 00rr                      1- 1246     	MOVAR	STK00
+     007D 01rr                      1- 1247     	MOVR	_lockLedCount,W
+     007E 2rrr                      1- 1248     	LCALL	__moduchar
+                                    1- 1249     	BANKSEL	r0x1014
+     007F rrrr                      3-   71 m1      .banksel ram_address
+     0080 00rr                      1- 1250     	MOVAR	r0x1014
+     0081 01rr                      1- 1251     	MOVR	r0x1014,W
+     0082 0903                      1- 1252     	BTRSS	STATUS,2
+     0083 3rrr                      1- 1253     	LGOTO	_00161_DS_
+                                    1- 1254     	.line	172, "main.c"; 	if(countLed == 0)
+                                    1- 1255     	BANKSEL	_countLed
+     0084 rrrr                      3-   71 m1      .banksel ram_address
+     0085 01rr                      1- 1256     	MOVR	_countLed,W
+     0086 0903                      1- 1257     	BTRSS	STATUS,2
+     0087 3rrr                      1- 1258     	LGOTO	_00156_DS_
+                                    1- 1259     	.line	174, "main.c"; 	PORTA &= 0x10;
+     0088 2110                      1- 1260     	MOVIA	0x10
+     0089 10rr                      1- 1261     	ANDAR	_PORTA,F
+                                    1- 1262     	.line	175, "main.c"; 	PORTB &= 0x07;
+     008A 2107                      1- 1263     	MOVIA	0x07
+     008B 10rr                      1- 1264     	ANDAR	_PORTB,F
+                                    1- 1265     	.line	176, "main.c"; 	countLed = 1;
+     008C 2101                      1- 1266     	MOVIA	0x01
+     008D 00rr                      1- 1267     	MOVAR	_countLed
+     008E 3rrr                      1- 1268     	LGOTO	_00161_DS_
+     008F                           1- 1269     _00156_DS_:
+                                    1- 1270     	.line	180, "main.c"; 	PORTA |= 0x01;
+     008F 18rr                      1- 1271     	BSR	_PORTA,0
+                                    1- 1272     	.line	181, "main.c"; 	PORTB |= 0xF8;
+     0090 21F8                      1- 1273     	MOVIA	0xf8
+     0091 11rr                      1- 1274     	IORAR	_PORTB,F
+                                    1- 1275     	.line	182, "main.c"; 	countLed = 0;
+                                    1- 1276     	BANKSEL	_countLed
+     0092 rrrr                      3-   71 m1      .banksel ram_address
+     0093 02rr                      1- 1277     	CLRR	_countLed
+     0094                           1- 1278     _00161_DS_:
+                                    1- 1279     	.line	186, "main.c"; 	if(++lockLedCount >= 170)
+                                    1- 1280     	BANKSEL	_lockLedCount
+     0094 rrrr                      3-   71 m1      .banksel ram_address
+     0095 05rr                      1- 1281     	INCR	_lockLedCount,F
+                                    1- 1282     ;;unsigned compare: left < lit (0xAA=170), size=1
+     0096 21AA                      1- 1283     	MOVIA	0xaa
+     0097 04rr                      1- 1284     	SUBAR	_lockLedCount,W
+     0098 0803                      1- 1285     	BTRSS	STATUS,0
+     0099 3rrr                      1- 1286     	LGOTO	_00172_DS_
+                                    1- 1287     	.line	188, "main.c"; 	PORTA |= 0x01;
+     009A 18rr                      1- 1288     	BSR	_PORTA,0
+                                    1- 1289     	.line	189, "main.c"; 	PORTB |= 0xF8;
+     009B 21F8                      1- 1290     	MOVIA	0xf8
+     009C 11rr                      1- 1291     	IORAR	_PORTB,F
+                                    1- 1292     	.line	190, "main.c"; 	countLed = 0;
+                                    1- 1293     	BANKSEL	_countLed
+     009D rrrr                      3-   71 m1      .banksel ram_address
+     009E 02rr                      1- 1294     	CLRR	_countLed
+                                    1- 1295     	.line	191, "main.c"; 	lockLedCount = 0;
+                                    1- 1296     	BANKSEL	_lockLedCount
+     009F rrrr                      3-   71 m1      .banksel ram_address
+     00A0 02rr                      1- 1297     	CLRR	_lockLedCount
+                                    1- 1298     	.line	192, "main.c"; 	ledFlag = 0;
+                                    1- 1299     	BANKSEL	_ledFlag
      00A1 rrrr                      3-   71 m1      .banksel ram_address
-     00A2 02rr                      1- 1299     	CLRR	_countLed
-                                    1- 1300     	.line	191, "main.c"; 	lockLedCount = 0;
-                                    1- 1301     	BANKSEL	_lockLedCount
-     00A3 rrrr                      3-   71 m1      .banksel ram_address
-     00A4 02rr                      1- 1302     	CLRR	_lockLedCount
-                                    1- 1303     	.line	192, "main.c"; 	ledFlag = 0;
-                                    1- 1304     	BANKSEL	_ledFlag
-     00A5 rrrr                      3-   71 m1      .banksel ram_address
-     00A6 02rr                      1- 1305     	CLRR	_ledFlag
-     00A7                           1- 1306     _00172_DS_:
-                                    1- 1307     	.line	198, "main.c"; 	}
-                                    1- 1308     	RETURN	
-     00A7 0010                      3-   26 m1      ret
-                                    1- 1309     ; exit point of _ledCon
-                                    1- 1312     ;	code size estimation:
-                                    1- 1313     ;	  513+  107 =   620 instructions ( 1454 byte)
-                                    1- 1315     	end
-                                    1- 1315     	end
+     00A2 02rr                      1- 1300     	CLRR	_ledFlag
+     00A3                           1- 1301     _00172_DS_:
+                                    1- 1302     	.line	198, "main.c"; 	}
+                                    1- 1303     	RETURN	
+     00A3 0010                      3-   26 m1      ret
+                                    1- 1304     ; exit point of _ledCon
+                                    1- 1307     ;	code size estimation:
+                                    1- 1308     ;	  508+  107 =   615 instructions ( 1444 byte)
+                                    1- 1310     	end
+                                    1- 1310     	end
 
 SYMBOL TABLE            TYPE     VALUE
 ___sdcc_saved_fsr       Label    00000000
@@ -1393,15 +1388,15 @@ _00120_DS_              Label    00000001
 _00128_DS_              Label    0000001D
 _00133_DS_              Label    0000002D
 _00139_DS_              Label    00000020
-_00144_DS_              Label    0000004A
-_00145_DS_              Label    00000053
-_00149_DS_              Label    00000067
-_00154_DS_              Label    00000077
-_00156_DS_              Label    00000091
-_00161_DS_              Label    00000097
-_00167_DS_              Label    0000006A
-_00170_DS_              Label    0000003C
-_00172_DS_              Label    000000A7
+_00144_DS_              Label    00000049
+_00145_DS_              Label    00000051
+_00149_DS_              Label    00000065
+_00154_DS_              Label    00000075
+_00156_DS_              Label    0000008F
+_00161_DS_              Label    00000094
+_00167_DS_              Label    00000068
+_00170_DS_              Label    0000003B
+_00172_DS_              Label    000000A3
 _00180_DS_              Label    0000002F
 _00183_DS_              Label    00000027
 _00186_DS_              Label    0000001F
@@ -1424,7 +1419,7 @@ _00238_DS_              Label    0000000F
 _00241_DS_              Label    00000007
 _00243_DS_              Label    0000006B
 _00251_DS_              Label    0000000A
-_00253_DS_              Label    00000013
+_00253_DS_              Label    00000012
 _00259_DS_              Label    0000000E
 _00265_DS_              Label    00000014
 _00266_DS_              Label    0000002B

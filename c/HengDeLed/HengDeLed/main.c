@@ -118,8 +118,8 @@ void ledCon()
 				ledMode2();
 				if(++lockLedCount >= 70)
 				{
-					PORTA |= 0x0F;
-					PORTB |= 0xC0;
+					PORTA |= 0x01;
+					PORTB |= 0xF8;
 					lockLedCount = 0;
 					ledFlag = 0;
 				}
@@ -134,13 +134,13 @@ void ledCon()
 			//闪灯
 			if(lockLedCount < 3)
 			{
-				PORTA &= 0xF0;
-				PORTB &= 0x3F;
+				PORTA &= 0x10;
+				PORTB &= 0x07;
 			}
 			else if(lockLedCount < 33)
 			{
-				PORTA |= 0x0F;
-				PORTB |= 0xC0;
+					PORTA |= 0x01;
+					PORTB |= 0xF8;
 			}
 			
 			if(++lockLedCount >= 33)
@@ -171,22 +171,22 @@ void ledCon()
 				{
 					if(countLed == 0)
 					{
-						PORTA &= 0xF0;
-						PORTB &= 0x3F;
+						PORTA &= 0x10;
+						PORTB &= 0x07;
 						countLed = 1;
 					}
 					else
 					{
-						PORTA |= 0x0F;
-						PORTB |= 0xC0;
+						PORTA |= 0x01;
+						PORTB |= 0xF8;
 						countLed = 0;
 					}
 				}
 			}
 			if(++lockLedCount >= 170)
 			{
-				PORTA |= 0x0F;
-				PORTB |= 0xC0;
+				PORTA |= 0x01;
+				PORTB |= 0xF8;
 				countLed = 0;
 				lockLedCount = 0;
 				ledFlag = 0;
@@ -215,21 +215,21 @@ void ledMode1()
 	else if(lockLedCount < 20)
 	{
 		setbit(PORTB,6);
-		resetbit(PORTA,1);
+		resetbit(PORTB,5);
 	}
 	else if(lockLedCount < 25)
 	{
-		setbit(PORTA,1);
-		resetbit(PORTA,2);
+		setbit(PORTB,5);
+		resetbit(PORTB,4);
 	}
 	else if(lockLedCount < 30)
 	{
-		setbit(PORTA,2);
-		resetbit(PORTA,3);
+		setbit(PORTB,4);
+		resetbit(PORTB,3);
 	}
 	else if(lockLedCount < 35)
 	{
-		setbit(PORTA,3);
+		setbit(PORTB,3);
 	}
 
 }
@@ -252,40 +252,40 @@ void ledMode2()
 	else if(lockLedCount <= 20)
 	{
 		setbit(PORTB,6);
-		resetbit(PORTA,1);
+		resetbit(PORTB,5);
 	}
 	else if(lockLedCount <= 25)
 	{
-		setbit(PORTA,1);
-		resetbit(PORTA,2);
+		setbit(PORTB,5);
+		resetbit(PORTB,4);
 	}
 	else if(lockLedCount <= 30)
 	{
-		setbit(PORTA,2);
-		resetbit(PORTA,3);
+		setbit(PORTB,4);
+		resetbit(PORTB,3);
 	}
 	else if(lockLedCount <= 35)
 	{
-		setbit(PORTA,3);
+		setbit(PORTB,3);
 	}
 	else if(lockLedCount <= 40)
 	{
-		setbit(PORTA,2);
-		resetbit(PORTA,3);
+		setbit(PORTB,4);
+		resetbit(PORTB,3);
 	}
 	else if(lockLedCount <= 45)
 	{
-		setbit(PORTA,3);
-		resetbit(PORTA,2);
+		setbit(PORTB,3);
+		resetbit(PORTB,4);
 	}
 	else if(lockLedCount <= 50)
 	{
-		setbit(PORTA,2);
-		resetbit(PORTA,1);
+		setbit(PORTB,4);
+		resetbit(PORTB,5);
 	}
 	else if(lockLedCount <= 55)
 	{
-		setbit(PORTA,1);
+		setbit(PORTB,5);
 		resetbit(PORTB,6);
 	}
 	else if(lockLedCount <= 60)
@@ -309,13 +309,13 @@ void ledMode3()
 {
 	if(lockLedCount < 5)
 	{
-		PORTA &= 0xF0;
-		PORTB &= 0x3F;
+		PORTA &= 0x10;
+		PORTB &= 0x07;
 	}
 	else if(lockLedCount < 10)
 	{
-		PORTA |= 0x0F;
-		PORTB |= 0xC0;
+		PORTA |= 0x01;
+		PORTB |= 0xF8;
 	}
 }
 
