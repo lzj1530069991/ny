@@ -169,9 +169,8 @@ _writeWordStep:
 	.line	128, "eeprom.c"; 	void writeWordStep(u8t workStep)
 	BANKSEL	r0x1002
 	MOVAR	r0x1002
-	.line	130, "eeprom.c"; 	BPHCON = 0x7F;	//打开PB7的上拉电阻(SDA)
-	MOVIA	0x7f
-	MOVAR	_BPHCON
+	.line	130, "eeprom.c"; 	BPHCON &= 0x7F;	//打开PB7的上拉电阻(SDA)
+	BCR	_BPHCON,7
 	.line	131, "eeprom.c"; 	SCL = 0;
 	BANKSEL	_PORTA
 	BCR	_PORTA,0
@@ -258,9 +257,8 @@ _readWordStep:
 	MOVR	STK01,W
 	BANKSEL	r0x1009
 	MOVAR	r0x1009
-	.line	111, "eeprom.c"; 	BPHCON = 0x7F;	//打开PB7的上拉电阻(SDA)
-	MOVIA	0x7f
-	MOVAR	_BPHCON
+	.line	111, "eeprom.c"; 	BPHCON &= 0x7F;	//打开PB7的上拉电阻(SDA)
+	BCR	_BPHCON,7
 	.line	112, "eeprom.c"; 	SCL = 0;
 	BANKSEL	_PORTA
 	BCR	_PORTA,0
@@ -768,6 +766,6 @@ _Delay10Us:
 
 
 ;	code size estimation:
-;	  171+   60 =   231 instructions (  582 byte)
+;	  169+   60 =   229 instructions (  578 byte)
 
 	end

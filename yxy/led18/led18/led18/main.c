@@ -19,11 +19,31 @@
  =========================================================================*/
 #include <ny8.h>
 #include "NY8_constant.h"
-#include "eeprom.h"
 
 #define LED_N 18
 __sbit PB0 = PORTB:0;
-__sbit D = STATUS:0;
+
+#define u8t		unsigned char
+#define	u16t	unsigned int
+
+__sbit SDA = PORTB:7;
+__sbit SCL = PORTA:0;
+__sbit C = STATUS:0;
+
+void Delay10Us(void);
+void SDAOutput(void);
+void SDAInput(void);
+void Start24C02(void);
+void Stop24C02(void);
+void SendAck(void);
+void SendNoAck(void);
+void RecvAck(void);
+void SendByte(u8t data);
+u8t ReadByte(void);
+void readWordStep(unsigned char *workStep);
+void writeWordStep(u8t workStep);
+
+
 
 #define WHITE 0xFF,0xFF,0xFF
 #define RED	0xFF,0x00,0x00
@@ -35,7 +55,6 @@ __sbit D = STATUS:0;
 
 void sendtoLast(char ledNub,unsigned char colorR,unsigned char colorG,unsigned char colorB);
 void sendRGB(unsigned char colorR,unsigned char colorG,unsigned char colorB);
-void sendByte(unsigned char colorR);
 void send1();
 void send0();
 void Delay80us();
@@ -47,6 +66,33 @@ u8t workStep = 1;// 1-20
 u8t	Rdata = 0x00;
 u8t	Gdata = 0x00;
 u8t	Bdata = 0x00;
+
+__sbit R7 = Rdata:7;
+__sbit R6 = Rdata:6;
+__sbit R5 = Rdata:5;
+__sbit R4 = Rdata:4;
+__sbit R3 = Rdata:3;
+__sbit R2 = Rdata:2;
+__sbit R1 = Rdata:1;
+__sbit R0 = Rdata:0;
+
+__sbit G7 = Gdata:7;
+__sbit G6 = Gdata:6;
+__sbit G5 = Gdata:5;
+__sbit G4 = Gdata:4;
+__sbit G3 = Gdata:3;
+__sbit G2 = Gdata:2;
+__sbit G1 = Gdata:1;
+__sbit G0 = Gdata:0;
+
+__sbit B7 = Bdata:7;
+__sbit B6 = Bdata:6;
+__sbit B5 = Bdata:5;
+__sbit B4 = Bdata:4;
+__sbit B3 = Bdata:3;
+__sbit B2 = Bdata:2;
+__sbit B1 = Bdata:1;
+__sbit B0 = Bdata:0;
 
 void keyCtrl();
 char keyRead(char KeyStatus);
@@ -235,126 +281,105 @@ void sendtoLast(char ledNub,unsigned char colorR,unsigned char colorG,unsigned c
 
 void sendRGB(unsigned char colorR,unsigned char colorG,unsigned char colorB)
 {
-
-colorR = colorR<<1;
-		if(D)
+		Rdata = colorR;
+		Gdata = colorG;
+		Bdata = colorB;
+		
+		if(R7)
 		send1();
 		else
 			send0();
-		colorR = colorR<<1;
-		if(D)
+		if(R6)
 		send1();
 		else
 		send0();
-		colorR = colorR<<1;
-		if(D)
+		if(R5)
 		send1();
 		else
 		send0();
-		colorR = colorR<<1;
-		if(D)
+		if(R4)
 		send1();
 		else
 		send0();
-		colorR = colorR<<1;
-		if(D)
+		if(R3)
 		send1();
 		else
 		send0();
-		colorR = colorR<<1;
-		if(D)
+		if(R2)
 		send1();
 		else
 		send0();
-		colorR = colorR<<1;
-		if(D)
+		if(R1)
 		send1();
 		else
 		send0();
-		colorR = colorR<<1;
-		if(D)
+		if(R0)
 		send1();
 		else
 		send0();
 		//G
-		colorG = colorG<<1;
-		if(D)
+		if(G7)
 		send1();
 		else
 		send0();
-		colorG = colorG<<1;
-		if(D)
+		if(G6)
 		send1();
 		else
 		send0();
-		colorG = colorG<<1;
-		if(D)
+		if(G5)
 		send1();
 		else
 		send0();
-		colorG = colorG<<1;
-		if(D)
+		if(G4)
 		send1();
 		else
 		send0();
-		colorG = colorG<<1;
-		if(D)
+		if(G3)
 		send1();
 		else
 		send0();
-		colorG = colorG<<1;
-		if(D)
+		if(G2)
 		send1();
 		else
 		send0();
-		colorG = colorG<<1;
-		if(D)
+		if(G1)
 		send1();
 		else
 		send0();
-		colorG = colorG<<1;
-		if(D)
+		if(G0)
 		send1();
 		else
 		send0();
 		//B
-		colorB = colorB<<1;
-		if(D)
+		if(B7)
 		send1();
 		else
 		send0();
-		colorB = colorB<<1;
-		if(D)
+		if(B6)
 		send1();
 		else
 		send0();
-		colorB = colorB<<1;
-		if(D)
+		if(B5)
 		send1();
 		else
 		send0();
-		colorB = colorB<<1;
-		if(D)
+		if(B4)
 		send1();
 		else
 		send0();
-		colorB = colorB<<1;
-		if(D)
+		if(B3)
 		send1();
 		else
 		send0();
-		colorB = colorB<<1;
-		if(D)
+		if(B2)
 		send1();
 		else
 		send0();
-		colorB = colorB<<1;
-		if(D)
+		if(B1)
 		send1();
 		else
 		send0();
-		colorB = colorB<<1;
-		if(D)
+		if(B0)
 		send1();
 		else
 		send0();
@@ -415,3 +440,140 @@ void Delay80us()
 	for(unsigned char i=0;i<80;i++)
 		NOP();
 }
+
+
+void Delay10Us(void){
+	NOP();
+	NOP();
+	NOP();
+	NOP();
+	NOP();
+	NOP();
+}
+
+void SDAOutput(void){
+	DISI();
+	IOSTB &= 0X7F;
+	ENI();
+}
+
+void SDAInput(void){
+	DISI();
+	IOSTB |= 0X80;
+	ENI();
+}
+
+void Start24C02(void){
+	SDA = 1;
+	Delay10Us();
+	SCL = 1;
+	Delay10Us();
+	SDA = 0;
+	Delay10Us();
+	SCL = 0;
+	Delay10Us();
+}
+
+void Stop24C02(void){
+	SDA = 0;
+	Delay10Us();
+	SCL = 1;
+	Delay10Us();
+	SDA = 1;
+	Delay10Us();
+}
+
+void SendAck(void){
+	SDA = 0;
+	Delay10Us();
+	SCL = 1;
+	Delay10Us();
+	SCL = 0;
+	Delay10Us();
+}
+
+void SendNoAck(void){
+	SDA = 1;
+	Delay10Us();
+	SCL = 1;
+	Delay10Us();
+	SCL = 0;
+	Delay10Us();
+}
+
+void RecvAck(void){
+	SDAInput();
+	Delay10Us();
+	SCL = 1;
+	Delay10Us();
+	SCL = 0;
+	Delay10Us();
+	SDAOutput();
+	SDA = 0;
+	Delay10Us();
+}
+
+void SendByte(u8t data){
+	for(u8t i=8;i>0;i--){
+		data = data<<1;
+		SDA = C;
+		Delay10Us();
+		SCL = 1;
+		Delay10Us();
+		SCL = 0;
+		Delay10Us();
+	}
+}
+
+u8t ReadByte(void){
+	u8t data=0;
+	SDAInput();
+//	Delay10Us();
+	for(u8t i=8;i>0;i--){
+		SCL = 1;
+		Delay10Us();
+		data = data<<1;
+		data |= SDA;
+		SCL = 0;
+		Delay10Us();
+	}
+	SDAOutput();
+	return	data;
+}
+
+
+//读上次的记录
+void readWordStep(unsigned char *workStep)
+{
+	    BPHCON &= 0x7F;	//打开PB7的上拉电阻(SDA)
+		SCL = 0;
+	    Start24C02();
+        SendByte(0xA0);		//发送器件地址和写动作
+        RecvAck();
+        SendByte(0X00);		//发送读地址
+        RecvAck();
+        Start24C02();
+        SendByte(0xA1);		//发送器件地址和读动作
+        RecvAck();
+        *workStep = ReadByte();
+        SendNoAck();
+        Stop24C02();
+        if(*workStep >= 19 || *workStep == 0)
+        	*workStep = 1;
+}
+
+void writeWordStep(u8t workStep)
+{
+	    BPHCON &= 0x7F;	//打开PB7的上拉电阻(SDA)
+		SCL = 0;
+	    //---发送一个字节到24C02地址0---
+        Start24C02();
+        SendByte(0xA0);		//发送器件地址和写动作
+        RecvAck();
+        SendByte(0X00);		//发送写地址
+        RecvAck();
+        SendByte(workStep);		//发送数据到地址
+        RecvAck();
+        Stop24C02();
+}
+	
