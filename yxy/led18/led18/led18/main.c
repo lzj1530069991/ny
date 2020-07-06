@@ -20,9 +20,25 @@
 #include <ny8.h>
 #include "NY8_constant.h"
 #include "eeprom.h"
-#include "codeDriver.h"
 
 #define LED_N 18
+__sbit PB0 = PORTB:0;
+__sbit D = STATUS:0;
+
+#define WHITE 0xFF,0xFF,0xFF
+#define RED	0xFF,0x00,0x00
+#define GREEN	0x00,0xFF,0x00
+#define BLUE	0x00,0x00,0xFF
+#define	YELLOW	0xFA,0xFA,0x00
+#define	COLOR20	0xFA,0x00,0xFA
+#define	COLOR18	0x00,0xFA,0xFA
+
+void sendtoLast(char ledNub,unsigned char colorR,unsigned char colorG,unsigned char colorB);
+void sendRGB(unsigned char colorR,unsigned char colorG,unsigned char colorB);
+void sendByte(unsigned char colorR);
+void send1();
+void send0();
+void Delay80us();
 
 u8t	intCount = 0;
 u8t IntFlag = 0;
@@ -57,11 +73,37 @@ void isr(void) __interrupt(0)
 
 }
 
+void initTimer0()
+{
+	u8t keyClick = 0;
+	PORTB = 0xFE;
+	BPHCON = 0x20;
+//;Initial GPIO  
+    IOSTB =  C_PB5_Input;	
+    PORTB = 0xFE;                        	// PortB Data Register = 0x00
+	PCON = C_WDT_En | C_LVR_En;				// Enable WDT & LVR
+	INTE =  C_INT_TMR0;	// Enable Timer0、Timer1、WDT overflow interrupt
+	INTF = 0;
+
+	
+	PCON1 = C_TMR0_Dis;
+	
+	TMR0 = 55;
+	T0MD =  C_PS0_TMR0 | C_PS0_Div2;
+	
+	PCON1 = C_TMR0_En;
+	
+
+	
+	ENI();	
+	//gotoSleep(0x01);
+}
+
 
 void main(void)
 {
 
-	IOSTB = 0x00;
+	initTimer0();
 	readWordStep(&workStep);
     for(;;) 
     {
@@ -71,11 +113,11 @@ void main(void)
     		continue;			//10ms执行一次
     	IntFlag = 0;
     	keyCtrl();
-    	sendtoLast(LED_N,RED);
-    	sendtoLast(LED_N,GREEN);
-    	sendtoLast(LED_N,BLUE);
-    	sendtoLast(LED_N,COLOR20);
-		sendtoLast(18,0x00,0xFA,0xFA);
+//    	sendtoLast(LED_N,RED);
+//    	sendtoLast(LED_N,GREEN);
+//    	sendtoLast(LED_N,BLUE);
+//    	sendtoLast(LED_N,COLOR20);
+//		sendtoLast(18,0x00,0xFA,0xFA);
 		
     }
 }
@@ -151,7 +193,8 @@ void ledCtrl()
 
 void keyCtrl()
 {
-    if(keyRead((~PORTB)&0x20))
+    unsigned char keyClick = keyRead((~PORTB)&0x20);
+    if(keyClick)
     {
     	if(++workStep >= 21)
     		workStep = 1;
@@ -177,4 +220,198 @@ char keyRead(char KeyStatus)
 		keyCount = 0;
 	}
 	return 0;
+}
+
+
+void sendtoLast(char ledNub,unsigned char colorR,unsigned char colorG,unsigned char colorB)
+{
+	for(int i=0;i<ledNub;i++)
+	{
+		sendRGB(colorR,colorG,colorB);
+	}
+	Delay80us();
+}
+
+
+void sendRGB(unsigned char colorR,unsigned char colorG,unsigned char colorB)
+{
+
+colorR = colorR<<1;
+		if(D)
+		send1();
+		else
+			send0();
+		colorR = colorR<<1;
+		if(D)
+		send1();
+		else
+		send0();
+		colorR = colorR<<1;
+		if(D)
+		send1();
+		else
+		send0();
+		colorR = colorR<<1;
+		if(D)
+		send1();
+		else
+		send0();
+		colorR = colorR<<1;
+		if(D)
+		send1();
+		else
+		send0();
+		colorR = colorR<<1;
+		if(D)
+		send1();
+		else
+		send0();
+		colorR = colorR<<1;
+		if(D)
+		send1();
+		else
+		send0();
+		colorR = colorR<<1;
+		if(D)
+		send1();
+		else
+		send0();
+		//G
+		colorG = colorG<<1;
+		if(D)
+		send1();
+		else
+		send0();
+		colorG = colorG<<1;
+		if(D)
+		send1();
+		else
+		send0();
+		colorG = colorG<<1;
+		if(D)
+		send1();
+		else
+		send0();
+		colorG = colorG<<1;
+		if(D)
+		send1();
+		else
+		send0();
+		colorG = colorG<<1;
+		if(D)
+		send1();
+		else
+		send0();
+		colorG = colorG<<1;
+		if(D)
+		send1();
+		else
+		send0();
+		colorG = colorG<<1;
+		if(D)
+		send1();
+		else
+		send0();
+		colorG = colorG<<1;
+		if(D)
+		send1();
+		else
+		send0();
+		//B
+		colorB = colorB<<1;
+		if(D)
+		send1();
+		else
+		send0();
+		colorB = colorB<<1;
+		if(D)
+		send1();
+		else
+		send0();
+		colorB = colorB<<1;
+		if(D)
+		send1();
+		else
+		send0();
+		colorB = colorB<<1;
+		if(D)
+		send1();
+		else
+		send0();
+		colorB = colorB<<1;
+		if(D)
+		send1();
+		else
+		send0();
+		colorB = colorB<<1;
+		if(D)
+		send1();
+		else
+		send0();
+		colorB = colorB<<1;
+		if(D)
+		send1();
+		else
+		send0();
+		colorB = colorB<<1;
+		if(D)
+		send1();
+		else
+		send0();
+
+	PB0 = 0;
+}
+
+
+
+void send1()
+{
+	PB0 = 1;
+	NOP();
+	NOP();
+	NOP();
+	NOP();
+	NOP();
+	NOP();
+	NOP();
+	NOP();
+	NOP();
+	NOP();
+	NOP();
+	NOP();
+	NOP();
+	NOP();
+	NOP();
+	NOP();
+	PORTB = 0;
+}
+
+void send0()
+{
+	PB0 = 1;
+	NOP();
+	NOP();
+	NOP();
+	NOP();
+	NOP();
+	NOP();
+	NOP();
+	NOP();
+	PORTB = 0;
+	NOP();
+	NOP();
+	NOP();
+	NOP();
+	NOP();
+	NOP();
+	NOP();
+	NOP();
+
+}
+
+
+void Delay80us()
+{
+	for(unsigned char i=0;i<80;i++)
+		NOP();
 }

@@ -109,8 +109,6 @@ u8t ReadByte(void){
 void readWordStep(unsigned char *workStep)
 {
 	    BPHCON = 0x7F;	//打开PB7的上拉电阻(SDA)
-		IOSTA = 0;
-		IOSTB = C_PB0_Input;
 		SCL = 0;
 	    Start24C02();
         SendByte(0xA0);		//发送器件地址和写动作
@@ -130,8 +128,6 @@ void readWordStep(unsigned char *workStep)
 void writeWordStep(u8t workStep)
 {
 	    BPHCON = 0x7F;	//打开PB7的上拉电阻(SDA)
-		IOSTA = 0;
-		IOSTB = C_PB0_Input;
 		SCL = 0;
 	    //---发送一个字节到24C02地址0---
         Start24C02();

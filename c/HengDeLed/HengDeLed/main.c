@@ -33,6 +33,7 @@ u8t	longFlag = 0;
 u8t lockLedFlag = 0;	//闪灯标记
 u8t lockLedCount = 0;
 u8t countLed = 0;
+u16t sleepCount = 0;
 
 unsigned int	keyCount = 0;//消抖计数
 unsigned char longPressFlag = 0;
@@ -43,6 +44,7 @@ void keyCon();
 void ledCon();
 void ledMode1();
 void ledMode2();
+void gotoSleep(char wakeKey);
 
 //! interrupt service routine
 void isr(void) __interrupt(0)
@@ -81,6 +83,13 @@ void main(void)
         IntFlag = 0;
      	keyCon();
     	ledCon();
+    	if(countLed == 0 && lockLedCount == 0 && ledFlag == 0 && key2Count == 0)
+    	{
+    		if(++sleepCount > 1200)
+    			gotoSleep(0x07);
+    	}
+    	else
+    		sleepCount = 0;
     }
 }
 
@@ -417,4 +426,26 @@ char keyRead(char KeyStatus)
 		keyCount = 0;
 	}
 	return 0;
+}
+
+void gotoSleep(char wakeKey)
+{
+	//PORTB = 0x00;	//关闭
+	sleepCount = 0;
+	PWM1DUTY = 0;
+	PORTA = 0xFF;
+	PORTB = 0xFF;
+	keyCount = 0;
+	//BWUCON = 0x08;		//PB3唤醒
+	BWUCON = wakeKey;
+	INTE =  C_INT_TMR0 | C_INT_PBKey;
+	PCON =  C_LVR_En ;	
+	INTF = 0;								// Clear all interrupt flags
+	CLRWDT();
+	SLEEP();
+	INTE =  C_INT_TMR0;	// Enable Timer0、Timer1、WDT overflow interrupt
+	INTF = 0;
+	//;Initial Power control register
+	PCON = C_WDT_En | C_LVR_En ;				// Enable WDT ,  Enable LVR
+	
 }

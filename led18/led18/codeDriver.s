@@ -11,6 +11,7 @@
 ;--------------------------------------------------------
 ; external declarations
 ;--------------------------------------------------------
+	extern	_sendRGB
 	extern	_PORTAbits
 	extern	_PORTBbits
 	extern	_PCONbits
@@ -73,6 +74,8 @@
 	extern	_CMPCR
 	extern	_PCON1
 	extern	_T0MD
+	extern	__gptrput1
+	extern	__gptrget1
 
 	extern PSAVE
 	extern SSAVE
@@ -94,7 +97,6 @@
 ; global declarations
 ;--------------------------------------------------------
 	extern	_Delay80us
-	extern	_sendRGB
 	extern	_sendRGB1
 	extern	_sendtoLast
 
@@ -108,72 +110,61 @@
 ; compiler-defined variables
 ;--------------------------------------------------------
 .segment "uninit"
-r0x1010:
+r0x1023:
 	.res	1
 .segment "uninit"
-r0x1011:
+r0x1024:
 	.res	1
 .segment "uninit"
-r0x1012:
+r0x1025:
 	.res	1
 .segment "uninit"
-r0x1013:
+r0x1026:
 	.res	1
 .segment "uninit"
-r0x1014:
+r0x1027:
 	.res	1
 .segment "uninit"
-r0x1015:
+r0x1028:
 	.res	1
 .segment "uninit"
-r0x1016:
+r0x1029:
 	.res	1
 .segment "uninit"
-r0x1018:
+r0x102B:
 	.res	1
 .segment "uninit"
-r0x100F:
+r0x101C:
 	.res	1
 .segment "uninit"
-r0x1004:
+r0x101D:
 	.res	1
 .segment "uninit"
-r0x1005:
+r0x101E:
 	.res	1
 .segment "uninit"
-r0x1006:
+r0x101F:
 	.res	1
 .segment "uninit"
-r0x1007:
+r0x1020:
 	.res	1
 .segment "uninit"
-r0x1008:
+r0x1021:
 	.res	1
 .segment "uninit"
-r0x1009:
+r0x1022:
 	.res	1
 .segment "uninit"
-r0x100A:
-	.res	1
-.segment "uninit"
-r0x100B:
-	.res	1
-.segment "uninit"
-r0x100C:
-	.res	1
-.segment "uninit"
-r0x100E:
-	.res	1
-.segment "uninit"
-r0x100D:
-	.res	1
-.segment "uninit"
-r0x1003:
+r0x101B:
 	.res	1
 .segment "uninit"
 _sendRGB1_rgb_65536_9:
 	.res	3
 	.debuginfo gvariable name=_sendRGB1_rgb_65536_9,3byte,array=0,entsize=1,ext=0
+.segment "uninit"
+_sendRGB1_temp_65536_9:
+	.res	24
+	.debuginfo gvariable name=_sendRGB1_temp_65536_9,24byte,array=1,entsize=1,ext=0
 ;--------------------------------------------------------
 ; initialized data
 ;--------------------------------------------------------
@@ -189,31 +180,31 @@ _sendRGB1_rgb_65536_9:
 ;***
 ;has an exit
 ;1 compiler assigned register :
-;   r0x1003
+;   r0x101B
 ;; Starting pCode block
 .segment "code"; module=codeDriver, function=_Delay80us
 	.debuginfo subprogram _Delay80us
 ;local variable name mapping:
-	.debuginfo variable _i=r0x1003
+	.debuginfo variable _i=r0x101B
 _Delay80us:
 ; 2 exit points
 	.line	184, "codeDriver.c"; 	for(unsigned char i=0;i<80;i++)
-	BANKSEL	r0x1003
-	CLRR	r0x1003
+	BANKSEL	r0x101B
+	CLRR	r0x101B
 ;;unsigned compare: left < lit (0x50=80), size=1
-_00140_DS_:
+_00147_DS_:
 	MOVIA	0x50
-	BANKSEL	r0x1003
-	SUBAR	r0x1003,W
+	BANKSEL	r0x101B
+	SUBAR	r0x101B,W
 	BTRSC	STATUS,0
-	LGOTO	_00142_DS_
+	LGOTO	_00149_DS_
 	.line	185, "codeDriver.c"; 	NOP();
 	nop
 	.line	184, "codeDriver.c"; 	for(unsigned char i=0;i<80;i++)
-	BANKSEL	r0x1003
-	INCR	r0x1003,F
-	LGOTO	_00140_DS_
-_00142_DS_:
+	BANKSEL	r0x101B
+	INCR	r0x101B,F
+	LGOTO	_00147_DS_
+_00149_DS_:
 	.line	186, "codeDriver.c"; 	}
 	RETURN	
 ; exit point of _Delay80us
@@ -222,691 +213,546 @@ _00142_DS_:
 ;  pBlock Stats: dbName = C
 ;***
 ;has an exit
-;13 compiler assigned registers:
-;   r0x1004
+;functions called:
+;   __gptrput1
+;   __gptrput1
+;   __gptrput1
+;   __gptrget1
+;   __gptrput1
+;   __gptrput1
+;   __gptrput1
+;   __gptrget1
+;10 compiler assigned registers:
+;   r0x101C
 ;   STK00
-;   r0x1005
+;   r0x101D
 ;   STK01
-;   r0x1006
-;   r0x1007
-;   r0x1008
-;   r0x1009
-;   r0x100A
-;   r0x100B
-;   r0x100C
-;   r0x100D
-;   r0x100E
-;; Starting pCode block
-.segment "code"; module=codeDriver, function=_sendRGB
-	.debuginfo subprogram _sendRGB
-;local variable name mapping:
-	.debuginfo variable _colorR=r0x1004
-	.debuginfo variable _colorG=r0x1005
-	.debuginfo variable _colorB=r0x1006
-	.debuginfo variable _tempColor[0]=r0x1007
-	.debuginfo variable _tempColor[1]=r0x1008
-	.debuginfo variable _tempColor[2]=r0x1009
-	.debuginfo variable _tempColor[3]=r0x100A
-	.debuginfo variable _i=r0x1004
-_sendRGB:
-; 2 exit points
-	.line	128, "codeDriver.c"; 	void sendRGB(unsigned char colorR,unsigned char colorG,unsigned char colorB)
-	BANKSEL	r0x1004
-	MOVAR	r0x1004
-	MOVR	STK00,W
-	BANKSEL	r0x1005
-	MOVAR	r0x1005
-	MOVR	STK01,W
-	BANKSEL	r0x1006
-	MOVAR	r0x1006
-	.line	130, "codeDriver.c"; 	long tempColor = colorR;
-	BANKSEL	r0x1004
-	MOVR	r0x1004,W
-	BANKSEL	r0x1008
-	CLRR	r0x1008
-	BANKSEL	r0x1009
-	CLRR	r0x1009
-	BANKSEL	r0x100A
-	CLRR	r0x100A
-	MOVIA	0x00
-	MOVAR	r0x100A
-	BANKSEL	r0x1009
-	MOVAR	r0x1009
-;;100	MOVR	r0x1007,W
-	BANKSEL	r0x1004
-	MOVR	r0x1004,W
-	BANKSEL	r0x1007
-	MOVAR	r0x1007
-	BANKSEL	r0x1008
-	MOVAR	r0x1008
-	BANKSEL	r0x1007
-	CLRR	r0x1007
-	.line	132, "codeDriver.c"; 	tempColor+=colorG;
-	BANKSEL	r0x1005
-	MOVR	r0x1005,W
-	BANKSEL	r0x1004
-	MOVAR	r0x1004
-	BANKSEL	r0x100B
-	CLRR	r0x100B
-;;101	MOVR	r0x1004,W
-	MOVIA	0x00
-	BANKSEL	r0x100C
-	MOVAR	r0x100C
-	BTRSC	r0x100C,7
-	MOVIA	0xff
-	BANKSEL	r0x100D
-	MOVAR	r0x100D
-	BANKSEL	r0x100E
-	MOVAR	r0x100E
-	BANKSEL	r0x1005
-	MOVR	r0x1005,W
-	BANKSEL	r0x1007
-	ADDAR	r0x1007,F
-	BANKSEL	r0x100C
-	MOVR	r0x100C,W
-	BTRSC	STATUS,0
-	INCR	r0x100C,W
-	BTRSC	STATUS,2
-	LGOTO	_00001_DS_
-	BANKSEL	r0x1008
-	ADDAR	r0x1008,F
-_00001_DS_:
-	BANKSEL	r0x100E
-	MOVR	r0x100E,W
-	BTRSC	STATUS,0
-	INCR	r0x100E,W
-	BTRSC	STATUS,2
-	LGOTO	_00002_DS_
-	BANKSEL	r0x1009
-	ADDAR	r0x1009,F
-_00002_DS_:
-	BANKSEL	r0x100D
-	MOVR	r0x100D,W
-	BTRSC	STATUS,0
-	INCR	r0x100D,W
-	BTRSC	STATUS,2
-	LGOTO	_00003_DS_
-	BANKSEL	r0x100A
-	ADDAR	r0x100A,F
-_00003_DS_:
-	.line	133, "codeDriver.c"; 	tempColor = tempColor<<8;
-	BANKSEL	r0x1009
-	MOVR	r0x1009,W
-	BANKSEL	r0x100A
-	MOVAR	r0x100A
-	BANKSEL	r0x1008
-	MOVR	r0x1008,W
-	BANKSEL	r0x1009
-	MOVAR	r0x1009
-	BANKSEL	r0x1007
-	MOVR	r0x1007,W
-	BANKSEL	r0x1008
-	MOVAR	r0x1008
-	BANKSEL	r0x1007
-	CLRR	r0x1007
-	.line	134, "codeDriver.c"; 	tempColor+=colorB;
-	BANKSEL	r0x1006
-	MOVR	r0x1006,W
-	BANKSEL	r0x1004
-	MOVAR	r0x1004
-	BANKSEL	r0x1005
-	CLRR	r0x1005
-;;99	MOVR	r0x1004,W
-	MOVIA	0x00
-	BANKSEL	r0x100B
-	MOVAR	r0x100B
-	BTRSC	r0x100B,7
-	MOVIA	0xff
-	BANKSEL	r0x100E
-	MOVAR	r0x100E
-	BANKSEL	r0x100C
-	MOVAR	r0x100C
-	BANKSEL	r0x1006
-	MOVR	r0x1006,W
-	BANKSEL	r0x1007
-	ADDAR	r0x1007,F
-	BANKSEL	r0x100B
-	MOVR	r0x100B,W
-	BTRSC	STATUS,0
-	INCR	r0x100B,W
-	BTRSC	STATUS,2
-	LGOTO	_00004_DS_
-	BANKSEL	r0x1008
-	ADDAR	r0x1008,F
-_00004_DS_:
-	BANKSEL	r0x100C
-	MOVR	r0x100C,W
-	BTRSC	STATUS,0
-	INCR	r0x100C,W
-	BTRSC	STATUS,2
-	LGOTO	_00005_DS_
-	BANKSEL	r0x1009
-	ADDAR	r0x1009,F
-_00005_DS_:
-	BANKSEL	r0x100E
-	MOVR	r0x100E,W
-	BTRSC	STATUS,0
-	INCR	r0x100E,W
-	BTRSC	STATUS,2
-	LGOTO	_00006_DS_
-	BANKSEL	r0x100A
-	ADDAR	r0x100A,F
-_00006_DS_:
-	.line	135, "codeDriver.c"; 	tempColor = tempColor<<8;
-	BANKSEL	r0x1009
-	MOVR	r0x1009,W
-	BANKSEL	r0x100A
-	MOVAR	r0x100A
-	BANKSEL	r0x1008
-	MOVR	r0x1008,W
-	BANKSEL	r0x1009
-	MOVAR	r0x1009
-	BANKSEL	r0x1007
-	MOVR	r0x1007,W
-	BANKSEL	r0x1008
-	MOVAR	r0x1008
-	BANKSEL	r0x1007
-	CLRR	r0x1007
-	.line	136, "codeDriver.c"; 	for(unsigned char i=24;i>0;i--)
-	MOVIA	0x18
-	BANKSEL	r0x1004
-	MOVAR	r0x1004
-_00132_DS_:
-	BANKSEL	r0x1004
-	MOVR	r0x1004,W
-	BTRSC	STATUS,2
-	LGOTO	_00130_DS_
-	.line	138, "codeDriver.c"; 	tempColor = tempColor<<1;
-	BCR	STATUS,0
-	BANKSEL	r0x1007
-	RLR	r0x1007,F
-	BANKSEL	r0x1008
-	RLR	r0x1008,F
-	BANKSEL	r0x1009
-	RLR	r0x1009,F
-	BANKSEL	r0x100A
-	RLR	r0x100A,F
-	.line	139, "codeDriver.c"; 	if(D)
-	BTRSS	STATUS,0
-	LGOTO	_00128_DS_
-	.line	141, "codeDriver.c"; 	PB0 = 0;
-	BANKSEL	_PORTB
-	BCR	_PORTB,0
-	.line	142, "codeDriver.c"; 	NOP();
-	nop
-	.line	143, "codeDriver.c"; 	NOP();
-	nop
-	.line	144, "codeDriver.c"; 	NOP();
-	nop
-	.line	145, "codeDriver.c"; 	NOP();
-	nop
-	.line	146, "codeDriver.c"; 	NOP();
-	nop
-	.line	147, "codeDriver.c"; 	NOP();
-	nop
-	.line	148, "codeDriver.c"; 	NOP();
-	nop
-	.line	149, "codeDriver.c"; 	NOP();
-	nop
-	.line	150, "codeDriver.c"; 	NOP();
-	nop
-	.line	151, "codeDriver.c"; 	PB0 = 1;
-	BANKSEL	_PORTB
-	BSR	_PORTB,0
-	.line	152, "codeDriver.c"; 	NOP();
-	nop
-	.line	153, "codeDriver.c"; 	NOP();
-	nop
-	.line	154, "codeDriver.c"; 	NOP();
-	nop
-	.line	155, "codeDriver.c"; 	NOP();
-	nop
-	.line	156, "codeDriver.c"; 	NOP();
-	nop
-	LGOTO	_00133_DS_
-_00128_DS_:
-	.line	160, "codeDriver.c"; 	PB0 = 1;
-	BANKSEL	_PORTB
-	BSR	_PORTB,0
-	.line	161, "codeDriver.c"; 	NOP();
-	nop
-	.line	162, "codeDriver.c"; 	NOP();
-	nop
-	.line	163, "codeDriver.c"; 	NOP();
-	nop
-	.line	164, "codeDriver.c"; 	NOP();
-	nop
-	.line	165, "codeDriver.c"; 	NOP();
-	nop
-	.line	166, "codeDriver.c"; 	NOP();
-	nop
-	.line	167, "codeDriver.c"; 	NOP();
-	nop
-	.line	168, "codeDriver.c"; 	NOP();
-	nop
-	.line	169, "codeDriver.c"; 	NOP();
-	nop
-	.line	170, "codeDriver.c"; 	PB0 = 0;
-	BANKSEL	_PORTB
-	BCR	_PORTB,0
-	.line	171, "codeDriver.c"; 	NOP();
-	nop
-	.line	172, "codeDriver.c"; 	NOP();
-	nop
-	.line	173, "codeDriver.c"; 	NOP();
-	nop
-	.line	174, "codeDriver.c"; 	NOP();
-	nop
-	.line	175, "codeDriver.c"; 	NOP();
-	nop
-_00133_DS_:
-	.line	136, "codeDriver.c"; 	for(unsigned char i=24;i>0;i--)
-	BANKSEL	r0x1004
-	DECR	r0x1004,F
-	LGOTO	_00132_DS_
-_00130_DS_:
-	.line	178, "codeDriver.c"; 	PB0 = 0;
-	BANKSEL	_PORTB
-	BCR	_PORTB,0
-	.line	179, "codeDriver.c"; 	}
-	RETURN	
-; exit point of _sendRGB
-
-;***
-;  pBlock Stats: dbName = C
-;***
-;has an exit
-;1 compiler assigned register :
-;   r0x100F
+;   r0x101E
+;   r0x101F
+;   r0x1020
+;   r0x1021
+;   r0x1022
+;   STK02
 ;; Starting pCode block
 .segment "code"; module=codeDriver, function=_sendRGB1
 	.debuginfo subprogram _sendRGB1
+;local variable name mapping:
+	.debuginfo variable _colorR=r0x101C
+	.debuginfo variable _colorG=r0x101D
+	.debuginfo variable _colorB=r0x101E
+	.debuginfo variable _j=r0x101F
+	.debuginfo variable _i=r0x101C
 _sendRGB1:
 ; 2 exit points
-	.line	45, "codeDriver.c"; 	rgb.R7 = D;
-	BANKSEL	r0x100F
-	CLRR	r0x100F
-	BTRSC	STATUS,0
-	INCR	r0x100F,F
-	RRR	r0x100F,W
-	BTRSC	STATUS,0
+	.line	22, "codeDriver.c"; 	void sendRGB1(unsigned char colorR,unsigned char colorG,unsigned char colorB)
+	BANKSEL	r0x101C
+	MOVAR	r0x101C
+	MOVR	STK00,W
+	BANKSEL	r0x101D
+	MOVAR	r0x101D
+	MOVR	STK01,W
+	BANKSEL	r0x101E
+	MOVAR	r0x101E
+	.line	25, "codeDriver.c"; 	unsigned char temp[] = {rgb.R7,rgb.R6,rgb.R5,rgb.R4,rgb.R3,rgb.R2,rgb.R1,rgb.R0,rgb.G7,rgb.G6,rgb.G5,rgb.G4,rgb.G3,rgb.G2,rgb.G1,rgb.G0,rgb.B7,rgb.B6,rgb.B5,rgb.B4,rgb.B3,rgb.B2,rgb.B1,rgb.B0};
+	BANKSEL	r0x101F
+	CLRR	r0x101F
+	BANKSEL	_sendRGB1_rgb_65536_9
+	BTRSS	_sendRGB1_rgb_65536_9,0
+	LGOTO	_00001_DS_
+	BANKSEL	r0x101F
+	INCR	r0x101F,F
+_00001_DS_:
+	BANKSEL	r0x101F
+	MOVR	r0x101F,W
+	BANKSEL	_sendRGB1_temp_65536_9
+	MOVAR	(_sendRGB1_temp_65536_9 + 0)
+	BANKSEL	r0x101F
+	CLRR	r0x101F
+	BANKSEL	_sendRGB1_rgb_65536_9
+	BTRSS	_sendRGB1_rgb_65536_9,1
+	LGOTO	_00002_DS_
+	BANKSEL	r0x101F
+	INCR	r0x101F,F
+_00002_DS_:
+	BANKSEL	r0x101F
+	MOVR	r0x101F,W
+	BANKSEL	_sendRGB1_temp_65536_9
+	MOVAR	(_sendRGB1_temp_65536_9 + 1)
+	BANKSEL	r0x101F
+	CLRR	r0x101F
+	BANKSEL	_sendRGB1_rgb_65536_9
+	BTRSS	_sendRGB1_rgb_65536_9,2
+	LGOTO	_00003_DS_
+	BANKSEL	r0x101F
+	INCR	r0x101F,F
+_00003_DS_:
+	BANKSEL	r0x101F
+	MOVR	r0x101F,W
+	BANKSEL	_sendRGB1_temp_65536_9
+	MOVAR	(_sendRGB1_temp_65536_9 + 2)
+	BANKSEL	r0x101F
+	CLRR	r0x101F
+	BANKSEL	_sendRGB1_rgb_65536_9
+	BTRSS	_sendRGB1_rgb_65536_9,3
+	LGOTO	_00004_DS_
+	BANKSEL	r0x101F
+	INCR	r0x101F,F
+_00004_DS_:
+	BANKSEL	r0x101F
+	MOVR	r0x101F,W
+	BANKSEL	_sendRGB1_temp_65536_9
+	MOVAR	(_sendRGB1_temp_65536_9 + 3)
+	BANKSEL	r0x101F
+	CLRR	r0x101F
+	BANKSEL	_sendRGB1_rgb_65536_9
+	BTRSS	_sendRGB1_rgb_65536_9,4
+	LGOTO	_00005_DS_
+	BANKSEL	r0x101F
+	INCR	r0x101F,F
+_00005_DS_:
+	BANKSEL	r0x101F
+	MOVR	r0x101F,W
+	BANKSEL	_sendRGB1_temp_65536_9
+	MOVAR	(_sendRGB1_temp_65536_9 + 4)
+	BANKSEL	r0x101F
+	CLRR	r0x101F
+	BANKSEL	_sendRGB1_rgb_65536_9
+	BTRSS	_sendRGB1_rgb_65536_9,5
+	LGOTO	_00006_DS_
+	BANKSEL	r0x101F
+	INCR	r0x101F,F
+_00006_DS_:
+	BANKSEL	r0x101F
+	MOVR	r0x101F,W
+	BANKSEL	_sendRGB1_temp_65536_9
+	MOVAR	(_sendRGB1_temp_65536_9 + 5)
+	BANKSEL	r0x101F
+	CLRR	r0x101F
+	BANKSEL	_sendRGB1_rgb_65536_9
+	BTRSS	_sendRGB1_rgb_65536_9,6
 	LGOTO	_00007_DS_
-	BANKSEL	_sendRGB1_rgb_65536_9
-	BCR	_sendRGB1_rgb_65536_9,0
+	BANKSEL	r0x101F
+	INCR	r0x101F,F
 _00007_DS_:
-	BTRSS	STATUS,0
+	BANKSEL	r0x101F
+	MOVR	r0x101F,W
+	BANKSEL	_sendRGB1_temp_65536_9
+	MOVAR	(_sendRGB1_temp_65536_9 + 6)
+	BANKSEL	r0x101F
+	CLRR	r0x101F
+	BANKSEL	_sendRGB1_rgb_65536_9
+	BTRSS	_sendRGB1_rgb_65536_9,7
 	LGOTO	_00008_DS_
-	BANKSEL	_sendRGB1_rgb_65536_9
-	BSR	_sendRGB1_rgb_65536_9,0
+	BANKSEL	r0x101F
+	INCR	r0x101F,F
 _00008_DS_:
-	.line	47, "codeDriver.c"; 	rgb.R6 = D;
-	BANKSEL	r0x100F
-	CLRR	r0x100F
-	BTRSC	STATUS,0
-	INCR	r0x100F,F
-	RRR	r0x100F,W
-	BTRSC	STATUS,0
+	BANKSEL	r0x101F
+	MOVR	r0x101F,W
+	BANKSEL	_sendRGB1_temp_65536_9
+	MOVAR	(_sendRGB1_temp_65536_9 + 7)
+	BANKSEL	r0x101F
+	CLRR	r0x101F
+	BANKSEL	(_sendRGB1_rgb_65536_9+1)
+	BTRSS	(_sendRGB1_rgb_65536_9+1),0
 	LGOTO	_00009_DS_
-	BANKSEL	_sendRGB1_rgb_65536_9
-	BCR	_sendRGB1_rgb_65536_9,1
+	BANKSEL	r0x101F
+	INCR	r0x101F,F
 _00009_DS_:
-	BTRSS	STATUS,0
+	BANKSEL	r0x101F
+	MOVR	r0x101F,W
+	BANKSEL	_sendRGB1_temp_65536_9
+	MOVAR	(_sendRGB1_temp_65536_9 + 8)
+	BANKSEL	r0x101F
+	CLRR	r0x101F
+	BANKSEL	(_sendRGB1_rgb_65536_9+1)
+	BTRSS	(_sendRGB1_rgb_65536_9+1),1
 	LGOTO	_00010_DS_
-	BANKSEL	_sendRGB1_rgb_65536_9
-	BSR	_sendRGB1_rgb_65536_9,1
+	BANKSEL	r0x101F
+	INCR	r0x101F,F
 _00010_DS_:
-	.line	49, "codeDriver.c"; 	rgb.R5 = D;
-	BANKSEL	r0x100F
-	CLRR	r0x100F
-	BTRSC	STATUS,0
-	INCR	r0x100F,F
-	RRR	r0x100F,W
-	BTRSC	STATUS,0
+	BANKSEL	r0x101F
+	MOVR	r0x101F,W
+	BANKSEL	_sendRGB1_temp_65536_9
+	MOVAR	(_sendRGB1_temp_65536_9 + 9)
+	BANKSEL	r0x101F
+	CLRR	r0x101F
+	BANKSEL	(_sendRGB1_rgb_65536_9+1)
+	BTRSS	(_sendRGB1_rgb_65536_9+1),2
 	LGOTO	_00011_DS_
-	BANKSEL	_sendRGB1_rgb_65536_9
-	BCR	_sendRGB1_rgb_65536_9,2
+	BANKSEL	r0x101F
+	INCR	r0x101F,F
 _00011_DS_:
-	BTRSS	STATUS,0
+	BANKSEL	r0x101F
+	MOVR	r0x101F,W
+	BANKSEL	_sendRGB1_temp_65536_9
+	MOVAR	(_sendRGB1_temp_65536_9 + 10)
+	BANKSEL	r0x101F
+	CLRR	r0x101F
+	BANKSEL	(_sendRGB1_rgb_65536_9+1)
+	BTRSS	(_sendRGB1_rgb_65536_9+1),3
 	LGOTO	_00012_DS_
-	BANKSEL	_sendRGB1_rgb_65536_9
-	BSR	_sendRGB1_rgb_65536_9,2
+	BANKSEL	r0x101F
+	INCR	r0x101F,F
 _00012_DS_:
-	.line	51, "codeDriver.c"; 	rgb.R4 = D;
-	BANKSEL	r0x100F
-	CLRR	r0x100F
-	BTRSC	STATUS,0
-	INCR	r0x100F,F
-	RRR	r0x100F,W
-	BTRSC	STATUS,0
+	BANKSEL	r0x101F
+	MOVR	r0x101F,W
+	BANKSEL	_sendRGB1_temp_65536_9
+	MOVAR	(_sendRGB1_temp_65536_9 + 11)
+	BANKSEL	r0x101F
+	CLRR	r0x101F
+	BANKSEL	(_sendRGB1_rgb_65536_9+1)
+	BTRSS	(_sendRGB1_rgb_65536_9+1),4
 	LGOTO	_00013_DS_
-	BANKSEL	_sendRGB1_rgb_65536_9
-	BCR	_sendRGB1_rgb_65536_9,3
+	BANKSEL	r0x101F
+	INCR	r0x101F,F
 _00013_DS_:
-	BTRSS	STATUS,0
+	BANKSEL	r0x101F
+	MOVR	r0x101F,W
+	BANKSEL	_sendRGB1_temp_65536_9
+	MOVAR	(_sendRGB1_temp_65536_9 + 12)
+	BANKSEL	r0x101F
+	CLRR	r0x101F
+	BANKSEL	(_sendRGB1_rgb_65536_9+1)
+	BTRSS	(_sendRGB1_rgb_65536_9+1),5
 	LGOTO	_00014_DS_
-	BANKSEL	_sendRGB1_rgb_65536_9
-	BSR	_sendRGB1_rgb_65536_9,3
+	BANKSEL	r0x101F
+	INCR	r0x101F,F
 _00014_DS_:
-	.line	53, "codeDriver.c"; 	rgb.R3 = D;
-	BANKSEL	r0x100F
-	CLRR	r0x100F
-	BTRSC	STATUS,0
-	INCR	r0x100F,F
-	RRR	r0x100F,W
-	BTRSC	STATUS,0
+	BANKSEL	r0x101F
+	MOVR	r0x101F,W
+	BANKSEL	_sendRGB1_temp_65536_9
+	MOVAR	(_sendRGB1_temp_65536_9 + 13)
+	BANKSEL	r0x101F
+	CLRR	r0x101F
+	BANKSEL	(_sendRGB1_rgb_65536_9+1)
+	BTRSS	(_sendRGB1_rgb_65536_9+1),6
 	LGOTO	_00015_DS_
-	BANKSEL	_sendRGB1_rgb_65536_9
-	BCR	_sendRGB1_rgb_65536_9,4
+	BANKSEL	r0x101F
+	INCR	r0x101F,F
 _00015_DS_:
-	BTRSS	STATUS,0
+	BANKSEL	r0x101F
+	MOVR	r0x101F,W
+	BANKSEL	_sendRGB1_temp_65536_9
+	MOVAR	(_sendRGB1_temp_65536_9 + 14)
+	BANKSEL	r0x101F
+	CLRR	r0x101F
+	BANKSEL	(_sendRGB1_rgb_65536_9+1)
+	BTRSS	(_sendRGB1_rgb_65536_9+1),7
 	LGOTO	_00016_DS_
-	BANKSEL	_sendRGB1_rgb_65536_9
-	BSR	_sendRGB1_rgb_65536_9,4
+	BANKSEL	r0x101F
+	INCR	r0x101F,F
 _00016_DS_:
-	.line	55, "codeDriver.c"; 	rgb.R2 = D;
-	BANKSEL	r0x100F
-	CLRR	r0x100F
-	BTRSC	STATUS,0
-	INCR	r0x100F,F
-	RRR	r0x100F,W
-	BTRSC	STATUS,0
+	BANKSEL	r0x101F
+	MOVR	r0x101F,W
+	BANKSEL	_sendRGB1_temp_65536_9
+	MOVAR	(_sendRGB1_temp_65536_9 + 15)
+	BANKSEL	r0x101F
+	CLRR	r0x101F
+	BANKSEL	(_sendRGB1_rgb_65536_9+2)
+	BTRSS	(_sendRGB1_rgb_65536_9+2),0
 	LGOTO	_00017_DS_
-	BANKSEL	_sendRGB1_rgb_65536_9
-	BCR	_sendRGB1_rgb_65536_9,5
+	BANKSEL	r0x101F
+	INCR	r0x101F,F
 _00017_DS_:
-	BTRSS	STATUS,0
+	BANKSEL	r0x101F
+	MOVR	r0x101F,W
+	BANKSEL	_sendRGB1_temp_65536_9
+	MOVAR	(_sendRGB1_temp_65536_9 + 16)
+	BANKSEL	r0x101F
+	CLRR	r0x101F
+	BANKSEL	(_sendRGB1_rgb_65536_9+2)
+	BTRSS	(_sendRGB1_rgb_65536_9+2),1
 	LGOTO	_00018_DS_
-	BANKSEL	_sendRGB1_rgb_65536_9
-	BSR	_sendRGB1_rgb_65536_9,5
+	BANKSEL	r0x101F
+	INCR	r0x101F,F
 _00018_DS_:
-	.line	57, "codeDriver.c"; 	rgb.R1 = D;
-	BANKSEL	r0x100F
-	CLRR	r0x100F
-	BTRSC	STATUS,0
-	INCR	r0x100F,F
-	RRR	r0x100F,W
-	BTRSC	STATUS,0
+	BANKSEL	r0x101F
+	MOVR	r0x101F,W
+	BANKSEL	_sendRGB1_temp_65536_9
+	MOVAR	(_sendRGB1_temp_65536_9 + 17)
+	BANKSEL	r0x101F
+	CLRR	r0x101F
+	BANKSEL	(_sendRGB1_rgb_65536_9+2)
+	BTRSS	(_sendRGB1_rgb_65536_9+2),2
 	LGOTO	_00019_DS_
-	BANKSEL	_sendRGB1_rgb_65536_9
-	BCR	_sendRGB1_rgb_65536_9,6
+	BANKSEL	r0x101F
+	INCR	r0x101F,F
 _00019_DS_:
-	BTRSS	STATUS,0
+	BANKSEL	r0x101F
+	MOVR	r0x101F,W
+	BANKSEL	_sendRGB1_temp_65536_9
+	MOVAR	(_sendRGB1_temp_65536_9 + 18)
+	BANKSEL	r0x101F
+	CLRR	r0x101F
+	BANKSEL	(_sendRGB1_rgb_65536_9+2)
+	BTRSS	(_sendRGB1_rgb_65536_9+2),3
 	LGOTO	_00020_DS_
-	BANKSEL	_sendRGB1_rgb_65536_9
-	BSR	_sendRGB1_rgb_65536_9,6
+	BANKSEL	r0x101F
+	INCR	r0x101F,F
 _00020_DS_:
-	.line	59, "codeDriver.c"; 	rgb.R0 = D;
-	BANKSEL	r0x100F
-	CLRR	r0x100F
-	BTRSC	STATUS,0
-	INCR	r0x100F,F
-	RRR	r0x100F,W
-	BTRSC	STATUS,0
+	BANKSEL	r0x101F
+	MOVR	r0x101F,W
+	BANKSEL	_sendRGB1_temp_65536_9
+	MOVAR	(_sendRGB1_temp_65536_9 + 19)
+	BANKSEL	r0x101F
+	CLRR	r0x101F
+	BANKSEL	(_sendRGB1_rgb_65536_9+2)
+	BTRSS	(_sendRGB1_rgb_65536_9+2),4
 	LGOTO	_00021_DS_
-	BANKSEL	_sendRGB1_rgb_65536_9
-	BCR	_sendRGB1_rgb_65536_9,7
+	BANKSEL	r0x101F
+	INCR	r0x101F,F
 _00021_DS_:
-	BTRSS	STATUS,0
+	BANKSEL	r0x101F
+	MOVR	r0x101F,W
+	BANKSEL	_sendRGB1_temp_65536_9
+	MOVAR	(_sendRGB1_temp_65536_9 + 20)
+	BANKSEL	r0x101F
+	CLRR	r0x101F
+	BANKSEL	(_sendRGB1_rgb_65536_9+2)
+	BTRSS	(_sendRGB1_rgb_65536_9+2),5
 	LGOTO	_00022_DS_
-	BANKSEL	_sendRGB1_rgb_65536_9
-	BSR	_sendRGB1_rgb_65536_9,7
+	BANKSEL	r0x101F
+	INCR	r0x101F,F
 _00022_DS_:
-	.line	61, "codeDriver.c"; 	rgb.G7 = D;
-	BANKSEL	r0x100F
-	CLRR	r0x100F
-	BTRSC	STATUS,0
-	INCR	r0x100F,F
-	RRR	r0x100F,W
-	BTRSC	STATUS,0
+	BANKSEL	r0x101F
+	MOVR	r0x101F,W
+	BANKSEL	_sendRGB1_temp_65536_9
+	MOVAR	(_sendRGB1_temp_65536_9 + 21)
+	BANKSEL	r0x101F
+	CLRR	r0x101F
+	BANKSEL	(_sendRGB1_rgb_65536_9+2)
+	BTRSS	(_sendRGB1_rgb_65536_9+2),6
 	LGOTO	_00023_DS_
-	BANKSEL	(_sendRGB1_rgb_65536_9+1)
-	BCR	(_sendRGB1_rgb_65536_9+1),0
+	BANKSEL	r0x101F
+	INCR	r0x101F,F
 _00023_DS_:
-	BTRSS	STATUS,0
+	BANKSEL	r0x101F
+	MOVR	r0x101F,W
+	BANKSEL	_sendRGB1_temp_65536_9
+	MOVAR	(_sendRGB1_temp_65536_9 + 22)
+	BANKSEL	r0x101F
+	CLRR	r0x101F
+	BANKSEL	(_sendRGB1_rgb_65536_9+2)
+	BTRSS	(_sendRGB1_rgb_65536_9+2),7
 	LGOTO	_00024_DS_
-	BANKSEL	(_sendRGB1_rgb_65536_9+1)
-	BSR	(_sendRGB1_rgb_65536_9+1),0
+	BANKSEL	r0x101F
+	INCR	r0x101F,F
 _00024_DS_:
-	.line	63, "codeDriver.c"; 	rgb.G6 = D;
-	BANKSEL	r0x100F
-	CLRR	r0x100F
+	BANKSEL	r0x101F
+	MOVR	r0x101F,W
+	BANKSEL	_sendRGB1_temp_65536_9
+	MOVAR	(_sendRGB1_temp_65536_9 + 23)
+	.line	26, "codeDriver.c"; 	for(unsigned char j=0;j<24;j++)
+	BANKSEL	r0x101F
+	CLRR	r0x101F
+;;unsigned compare: left < lit (0x18=24), size=1
+_00135_DS_:
+	.line	26, "codeDriver.c"; 	{
+	MOVIA	0x18
+	BANKSEL	r0x101F
+	SUBAR	r0x101F,W
 	BTRSC	STATUS,0
-	INCR	r0x100F,F
-	RRR	r0x100F,W
+	LGOTO	_00129_DS_
+;;unsigned compare: left < lit (0x8=8), size=1
+	.line	28, "codeDriver.c"; 	if(j<8)
+	MOVIA	0x08
+	SUBAR	r0x101F,W
 	BTRSC	STATUS,0
-	LGOTO	_00025_DS_
-	BANKSEL	(_sendRGB1_rgb_65536_9+1)
-	BCR	(_sendRGB1_rgb_65536_9+1),1
-_00025_DS_:
-	BTRSS	STATUS,0
-	LGOTO	_00026_DS_
-	BANKSEL	(_sendRGB1_rgb_65536_9+1)
-	BSR	(_sendRGB1_rgb_65536_9+1),1
-_00026_DS_:
-	.line	65, "codeDriver.c"; 	rgb.G5 = D;
-	BANKSEL	r0x100F
-	CLRR	r0x100F
+	LGOTO	_00127_DS_
+	.line	30, "codeDriver.c"; 	colorR = colorR<<1;
+	BCR	STATUS,0
+	BANKSEL	r0x101C
+	RLR	r0x101C,F
+	.line	31, "codeDriver.c"; 	temp[j] = D;
+	BANKSEL	r0x101F
+	MOVR	r0x101F,W
+	ADDIA	(_sendRGB1_temp_65536_9 + 0)
+	BANKSEL	r0x1020
+	MOVAR	r0x1020
+	MOVIA	((_sendRGB1_temp_65536_9 + 0) >> 8) & 0xff
 	BTRSC	STATUS,0
-	INCR	r0x100F,F
-	RRR	r0x100F,W
+	ADDIA	0x01
+	BANKSEL	r0x1021
+	MOVAR	r0x1021
+	BANKSEL	r0x1022
+	CLRR	r0x1022
 	BTRSC	STATUS,0
-	LGOTO	_00027_DS_
-	BANKSEL	(_sendRGB1_rgb_65536_9+1)
-	BCR	(_sendRGB1_rgb_65536_9+1),2
-_00027_DS_:
-	BTRSS	STATUS,0
-	LGOTO	_00028_DS_
-	BANKSEL	(_sendRGB1_rgb_65536_9+1)
-	BSR	(_sendRGB1_rgb_65536_9+1),2
-_00028_DS_:
-	.line	67, "codeDriver.c"; 	rgb.G4 = D;
-	BANKSEL	r0x100F
-	CLRR	r0x100F
+	INCR	r0x1022,F
+	MOVR	r0x1022,W
+	MOVAR	STK02
+	BANKSEL	r0x1020
+	MOVR	r0x1020,W
+	MOVAR	STK01
+	BANKSEL	r0x1021
+	MOVR	r0x1021,W
+	MOVAR	STK00
+	MOVIA	0x00
+	LCALL	__gptrput1
+	LGOTO	_00136_DS_
+;;unsigned compare: left < lit (0x10=16), size=1
+_00127_DS_:
+	.line	33, "codeDriver.c"; 	else if(j < 16)
+	MOVIA	0x10
+	BANKSEL	r0x101F
+	SUBAR	r0x101F,W
 	BTRSC	STATUS,0
-	INCR	r0x100F,F
-	RRR	r0x100F,W
+	LGOTO	_00124_DS_
+	.line	35, "codeDriver.c"; 	colorG = colorG<<1;
+	BCR	STATUS,0
+	BANKSEL	r0x101D
+	RLR	r0x101D,F
+	.line	36, "codeDriver.c"; 	temp[j] = D;
+	BANKSEL	r0x101F
+	MOVR	r0x101F,W
+	ADDIA	(_sendRGB1_temp_65536_9 + 0)
+	BANKSEL	r0x1020
+	MOVAR	r0x1020
+	MOVIA	((_sendRGB1_temp_65536_9 + 0) >> 8) & 0xff
 	BTRSC	STATUS,0
-	LGOTO	_00029_DS_
-	BANKSEL	(_sendRGB1_rgb_65536_9+1)
-	BCR	(_sendRGB1_rgb_65536_9+1),3
-_00029_DS_:
-	BTRSS	STATUS,0
-	LGOTO	_00030_DS_
-	BANKSEL	(_sendRGB1_rgb_65536_9+1)
-	BSR	(_sendRGB1_rgb_65536_9+1),3
-_00030_DS_:
-	.line	69, "codeDriver.c"; 	rgb.G3 = D;
-	BANKSEL	r0x100F
-	CLRR	r0x100F
+	ADDIA	0x01
+	BANKSEL	r0x1021
+	MOVAR	r0x1021
+	BANKSEL	r0x1022
+	CLRR	r0x1022
 	BTRSC	STATUS,0
-	INCR	r0x100F,F
-	RRR	r0x100F,W
+	INCR	r0x1022,F
+	MOVR	r0x1022,W
+	MOVAR	STK02
+	BANKSEL	r0x1020
+	MOVR	r0x1020,W
+	MOVAR	STK01
+	BANKSEL	r0x1021
+	MOVR	r0x1021,W
+	MOVAR	STK00
+	MOVIA	0x00
+	LCALL	__gptrput1
+	LGOTO	_00136_DS_
+_00124_DS_:
+	.line	40, "codeDriver.c"; 	colorB = colorB<<1;
+	BCR	STATUS,0
+	BANKSEL	r0x101E
+	RLR	r0x101E,F
+	.line	41, "codeDriver.c"; 	temp[j] = D;
+	BANKSEL	r0x101F
+	MOVR	r0x101F,W
+	ADDIA	(_sendRGB1_temp_65536_9 + 0)
+	BANKSEL	r0x1020
+	MOVAR	r0x1020
+	MOVIA	((_sendRGB1_temp_65536_9 + 0) >> 8) & 0xff
 	BTRSC	STATUS,0
-	LGOTO	_00031_DS_
-	BANKSEL	(_sendRGB1_rgb_65536_9+1)
-	BCR	(_sendRGB1_rgb_65536_9+1),4
-_00031_DS_:
-	BTRSS	STATUS,0
-	LGOTO	_00032_DS_
-	BANKSEL	(_sendRGB1_rgb_65536_9+1)
-	BSR	(_sendRGB1_rgb_65536_9+1),4
-_00032_DS_:
-	.line	71, "codeDriver.c"; 	rgb.G2 = D;
-	BANKSEL	r0x100F
-	CLRR	r0x100F
+	ADDIA	0x01
+	BANKSEL	r0x1021
+	MOVAR	r0x1021
+	BANKSEL	r0x1022
+	CLRR	r0x1022
 	BTRSC	STATUS,0
-	INCR	r0x100F,F
-	RRR	r0x100F,W
+	INCR	r0x1022,F
+	MOVR	r0x1022,W
+	MOVAR	STK02
+	BANKSEL	r0x1020
+	MOVR	r0x1020,W
+	MOVAR	STK01
+	BANKSEL	r0x1021
+	MOVR	r0x1021,W
+	MOVAR	STK00
+	MOVIA	0x00
+	LCALL	__gptrput1
+_00136_DS_:
+	.line	26, "codeDriver.c"; 	for(unsigned char j=0;j<24;j++)
+	BANKSEL	r0x101F
+	INCR	r0x101F,F
+	.line	26, "codeDriver.c"; 	{
+	LGOTO	_00135_DS_
+_00129_DS_:
+	.line	93, "codeDriver.c"; 	for(unsigned char i=0;i<24;i++)
+	BANKSEL	r0x101C
+	CLRR	r0x101C
+;;unsigned compare: left < lit (0x18=24), size=1
+_00138_DS_:
+	MOVIA	0x18
+	BANKSEL	r0x101C
+	SUBAR	r0x101C,W
 	BTRSC	STATUS,0
-	LGOTO	_00033_DS_
-	BANKSEL	(_sendRGB1_rgb_65536_9+1)
-	BCR	(_sendRGB1_rgb_65536_9+1),5
-_00033_DS_:
-	BTRSS	STATUS,0
-	LGOTO	_00034_DS_
-	BANKSEL	(_sendRGB1_rgb_65536_9+1)
-	BSR	(_sendRGB1_rgb_65536_9+1),5
-_00034_DS_:
-	.line	73, "codeDriver.c"; 	rgb.G1 = D;
-	BANKSEL	r0x100F
-	CLRR	r0x100F
+	LGOTO	_00140_DS_
+	.line	95, "codeDriver.c"; 	if(temp[i])
+	MOVR	r0x101C,W
+	ADDIA	(_sendRGB1_temp_65536_9 + 0)
+	BANKSEL	r0x101D
+	MOVAR	r0x101D
+	MOVIA	((_sendRGB1_temp_65536_9 + 0) >> 8) & 0xff
 	BTRSC	STATUS,0
-	INCR	r0x100F,F
-	RRR	r0x100F,W
-	BTRSC	STATUS,0
-	LGOTO	_00035_DS_
-	BANKSEL	(_sendRGB1_rgb_65536_9+1)
-	BCR	(_sendRGB1_rgb_65536_9+1),6
-_00035_DS_:
-	BTRSS	STATUS,0
-	LGOTO	_00036_DS_
-	BANKSEL	(_sendRGB1_rgb_65536_9+1)
-	BSR	(_sendRGB1_rgb_65536_9+1),6
-_00036_DS_:
-	.line	75, "codeDriver.c"; 	rgb.G0 = D;
-	BANKSEL	r0x100F
-	CLRR	r0x100F
-	BTRSC	STATUS,0
-	INCR	r0x100F,F
-	RRR	r0x100F,W
-	BTRSC	STATUS,0
-	LGOTO	_00037_DS_
-	BANKSEL	(_sendRGB1_rgb_65536_9+1)
-	BCR	(_sendRGB1_rgb_65536_9+1),7
-_00037_DS_:
-	BTRSS	STATUS,0
-	LGOTO	_00038_DS_
-	BANKSEL	(_sendRGB1_rgb_65536_9+1)
-	BSR	(_sendRGB1_rgb_65536_9+1),7
-_00038_DS_:
-	.line	77, "codeDriver.c"; 	rgb.B7 = D;
-	BANKSEL	r0x100F
-	CLRR	r0x100F
-	BTRSC	STATUS,0
-	INCR	r0x100F,F
-	RRR	r0x100F,W
-	BTRSC	STATUS,0
-	LGOTO	_00039_DS_
-	BANKSEL	(_sendRGB1_rgb_65536_9+2)
-	BCR	(_sendRGB1_rgb_65536_9+2),0
-_00039_DS_:
-	BTRSS	STATUS,0
-	LGOTO	_00040_DS_
-	BANKSEL	(_sendRGB1_rgb_65536_9+2)
-	BSR	(_sendRGB1_rgb_65536_9+2),0
-_00040_DS_:
-	.line	79, "codeDriver.c"; 	rgb.B6 = D;
-	BANKSEL	r0x100F
-	CLRR	r0x100F
-	BTRSC	STATUS,0
-	INCR	r0x100F,F
-	RRR	r0x100F,W
-	BTRSC	STATUS,0
-	LGOTO	_00041_DS_
-	BANKSEL	(_sendRGB1_rgb_65536_9+2)
-	BCR	(_sendRGB1_rgb_65536_9+2),1
-_00041_DS_:
-	BTRSS	STATUS,0
-	LGOTO	_00042_DS_
-	BANKSEL	(_sendRGB1_rgb_65536_9+2)
-	BSR	(_sendRGB1_rgb_65536_9+2),1
-_00042_DS_:
-	.line	81, "codeDriver.c"; 	rgb.B5 = D;
-	BANKSEL	r0x100F
-	CLRR	r0x100F
-	BTRSC	STATUS,0
-	INCR	r0x100F,F
-	RRR	r0x100F,W
-	BTRSC	STATUS,0
-	LGOTO	_00043_DS_
-	BANKSEL	(_sendRGB1_rgb_65536_9+2)
-	BCR	(_sendRGB1_rgb_65536_9+2),2
-_00043_DS_:
-	BTRSS	STATUS,0
-	LGOTO	_00044_DS_
-	BANKSEL	(_sendRGB1_rgb_65536_9+2)
-	BSR	(_sendRGB1_rgb_65536_9+2),2
-_00044_DS_:
-	.line	83, "codeDriver.c"; 	rgb.B4 = D;
-	BANKSEL	r0x100F
-	CLRR	r0x100F
-	BTRSC	STATUS,0
-	INCR	r0x100F,F
-	RRR	r0x100F,W
-	BTRSC	STATUS,0
-	LGOTO	_00045_DS_
-	BANKSEL	(_sendRGB1_rgb_65536_9+2)
-	BCR	(_sendRGB1_rgb_65536_9+2),3
-_00045_DS_:
-	BTRSS	STATUS,0
-	LGOTO	_00046_DS_
-	BANKSEL	(_sendRGB1_rgb_65536_9+2)
-	BSR	(_sendRGB1_rgb_65536_9+2),3
-_00046_DS_:
-	.line	85, "codeDriver.c"; 	rgb.B3 = D;
-	BANKSEL	r0x100F
-	CLRR	r0x100F
-	BTRSC	STATUS,0
-	INCR	r0x100F,F
-	RRR	r0x100F,W
-	BTRSC	STATUS,0
-	LGOTO	_00047_DS_
-	BANKSEL	(_sendRGB1_rgb_65536_9+2)
-	BCR	(_sendRGB1_rgb_65536_9+2),4
-_00047_DS_:
-	BTRSS	STATUS,0
-	LGOTO	_00048_DS_
-	BANKSEL	(_sendRGB1_rgb_65536_9+2)
-	BSR	(_sendRGB1_rgb_65536_9+2),4
-_00048_DS_:
-	.line	87, "codeDriver.c"; 	rgb.B2 = D;
-	BANKSEL	r0x100F
-	CLRR	r0x100F
-	BTRSC	STATUS,0
-	INCR	r0x100F,F
-	RRR	r0x100F,W
-	BTRSC	STATUS,0
-	LGOTO	_00049_DS_
-	BANKSEL	(_sendRGB1_rgb_65536_9+2)
-	BCR	(_sendRGB1_rgb_65536_9+2),5
-_00049_DS_:
-	BTRSS	STATUS,0
-	LGOTO	_00050_DS_
-	BANKSEL	(_sendRGB1_rgb_65536_9+2)
-	BSR	(_sendRGB1_rgb_65536_9+2),5
-_00050_DS_:
-	.line	89, "codeDriver.c"; 	rgb.B1 = D;
-	BANKSEL	r0x100F
-	CLRR	r0x100F
-	BTRSC	STATUS,0
-	INCR	r0x100F,F
-	RRR	r0x100F,W
-	BTRSC	STATUS,0
-	LGOTO	_00051_DS_
-	BANKSEL	(_sendRGB1_rgb_65536_9+2)
-	BCR	(_sendRGB1_rgb_65536_9+2),6
-_00051_DS_:
-	BTRSS	STATUS,0
-	LGOTO	_00052_DS_
-	BANKSEL	(_sendRGB1_rgb_65536_9+2)
-	BSR	(_sendRGB1_rgb_65536_9+2),6
-_00052_DS_:
-	.line	91, "codeDriver.c"; 	rgb.B0 = D;
-	BANKSEL	r0x100F
-	CLRR	r0x100F
-	BTRSC	STATUS,0
-	INCR	r0x100F,F
-	RRR	r0x100F,W
-	BTRSC	STATUS,0
-	LGOTO	_00053_DS_
-	BANKSEL	(_sendRGB1_rgb_65536_9+2)
-	BCR	(_sendRGB1_rgb_65536_9+2),7
-_00053_DS_:
-	BTRSS	STATUS,0
-	LGOTO	_00054_DS_
-	BANKSEL	(_sendRGB1_rgb_65536_9+2)
-	BSR	(_sendRGB1_rgb_65536_9+2),7
-_00054_DS_:
+	ADDIA	0x01
+	BANKSEL	r0x101E
+	MOVAR	r0x101E
+	BANKSEL	r0x101D
+	MOVR	r0x101D,W
+	MOVAR	STK01
+	BANKSEL	r0x101E
+	MOVR	r0x101E,W
+	MOVAR	STK00
+	MOVIA	0x00
+	LCALL	__gptrget1
+	BANKSEL	r0x101F
+	MOVAR	r0x101F
+	MOVR	r0x101F,W
+	BTRSC	STATUS,2
+	LGOTO	_00131_DS_
+	.line	97, "codeDriver.c"; 	PB0 = 1;
+	BANKSEL	_PORTB
+	BSR	_PORTB,0
+	.line	98, "codeDriver.c"; 	NOP();
+	nop
+	.line	99, "codeDriver.c"; 	NOP();
+	nop
+	.line	100, "codeDriver.c"; 	NOP();
+	nop
+	.line	101, "codeDriver.c"; 	NOP();
+	nop
+	.line	102, "codeDriver.c"; 	NOP();
+	nop
+	.line	103, "codeDriver.c"; 	NOP();
+	nop
+	.line	104, "codeDriver.c"; 	NOP();
+	nop
+	.line	105, "codeDriver.c"; 	NOP();
+	nop
+	.line	106, "codeDriver.c"; 	NOP();
+	nop
+	.line	107, "codeDriver.c"; 	PB0 = 0;
+	BANKSEL	_PORTB
+	BCR	_PORTB,0
+	LGOTO	_00139_DS_
+_00131_DS_:
+	.line	111, "codeDriver.c"; 	PB0 = 0;
+	BANKSEL	_PORTB
+	BCR	_PORTB,0
+	.line	112, "codeDriver.c"; 	NOP();
+	nop
+	.line	113, "codeDriver.c"; 	NOP();
+	nop
+	.line	114, "codeDriver.c"; 	NOP();
+	nop
+	.line	115, "codeDriver.c"; 	NOP();
+	nop
+	.line	116, "codeDriver.c"; 	NOP();
+	nop
+	.line	117, "codeDriver.c"; 	NOP();
+	nop
+	.line	118, "codeDriver.c"; 	NOP();
+	nop
+	.line	119, "codeDriver.c"; 	NOP();
+	nop
+	.line	120, "codeDriver.c"; 	NOP();
+	nop
+	.line	121, "codeDriver.c"; 	PB0 = 1;
+	BANKSEL	_PORTB
+	BSR	_PORTB,0
+_00139_DS_:
+	.line	93, "codeDriver.c"; 	for(unsigned char i=0;i<24;i++)
+	BANKSEL	r0x101C
+	INCR	r0x101C,F
+	LGOTO	_00138_DS_
+_00140_DS_:
 	.line	125, "codeDriver.c"; 	}
 	RETURN	
 ; exit point of _sendRGB1
@@ -921,88 +767,88 @@ _00054_DS_:
 ;   _sendRGB1
 ;   _Delay80us
 ;12 compiler assigned registers:
-;   r0x1010
+;   r0x1023
 ;   STK00
-;   r0x1011
+;   r0x1024
 ;   STK01
-;   r0x1012
+;   r0x1025
 ;   STK02
-;   r0x1013
-;   r0x1014
-;   r0x1015
-;   r0x1016
-;   r0x1017
-;   r0x1018
+;   r0x1026
+;   r0x1027
+;   r0x1028
+;   r0x1029
+;   r0x102A
+;   r0x102B
 ;; Starting pCode block
 .segment "code"; module=codeDriver, function=_sendtoLast
 	.debuginfo subprogram _sendtoLast
 ;local variable name mapping:
-	.debuginfo variable _ledNub=r0x1010
-	.debuginfo variable _colorR=r0x1011
-	.debuginfo variable _colorG=r0x1012
-	.debuginfo variable _colorB=r0x1013
-	.debuginfo variable _i[0]=r0x1014
-	.debuginfo variable _i[1]=r0x1015
+	.debuginfo variable _ledNub=r0x1023
+	.debuginfo variable _colorR=r0x1024
+	.debuginfo variable _colorG=r0x1025
+	.debuginfo variable _colorB=r0x1026
+	.debuginfo variable _i[0]=r0x1027
+	.debuginfo variable _i[1]=r0x1028
 _sendtoLast:
 ; 2 exit points
 	.line	13, "codeDriver.c"; 	void sendtoLast(char ledNub,unsigned char colorR,unsigned char colorG,unsigned char colorB)
-	BANKSEL	r0x1010
-	MOVAR	r0x1010
+	BANKSEL	r0x1023
+	MOVAR	r0x1023
 	MOVR	STK00,W
-	BANKSEL	r0x1011
-	MOVAR	r0x1011
+	BANKSEL	r0x1024
+	MOVAR	r0x1024
 	MOVR	STK01,W
-	BANKSEL	r0x1012
-	MOVAR	r0x1012
+	BANKSEL	r0x1025
+	MOVAR	r0x1025
 	MOVR	STK02,W
-	BANKSEL	r0x1013
-	MOVAR	r0x1013
+	BANKSEL	r0x1026
+	MOVAR	r0x1026
 	.line	15, "codeDriver.c"; 	for(int i=0;i<ledNub;i++)
-	BANKSEL	r0x1014
-	CLRR	r0x1014
-	BANKSEL	r0x1015
-	CLRR	r0x1015
+	BANKSEL	r0x1027
+	CLRR	r0x1027
+	BANKSEL	r0x1028
+	CLRR	r0x1028
 _00107_DS_:
-	BANKSEL	r0x1010
-	MOVR	r0x1010,W
-	BANKSEL	r0x1016
-	MOVAR	r0x1016
-;;1	CLRR	r0x1017
-	BANKSEL	r0x1015
-	MOVR	r0x1015,W
+	BANKSEL	r0x1023
+	MOVR	r0x1023,W
+	BANKSEL	r0x1029
+	MOVAR	r0x1029
+;;1	CLRR	r0x102A
+	BANKSEL	r0x1028
+	MOVR	r0x1028,W
 	ADDIA	0x80
-	BANKSEL	r0x1018
-	MOVAR	r0x1018
+	BANKSEL	r0x102B
+	MOVAR	r0x102B
 	MOVIA	0x00
 	ADDIA	0x80
-	SUBAR	r0x1018,W
+	SUBAR	r0x102B,W
 	BTRSS	STATUS,2
 	LGOTO	_00118_DS_
-	BANKSEL	r0x1016
-	MOVR	r0x1016,W
-	BANKSEL	r0x1014
-	SUBAR	r0x1014,W
+	BANKSEL	r0x1029
+	MOVR	r0x1029,W
+	BANKSEL	r0x1027
+	SUBAR	r0x1027,W
 _00118_DS_:
 	BTRSC	STATUS,0
 	LGOTO	_00105_DS_
 	.line	17, "codeDriver.c"; 	sendRGB1(colorR,colorG,colorB);
-	BANKSEL	r0x1013
-	MOVR	r0x1013,W
+	BANKSEL	r0x1026
+	MOVR	r0x1026,W
 	MOVAR	STK01
-	BANKSEL	r0x1012
-	MOVR	r0x1012,W
+	BANKSEL	r0x1025
+	MOVR	r0x1025,W
 	MOVAR	STK00
-	BANKSEL	r0x1011
-	MOVR	r0x1011,W
+	BANKSEL	r0x1024
+	MOVR	r0x1024,W
 	LCALL	_sendRGB1
 	.line	15, "codeDriver.c"; 	for(int i=0;i<ledNub;i++)
-	BANKSEL	r0x1014
-	INCR	r0x1014,F
+	BANKSEL	r0x1027
+	INCR	r0x1027,F
 	BTRSS	STATUS,2
-	LGOTO	_00055_DS_
-	BANKSEL	r0x1015
-	INCR	r0x1015,F
-_00055_DS_:
+	LGOTO	_00025_DS_
+	BANKSEL	r0x1028
+	INCR	r0x1028,F
+_00025_DS_:
 	LGOTO	_00107_DS_
 _00105_DS_:
 	.line	19, "codeDriver.c"; 	Delay80us();
@@ -1013,6 +859,6 @@ _00105_DS_:
 
 
 ;	code size estimation:
-;	  394+  158 =   552 instructions ( 1420 byte)
+;	  300+  180 =   480 instructions ( 1320 byte)
 
 	end

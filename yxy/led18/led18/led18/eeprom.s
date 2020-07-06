@@ -166,42 +166,36 @@ r0x1002:
 	.debuginfo variable _workStep=r0x1002
 _writeWordStep:
 ; 2 exit points
-	.line	130, "eeprom.c"; 	void writeWordStep(u8t workStep)
+	.line	128, "eeprom.c"; 	void writeWordStep(u8t workStep)
 	BANKSEL	r0x1002
 	MOVAR	r0x1002
-	.line	132, "eeprom.c"; 	BPHCON = 0x7F;	//打开PB7的上拉电阻(SDA)
+	.line	130, "eeprom.c"; 	BPHCON = 0x7F;	//打开PB7的上拉电阻(SDA)
 	MOVIA	0x7f
 	MOVAR	_BPHCON
-	.line	133, "eeprom.c"; 	IOSTA = 0;
-	CLRA	
-	IOST	_IOSTA
-	.line	134, "eeprom.c"; 	IOSTB = C_PB0_Input;
-	MOVIA	0x01
-	IOST	_IOSTB
-	.line	135, "eeprom.c"; 	SCL = 0;
+	.line	131, "eeprom.c"; 	SCL = 0;
 	BANKSEL	_PORTA
 	BCR	_PORTA,0
-	.line	137, "eeprom.c"; 	Start24C02();
+	.line	133, "eeprom.c"; 	Start24C02();
 	LCALL	_Start24C02
-	.line	138, "eeprom.c"; 	SendByte(0xA0);		//发送器件地址和写动作
+	.line	134, "eeprom.c"; 	SendByte(0xA0);		//发送器件地址和写动作
 	MOVIA	0xa0
 	LCALL	_SendByte
-	.line	139, "eeprom.c"; 	RecvAck();
+	.line	135, "eeprom.c"; 	RecvAck();
 	LCALL	_RecvAck
-	.line	140, "eeprom.c"; 	SendByte(0X00);		//发送写地址
+	.line	136, "eeprom.c"; 	SendByte(0X00);		//发送写地址
 	MOVIA	0x00
 	LCALL	_SendByte
-	.line	141, "eeprom.c"; 	RecvAck();
+	.line	137, "eeprom.c"; 	RecvAck();
 	LCALL	_RecvAck
-	.line	142, "eeprom.c"; 	SendByte(workStep);		//发送数据到地址
+	.line	138, "eeprom.c"; 	SendByte(workStep);		//发送数据到地址
 	BANKSEL	r0x1002
 	MOVR	r0x1002,W
 	LCALL	_SendByte
-	.line	143, "eeprom.c"; 	RecvAck();
+	.line	139, "eeprom.c"; 	RecvAck();
 	LCALL	_RecvAck
-	.line	144, "eeprom.c"; 	Stop24C02();
+	.line	140, "eeprom.c"; 	Stop24C02();
 	LCALL	_Stop24C02
-	.line	145, "eeprom.c"; 	}
+	.line	141, "eeprom.c"; 	}
 	RETURN	
 ; exit point of _writeWordStep
 
@@ -267,35 +261,29 @@ _readWordStep:
 	.line	111, "eeprom.c"; 	BPHCON = 0x7F;	//打开PB7的上拉电阻(SDA)
 	MOVIA	0x7f
 	MOVAR	_BPHCON
-	.line	112, "eeprom.c"; 	IOSTA = 0;
-	CLRA	
-	IOST	_IOSTA
-	.line	113, "eeprom.c"; 	IOSTB = C_PB0_Input;
-	MOVIA	0x01
-	IOST	_IOSTB
-	.line	114, "eeprom.c"; 	SCL = 0;
+	.line	112, "eeprom.c"; 	SCL = 0;
 	BANKSEL	_PORTA
 	BCR	_PORTA,0
-	.line	115, "eeprom.c"; 	Start24C02();
+	.line	113, "eeprom.c"; 	Start24C02();
 	LCALL	_Start24C02
-	.line	116, "eeprom.c"; 	SendByte(0xA0);		//发送器件地址和写动作
+	.line	114, "eeprom.c"; 	SendByte(0xA0);		//发送器件地址和写动作
 	MOVIA	0xa0
+	LCALL	_SendByte
+	.line	115, "eeprom.c"; 	RecvAck();
+	LCALL	_RecvAck
+	.line	116, "eeprom.c"; 	SendByte(0X00);		//发送读地址
+	MOVIA	0x00
 	LCALL	_SendByte
 	.line	117, "eeprom.c"; 	RecvAck();
 	LCALL	_RecvAck
-	.line	118, "eeprom.c"; 	SendByte(0X00);		//发送读地址
-	MOVIA	0x00
-	LCALL	_SendByte
-	.line	119, "eeprom.c"; 	RecvAck();
-	LCALL	_RecvAck
-	.line	120, "eeprom.c"; 	Start24C02();
+	.line	118, "eeprom.c"; 	Start24C02();
 	LCALL	_Start24C02
-	.line	121, "eeprom.c"; 	SendByte(0xA1);		//发送器件地址和读动作
+	.line	119, "eeprom.c"; 	SendByte(0xA1);		//发送器件地址和读动作
 	MOVIA	0xa1
 	LCALL	_SendByte
-	.line	122, "eeprom.c"; 	RecvAck();
+	.line	120, "eeprom.c"; 	RecvAck();
 	LCALL	_RecvAck
-	.line	123, "eeprom.c"; 	*workStep = ReadByte();
+	.line	121, "eeprom.c"; 	*workStep = ReadByte();
 	LCALL	_ReadByte
 	BANKSEL	r0x100A
 	MOVAR	r0x100A
@@ -309,11 +297,11 @@ _readWordStep:
 	BANKSEL	r0x1007
 	MOVR	r0x1007,W
 	LCALL	__gptrput1
-	.line	124, "eeprom.c"; 	SendNoAck();
+	.line	122, "eeprom.c"; 	SendNoAck();
 	LCALL	_SendNoAck
-	.line	125, "eeprom.c"; 	Stop24C02();
+	.line	123, "eeprom.c"; 	Stop24C02();
 	LCALL	_Stop24C02
-	.line	126, "eeprom.c"; 	if(*workStep >= 19 || *workStep == 0)
+	.line	124, "eeprom.c"; 	if(*workStep >= 19 || *workStep == 0)
 	BANKSEL	r0x1009
 	MOVR	r0x1009,W
 	MOVAR	STK01
@@ -334,7 +322,7 @@ _readWordStep:
 	BTRSS	STATUS,2
 	LGOTO	_00156_DS_
 _00153_DS_:
-	.line	127, "eeprom.c"; 	*workStep = 1;
+	.line	125, "eeprom.c"; 	*workStep = 1;
 	MOVIA	0x01
 	MOVAR	STK02
 	BANKSEL	r0x1009
@@ -347,7 +335,7 @@ _00153_DS_:
 	MOVR	r0x1007,W
 	LCALL	__gptrput1
 _00156_DS_:
-	.line	128, "eeprom.c"; 	}
+	.line	126, "eeprom.c"; 	}
 	RETURN	
 ; exit point of _readWordStep
 
@@ -780,6 +768,6 @@ _Delay10Us:
 
 
 ;	code size estimation:
-;	  179+   60 =   239 instructions (  598 byte)
+;	  171+   60 =   231 instructions (  582 byte)
 
 	end
