@@ -14,6 +14,7 @@
 
 unsigned int	keyCount = 0;//消抖计数
 unsigned char longPressFlag = 0;
+char lvdFlag = 0;
 extern unsigned char sleepCount;
 
 
@@ -97,7 +98,7 @@ void delay(u8t time)
 
 void gotoSleep(char wakeKey)
 {
-
+	lvdFlag = 0;
 	T1CR1 = C_TMR1_Dis;
 	//PORTB = 0x00;	//关闭
 	PWM1DUTY = 0;
@@ -121,16 +122,15 @@ void gotoSleep(char wakeKey)
 //检测低电压
 char checkLVD()
 {
-	char lvdFlag = 0;
 	PCON1 = C_LVD_3P0V | C_TMR0_En;
 	delay(80);
 	if((PCON1 >> 6)&1)
 	{
 		lvdFlag = 0;
 	}
-	else
+	else if(++lvdFlag > 220)
 	{
-		lvdFlag = 1;
+			lvdFlag = 220;
 	}
 	return lvdFlag;
 }	

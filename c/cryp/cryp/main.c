@@ -17,6 +17,7 @@ u16t waitCount = 0;
 u16t chrgCount = 0;//充电灯计数
 u8t sleepCount = 0;
 extern unsigned int keyCount;
+extern char lvdFlag;
 
 void keyCon();
 void outCon();	
@@ -70,23 +71,18 @@ void main()
         IntFlag = 0;
 		keyCon();
 		ledCon();	
-		if(checkLVD())
+		outCon();
+		if(checkLVD() >= 200)
 		{
-			if(count100 < 50)
-				PORTB &= 0xF7;
-			else
-				PORTB |= 0x08;
-			if(++count100 == 100)	//100ms
+			if(++count100 >= 250)	//100ms
 			{
 				count100 = 0;
+				if(sleepCount % 4 == 0)
+					PORTB ^= 0x08;
 				if(++sleepCount >= 35)
 					gotoSleep(0x23);
 			}
 		
-		}
-		else
-		{
-			outCon();
 		}
 	}
 

@@ -22,6 +22,7 @@ uint16_t	sleepCount = 0;
 uint8_t	startFlag = 0;		//开始计数标记
 uint8_t count1S = 0;
 uint8_t	fullFlag = 0;		//充满标记
+uint8_t	fullCount = 0;		//充满标记
 uint8_t ledMin = 0;
 uint8_t ledLock = 0;
 
@@ -212,7 +213,7 @@ void checkA()
     R_AIN0_DATA_LB &= 0xF0;				// Only get Bit7~4
     R_AIN0_DATA += R_AIN0_DATA_LB;		// R_AIN0_DATA + R_AIN0_DATA_LB
     R_AIN0_DATA >>=3;					// R_AIN0_DATA divided 8
-    if(R_AIN0_DATA <= 20)				//未充电
+    if(R_AIN0_DATA <= 10)				//未充电
     {
 		//workStep = 0;
 		startFlag = 0;
@@ -226,21 +227,25 @@ void checkA()
 	{
 		if(fullFlag)
 			return;
-		workStep = 3;
-		setbit(PORTB,3);		//5脚高电平，降压涓充	
-		resetbit(PORTA,7);
-		PORTA |= 0x5C;			//灯全亮
-		PORTB |= 0x03;
-		setbit(PORTA,6);	//打开风扇
-		if(startFlag == 0)
+		if(++fullCount > 200)
 		{
-			startFlag = 1;
-			sleepCount = 0;
+			workStep = 3;
+			setbit(PORTB,3);		//5脚高电平，降压涓充	
+			resetbit(PORTA,7);
+			PORTA |= 0x5C;			//灯全亮
+			PORTB |= 0x03;
+			setbit(PORTA,6);	//打开风扇
+			if(startFlag == 0)
+			{
+				startFlag = 1;
+				sleepCount = 0;
+			}
 		}
 	}
 	else
 	{
 		fullFlag = 0;
+		fullCount = 0;
 		checkV();
 	}
 	
