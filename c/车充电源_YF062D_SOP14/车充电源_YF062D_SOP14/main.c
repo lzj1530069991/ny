@@ -26,11 +26,14 @@ uint16_t	chrgCount = 0;	//充电统计 9个小时
 uint8_t	startFlag = 0;		//开始计数标记
 uint8_t count1S = 0;
 uint8_t	fullFlag = 0;		//充满标记
-uint16_t	fullCount = 0;		//充满标记
+uint8_t	fullCount = 0;		//充满标记
 uint8_t ledMin = 0;
-uint8_t ledLock = 0;
-uint16_t  preV;	
+uint16_t ledMax = 310;
+uint8_t ledLock = 0;	
 uint16_t  preA;	
+uint8_t duty = 126;
+uint8_t addFlag = 0;		//0在范围内		1小于范围    2大于范围
+uint8_t dutyFlag = 0;		//设置标记位
 
 void ledCon();
 void initTimer0();
@@ -46,6 +49,8 @@ void fullChrg();	//全部充电
 void halfChrg();	//一半充电
 void closeChrg();	//关闭充电
 void ledCtr();
+void pwmStart();
+void setDuty();
 
 void isr(void) __interrupt(0)
 {
@@ -81,6 +86,7 @@ void main(void)
 {
 	initTimer0();
 	initAD();
+	pwmStart();
     while(1)
     {
          CLRWDT(); 
@@ -95,42 +101,123 @@ void main(void)
 			resetbit(PORTA,6);		//关闭风扇
     		continue;
     	}
-    	if(count1S < 50)
-    		checkA();
+    	checkA();
+    	if(chrgCount <= 126)
+    	{
+    		setbit(PORTA,6);		//打开风扇
+    		fullChrg();
+    		duty = chrgCount;
+    		PWM2DUTY = duty - 1;
+    	}
     	else
-    		checkV();
-    	fullChrg();
-//    	workCon();
-//   		ledCtr();
-//   		ledCon();
+    	{
+    		resetbit(PORTA,6);		//关闭风扇
+    		halfChrg();
+    	}
+    	
+//    	if(count1S % 20 == 0)
+//    	{	
+//    		setDuty();
+//    		dutyFlag = 0;
+//    	}
+    	
+    	workCon();
+   		ledCtr();
+   		ledCon();
     }
 }
 
+//设置占空比
+void setDuty()
+{
+	if(dutyFlag == 0)
+	{
+		dutyFlag = 1;
+		if(addFlag == 1)
+		{
+			if(++duty > 126)
+			{
+				duty = 126;		
+			}
+		}
+		else
+		{
+			if(--duty == 0)
+			{
+				duty = 1;
+			}
+		}
+		PWM2DUTY = duty - 1;
+		if(preA < 123)
+		{
+			if(duty == 1 && (++fullCount > 200))	//充满了，进入涓流充电
+			{
+				halfChrg();
+				setbit(PORTA,6);		//打开风扇
+				workStep = 3;
+				ledStep = 0;
+			}
+			else 			//未充电
+			{
+				
+				if(duty == 126 && (++fullCount > 200))
+				{
+					halfChrg();
+					workStep = 2;
+				}
+				else
+				{
+					fullChrg();
+					PWM2DUTY = 100;
+					workStep = 3;
+				}
+				resetbit(PORTA,6);		//关闭风扇
+				startFlag = 0;
+				ledStep = 0;
+				chrgCount = 0;
+				sleepCount = 0;
+	
+			}
+			
+			
+		}
+		else 
+		{
+			setbit(PORTA,6);		//打开风扇
+			fullChrg();
+			sleepCount = 0;
+			fullCount = 0;
+			workStep = 1;
+			if(duty < 25)
+			{
+				ledStep = 1;
+			}
+			else if(duty < 50)
+			{
+				ledStep = 2;
+			}
+			else if(duty < 75)
+			{
+				ledStep = 3;
+			}
+			else if(duty < 100)
+			{
+				ledStep = 4;
+			}
+			else
+			{
+				ledStep = 5;
+			}
+		}
+		
+	}
+	
+	
+}
 
 void workCon()
 {
     
-    switch(workStep)
-    {
-    	case 0:
-    	 ledStep = 0;
-    	break;
-    	case 1:
-    	sleepCount = 0;
-    	fullChrg();
-    	setbit(PORTA,6);		//开启风扇
-    	break;
-    	case 2:
-    	fullChrg();
-    	resetbit(PORTA,6);		//关闭风扇
-    	break;
-    	case 3:
-    	fullChrg();
-    	setbit(PORTA,6);		//开启风扇
-    	break;
-   
-    }
-
     
     if(chrgCount > 32400 || sleepCount > 10800)
     {
@@ -147,7 +234,7 @@ void initTimer0()
 	BPHCON = 0xFE;
 //;Initial GPIO  
 	IOSTA = C_PA0_Input;
-    IOSTB =  C_PB2_Input;	
+    IOSTB =  0;	
 	PCON = C_WDT_En | C_LVR_En | C_LVD_En;				// Enable WDT & LVR
 	INTE =  C_INT_TMR0;	// Enable Timer0、Timer1、WDT overflow interrupt
 	INTF = 0;
@@ -161,7 +248,7 @@ void initTimer0()
 	PCON1 = C_LVD_3P0V | C_TMR0_En;
 	
 	PORTA &= 0x23;
-    PORTB &= 0xF8;
+    PORTB &= 0xF0;
 	resetbit(PORTB,3);		
 	resetbit(PORTA,7);
 	resetbit(PORTA,6);	//关闭风扇
@@ -181,15 +268,26 @@ void ledCon()
 	ledCount > 250 ? (setbit(PORTA,4)) : (resetbit(PORTA,4));
 	if(ledCount > 300)
 	{
-		if(ledCount > 310)
+		if(ledCount > ledMax)
 			ledCount = ledMin;
 		ledLock = 0;		//解锁
 	}
 }
 
 
+void pwmStart()
+{
+	TMRH = 0;
+	TMR2 = 127;
+	PWM2DUTY = 64;
+	T2CR1 = C_PWM2_En | C_TMR2_Reload | C_TMR2_En;	    //reloaded from TMR2, non-stop mode
+	T2CR2 = C_TMR2_ClkSrc_Inst | C_PS2_Div2;	// Enable Prescaler2, Prescaler2 dividing rate = 1:2, Timer2 clock source is instruction clock 
+}
 
-
+void pwmStop()
+{
+	PWM2DUTY = 0;
+}
 
 void ledCtr()
 {	
@@ -226,7 +324,7 @@ void initAD()
 {
 	 //----- Initial ADC-----	  
 	ADMD  = C_ADC_En | C_ADC_CH_Dis | C_ADC_PA0 ;	// Enable ADC power, Disable global ADC input channel, Select PA0 pad as ADC input (SFR "ADMD")
- 
+
  //----- ADC high reference voltage source select-----
  	ADVREFH = C_Vrefh_2V;					// ADC reference high voltage is supplied by internal 4V  (Note: ADC clock freq. must be equal or less than 1MHz)
  	//ADVREFH = C_Vrefh_3V;					// ADC reference high voltage is supplied by internal 3V  (Note: ADC clock freq. must be equal or less than 500KHz)
@@ -239,7 +337,7 @@ void initAD()
 	//ADR	 = C_Ckl_Div16;					// ADC clock=Fcpu/16, Clear ADIF, disable ADC interrupt	
 	ADCR  = C_Sample_1clk | C_12BIT;
 
-	PACON = C_PB2_AIN7 ;						// 
+
 	ADMDbits.GCHS = 1;						// Enable global ADC channel	(SFR "ADMD")
 	delay(100);								// Delay 0.56ms(Instruction clock=4MHz/2T) for waiting ADC stable 
 	
@@ -257,102 +355,29 @@ void checkA()
     R_AIN0_DATA += R_AIN0_DATA_LB;		// R_AIN0_DATA + R_AIN0_DATA_LB
     R_AIN0_DATA >>=3;					// R_AIN0_DATA divided 8
     preA = R_AIN0_DATA;
-}
-
-void checkV()
-{
-//	IOSTB =  C_PB2_Input;	
-	PACON = C_PB2_AIN7;
-	R_AIN7_DATA=R_AIN7_DATA_LB=0x00;
-    F_AIN7_Convert(8);					// execute AIN0 ADC converting 8 times
-    R_AIN7_DATA <<= 4;					// R_AIN0_DATA shift left 4 bit
-    R_AIN7_DATA_LB &= 0xF0;				// Only get Bit7~4
-    R_AIN7_DATA += R_AIN7_DATA_LB;		// R_AIN0_DATA + R_AIN0_DATA_LB
-    R_AIN7_DATA >>=3;					// R_AIN0_DATA divided 8
-    preV = R_AIN7_DATA;
-//    R_AIN7_DATA = 580;
-//	IOSTB =  0;	
-    if(R_AIN7_DATA < 10 && preA <= 10)	//小于0.8A
+    
+    if(preA > 565)				//电流大于2.76A
     {
-		startFlag = 0;
-		ledStep = 1;
-		chrgCount = 0;
-		sleepCount = 0;
-		workStep = 2;
-		return;
+		addFlag = 2;
     }
-    if(R_AIN7_DATA < 573)	//71V - 73V 小于0.8A
-	{
-		if(preA < 123 && (++fullCount > 1000))		//小于0.6A
-		{
-			fullCount = 1001;
-			workStep = 3;
-			ledStep = 2;
-		}
-		else
-		{
-			sleepCount = 0;
-			fullCount = 0;
-			workStep = 1;
-			ledStep = 1;
-		}
-	}
-	else if(R_AIN7_DATA < 1577)		//67V - 71V       小于2.45A   亮3个，闪2个
-	{	
-		if(preA < 123 && (++fullCount > 1000))		//小于0.6A
-		{
-			sleepCount = 0;
-			fullCount = 1001;
-			workStep = 3;
-			ledStep = 3;
-		}
-		else
-		{
-			fullCount = 0;
-			workStep = 1;
-			ledStep = 2;
-		}
-		
-	}
-	else if(R_AIN7_DATA < 2150)		//64.8V - 67V  小于2.48A   亮2个，闪3个
-	{	
-		fullCount = 0;
-		workStep = 1;
-		ledStep = 3;
-	}
-	else if(R_AIN7_DATA < 2703)		//62.5V - 64.8V  PB2脚 1.32V   亮1个，闪4个
-	{	
-		workStep = 1;
-		ledStep = 4;
-	}
-	else		//小于62.5V  PB2脚 1.32V   亮0个，闪5个
-	{	
-		workStep = 1;
-		ledStep = 5;
-	}
-
+    else if(preA < 530)
+    {
+   		addFlag = 1;
+    }
+    else
+    {
+    	addFlag = 0;
+    }
+    
 }
 
-void F_AIN7_Convert(char count)
-{
-  	char i;
-  	ADMD  = 0x90 | C_ADC_PB2;				// Select AIN0(PA0) pad as ADC input
-  	delay(100);
-  	for(i=1;i<=count;i++)
-  	{     			 
-  	 ADMDbits.START = 1;					// Start a ADC conversion session
-  	 F_wait_eoc();							// Wait for ADC conversion complete
-  	 R_AIN7_DATA_LB += ( 0x0F & ADR); 
-  	 R_AIN7_DATA    += ADD; 
- 
-  	}
-}
+
 
 
 void F_AIN0_Convert(char count)
 {
   	char i;
-  	ADMD  = 0x90 | C_ADC_PA0;				// Select AIN0(PA0) pad as ADC input
+//  	ADMD  = 0x90 | C_ADC_PA0;				// Select AIN0(PA0) pad as ADC input
   	delay(100);
   	for(i=1;i<=count;i++)
   	{     			 
@@ -387,6 +412,6 @@ void halfChrg()	//一半充电
 }
 void closeChrg()	//关闭充电
 {
-	setbit(PORTB,3);		//5脚高电平，降压涓充
+	setbit(PORTB,3);		//3 5脚高电平，关闭充电
 	setbit(PORTA,7);
 }
