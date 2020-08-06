@@ -30,10 +30,13 @@ uint8_t	fullCount = 0;		//充满标记
 uint8_t ledMin = 0;
 uint16_t ledMax = 310;
 uint8_t ledLock = 0;	
-uint16_t  preA;	
-uint8_t duty = 126;
+uint16_t  sumA = 0;	
+uint16_t  avaA = 0;
+uint8_t duty = 1;
 uint8_t addFlag = 0;		//0在范围内		1小于范围    2大于范围
 uint8_t dutyFlag = 0;		//设置标记位
+uint8_t adTime = 0;
+uint8_t	maxDuty = 40;
 
 void ledCon();
 void initTimer0();
@@ -102,24 +105,48 @@ void main(void)
     		continue;
     	}
     	checkA();
-    	if(chrgCount <= 126)
-    	{
-    		setbit(PORTA,6);		//打开风扇
-    		fullChrg();
-    		duty = chrgCount;
-    		PWM2DUTY = duty - 1;
-    	}
-    	else
-    	{
-    		resetbit(PORTA,6);		//关闭风扇
-    		halfChrg();
-    	}
-    	
-//    	if(count1S % 20 == 0)
-//    	{	
-//    		setDuty();
-//    		dutyFlag = 0;
+//    	if(chrgCount <= 126)
+//    	{
+//    		setbit(PORTA,6);		//打开风扇
+//    		fullChrg();
+//    		duty = chrgCount;
+//    		PWM2DUTY = duty - 1;
 //    	}
+//    	else
+//    	{
+//    		resetbit(PORTA,6);		//关闭风扇
+//    		halfChrg();
+//    	}
+		if(chrgCount < 5)
+		{
+			maxDuty = 10;
+		}
+		else
+		{
+			maxDuty = 100;
+		}
+    	
+    	if(count1S % 10 == 0)
+    	{	
+    		dutyFlag = 0;
+    		avaA = sumA/adTime;
+    		if(avaA > 310)				//电流大于2.76A
+		    {
+				addFlag = 2;
+		    }
+		    else if(avaA < 295)
+		    {
+		   		addFlag = 1;
+		    }
+		    else
+		    {
+		    	addFlag = 0;
+		    }
+		    setDuty();
+		    sumA = 0;
+    		adTime = 0;		//重置采样次数
+    		
+    	}
     	
     	workCon();
    		ledCtr();
@@ -135,20 +162,22 @@ void setDuty()
 		dutyFlag = 1;
 		if(addFlag == 1)
 		{
-			if(++duty > 126)
-			{
-				duty = 126;		
-			}
-		}
-		else
-		{
+			//占空比减少，电流升高 
 			if(--duty == 0)
 			{
 				duty = 1;
 			}
 		}
+		else if(addFlag == 2)
+		{
+			//占空比增加，电流降低
+			if(++duty > maxDuty)
+			{
+				duty = maxDuty;
+			}
+		}
 		PWM2DUTY = duty - 1;
-		if(preA < 123)
+		if(avaA < 123)
 		{
 			if(duty == 1 && (++fullCount > 200))	//充满了，进入涓流充电
 			{
@@ -160,7 +189,7 @@ void setDuty()
 			else 			//未充电
 			{
 				
-				if(duty == 126 && (++fullCount > 200))
+				if(duty == 100 && (++fullCount > 200))
 				{
 					halfChrg();
 					workStep = 2;
@@ -168,10 +197,10 @@ void setDuty()
 				else
 				{
 					fullChrg();
-					PWM2DUTY = 100;
+					PWM2DUTY = duty;
 					workStep = 3;
 				}
-				resetbit(PORTA,6);		//关闭风扇
+				setbit(PORTA,6);		//打开风扇
 				startFlag = 0;
 				ledStep = 0;
 				chrgCount = 0;
@@ -188,19 +217,19 @@ void setDuty()
 			sleepCount = 0;
 			fullCount = 0;
 			workStep = 1;
-			if(duty < 25)
+			if(duty < 4)
 			{
 				ledStep = 1;
 			}
-			else if(duty < 50)
+			else if(duty < 9)
 			{
 				ledStep = 2;
 			}
-			else if(duty < 75)
+			else if(duty < 28)
 			{
 				ledStep = 3;
 			}
-			else if(duty < 100)
+			else if(duty < 36)
 			{
 				ledStep = 4;
 			}
@@ -251,7 +280,6 @@ void initTimer0()
     PORTB &= 0xF0;
 	resetbit(PORTB,3);		
 	resetbit(PORTA,7);
-	resetbit(PORTA,6);	//关闭风扇
 	ENI();	
 	//gotoSleep(0x01);
 }
@@ -346,7 +374,7 @@ void initAD()
 
 //检测输出电流大小
 void checkA()
-{
+{	
 	PACON = C_PA0_AIN0;
 	R_AIN0_DATA=R_AIN0_DATA_LB=0x00;
     F_AIN0_Convert(8);					// execute AIN0 ADC converting 8 times
@@ -354,21 +382,8 @@ void checkA()
     R_AIN0_DATA_LB &= 0xF0;				// Only get Bit7~4
     R_AIN0_DATA += R_AIN0_DATA_LB;		// R_AIN0_DATA + R_AIN0_DATA_LB
     R_AIN0_DATA >>=3;					// R_AIN0_DATA divided 8
-    preA = R_AIN0_DATA;
-    
-    if(preA > 565)				//电流大于2.76A
-    {
-		addFlag = 2;
-    }
-    else if(preA < 530)
-    {
-   		addFlag = 1;
-    }
-    else
-    {
-    	addFlag = 0;
-    }
-    
+    sumA += R_AIN0_DATA;
+    adTime++;    
 }
 
 
@@ -407,7 +422,8 @@ void fullChrg()	//全部充电
 }
 void halfChrg()	//一半充电
 {
-	setbit(PORTB,3);		//5脚高电平，降压涓充
+	duty = 50;
+	resetbit(PORTB,3);		//5脚高电平，降压涓充
 	resetbit(PORTA,7);
 }
 void closeChrg()	//关闭充电
