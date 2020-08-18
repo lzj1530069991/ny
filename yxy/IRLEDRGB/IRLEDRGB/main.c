@@ -141,13 +141,6 @@ void irwork()
 	switch(irCode)
 	{
 		case 0x15:
-		PORTB |= 0x02;
-		break;
-		case 0x46:
-		PORTB &= 0xFD;
-		sleepFlag = 1;
-		break;
-		case 0x45:
 		setLow();
 		break;
 	}
