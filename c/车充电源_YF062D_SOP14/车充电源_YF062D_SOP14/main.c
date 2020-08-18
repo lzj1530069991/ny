@@ -121,7 +121,8 @@ void main(void)
 	    		fullFlag = 0;
 	    		PORTA |= 0x1C;			//灯全亮
 				PORTB |= 0x03;
-				closeChrg();
+				startFlag = 1;
+				halfChrg();
 				resetbit(PORTA,6);		//关闭风扇
    				continue;
 	    }
@@ -233,11 +234,11 @@ void setDuty()
 				avaDuty = sumDuty/dutyTime;
 				dutyTime = 0;
 				sumDuty = 0;
-				if(avaDuty < 8)
+				if(avaDuty < 2)
 				{
 					ledStep = 1;
 				}
-				else if(avaDuty < 24)
+				else if(avaDuty < 18)
 				{
 					ledStep = 2;
 				}

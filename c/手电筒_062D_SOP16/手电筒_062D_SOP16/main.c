@@ -22,7 +22,7 @@
 #define LED4_ON() 	PORTA &= 0xBF
 #define LED4_OFF() 	PORTA |= 0x40
 #define LED_FLICKER()	PORTB ^= 0x04
-#define wts 2
+#define wts 700
 
 uint8_t	intCount = 0;
 uint8_t IntFlag = 0;
@@ -31,6 +31,8 @@ uint8_t	longPressFlag = 0;
 uint8_t keyNub = 0;
 uint8_t	keyCount = 0;//消抖计数
 uint16_t  R_AIN4_DATA;	
+uint16_t  sumR_AIN4_DATA;	
+uint8_t	adtime = 0;			//AD检测次数
 uint8_t R_AIN4_DATA_LB;
 uint8_t workStep1 = 0;//主灯  0关闭		1档100%    2档50%   3档闪光
 uint8_t workStep2 = 0;//副灯  0关闭     1白光      2蓝光    3蓝光+白光     4红黄交替闪
@@ -39,6 +41,8 @@ uint8_t batStep = 0;//0为未初始化	1充电模式  2 显示电量模式 3充�
 uint8_t ledTime = 0;
 uint8_t count500ms = 0;
 uint8_t count200ms = 0;
+uint8_t count276ms = 0;
+uint16_t count10min = 0;		//60*10*2  =1200
 uint16_t countms = 0;
 uint8_t K1Count = 0;		//按键5秒倒计时
 uint8_t K2Count = 0;
@@ -46,9 +50,11 @@ uint8_t ledCount = 0;
 uint8_t ledMin = 0;
 uint8_t ledMax = 250;
 uint8_t ledLock = 0;
-uint16_t ain4 = 940;
+//uint16_t ain4 = 940;
 uint8_t flickerTime = 0;		//闪烁次数
 uint8_t sleepDelay = 0;
+uint8_t ledDuty = 100;
+uint8_t firstFlag = 0;
 
 void init();
 char keyRead(char KeyStatus);
@@ -64,6 +70,7 @@ void mode4();
 void chrgLed();
 void initAD();
 void gotoSleep();
+void setPWMduty(char portPin,char duty);
 
 void isr(void) __interrupt(0)
 {
@@ -71,6 +78,12 @@ void isr(void) __interrupt(0)
 	{
 		TMR0 += 55;
 		intCount++;
+		if(workStep1 == 1)
+		{
+			setPWMduty(0x04,ledDuty);
+		}
+		else if(workStep1 == 2)			//2档
+			LED_FLICKER();
 		if(intCount % 10 == 0)
 		{
 			if(workStep2 == 4)		//4档  交替闪烁
@@ -79,24 +92,18 @@ void isr(void) __interrupt(0)
 			if(++count200ms >= 200)
 			{
 				count200ms = 0;
-				if(++ain4 >= 1600)
-					ain4 = 940;
+//				if(++ain4 >= 1600)
+//					ain4 = 940;
 				if(workStep1 == 3)		//3档
-					LED_ON();
-			}
-			else
-			{
-				if(workStep1 == 3)
-					LED_OFF();
+					LED_FLICKER();
 			}
 			
-			if(count200ms % 20 == 0)
-				ledCount++;
 		}
 		if(intCount == 100)
 		{
 			intCount = 0;
 			IntFlag = 1;
+			ledCount++;
 		}
 	}
 	if(INTFbits.PABIF)
@@ -136,7 +143,10 @@ void main(void)
 		{
 			//未充电
 			if(workStep1 || workStep2)
-				checkBat();				//检测电池电压
+			{
+				if(firstFlag == 0)
+					checkBat();				//检测电池电压
+			}
 			else
 			{
 				ledLock = 1;
@@ -210,7 +220,7 @@ void gotoSleep()
 	ledMin = 0;
 	AWUCON = 0x25;		//PA5 PA0 PA2唤醒
 	PORTA = 0xC0;
-	PORTB = 0x07;
+	PORTB = 0x03;
 	INTE =  C_INT_TMR0 | C_INT_PABKey;
 	PCON =  C_LVR_En | C_LVR_En;	
 	INTF = 0;								// Clear all interrupt flags
@@ -232,6 +242,23 @@ void timeCtr()
 			--K1Count;
 		if(K2Count)
 			--K2Count;
+		if(workStep1 == 1)
+		{
+			ledDuty = ((1200-count10min) / 12)+50;
+			if(++count10min >= 1200)
+				count10min = 1200;
+		}
+		else
+		{
+			count10min = 0;
+		}
+	}
+	
+	if(++count276ms >= 27)
+	{
+		count276ms = 0;
+		if(workStep1 == 3)			//3档
+			LED_FLICKER();
 	}
 	
 }
@@ -246,7 +273,8 @@ void chrgLed()
 	ledCount > 200 ? (LED4_ON()) : (LED4_OFF());
 	if(ledCount >= ledMax)
 	{
-		ledCount = ledMin;		
+		ledCount = ledMin;	
+		firstFlag = 0;
 	}
 }
 
@@ -359,6 +387,15 @@ void mode4()
 }
 
 
+//设置PORTB的PWM输出
+void setPWMduty(char portPin,char duty)
+{
+	if(intCount <= duty)
+		PORTB |= portPin;
+	else
+		PORTB &= (~portPin);
+}
+
 
 void keyCon()
 {
@@ -374,6 +411,13 @@ void keyCon()
 				
 				workStep2 = 1;
 				K2Count = 10;		//5秒倒计时
+				ledMax = 250;
+				ledMin = 0;
+				ledLock = 0;
+				if(workStep1 == 0)
+					firstFlag = 1;
+				if(ledCount < 50)
+					ledCount = 50;
 			}
 			else
 			{
@@ -399,6 +443,13 @@ void keyCon()
 			{
 				workStep1 = 1;
 				K1Count = 10;		//5秒倒计时
+				ledMax = 250;
+				ledMin = 0;
+				ledLock = 0;
+				if(workStep2 == 0)
+					firstFlag = 1;
+				if(ledCount < 50)
+					ledCount = 50;
 			}
 			else
 			{
@@ -421,17 +472,9 @@ void keyCon()
 //主灯控制
 void ledMasterCtr()
 {
-	switch(workStep1)
+	if(workStep1 == 0)
 	{
-		case 0:
 		LED_OFF();
-		break;
-		case 1:
-		LED_ON();
-		break;
-		case 2:
-		LED_FLICKER();
-		break;
 	}
 }
 
@@ -462,6 +505,10 @@ void ledSlaveCtr()
 		BLUE_ON();
 		break;
 		case 4:
+		WHITE_OFF();
+		BLUE_OFF();
+//		RED_ON();
+//		YELLOW_ON();
 		break;
 	}
 }
@@ -509,15 +556,21 @@ void checkBat()
 
 	PACON = C_PA4_AIN4;
 	R_AIN4_DATA=R_AIN4_DATA_LB=0x00;
-    F_AIN4_Convert(12);					// execute AIN0 ADC converting 8 times
+    F_AIN4_Convert(8);					// execute AIN0 ADC converting 8 times
     R_AIN4_DATA <<= 4;					// R_AIN0_DATA shift left 4 bit
     R_AIN4_DATA_LB &= 0xF0;				// Only get Bit7~4
     R_AIN4_DATA += R_AIN4_DATA_LB;		// R_AIN0_DATA + R_AIN0_DATA_LB
     R_AIN4_DATA >>=3;					// R_AIN0_DATA divided 8
-    R_AIN4_DATA = ain4;
-    ledLock = 0;
-    if(batStep == 0)
+//    R_AIN4_DATA = ain4;
+    
+    ++adtime;
+    sumR_AIN4_DATA += R_AIN4_DATA;
+    if(batStep == 0 || adtime < 5)
     	return;
+	//计算平均值
+    R_AIN4_DATA = sumR_AIN4_DATA/adtime;
+    sumR_AIN4_DATA = adtime = 0;
+    ledLock = 0;
     if(R_AIN4_DATA > 1563)			//8.4V
     {
     		batStep = 3;
@@ -570,7 +623,17 @@ void checkBat()
     			ledMax = 100;
     		}
     }
-    else if(R_AIN4_DATA > 1005)			//5.4V
+    else if(R_AIN4_DATA > 1060)			//5.4V
+    {
+    		flickerTime = 0;
+    		//1个灯闪烁
+    		 if(ledMin <= 51)
+    		{
+    			ledMin = 0;
+    			ledMax = 100;
+    		}
+    }
+    else if(R_AIN4_DATA > 1005 && flickerTime == 0)			//5.4V
     {
     		//1个灯闪烁
     		 if(ledMin <= 51)
@@ -601,7 +664,7 @@ void checkBat()
     		else
     		{
     			ledCount = 0;
-    			if(++flickerTime > 3)
+    			if(++flickerTime > 4)
     			{	
     				flickerTime = 0;
     				gotoSleep();
@@ -653,11 +716,10 @@ void F_AIN4_Convert(char count)
   	{     			 
   	 ADMDbits.START = 1;					// Start a ADC conversion session
   	 F_wait_eoc();							// Wait for ADC conversion complete
-  	 if(i>4)
-  	 {
-	  	 R_AIN4_DATA_LB += ( 0x0F & ADR); 
-	  	 R_AIN4_DATA    += ADD; 
-  	 }
+
+  	 R_AIN4_DATA_LB += ( 0x0F & ADR); 
+  	 R_AIN4_DATA    += ADD; 
+  	 
   	}
 }
 

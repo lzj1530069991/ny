@@ -452,7 +452,7 @@ void openCtr2(char redIndex)
 				sendRGB3(i,0x4C,0xB2,0xB2);
 			}
 		}
-		else if(i == max)
+		else if(i == max )
 		{
 			if(redTime == 0)
 			{
@@ -483,8 +483,11 @@ void closeCtr(char redIndex)
 	char max = 7+redIndex;	
 	do
 	{
-		
-		if(i == min && i > 1)
+		if(min == max)
+		{
+			sendRGB3(i,0x00,0x00,0x00);
+		}
+		else if(i == min)
 		{
 			if(redTime == 0)
 			{
@@ -495,7 +498,7 @@ void closeCtr(char redIndex)
 				sendRGB3(i,0x00,0x00,0x4C);
 			}
 		}
-		else if(i == max &&  i > 8)
+		else if(i == max)
 		{
 			if(redTime == 0)
 			{
@@ -587,9 +590,9 @@ void delay(int count)
 void sendRGB2(unsigned char colorR,unsigned char colorG,unsigned char colorB)
 {
 
-		Rdata = colorR;
+		Rdata = colorB;
 		Gdata = colorG;
-		Bdata = colorB;
+		Bdata = colorR;
 		
 		DISI();	
 		if(R7)
