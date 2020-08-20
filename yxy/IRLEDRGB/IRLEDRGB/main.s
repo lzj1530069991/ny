@@ -5,12 +5,16 @@
 ; NY8A port
 ;--------------------------------------------------------
 	.file	"main.c"
-	list	p=NY8A051D,c=on
-	#include "ny8a051d.inc"
+	list	p=NY8A051F,c=on
+	#include "ny8a051f.inc"
 	.debuginfo language C89
 ;--------------------------------------------------------
 ; external declarations
 ;--------------------------------------------------------
+	extern	_irwork
+	extern	_irpros
+	extern	_setPWMduty
+	extern	_keyCallBack
 	extern	_PORTBbits
 	extern	_PCONbits
 	extern	_BWUCONbits
@@ -53,21 +57,19 @@
 ;--------------------------------------------------------
 ; global declarations
 ;--------------------------------------------------------
-	extern	_setPWMduty
 	extern	_gotoSleep
 	extern	_setHight
 	extern	_setLow
-	extern	_irwork
-	extern	_irpros
+	extern	_proData
+	extern	_GetOneByte
+	extern	_proLow
+	extern	_proHight
+	extern	_cleanData
 	extern	_isr
 	extern	_main
-	extern	_irtime
 	extern	_IntFlag
 	extern	_count
-	extern	_startflag
 	extern	_bitIndex
-	extern	_irreceok
-	extern	_irprosok
 	extern	_data1
 	extern	_data2
 	extern	_data3
@@ -77,12 +79,13 @@
 	extern	_value
 	extern	_sleepFlag
 	extern	_sleepCount
-	extern	_RDUTY
-	extern	_GDUTY
-	extern	_BDUTY
 	extern	_ledFlag
 	extern	_ledCount
 	extern	_lowTime
+	extern	_Status
+	extern	_proTime
+	extern	_T1Counter
+	extern	_accTimeH
 
 	extern PSAVE
 	extern SSAVE
@@ -139,11 +142,6 @@ STK00:
 ; global definitions
 ;--------------------------------------------------------
 .segment "uninit"
-_irtime:
-	.res	1
-	.debuginfo gvariable name=_irtime,1byte,array=0,entsize=1,ext=1
-
-.segment "uninit"
 _IntFlag:
 	.res	1
 	.debuginfo gvariable name=_IntFlag,1byte,array=0,entsize=1,ext=1
@@ -154,24 +152,9 @@ _count:
 	.debuginfo gvariable name=_count,1byte,array=0,entsize=1,ext=1
 
 .segment "uninit"
-_startflag:
-	.res	1
-	.debuginfo gvariable name=_startflag,1byte,array=0,entsize=1,ext=1
-
-.segment "uninit"
 _bitIndex:
 	.res	1
 	.debuginfo gvariable name=_bitIndex,1byte,array=0,entsize=1,ext=1
-
-.segment "uninit"
-_irreceok:
-	.res	1
-	.debuginfo gvariable name=_irreceok,1byte,array=0,entsize=1,ext=1
-
-.segment "uninit"
-_irprosok:
-	.res	1
-	.debuginfo gvariable name=_irprosok,1byte,array=0,entsize=1,ext=1
 
 .segment "uninit"
 _data1:
@@ -208,6 +191,11 @@ _value:
 	.res	1
 	.debuginfo gvariable name=_value,1byte,array=0,entsize=1,ext=1
 
+.segment "uninit"
+_T1Counter:
+	.res	2
+	.debuginfo gvariable name=_T1Counter,2byte,array=0,entsize=2,ext=1
+
 ;--------------------------------------------------------
 ; absolute symbol definitions
 ;--------------------------------------------------------
@@ -215,10 +203,16 @@ _value:
 ; compiler-defined variables
 ;--------------------------------------------------------
 .segment "uninit"
+r0x1014:
+	.res	1
+.segment "uninit"
+r0x1015:
+	.res	1
+.segment "uninit"
 r0x1016:
 	.res	1
 .segment "uninit"
-r0x1017:
+r0x1013:
 	.res	1
 ;--------------------------------------------------------
 ; initialized data
@@ -237,24 +231,6 @@ _sleepCount:
 
 
 .segment "idata"
-_RDUTY:
-	dw	0x00
-	.debuginfo gvariable name=_RDUTY,1byte,array=0,entsize=1,ext=1
-
-
-.segment "idata"
-_GDUTY:
-	dw	0x00
-	.debuginfo gvariable name=_GDUTY,1byte,array=0,entsize=1,ext=1
-
-
-.segment "idata"
-_BDUTY:
-	dw	0x00
-	.debuginfo gvariable name=_BDUTY,1byte,array=0,entsize=1,ext=1
-
-
-.segment "idata"
 _ledFlag:
 	dw	0x00
 	.debuginfo gvariable name=_ledFlag,1byte,array=0,entsize=1,ext=1
@@ -270,6 +246,24 @@ _ledCount:
 _lowTime:
 	dw	0x00
 	.debuginfo gvariable name=_lowTime,1byte,array=0,entsize=1,ext=1
+
+
+.segment "idata"
+_Status:
+	dw	0x00
+	.debuginfo gvariable name=_Status,1byte,array=0,entsize=1,ext=1
+
+
+.segment "idata"
+_proTime:
+	dw	0x00
+	.debuginfo gvariable name=_proTime,1byte,array=0,entsize=1,ext=1
+
+
+.segment "idata"
+_accTimeH:
+	dw	0x00
+	.debuginfo gvariable name=_accTimeH,1byte,array=0,entsize=1,ext=1
 
 ;--------------------------------------------------------
 ; overlayable items in internal ram 
@@ -291,16 +285,13 @@ __sdcc_interrupt:
 ;***
 ;  pBlock Stats: dbName = I
 ;***
-;functions called:
-;   _gotoSleep
-;   _gotoSleep
 ;2 compiler assigned registers:
 ;   STK00
 ;   STK01
 ;; Starting pCode block
 _isr:
 ; 0 exit points
-	.line	35, "main.c"; 	void isr(void) __interrupt(0)
+	.line	66, "main.c"; 	void isr(void) __interrupt(0)
 	MOVAR	WSAVE
 	SWAPR	STATUS,W
 	CLRR	STATUS
@@ -314,151 +305,43 @@ _isr:
 	MOVAR	___sdcc_saved_stk00
 	MOVR	STK01,W
 	MOVAR	___sdcc_saved_stk01
-	.line	37, "main.c"; 	if(INTFbits.T1IF)
+	.line	68, "main.c"; 	if(INTFbits.T1IF)
 	BTRSS	_INTFbits,3
-	LGOTO	_00108_DS_
-	.line	39, "main.c"; 	irtime++;		//0.256ms执行一次
-	INCR	_irtime,F
-;;swapping arguments (AOP_TYPEs 1/3)
-;;unsigned compare: left >= lit (0xC9=201), size=1
-	.line	40, "main.c"; 	if(irtime > 200)
-	MOVIA	0xc9
-	SUBAR	_irtime,W
-	BTRSC	STATUS,0
-	.line	42, "main.c"; 	gotoSleep();
-	LCALL	_gotoSleep
-	.line	52, "main.c"; 	INTF= (unsigned char)~(C_INT_TMR1);	// Clear T1IF flag bit	
+	LGOTO	_00106_DS_
+	.line	70, "main.c"; 	accTimeH++;		//0.256ms执行一次
+	INCR	_accTimeH,F
+	.line	72, "main.c"; 	INTF= (unsigned char)~(C_INT_TMR1);	// Clear T1IF flag bit	
 	MOVIA	0xf7
 	MOVAR	_INTF
-_00108_DS_:
-	.line	55, "main.c"; 	if(INTFbits.T0IF)
+_00106_DS_:
+	.line	75, "main.c"; 	if(INTFbits.T0IF)
 	BTRSS	_INTFbits,0
-	LGOTO	_00112_DS_
-	.line	57, "main.c"; 	TMR0 += 55;
-	MOVIA	0x37
+	LGOTO	_00110_DS_
+	.line	77, "main.c"; 	TMR0 += 56;
+	MOVIA	0x38
 	ADDAR	_TMR0,F
-	.line	58, "main.c"; 	if(++count == 100)
+	.line	78, "main.c"; 	if(++count == 100)
 	INCR	_count,F
 	MOVR	_count,W
 	XORIA	0x64
 	BTRSS	STATUS,2
-	LGOTO	_00112_DS_
-	.line	60, "main.c"; 	count = 0;
+	LGOTO	_00110_DS_
+	.line	80, "main.c"; 	count = 0;
 	CLRR	_count
-	.line	61, "main.c"; 	IntFlag = 1;
+	.line	81, "main.c"; 	IntFlag = 1;
 	MOVIA	0x01
 	MOVAR	_IntFlag
-_00112_DS_:
-	.line	65, "main.c"; 	if(INTFbits.PBIF)
+_00110_DS_:
+	.line	85, "main.c"; 	if(INTFbits.PBIF)
 	BTRSS	_INTFbits,1
-	LGOTO	_00134_DS_
-	.line	68, "main.c"; 	if(startflag)
-	MOVR	_startflag,W
-	BTRSC	STATUS,2
-	LGOTO	_00131_DS_
-;;swapping arguments (AOP_TYPEs 1/3)
-;;unsigned compare: left >= lit (0x21=33), size=1
-	.line	70, "main.c"; 	if(irtime>32 )
-	MOVIA	0x21
-	SUBAR	_irtime,W
-	BTRSS	STATUS,0
-	LGOTO	_00114_DS_
-	.line	72, "main.c"; 	bitIndex=0;
-	CLRR	_bitIndex
-	.line	73, "main.c"; 	value = 0;
-	CLRR	_value
-	.line	74, "main.c"; 	PCON1 = C_TMR0_Dis;
-	CLRA	
-	IOST	_PCON1
-;;swapping arguments (AOP_TYPEs 1/3)
-;;unsigned compare: left >= lit (0x7=7), size=1
-_00114_DS_:
-	.line	76, "main.c"; 	if(irtime>6)
-	MOVIA	0x07
-	SUBAR	_irtime,W
-	BTRSC	STATUS,0
-	.line	78, "main.c"; 	value |= 0x80;
-	BSR	_value,7
-	.line	81, "main.c"; 	value = value >> 1;
-	BCR	STATUS,0
-	RRR	_value,F
-	.line	82, "main.c"; 	irtime=0;
-	CLRR	_irtime
-	.line	83, "main.c"; 	bitIndex++;
-	INCR	_bitIndex,F
-	.line	84, "main.c"; 	if(bitIndex == 8)
-	MOVR	_bitIndex,W
-	XORIA	0x08
-	BTRSS	STATUS,2
-	LGOTO	_00126_DS_
-	.line	86, "main.c"; 	data1 = value;
-	MOVR	_value,W
-	MOVAR	_data1
-	LGOTO	_00127_DS_
-_00126_DS_:
-	.line	88, "main.c"; 	else if(bitIndex == 16)
-	MOVR	_bitIndex,W
-	XORIA	0x10
-	BTRSS	STATUS,2
-	LGOTO	_00123_DS_
-	.line	90, "main.c"; 	data2 = value;
-	MOVR	_value,W
-	MOVAR	_data2
-	LGOTO	_00127_DS_
-_00123_DS_:
-	.line	93, "main.c"; 	else if(bitIndex == 24)
-	MOVR	_bitIndex,W
-	XORIA	0x18
-	BTRSS	STATUS,2
-	LGOTO	_00120_DS_
-	.line	95, "main.c"; 	data3 = value;
-	MOVR	_value,W
-	MOVAR	_data3
-	LGOTO	_00127_DS_
-_00120_DS_:
-	.line	98, "main.c"; 	else if(bitIndex == 32)
-	MOVR	_bitIndex,W
-	XORIA	0x20
-	BTRSS	STATUS,2
-	LGOTO	_00127_DS_
-	.line	100, "main.c"; 	data4 = value;
-	MOVR	_value,W
-	MOVAR	_data4
-_00127_DS_:
-	.line	104, "main.c"; 	if(bitIndex == 33)
-	MOVR	_bitIndex,W
-	XORIA	0x21
-	BTRSS	STATUS,2
-	LGOTO	_00132_DS_
-	.line	106, "main.c"; 	bitIndex=0;
-	CLRR	_bitIndex
-	.line	107, "main.c"; 	irreceok=1;
-	MOVIA	0x01
-	MOVAR	_irreceok
-	.line	108, "main.c"; 	PCON1 = C_TMR0_En;
-	IOST	_PCON1
-	LGOTO	_00132_DS_
-_00131_DS_:
-	.line	114, "main.c"; 	startflag = 1;
-	MOVIA	0x01
-	MOVAR	_startflag
-	.line	115, "main.c"; 	irtime=0;
-	CLRR	_irtime
-	.line	116, "main.c"; 	bitIndex=0;
-	CLRR	_bitIndex
-	.line	117, "main.c"; 	value = 0;
-	CLRR	_value
-	.line	118, "main.c"; 	PCON1 = C_TMR0_En;
-	MOVIA	0x01
-	IOST	_PCON1
-_00132_DS_:
-	.line	120, "main.c"; 	INTF= (unsigned char)~(C_INT_PBKey);
+	LGOTO	_00112_DS_
+	.line	87, "main.c"; 	INTF= (unsigned char)~(C_INT_PBKey);
 	MOVIA	0xfd
 	MOVAR	_INTF
-_00134_DS_:
-	.line	123, "main.c"; 	INTF = 0;
+_00112_DS_:
+	.line	90, "main.c"; 	INTF = 0;
 	CLRR	_INTF
-	.line	126, "main.c"; 	}
+	.line	93, "main.c"; 	}
 	MOVR	___sdcc_saved_stk01,W
 	MOVAR	STK01
 	MOVR	___sdcc_saved_stk00,W
@@ -483,12 +366,14 @@ END_OF_INTERRUPT:
 ;***
 ;has an exit
 ;functions called:
-;   _irpros
-;   _irwork
+;   _proData
+;   _proLow
+;   _proHight
 ;   _gotoSleep
 ;   _setHight
-;   _irpros
-;   _irwork
+;   _proData
+;   _proLow
+;   _proHight
 ;   _gotoSleep
 ;   _setHight
 ;; Starting pCode block
@@ -496,77 +381,88 @@ END_OF_INTERRUPT:
 	.debuginfo subprogram _main
 _main:
 ; 2 exit points
-	.line	193, "main.c"; 	IOSTB =   C_PB0_Input;     // Set PB0 & PB1 to input mode,others set to output mode
-	MOVIA	0x01
+	.line	324, "main.c"; 	IOSTB =   C_PB0_Input | C_PB4_Input;     // Set PB0 & PB1 to input mode,others set to output mode
+	MOVIA	0x11
 	IOST	_IOSTB
-	.line	194, "main.c"; 	PORTB = 0x01;                           // PB0、PB1 & PB2 are output High
+	.line	325, "main.c"; 	BPHCON = 0xEF;
+	MOVIA	0xef
+	MOVAR	_BPHCON
+	.line	326, "main.c"; 	PORTB = 0x11;                           // PB0、PB1 & PB2 are output High
+	MOVIA	0x11
 	MOVAR	_PORTB
-	.line	195, "main.c"; 	DISI();
+	.line	327, "main.c"; 	DISI();
 	DISI
-	.line	197, "main.c"; 	PCON1 = C_TMR0_Dis;						// Disable Timer0
+	.line	329, "main.c"; 	PCON1 = C_TMR0_Dis;						// Disable Timer0
 	CLRA	
 	IOST	_PCON1
-	.line	199, "main.c"; 	TMR1 = 128;							// Load 0xFF to TMR1 (Initial Timer1 register)
-	MOVIA	0x80
+	.line	333, "main.c"; 	TMR1 = 0xFF;
+	MOVIA	0xff
 	SFUN	_TMR1
-	.line	200, "main.c"; 	T1CR1 = C_TMR1_Reload | C_TMR1_En;      // Enable Timer1, Initial value reloaded from TMR1, Non-stop mode 
+	.line	334, "main.c"; 	T1CR2 = C_PS1_Div64 | C_PS1_EN | C_TMR1_ClkSrc_Inst;
+	MOVIA	0x05
+	SFUN	_T1CR2
+	.line	335, "main.c"; 	T1CR1 = C_TMR1_En | C_TMR1_Reload;
 	MOVIA	0x03
 	SFUN	_T1CR1
-	.line	201, "main.c"; 	T1CR2 = C_TMR1_ClkSrc_Inst | C_PS1_Div8;	// Enable Prescaler1, Prescaler1 dividing rate = 1:4, Timer1 clock source is instruction clock
-	MOVIA	0x02
-	SFUN	_T1CR2
-	.line	204, "main.c"; 	INTE =  C_INT_TMR0 | C_INT_TMR1 | C_INT_PBKey;	// Enable Timer0、Timer1、WDT overflow interrupt
+	.line	338, "main.c"; 	INT1Level = 1;
+	BSR	_Status,5
+	.line	341, "main.c"; 	INTE =  C_INT_TMR0 | C_INT_TMR1 | C_INT_PBKey;	// Enable Timer0、Timer1、WDT overflow interrupt
 	MOVIA	0x0b
 	MOVAR	_INTE
-	.line	206, "main.c"; 	TMR0 = 55;
+	.line	343, "main.c"; 	TMR0 = 55;
 	MOVIA	0x37
 	MOVAR	_TMR0
-	.line	207, "main.c"; 	T0MD =  C_PS0_TMR0 | C_PS0_Div2;
+	.line	344, "main.c"; 	T0MD =  C_PS0_TMR0 | C_PS0_Div2;
 	CLRA	
 	T0MD	
-	.line	210, "main.c"; 	PCON = C_WDT_En | C_LVR_En;				// Enable WDT ,  Enable LVR
+	.line	347, "main.c"; 	PCON = C_WDT_En | C_LVR_En;				// Enable WDT ,  Enable LVR
 	MOVIA	0x88
 	MOVAR	_PCON
-	.line	213, "main.c"; 	PCON1 = C_TMR0_En;						// Enable Timer0
+	.line	350, "main.c"; 	PCON1 = C_TMR0_En;						// Enable Timer0
 	MOVIA	0x01
 	IOST	_PCON1
-	.line	214, "main.c"; 	ENI();									// Enable all unmasked interrupts			
+	.line	351, "main.c"; 	ENI();									// Enable all unmasked interrupts			
 	ENI
-_00177_DS_:
-	.line	218, "main.c"; 	CLRWDT(); 
+_00279_DS_:
+	.line	355, "main.c"; 	if(ReadOver)
+	BTRSS	_Status,4
+	LGOTO	_00262_DS_
+	.line	357, "main.c"; 	proData();
+	LCALL	_proData
+_00262_DS_:
+	.line	359, "main.c"; 	if(INT1Level && (PORTB & 0x01))
+	BTRSS	_Status,5
+	LGOTO	_00267_DS_
+	BTRSS	_PORTB,0
+	LGOTO	_00267_DS_
+	.line	361, "main.c"; 	INT1Level = 0;
+	BCR	_Status,5
+	.line	362, "main.c"; 	proLow();
+	LCALL	_proLow
+	LGOTO	_00268_DS_
+_00267_DS_:
+	.line	364, "main.c"; 	else if(INT1Level == 0 && (PORTB & 0x01) == 0)
+	BTRSC	_Status,5
+	LGOTO	_00268_DS_
+	BTRSC	_PORTB,0
+	LGOTO	_00268_DS_
+	.line	367, "main.c"; 	INT1Level = 1;
+	BSR	_Status,5
+	.line	368, "main.c"; 	proHight();
+	LCALL	_proHight
+_00268_DS_:
+	.line	371, "main.c"; 	CLRWDT();
 	clrwdt
-	.line	219, "main.c"; 	if(irreceok)
-	MOVR	_irreceok,W
-	BTRSS	STATUS,2
-	.line	221, "main.c"; 	irpros();	
-	LCALL	_irpros
-	.line	223, "main.c"; 	if(!IntFlag)
+	.line	372, "main.c"; 	if(!IntFlag)
 	MOVR	_IntFlag,W
 	BTRSC	STATUS,2
-	LGOTO	_00177_DS_
-	.line	225, "main.c"; 	IntFlag = 0;		//10ms执行一次
+	LGOTO	_00279_DS_
+	.line	374, "main.c"; 	IntFlag = 0;		//10ms执行一次
 	CLRR	_IntFlag
-	.line	226, "main.c"; 	if(irprosok)
-	MOVR	_irprosok,W
-	BTRSS	STATUS,2
-	.line	228, "main.c"; 	irwork();
-	LCALL	_irwork
-	.line	230, "main.c"; 	if(irtime>32 && (PORTB & 0x01))
-	MOVIA	0x21
-	SUBAR	_irtime,W
-	BTRSS	STATUS,0
-	LGOTO	_00168_DS_
-	BTRSS	_PORTB,0
-	LGOTO	_00168_DS_
-	.line	232, "main.c"; 	bitIndex = 0;
-	CLRR	_bitIndex
-	.line	233, "main.c"; 	value = 0;
-	CLRR	_value
-_00168_DS_:
-	.line	235, "main.c"; 	if(sleepFlag && ++sleepCount >= 30)
+	.line	376, "main.c"; 	if(sleepFlag && ++sleepCount >= 30)
 	MOVR	_sleepFlag,W
 	BTRSC	STATUS,2
-	LGOTO	_00171_DS_
+	LGOTO	_00273_DS_
 	INCR	_sleepCount,F
 	BTRSC	STATUS,2
 	INCR	(_sleepCount + 1),F
@@ -574,72 +470,29 @@ _00168_DS_:
 	MOVIA	0x00
 	SUBAR	(_sleepCount + 1),W
 	BTRSS	STATUS,2
-	LGOTO	_00209_DS_
+	LGOTO	_00313_DS_
 	MOVIA	0x1e
 	SUBAR	_sleepCount,W
-_00209_DS_:
+_00313_DS_:
 	BTRSS	STATUS,0
-	LGOTO	_00171_DS_
-	.line	237, "main.c"; 	gotoSleep();
+	LGOTO	_00273_DS_
+	.line	378, "main.c"; 	gotoSleep();
 	LCALL	_gotoSleep
-_00171_DS_:
-	.line	239, "main.c"; 	if(lowTime > 0)
+_00273_DS_:
+	.line	380, "main.c"; 	if(lowTime > 0)
 	MOVR	_lowTime,W
 	BTRSC	STATUS,2
-	LGOTO	_00174_DS_
-	.line	241, "main.c"; 	--lowTime;
+	LGOTO	_00276_DS_
+	.line	382, "main.c"; 	--lowTime;
 	DECR	_lowTime,F
-	LGOTO	_00177_DS_
-_00174_DS_:
-	.line	245, "main.c"; 	setHight();
+	LGOTO	_00279_DS_
+_00276_DS_:
+	.line	386, "main.c"; 	setHight();
 	LCALL	_setHight
-	LGOTO	_00177_DS_
-	.line	248, "main.c"; 	}
+	LGOTO	_00279_DS_
+	.line	390, "main.c"; 	}
 	RETURN	
 ; exit point of _main
-
-;***
-;  pBlock Stats: dbName = C
-;***
-;3 compiler assigned registers:
-;   r0x1016
-;   STK00
-;   r0x1017
-;; Starting pCode block
-.segment "code"; module=main, function=_setPWMduty
-	.debuginfo subprogram _setPWMduty
-;local variable name mapping:
-	.debuginfo variable _portPin=r0x1016
-	.debuginfo variable _duty=r0x1017
-_setPWMduty:
-; 0 exit points
-	.line	252, "main.c"; 	void setPWMduty(char portPin,char duty)
-	MOVAR	r0x1016
-	MOVR	STK00,W
-	MOVAR	r0x1017
-	.line	254, "main.c"; 	if(ledCount <= duty)
-	MOVR	_ledCount,W
-	SUBAR	r0x1017,W
-	BTRSS	STATUS,0
-	LGOTO	_00215_DS_
-	.line	255, "main.c"; 	PORTB &= (~portPin);
-	COMR	r0x1016,W
-	MOVAR	r0x1017
-	ANDAR	_PORTB,F
-	LGOTO	_00216_DS_
-_00215_DS_:
-	.line	257, "main.c"; 	PORTB |= portPin;
-	MOVR	r0x1016,W
-	IORAR	_PORTB,F
-_00216_DS_:
-	.line	258, "main.c"; 	if(ledCount == 100)
-	MOVR	_ledCount,W
-	XORIA	0x64
-	BTRSC	STATUS,2
-	.line	259, "main.c"; 	ledCount = 0;
-	CLRR	_ledCount
-	.line	260, "main.c"; 	}
-	RETURN	
 
 ;***
 ;  pBlock Stats: dbName = C
@@ -653,43 +506,41 @@ _00216_DS_:
 	.debuginfo subprogram _gotoSleep
 _gotoSleep:
 ; 2 exit points
-	.line	171, "main.c"; 	setHight();
+	.line	303, "main.c"; 	setHight();
 	LCALL	_setHight
-	.line	172, "main.c"; 	sleepCount = 0;
+	.line	304, "main.c"; 	sleepCount = 0;
 	CLRR	_sleepCount
 	CLRR	(_sleepCount + 1)
-	.line	173, "main.c"; 	BWUCON = 0x01;
+	.line	305, "main.c"; 	BWUCON = 0x01;
 	MOVIA	0x01
 	MOVAR	_BWUCON
-	.line	174, "main.c"; 	INTE =  C_INT_TMR0 | C_INT_TMR1 | C_INT_PBKey;
+	.line	306, "main.c"; 	INTE =  C_INT_TMR0 | C_INT_TMR1 | C_INT_PBKey;
 	MOVIA	0x0b
 	MOVAR	_INTE
-	.line	175, "main.c"; 	PCON =  C_LVR_En;	
+	.line	307, "main.c"; 	PCON =  C_LVR_En;	
 	MOVIA	0x08
 	MOVAR	_PCON
-	.line	176, "main.c"; 	INTF = 0;								// Clear all interrupt flags
+	.line	308, "main.c"; 	INTF = 0;								// Clear all interrupt flags
 	CLRR	_INTF
-	.line	177, "main.c"; 	CLRWDT();
+	.line	309, "main.c"; 	CLRWDT();
 	clrwdt
-	.line	178, "main.c"; 	SLEEP();
+	.line	310, "main.c"; 	SLEEP();
 	sleep
-	.line	179, "main.c"; 	INTE =  C_INT_TMR0 | C_INT_TMR1 | C_INT_PBKey;	// Enable Timer0、Timer1、WDT overflow interrupt
+	.line	311, "main.c"; 	INTE =  C_INT_TMR0 | C_INT_TMR1 | C_INT_PBKey;	// Enable Timer0、Timer1、WDT overflow interrupt
 	MOVIA	0x0b
 	MOVAR	_INTE
-	.line	180, "main.c"; 	INTF = 0;
+	.line	312, "main.c"; 	INTF = 0;
 	CLRR	_INTF
-	.line	182, "main.c"; 	PCON = C_WDT_En;				// Enable WDT ,  Enable LVR
+	.line	314, "main.c"; 	PCON = C_WDT_En;				// Enable WDT ,  Enable LVR
 	MOVIA	0x80
 	MOVAR	_PCON
-	.line	183, "main.c"; 	sleepFlag = 0;
+	.line	315, "main.c"; 	sleepFlag = 0;
 	CLRR	_sleepFlag
-	.line	184, "main.c"; 	bitIndex = 0;
+	.line	316, "main.c"; 	bitIndex = 0;
 	CLRR	_bitIndex
-	.line	185, "main.c"; 	value = 0;
+	.line	317, "main.c"; 	value = 0;
 	CLRR	_value
-	.line	186, "main.c"; 	irtime = 0;
-	CLRR	_irtime
-	.line	187, "main.c"; 	}
+	.line	318, "main.c"; 	}
 	RETURN	
 ; exit point of _gotoSleep
 
@@ -702,18 +553,18 @@ _gotoSleep:
 	.debuginfo subprogram _setHight
 _setHight:
 ; 2 exit points
-	.line	162, "main.c"; 	IOSTB =   C_PB0_Input | C_PB3_Input | C_PB4_Input;
+	.line	294, "main.c"; 	IOSTB =   C_PB0_Input | C_PB3_Input | C_PB4_Input;
 	MOVIA	0x19
 	IOST	_IOSTB
-	.line	163, "main.c"; 	BPHCON = C_PB4_PHB;
-	MOVIA	0x10
+	.line	295, "main.c"; 	BPHCON = 0xEF;
+	MOVIA	0xef
 	MOVAR	_BPHCON
-	.line	164, "main.c"; 	PORTB |= 0x10;
+	.line	296, "main.c"; 	PORTB |= 0x10;
 	BSR	_PORTB,4
-	.line	165, "main.c"; 	sleepFlag = 1;
+	.line	297, "main.c"; 	sleepFlag = 1;
 	MOVIA	0x01
 	MOVAR	_sleepFlag
-	.line	166, "main.c"; 	}
+	.line	298, "main.c"; 	}
 	RETURN	
 ; exit point of _setHight
 
@@ -726,17 +577,19 @@ _setHight:
 	.debuginfo subprogram _setLow
 _setLow:
 ; 2 exit points
-	.line	153, "main.c"; 	lowTime = 10;
+	.line	284, "main.c"; 	lowTime = 10;
 	MOVIA	0x0a
 	MOVAR	_lowTime
-	.line	154, "main.c"; 	IOSTB =   C_PB0_Input | C_PB3_Input;
+	.line	285, "main.c"; 	sleepFlag = 0;
+	CLRR	_sleepFlag
+	.line	286, "main.c"; 	IOSTB =   C_PB0_Input | C_PB3_Input;
 	MOVIA	0x09
 	IOST	_IOSTB
-	.line	155, "main.c"; 	BPHCON = 0x00;
+	.line	287, "main.c"; 	BPHCON = 0x00;
 	CLRR	_BPHCON
-	.line	156, "main.c"; 	PORTB &= 0xEF;
+	.line	288, "main.c"; 	PORTB &= 0xEF;
 	BCR	_PORTB,4
-	.line	158, "main.c"; 	}
+	.line	290, "main.c"; 	}
 	RETURN	
 ; exit point of _setLow
 
@@ -748,48 +601,486 @@ _setLow:
 ;   _setLow
 ;   _setLow
 ;; Starting pCode block
-.segment "code"; module=main, function=_irwork
-	.debuginfo subprogram _irwork
-_irwork:
+.segment "code"; module=main, function=_proData
+	.debuginfo subprogram _proData
+_proData:
 ; 2 exit points
-	.line	141, "main.c"; 	switch(irCode)
+	.line	265, "main.c"; 	irCode = (uint8)(~data4);
+	COMR	_data4,W
+	MOVAR	_irCode
+	.line	266, "main.c"; 	if(irCode == data3)
+	XORAR	_data3,W
+	BTRSS	STATUS,2
+	LGOTO	_00244_DS_
+	.line	268, "main.c"; 	switch(irCode)
 	MOVR	_irCode,W
 	XORIA	0x15
 	BTRSC	STATUS,2
-	.line	144, "main.c"; 	setLow();
+	.line	271, "main.c"; 	setLow();
 	LCALL	_setLow
-	.line	147, "main.c"; 	irprosok = 0;
-	CLRR	_irprosok
-	.line	149, "main.c"; 	}
+_00244_DS_:
+	.line	275, "main.c"; 	ReadOver = 0;
+	BCR	_Status,4
+	.line	276, "main.c"; 	}
 	RETURN	
-; exit point of _irwork
+; exit point of _proData
+
+;***
+;  pBlock Stats: dbName = C
+;***
+;has an exit
+;1 compiler assigned register :
+;   r0x1013
+;; Starting pCode block
+.segment "code"; module=main, function=_GetOneByte
+	.debuginfo subprogram _GetOneByte
+;local variable name mapping:
+	.debuginfo variable _bitNub=r0x1013
+_GetOneByte:
+; 2 exit points
+	.line	219, "main.c"; 	void GetOneByte(uint8 bitNub)
+	MOVAR	r0x1013
+	.line	221, "main.c"; 	if(RemoteStart)
+	BTRSS	_Status,3
+	LGOTO	_00236_DS_
+	.line	223, "main.c"; 	if(bitIndex == 0)
+	MOVR	_bitIndex,W
+	BTRSS	STATUS,2
+	LGOTO	_00220_DS_
+	.line	225, "main.c"; 	bitIndex = 0;
+	CLRR	_bitIndex
+	.line	226, "main.c"; 	value = 0;
+	CLRR	_value
+	.line	227, "main.c"; 	data1 = data2 = data3 = data4 = 0;
+	CLRR	_data4
+	CLRR	_data3
+	CLRR	_data2
+	CLRR	_data1
+_00220_DS_:
+	.line	229, "main.c"; 	++bitIndex;
+	INCR	_bitIndex,F
+	.line	230, "main.c"; 	if(bitNub)
+	MOVR	r0x1013,W
+	BTRSS	STATUS,2
+	.line	232, "main.c"; 	value |= 0x80;
+	BSR	_value,7
+	.line	235, "main.c"; 	if(bitIndex == 8)
+	MOVR	_bitIndex,W
+	XORIA	0x08
+	BTRSS	STATUS,2
+	LGOTO	_00232_DS_
+	.line	237, "main.c"; 	data1 = value;
+	MOVR	_value,W
+	MOVAR	_data1
+	LGOTO	_00233_DS_
+_00232_DS_:
+	.line	239, "main.c"; 	else if(bitIndex == 16)
+	MOVR	_bitIndex,W
+	XORIA	0x10
+	BTRSS	STATUS,2
+	LGOTO	_00229_DS_
+	.line	241, "main.c"; 	data2 = value;
+	MOVR	_value,W
+	MOVAR	_data2
+	LGOTO	_00233_DS_
+_00229_DS_:
+	.line	244, "main.c"; 	else if(bitIndex == 24)
+	MOVR	_bitIndex,W
+	XORIA	0x18
+	BTRSS	STATUS,2
+	LGOTO	_00226_DS_
+	.line	246, "main.c"; 	data3 = value;
+	MOVR	_value,W
+	MOVAR	_data3
+	LGOTO	_00233_DS_
+_00226_DS_:
+	.line	249, "main.c"; 	else if(bitIndex == 32)
+	MOVR	_bitIndex,W
+	XORIA	0x20
+	BTRSS	STATUS,2
+	LGOTO	_00233_DS_
+	.line	251, "main.c"; 	data4 = value;
+	MOVR	_value,W
+	MOVAR	_data4
+	.line	252, "main.c"; 	ReadOver = 1;
+	BSR	_Status,4
+	.line	253, "main.c"; 	OneCode = 0;
+	BCR	_Status,1
+	.line	254, "main.c"; 	ZeroCode = 0;
+	BCR	_Status,0
+	.line	255, "main.c"; 	RemoteStart = 0;
+	BCR	_Status,3
+	.line	256, "main.c"; 	bitIndex = 0;
+	CLRR	_bitIndex
+;;shiftRight_Left2ResultLit:5586: shCount=1, size=1, sign=0, same=1, offr=0
+_00233_DS_:
+	.line	259, "main.c"; 	value = value >> 1;
+	BCR	STATUS,0
+	RRR	_value,F
+_00236_DS_:
+	.line	261, "main.c"; 	}
+	RETURN	
+; exit point of _GetOneByte
+
+;***
+;  pBlock Stats: dbName = C
+;***
+;has an exit
+;functions called:
+;   _cleanData
+;   _cleanData
+;4 compiler assigned registers:
+;   r0x1013
+;   r0x1014
+;   r0x1015
+;   r0x1016
+;; Starting pCode block
+.segment "code"; module=main, function=_proLow
+	.debuginfo subprogram _proLow
+_proLow:
+; 2 exit points
+	.line	175, "main.c"; 	T1CR1 = C_TMR1_Dis;
+	CLRA	
+	SFUN	_T1CR1
+	.line	176, "main.c"; 	T1Counter = accTimeH;
+	MOVR	_accTimeH,W
+	MOVAR	_T1Counter
+	CLRR	(_T1Counter + 1)
+	.line	177, "main.c"; 	T1Counter <<= 8;
+	MOVR	_T1Counter,W
+	MOVAR	(_T1Counter + 1)
+	CLRR	_T1Counter
+	.line	178, "main.c"; 	T1Counter += (0xFF - TMR1);
+	SFUNR	_TMR1
+;;3	MOVAR	r0x1013
+	MOVAR	r0x1014
+	CLRR	r0x1015
+	MOVR	r0x1014,W
+	SUBIA	0xff
+	MOVAR	r0x1013
+	MOVIA	0x00
+	BTRSS	STATUS,0
+	INCR	r0x1015,W
+	SUBIA	0x00
+	MOVAR	r0x1015
+;;1	MOVAR	r0x1016
+	MOVR	r0x1013,W
+	MOVAR	r0x1014
+	ADDAR	_T1Counter,F
+	MOVR	r0x1015,W
+	BTRSC	STATUS,0
+	INCRSZ	r0x1015,W
+	ADDAR	(_T1Counter + 1),F
+	.line	179, "main.c"; 	accTimeH = 0;
+	CLRR	_accTimeH
+	.line	180, "main.c"; 	TMR1 = 0xFF;
+	MOVIA	0xff
+	SFUN	_TMR1
+	.line	181, "main.c"; 	T1CR1 = C_TMR1_En | C_TMR1_Reload; 
+	MOVIA	0x03
+	SFUN	_T1CR1
+;;swapping arguments (AOP_TYPEs 1/3)
+;;unsigned compare: left >= lit (0x1F7=503), size=2
+	.line	182, "main.c"; 	if((T1Counter > (HeadCont_L - (FaultTolerant*FaultTolerantX)))&&(T1Counter < (HeadCont_L + (FaultTolerant*FaultTolerantX))))
+	MOVIA	0x01
+	SUBAR	(_T1Counter + 1),W
+	BTRSS	STATUS,2
+	LGOTO	_00211_DS_
+	MOVIA	0xf7
+	SUBAR	_T1Counter,W
+_00211_DS_:
+	BTRSS	STATUS,0
+	LGOTO	_00191_DS_
+;;unsigned compare: left < lit (0x26E=622), size=2
+	MOVIA	0x02
+	SUBAR	(_T1Counter + 1),W
+	BTRSS	STATUS,2
+	LGOTO	_00212_DS_
+	MOVIA	0x6e
+	SUBAR	_T1Counter,W
+_00212_DS_:
+	BTRSC	STATUS,0
+	LGOTO	_00191_DS_
+	.line	184, "main.c"; 	RemoteStart = 0;       //遥控数据头
+	BCR	_Status,3
+	.line	185, "main.c"; 	MaybeRemoteStart = 1;		//疑似遥控数据头
+	BSR	_Status,2
+	.line	186, "main.c"; 	sleepFlag = 0;
+	CLRR	_sleepFlag
+	.line	187, "main.c"; 	bitIndex = 0;
+	CLRR	_bitIndex
+	.line	188, "main.c"; 	OneCode = 0;
+	BCR	_Status,1
+	.line	189, "main.c"; 	ZeroCode = 0;
+	BCR	_Status,0
+	.line	190, "main.c"; 	ReadOver = 0;
+	BCR	_Status,4
+	.line	190, "main.c"; 	}
+	LGOTO	_00194_DS_
+_00191_DS_:
+	.line	192, "main.c"; 	else if(RemoteStart)
+	BTRSS	_Status,3
+	LGOTO	_00194_DS_
+;;swapping arguments (AOP_TYPEs 1/3)
+;;unsigned compare: left >= lit (0x1B=27), size=2
+	.line	203, "main.c"; 	if((T1Counter >(OneCode_L - FaultTolerant))&&(T1Counter < (OneCode_L + FaultTolerant)))
+	MOVIA	0x00
+	SUBAR	(_T1Counter + 1),W
+	BTRSS	STATUS,2
+	LGOTO	_00213_DS_
+	MOVIA	0x1b
+	SUBAR	_T1Counter,W
+_00213_DS_:
+	BTRSS	STATUS,0
+	LGOTO	_00185_DS_
+;;unsigned compare: left < lit (0x2E=46), size=2
+	MOVIA	0x00
+	SUBAR	(_T1Counter + 1),W
+	BTRSS	STATUS,2
+	LGOTO	_00214_DS_
+	MOVIA	0x2e
+	SUBAR	_T1Counter,W
+_00214_DS_:
+	BTRSC	STATUS,0
+	LGOTO	_00185_DS_
+	.line	206, "main.c"; 	NOP();
+	nop
+	LGOTO	_00194_DS_
+_00185_DS_:
+	.line	211, "main.c"; 	cleanData();
+	LCALL	_cleanData
+_00194_DS_:
+	.line	216, "main.c"; 	}
+	RETURN	
+; exit point of _proLow
+
+;***
+;  pBlock Stats: dbName = C
+;***
+;has an exit
+;functions called:
+;   _GetOneByte
+;   _GetOneByte
+;   _GetOneByte
+;   _GetOneByte
+;4 compiler assigned registers:
+;   r0x1014
+;   r0x1015
+;   r0x1016
+;   r0x1017
+;; Starting pCode block
+.segment "code"; module=main, function=_proHight
+	.debuginfo subprogram _proHight
+_proHight:
+; 2 exit points
+	.line	109, "main.c"; 	T1CR1 = C_TMR1_Dis;
+	CLRA	
+	SFUN	_T1CR1
+	.line	110, "main.c"; 	T1Counter = accTimeH;
+	MOVR	_accTimeH,W
+	MOVAR	_T1Counter
+	CLRR	(_T1Counter + 1)
+	.line	111, "main.c"; 	T1Counter <<= 8;
+	MOVR	_T1Counter,W
+	MOVAR	(_T1Counter + 1)
+	CLRR	_T1Counter
+	.line	112, "main.c"; 	T1Counter += (0xFF - TMR1);
+	SFUNR	_TMR1
+;;3	MOVAR	r0x1014
+	MOVAR	r0x1015
+	CLRR	r0x1016
+	MOVR	r0x1015,W
+	SUBIA	0xff
+	MOVAR	r0x1014
+	MOVIA	0x00
+	BTRSS	STATUS,0
+	INCR	r0x1016,W
+	SUBIA	0x00
+	MOVAR	r0x1016
+;;1	MOVAR	r0x1017
+	MOVR	r0x1014,W
+	MOVAR	r0x1015
+	ADDAR	_T1Counter,F
+	MOVR	r0x1016,W
+	BTRSC	STATUS,0
+	INCRSZ	r0x1016,W
+	ADDAR	(_T1Counter + 1),F
+	.line	113, "main.c"; 	accTimeH = 0;
+	CLRR	_accTimeH
+	.line	114, "main.c"; 	TMR1 = 0xFF;
+	MOVIA	0xff
+	SFUN	_TMR1
+	.line	115, "main.c"; 	T1CR1 = C_TMR1_En | C_TMR1_Reload;
+	MOVIA	0x03
+	SFUN	_T1CR1
+	.line	116, "main.c"; 	if(MaybeRemoteStart && T1Counter > (HeadCont_H - (FaultTolerant*FaultTolerantX)) && T1Counter < (HeadCont_H + (FaultTolerant*FaultTolerantX)))
+	BTRSS	_Status,2
+	LGOTO	_00138_DS_
+;;swapping arguments (AOP_TYPEs 1/3)
+;;unsigned compare: left >= lit (0xDE=222), size=2
+	MOVIA	0x00
+	SUBAR	(_T1Counter + 1),W
+	BTRSS	STATUS,2
+	LGOTO	_00174_DS_
+	MOVIA	0xde
+	SUBAR	_T1Counter,W
+_00174_DS_:
+	BTRSS	STATUS,0
+	LGOTO	_00138_DS_
+;;unsigned compare: left < lit (0x155=341), size=2
+	MOVIA	0x01
+	SUBAR	(_T1Counter + 1),W
+	BTRSS	STATUS,2
+	LGOTO	_00175_DS_
+	MOVIA	0x55
+	SUBAR	_T1Counter,W
+_00175_DS_:
+	BTRSC	STATUS,0
+	LGOTO	_00138_DS_
+	.line	118, "main.c"; 	MaybeRemoteStart = 0;       //遥控数据头
+	BCR	_Status,2
+	.line	119, "main.c"; 	RemoteStart = 1;
+	BSR	_Status,3
+	.line	120, "main.c"; 	sleepFlag = 0;
+	CLRR	_sleepFlag
+	.line	121, "main.c"; 	bitIndex = 0;
+	CLRR	_bitIndex
+	.line	122, "main.c"; 	OneCode = 0;
+	BCR	_Status,1
+	.line	123, "main.c"; 	ZeroCode = 0;
+	BCR	_Status,0
+	.line	124, "main.c"; 	ReadOver = 0;
+	BCR	_Status,4
+	LGOTO	_00142_DS_
+_00138_DS_:
+	.line	126, "main.c"; 	else if(RemoteStart)
+	BTRSS	_Status,3
+	LGOTO	_00135_DS_
+;;swapping arguments (AOP_TYPEs 1/3)
+;;unsigned compare: left >= lit (0x5E=94), size=2
+	.line	128, "main.c"; 	if((T1Counter> (OneCode_H - FaultTolerant))&&(T1Counter < (OneCode_H + FaultTolerant)))
+	MOVIA	0x00
+	SUBAR	(_T1Counter + 1),W
+	BTRSS	STATUS,2
+	LGOTO	_00176_DS_
+	MOVIA	0x5e
+	SUBAR	_T1Counter,W
+_00176_DS_:
+	BTRSS	STATUS,0
+	LGOTO	_00126_DS_
+;;unsigned compare: left < lit (0x71=113), size=2
+	MOVIA	0x00
+	SUBAR	(_T1Counter + 1),W
+	BTRSS	STATUS,2
+	LGOTO	_00177_DS_
+	MOVIA	0x71
+	SUBAR	_T1Counter,W
+_00177_DS_:
+	BTRSC	STATUS,0
+	LGOTO	_00126_DS_
+	.line	130, "main.c"; 	OneCode = 1;
+	BSR	_Status,1
+	.line	131, "main.c"; 	ZeroCode = 0;
+	BCR	_Status,0
+	LGOTO	_00127_DS_
+;;swapping arguments (AOP_TYPEs 1/3)
+;;unsigned compare: left >= lit (0x13=19), size=2
+_00126_DS_:
+	.line	135, "main.c"; 	if((T1Counter > (Zero_H - FaultTolerant))&&(T1Counter < (Zero_H + FaultTolerant)))
+	MOVIA	0x00
+	SUBAR	(_T1Counter + 1),W
+	BTRSS	STATUS,2
+	LGOTO	_00178_DS_
+	MOVIA	0x13
+	SUBAR	_T1Counter,W
+_00178_DS_:
+	BTRSS	STATUS,0
+	LGOTO	_00122_DS_
+;;unsigned compare: left < lit (0x26=38), size=2
+	MOVIA	0x00
+	SUBAR	(_T1Counter + 1),W
+	BTRSS	STATUS,2
+	LGOTO	_00179_DS_
+	MOVIA	0x26
+	SUBAR	_T1Counter,W
+_00179_DS_:
+	BTRSC	STATUS,0
+	LGOTO	_00122_DS_
+	.line	137, "main.c"; 	ZeroCode = 1;
+	BSR	_Status,0
+	.line	138, "main.c"; 	OneCode = 0;
+	BCR	_Status,1
+	LGOTO	_00127_DS_
+_00122_DS_:
+	.line	142, "main.c"; 	ZeroCode = 0;
+	BCR	_Status,0
+	.line	143, "main.c"; 	OneCode = 0;
+	BCR	_Status,1
+_00127_DS_:
+	.line	147, "main.c"; 	if(OneCode)
+	BTRSS	_Status,1
+	LGOTO	_00132_DS_
+	.line	150, "main.c"; 	GetOneByte(1);
+	MOVIA	0x01
+	LCALL	_GetOneByte
+	LGOTO	_00142_DS_
+_00132_DS_:
+	.line	152, "main.c"; 	else if(ZeroCode)
+	BTRSS	_Status,0
+	LGOTO	_00142_DS_
+	.line	155, "main.c"; 	GetOneByte(0);
+	MOVIA	0x00
+	LCALL	_GetOneByte
+	LGOTO	_00142_DS_
+_00135_DS_:
+	.line	160, "main.c"; 	MaybeRemoteStart = 0;       //遥控数据头
+	BCR	_Status,2
+	.line	161, "main.c"; 	RemoteStart = 0;
+	BCR	_Status,3
+	.line	162, "main.c"; 	sleepFlag = 0;
+	CLRR	_sleepFlag
+	.line	163, "main.c"; 	bitIndex = 0;
+	CLRR	_bitIndex
+	.line	164, "main.c"; 	OneCode = 0;
+	BCR	_Status,1
+	.line	165, "main.c"; 	ZeroCode = 0;
+	BCR	_Status,0
+	.line	166, "main.c"; 	ReadOver = 0;
+	BCR	_Status,4
+_00142_DS_:
+	.line	171, "main.c"; 	}
+	RETURN	
+; exit point of _proHight
 
 ;***
 ;  pBlock Stats: dbName = C
 ;***
 ;has an exit
 ;; Starting pCode block
-.segment "code"; module=main, function=_irpros
-	.debuginfo subprogram _irpros
-_irpros:
+.segment "code"; module=main, function=_cleanData
+	.debuginfo subprogram _cleanData
+_cleanData:
 ; 2 exit points
-	.line	132, "main.c"; 	irCode = data3;
-	MOVR	_data3,W
-	MOVAR	_irCode
-	.line	133, "main.c"; 	irCode2 = data4;
-	MOVR	_data4,W
-	MOVAR	_irCode2
-	.line	134, "main.c"; 	irreceok=0;
-	CLRR	_irreceok
-	.line	135, "main.c"; 	irprosok = 1;
-	MOVIA	0x01
-	MOVAR	_irprosok
-	.line	136, "main.c"; 	}
+	.line	97, "main.c"; 	MaybeRemoteStart = 0;       //遥控数据头
+	BCR	_Status,2
+	.line	98, "main.c"; 	RemoteStart = 0;
+	BCR	_Status,3
+	.line	99, "main.c"; 	sleepFlag = 0;
+	CLRR	_sleepFlag
+	.line	100, "main.c"; 	bitIndex = 0;
+	CLRR	_bitIndex
+	.line	101, "main.c"; 	OneCode = 0;
+	BCR	_Status,1
+	.line	102, "main.c"; 	ZeroCode = 0;
+	BCR	_Status,0
+	.line	103, "main.c"; 	ReadOver = 0;
+	BCR	_Status,4
+	.line	104, "main.c"; 	}
 	RETURN	
-; exit point of _irpros
+; exit point of _cleanData
 
 
 ;	code size estimation:
-;	  244+    0 =   244 instructions (  488 byte)
+;	  415+    0 =   415 instructions (  830 byte)
 
 	end

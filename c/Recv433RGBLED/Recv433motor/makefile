@@ -1,11 +1,11 @@
-ICBODY       := NY8A051F
-CLIENT_NAME  := hmm
-CB_FILE      := IRLEDRGB.cb
+ICBODY       := NY8A054D
+CLIENT_NAME  := hemingming
+CB_FILE      := Recv433motor.cb
 HOST_TOOL    := NYIDE 3.92
 USER_C       := main.c 
 LIBS         :=  
 USER_ASM     := 
-OUT_NAME     := IRLEDRGB
+OUT_NAME     := Recv433motor
 CC_PATH      := C:\Nyquest\NYC_NY8
 TEMP_FOLDER  := 
 
@@ -14,7 +14,7 @@ TEMP_FOLDER  :=
 #  - bank2: 2 bank ram
 #  - bank2_8b: 2 bank ram (NY8B series)
 #  - bank4: 4 bank ram
-MODEL := small
+MODEL := bank2_8b
 
 ENABLE_INIT_BSS := 1
 
