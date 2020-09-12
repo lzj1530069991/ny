@@ -147,14 +147,16 @@ void workCtr()
 		L5ON();
 		break;
 		case 6:
+		maxDuty = 49;
+		pwmOn();
 		L6ON();
-		if(maxDuty >0)
-		{
-			duty = 0;
-			pwmOFF();
-			maxDuty = 0;
-		}
-		PB5ON();
+//		if(maxDuty >0)
+//		{
+//			duty = 0;
+//			pwmOFF();
+//			maxDuty = 0;
+//		}
+//		PB5ON();
 		break;
 	}
 	if(duty < maxDuty)
@@ -172,7 +174,7 @@ void pwmOn()
 	if(P4CR1 & 0x80)
 		return;
 	TM34RH = 0x00;
-	TMR3 = 49;
+	TMR3 = 50;
 	T3CR2 = 0x00;
 	T3CR1 =  C_TMR3_Reload | C_TMR3_En;
 	P4CR1 = C_PWM4_En | C_TMR3_Reload | C_TMR3_En;
@@ -190,12 +192,26 @@ char keyRead(char KeyStatus)
 { 
 	if (KeyStatus)
 	{
-		if(++keyCount >= 300)
-			keyCount = 300;
+		if(++keyCount >= 200)
+		{
+			keyCount = 200;
+			if(!longPressFlag)
+			{
+				longPressFlag = 1;
+				return 2;
+			}
+			
+		}
 	}
 	else
 	{
-		if(keyCount >= 8)
+		if(keyCount >= 200)
+		{
+			keyCount = 0;
+			longPressFlag = 0;
+			return	0;
+		}
+		else if(keyCount >= 8)
 		{
 			keyCount = 0;
 			return	1;
@@ -213,6 +229,10 @@ void keyCtr()
     {
     	if(++workStep >= 7)
     		workStep = 0;
+    }
+    else if(kclick == 2)
+    {
+    	workStep = 0;
     }
       
 }

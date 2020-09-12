@@ -314,7 +314,7 @@ NYASM 2.25
      0000 0000                      1-  344     	dw	0x00
                                     1-  348     .segment "idata"
      0000                           1-  349     _workStep:
-     0000 0000                      1-  350     	dw	0x00
+     0000 0007                      1-  350     	dw	0x07
                                     1-  354     .segment "idata"
      0000                           1-  355     _colorIndex:
      0000 0001                      1-  356     	dw	0x01
@@ -913,7 +913,7 @@ NYASM 2.25
                                     1-  913     	BANKSEL	r0x1023
      000A rrrr                      3-   71 m1      .banksel ram_address
      000B 02rr                      1-  914     	CLRR	r0x1023
-                                    1-  915     ;;signed compare: left < lit (0x4=4), size=2, mask=ffff
+                                    1-  915     ;;signed compare: left < lit (0x2=2), size=2, mask=ffff
      000C                           1-  916     _00550_DS_:
                                     1-  917     	BANKSEL	r0x1023
      000C rrrr                      3-   71 m1      .banksel ram_address
@@ -922,7 +922,7 @@ NYASM 2.25
      000F 2580                      1-  920     	ADDIA	0x80
      0010 0903                      1-  921     	BTRSS	STATUS,2
      0011 3rrr                      1-  922     	LGOTO	_00563_DS_
-     0012 2104                      1-  923     	MOVIA	0x04
+     0012 2102                      1-  923     	MOVIA	0x02
                                     1-  924     	BANKSEL	r0x1022
      0013 rrrr                      3-   71 m1      .banksel ram_address
      0014 04rr                      1-  925     	SUBAR	r0x1022,W
@@ -1540,13 +1540,13 @@ NYASM 2.25
                                     1- 1507     ;local variable name mapping:
      0000                           1- 1509     _Delay80us:
                                     1- 1510     ; 2 exit points
-                                    1- 1511     	.line	460, "main.c"; 	for(unsigned char i=0;i<50;i++)
+                                    1- 1511     	.line	460, "main.c"; 	for(unsigned char i=0;i<60;i++)
                                     1- 1512     	BANKSEL	r0x101E
      0000 rrrr                      3-   71 m1      .banksel ram_address
      0001 02rr                      1- 1513     	CLRR	r0x101E
-                                    1- 1514     ;;unsigned compare: left < lit (0x32=50), size=1
+                                    1- 1514     ;;unsigned compare: left < lit (0x3C=60), size=1
      0002                           1- 1515     _00315_DS_:
-     0002 2132                      1- 1516     	MOVIA	0x32
+     0002 213C                      1- 1516     	MOVIA	0x3c
                                     1- 1517     	BANKSEL	r0x101E
      0003 rrrr                      3-   71 m1      .banksel ram_address
      0004 04rr                      1- 1518     	SUBAR	r0x101E,W
@@ -1559,7 +1559,7 @@ NYASM 2.25
      0009 0903                      1- 1524     	BTRSS	STATUS,2
                                     1- 1525     	.line	463, "main.c"; 	return;
      000A 3rrr                      1- 1526     	LGOTO	_00317_DS_
-                                    1- 1527     	.line	460, "main.c"; 	for(unsigned char i=0;i<50;i++)
+                                    1- 1527     	.line	460, "main.c"; 	for(unsigned char i=0;i<60;i++)
                                     1- 1528     	BANKSEL	r0x101E
      000B rrrr                      3-   71 m1      .banksel ram_address
      000C 05rr                      1- 1529     	INCR	r0x101E,F

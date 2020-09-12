@@ -24,7 +24,7 @@ u8t recData = 0;
 u8t Hcount = 0;
 u8t index = 0;
 u8t uartTime = 0;
-u8t workStep = 0;
+u8t workStep = 7;
 u8t colorIndex = 1;
 u16t timeCount = 0;
 u8t firstFlag = 2;
@@ -43,7 +43,7 @@ void work10();
 void setColor(u8t cindex);
 void rankNub(char nub);
 //RGB
-#define LED_N 4
+#define LED_N 2
 __sbit PA3 = PORTA:3;
 #define	NUB1() do{	\
 	PORTAbits.PA3 = 0;		\
@@ -171,7 +171,8 @@ void isr(void) __interrupt(0)
 				{
 					colorIndex = (randNub%8)  + 1;
 					rankNub(randNub+3);
-					snub+=3;
+					if(timeCount % 3 == 0)
+						snub+=3;
 					CLRWDT();
 				}
 				while(preColorIndex == colorIndex);
@@ -276,6 +277,7 @@ void rankNub(char nub)
 		
 	}
 	randNub = aNub%8 +1;
+	
 }
 
 
@@ -457,7 +459,7 @@ void work10()
 
 void Delay80us()
 {
-	for(unsigned char i=0;i<50;i++)
+	for(unsigned char i=0;i<60;i++)
 	{
 		if(uartFlag)
 			return;

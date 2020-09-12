@@ -347,7 +347,7 @@ _uartTime:
 
 .segment "idata"
 _workStep:
-	dw	0x00
+	dw	0x07
 	.debuginfo gvariable name=_workStep,1byte,array=0,entsize=1,ext=1
 
 
@@ -912,7 +912,7 @@ _sendtoLast:
 	CLRR	r0x1022
 	BANKSEL	r0x1023
 	CLRR	r0x1023
-;;signed compare: left < lit (0x4=4), size=2, mask=ffff
+;;signed compare: left < lit (0x2=2), size=2, mask=ffff
 _00550_DS_:
 	BANKSEL	r0x1023
 	MOVR	r0x1023,W
@@ -920,7 +920,7 @@ _00550_DS_:
 	ADDIA	0x80
 	BTRSS	STATUS,2
 	LGOTO	_00563_DS_
-	MOVIA	0x04
+	MOVIA	0x02
 	BANKSEL	r0x1022
 	SUBAR	r0x1022,W
 _00563_DS_:
@@ -1508,12 +1508,12 @@ _Delay10Us:
 	.debuginfo variable _i=r0x101E
 _Delay80us:
 ; 2 exit points
-	.line	460, "main.c"; 	for(unsigned char i=0;i<50;i++)
+	.line	460, "main.c"; 	for(unsigned char i=0;i<60;i++)
 	BANKSEL	r0x101E
 	CLRR	r0x101E
-;;unsigned compare: left < lit (0x32=50), size=1
+;;unsigned compare: left < lit (0x3C=60), size=1
 _00315_DS_:
-	MOVIA	0x32
+	MOVIA	0x3c
 	BANKSEL	r0x101E
 	SUBAR	r0x101E,W
 	BTRSC	STATUS,0
@@ -1524,7 +1524,7 @@ _00315_DS_:
 	BTRSS	STATUS,2
 	.line	463, "main.c"; 	return;
 	LGOTO	_00317_DS_
-	.line	460, "main.c"; 	for(unsigned char i=0;i<50;i++)
+	.line	460, "main.c"; 	for(unsigned char i=0;i<60;i++)
 	BANKSEL	r0x101E
 	INCR	r0x101E,F
 	LGOTO	_00315_DS_
