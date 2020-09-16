@@ -50,6 +50,7 @@ u8t R_AIN9_DATA_LB;
 u16t sumR_AIN5_DATA = 0;
 u8t addtime = 0;
 u8t lowWaterTime = 0;
+u8t lowPowerTime = 0;
 
 char numArray[10] = {0x3F, 0x06,0x5B,0x4F,0x66,0x6D,0x7D,0x07,0x7F,0x67};
 
@@ -136,9 +137,24 @@ void refreshNub()
 	if(++refreshCount >= 100)
 	{
 		refreshCount = 0;
-		tempbaiweiNum = baiweiNum;
-		tempshiweiNum = shiweiNum;
-		tempgeweiNum = geweiNum;
+		if(tempshiweiNum > shiweiNum || tempgeweiNum > geweiNum)
+		{
+			if(++lowPowerTime > 10)
+			{
+				lowPowerTime = 0;
+				tempbaiweiNum = baiweiNum;
+				tempshiweiNum = shiweiNum;
+				tempgeweiNum = geweiNum;
+			}
+		}
+		else
+		{
+			lowPowerTime = 0;
+			tempbaiweiNum = baiweiNum;
+			tempshiweiNum = shiweiNum;
+			tempgeweiNum = geweiNum;
+		}
+		
 
 	}
 	

@@ -1,9 +1,11 @@
-#ifndef __MSA300_H__
+﻿#ifndef __MSA300_H__
 #define __MSA300_H__
 
-#include "st_bas_data.h"
-#include "stm32f4xx.h"
-#include "stm32f4xx_conf.h"
+#include <ny8.h>
+#include "ny8_constant.h"
+#include "stdint.h"
+#include "float.h"
+
 /*******************************************************************************/
  /**
   ******************************************************************************
@@ -17,7 +19,7 @@
   *
   * <h2><center>&copy; COPYRIGHT 2014 MsaMEMS</center></h2>
   */
- 
+typedef enum {FALSE = 0,TRUE = 1} bool;
 typedef unsigned char     u8;                   /* 无符号8位整型变量                        */
 typedef signed   char     s8;                    /* 有符号8位整型变量                        */
 typedef unsigned short    u16;                  /* 无符号16位整型变量                       */
@@ -25,7 +27,7 @@ typedef signed   short    s16;                   /* 有符号16位整型变量  
 typedef unsigned int      u32;                  /* 无符号32位整型变量                       */
 typedef signed   int      s32;                   /* 有符号32位整型变量                       */
 typedef float             fp32;                    /* 单精度浮点数（32位长度）                 */
-typedef double            fp64;                    /* 双精度浮点数（64位长度）                 */
+//typedef double            fp64;                    /* 双精度浮点数（64位长度）                 */
 
 typedef struct AccData_tag{
    s32 ax;                                   //加速度计原始数据结构体  数据格式 0 0 1024
@@ -112,15 +114,15 @@ typedef struct {
 //#define MS_I2C_DATA_INPUT		  nrf_gpio_cfg_input(MS_SDA,NRF_GPIO_PIN_NOPULL)
 
 //#define MS_I2C_CLK_HIGH			nrf_gpio_pin_set(MS_SCL)
-#define MS_I2C_CLK_HIGH				GPIO_SetBits(GPIOA, GPIO_Pin_8)
+#define MS_I2C_CLK_HIGH				GPIO_SetBits(GPIOB, GPIO_Pin_8)
 //#define MS_I2C_CLK_LOW			nrf_gpio_pin_clear(MS_SCL)
-#define MS_I2C_CLK_LOW				GPIO_ResetBits(GPIOA, GPIO_Pin_8)
+#define MS_I2C_CLK_LOW				GPIO_ResetBits(GPIOB, GPIO_Pin_8)
 //#define MS_I2C_DATA_HIGH		nrf_gpio_pin_set(MS_SDA)
-#define MS_I2C_DATA_HIGH			GPIO_SetBits(GPIOC, GPIO_Pin_9)
+#define MS_I2C_DATA_HIGH			GPIO_SetBits(GPIOB, GPIO_Pin_9)
 //#define MS_I2C_DATA_LOW			nrf_gpio_pin_clear(MS_SDA)
-#define MS_I2C_DATA_LOW				GPIO_ResetBits(GPIOC, GPIO_Pin_9)
+#define MS_I2C_DATA_LOW				GPIO_ResetBits(GPIOB, GPIO_Pin_9)
 //#define MS_I2C_GET_BIT			nrf_gpio_pin_read(MS_SDA)
-#define MS_I2C_GET_BIT        GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_9)
+#define MS_I2C_GET_BIT        GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_9)
 
                                                         
 #define MSA_REG_SPI_I2C                 0x00
@@ -169,10 +171,10 @@ typedef struct {
 
 
 uint8_t msa_init(void);
-int32_t msa_read_data(int16_t *x, int16_t *y, int16_t *z);
-int32_t msa_get_step(void);
-int32_t msa_register_read_continuously( uint8_t addr, uint8_t count, uint8_t *data);
-int32_t     i2c_write_byte_data( uint8_t addr, uint8_t data);
+uint8_t msa_read_data(int16_t *x, int16_t *y, int16_t *z);
+uint8_t msa_get_step(void);
+uint8_t msa_register_read_continuously( uint8_t addr, uint8_t count, uint8_t *data);
+uint8_t     i2c_write_byte_data( uint8_t addr, uint8_t data);
 bool msa_WriteBytes(uint8_t RegAddr, uint8_t Data);
 void msa_calibrate(void);
 void msa_calibrateZ(int16_t x, int16_t y ,int16_t z);
@@ -180,6 +182,8 @@ bool msa_ReadBytes(uint8_t* Data, uint8_t RegAddr);
 void SW_i2c_udelay(uint32_t delay);
 
 
+void msa_read_adc(int16_t *x, int16_t *y, int16_t *z);
+uint8_t getData();
 
 void msa_flip_init(void);
 int32_t msa_flip_process(int16_t z);

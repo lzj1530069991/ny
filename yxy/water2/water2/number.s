@@ -90,8 +90,6 @@
 	extern PSAVE
 	extern SSAVE
 	extern WSAVE
-	extern STK06
-	extern STK05
 	extern STK04
 	extern STK03
 	extern STK02

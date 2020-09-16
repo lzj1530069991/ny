@@ -582,7 +582,7 @@ _00255_DS_:
 	SUBAR	_duty,W
 	BTRSS	STATUS,0
 	LGOTO	_00250_DS_
-;;shiftRight_Left2ResultLit:5586: shCount=1, size=1, sign=0, same=1, offr=0
+;;shiftRight_Left2ResultLit:5589: shCount=1, size=1, sign=0, same=1, offr=0
 	.line	274, "main.c"; 	duty = duty/2;
 	BCR	STATUS,0
 	RRR	_duty,F

@@ -1,26 +1,10 @@
-#include "msa300.h"
-#include "st_bas_gpio.h"
+﻿#include "msa301.h"
+#include "eeprom.h"
 
 
 
-void MSA_SDA_Out(void)
-{			
-		GPIO_InitOutPP(GPIOC, GPIO_Pin_9);
-}
-void MSA_SDA_In(void)
-{			
-		GPIO_InitIN(GPIOC, GPIO_Pin_9);
-}
 
-void MSA_SCL_Out(void)
-{			
-		GPIO_InitOutPP(GPIOA, GPIO_Pin_8);
-}
 
-void MSA_SCL_In(void)
-{			
-		GPIO_InitIN(GPIOA, GPIO_Pin_8);
-}
 
 //#include "msa_std.h"
 /******************************************
@@ -132,6 +116,8 @@ void SW_i2c_udelay(uint32_t delay)
 *******************************************/
 void SW_i2c_start(void)
 {
+	IIC_Start();
+	/**
 	MSA_SCL_Out();
 
 	MSA_SDA_Out();
@@ -143,6 +129,7 @@ void SW_i2c_start(void)
 	SW_i2c_udelay(20);		//10
 	MS_I2C_CLK_LOW;
 	SW_i2c_udelay(20);		//10
+	**/
 }
 
 /******************************************
@@ -150,6 +137,8 @@ void SW_i2c_start(void)
 *******************************************/
 void SW_i2c_stop(void)
 {
+	IIC_Stop();
+	/**
 	MSA_SCL_Out();
 	MSA_SDA_Out();
 
@@ -159,25 +148,18 @@ void SW_i2c_stop(void)
 	SW_i2c_udelay(20);		//10
 	MS_I2C_DATA_HIGH;
     SW_i2c_udelay(20);		//10
+	**/
 }
 
-/******************************************
-	software I2C one clock
-*******************************************/
-void SW_i2c_one_clk(void)
-{
-	SW_i2c_udelay(10);		//5
-	MS_I2C_CLK_HIGH;
-	SW_i2c_udelay(20);		//10
-	MS_I2C_CLK_LOW;
-	SW_i2c_udelay(10);		//5
-}
+
 
 /******************************************
 	software I2C read byte with ack
 *******************************************/
 uint8_t ms_ReadByteAck(void)
 {
+	return IIC_Read_Byte(1);
+	/**
 	int8_t i;
 	uint8_t data;
 
@@ -198,6 +180,7 @@ uint8_t ms_ReadByteAck(void)
 	SW_i2c_one_clk();                         
 
 	return data;
+	**/
 }
 
 /******************************************
@@ -205,6 +188,8 @@ uint8_t ms_ReadByteAck(void)
 *******************************************/
 uint8_t ms_ReadByteNAck(void)
 {
+	return IIC_Read_Byte(0);
+	/**
 	int8_t i;
 	uint8_t data;
 
@@ -225,6 +210,7 @@ uint8_t ms_ReadByteNAck(void)
 	SW_i2c_one_clk();                         
 	
 	return data;
+	**/
 }
 
 /******************************************
@@ -232,6 +218,8 @@ uint8_t ms_ReadByteNAck(void)
 *******************************************/
 void ms_SendByte(uint8_t sData) 
 {
+	IIC_Send_Byte(sData);
+	/**
 	int8_t i;
 	
 	for (i=7; i>=0; i--) 
@@ -246,6 +234,7 @@ void ms_SendByte(uint8_t sData)
 		}
 		SW_i2c_one_clk();                        
 	}		
+	*/
 }
 
 /******************************************
@@ -253,6 +242,8 @@ void ms_SendByte(uint8_t sData)
 *******************************************/
 bool ms_ChkAck(void)
 {
+	return IIC_Wait_Ack();
+	/**
 	MSA_SDA_In();
 	
 	SW_i2c_udelay(10);		//5
@@ -281,26 +272,10 @@ bool ms_ChkAck(void)
 
 		return TRUE;
 	}
+	**/
 }
 
-/******************************************
-	software I2C restart bit
-*******************************************/
-void ms_Restart(void)
-{
-	MSA_SCL_Out();
-	MSA_SDA_Out();
 
-	SW_i2c_udelay(40);
-	MS_I2C_DATA_HIGH;
-	SW_i2c_udelay(20);		//10
-	MS_I2C_CLK_HIGH;
-	SW_i2c_udelay(40);
-	MS_I2C_DATA_LOW;
-	SW_i2c_udelay(40);		//10
-	MS_I2C_CLK_LOW;
-	SW_i2c_udelay(20);		//10
-}
 
 
 /***************************************************/
@@ -320,91 +295,63 @@ void msa_DelayMS(uint16_t delay)
 		SW_i2c_udelay(1000);
 	}
 }
-
-/******************************************
-	msa read bytes
-*******************************************/
+/*******************************************************************************
+* º¯ Êý Ãû         : AT24CXX_ReadOneByte
+* º¯Êý¹¦ÄÜ		   : ÔÚAT24CXXÖ¸¶¨µØÖ·¶Á³öÒ»¸öÊý¾Ý
+* Êä    Èë         : ReadAddr:¿ªÊ¼¶ÁÊýµÄµØÖ· 
+* Êä    ³ö         : ¶Áµ½µÄÊý¾Ý
+*******************************************************************************/
 bool msa_ReadBytes(uint8_t* Data, uint8_t RegAddr)
-{
-	SW_i2c_start();						//start bit
-	ms_SendByte(i2c_addr << 1);		//slave address|write bit
-	if(FALSE == ms_ChkAck())		//check Ack bit
-	{
-		//TO_DO: display ack check fail when send write id		
-		SW_i2c_stop();
-		return FALSE;
-	}
+{				  
+	DISI();
+	u8 temp=0;
+    IIC_Start();  
 
-	ms_SendByte(RegAddr);				//send RegAddr
-	if(FALSE == ms_ChkAck())		//check Ack bit
-	{
-		//TO_DO: display ack check fail when send RegAddr
-		SW_i2c_stop();
-		return FALSE;
-	}
-
-	ms_Restart();						//restart bit
-
-  ms_SendByte(i2c_addr<<1 | READ);		//slave address|read bit
-	if(FALSE == ms_ChkAck())
-	{
-		//TO_DO: display ack check fail when send read id		
-		SW_i2c_stop();
-		return FALSE;
-	}
-
-	*Data = ms_ReadByteNAck();
-
-	SW_i2c_stop();						//stop bit
-
-	//TO_DO: add debug code to display the data received
-
-	return TRUE;
-	
+		IIC_Send_Byte(i2c_addr << 1);	   //·¢ËÍÐ´ÃüÁî
+		IIC_Wait_Ack();
+		IIC_Send_Byte(RegAddr);//·¢ËÍ    
+	   
+	IIC_Wait_Ack();     
+	IIC_Start();  	 	   
+	 ms_SendByte(i2c_addr<<1 | READ);           //½øÈë½ÓÊÕÄ£Ê½			   
+	IIC_Wait_Ack();	 
+	*Data = IIC_Read_Byte(0);
+    IIC_Stop();//²úÉúÒ»¸öÍ£Ö¹Ìõ¼þ	
+    ENI();
+	return 1;
 }
 
-/******************************************
-	msa write bytes
-*******************************************/
+/*******************************************************************************
+* º¯ Êý Ãû         : AT24CXX_WriteOneByte
+* º¯Êý¹¦ÄÜ		   : ÔÚAT24CXXÖ¸¶¨µØÖ·Ð´ÈëÒ»¸öÊý¾Ý
+* Êä    Èë         : WriteAddr  :Ð´ÈëÊý¾ÝµÄÄ¿µÄµØÖ· 
+					 DataToWrite:ÒªÐ´ÈëµÄÊý¾Ý
+* Êä    ³ö         : ÎÞ
+*******************************************************************************/
 bool msa_WriteBytes(uint8_t RegAddr, uint8_t Data)
-{
-	SW_i2c_start();						//start bit
+{				   	  	    																 
+    DISI();
+    IIC_Start();
 
-	ms_SendByte(i2c_addr<<1 | WRITE);		//slave address|write bit
-	if(FALSE == ms_ChkAck())		//check Ack bit
-	{
-		//TO_DO: display check ack fail when send write id
-		SW_i2c_stop();
-		return FALSE;
-	}
-
-	ms_SendByte(RegAddr);				//send RegAddr
-	if(FALSE == ms_ChkAck())		//check Ack bit
-	{
-		//TO_DO: display check ack fail when send RegAddr
-
-		SW_i2c_stop();
-		return FALSE;
-	}
-
-	ms_SendByte(Data);					//send parameter
-	if(FALSE == ms_ChkAck())
-	{
-		//TO_DO: display check ack fail when send data
-
-		SW_i2c_stop();
-		return FALSE;
-	}
-
-	SW_i2c_stop();						//stop bit
-
-	return TRUE;
+		IIC_Send_Byte(i2c_addr<<1 | WRITE);	    //·¢ËÍÐ´ÃüÁî
+		IIC_Wait_Ack();
+		IIC_Send_Byte(RegAddr);//·¢ËÍ¸ßµØÖ·	  
+	
+	 
+	IIC_Wait_Ack();	    	 										  		   
+	IIC_Send_Byte(Data);     //·¢ËÍ×Ö½Ú							   
+	IIC_Wait_Ack();  		    	   
+    IIC_Stop();//²úÉúÒ»¸öÍ£Ö¹Ìõ¼þ 
+	delay_ms(1);
+	ENI();
+		return 1;
 }
+
 
 
 
 /*return value: 0: is ok    other: is failed*/
-int32_t     i2c_read_byte_data( uint8_t addr, uint8_t *data){
+uint8_t     i2c_read_byte_data( uint8_t addr, uint8_t *data){
 	
 		int32_t ret = 0;
 
@@ -415,7 +362,7 @@ int32_t     i2c_read_byte_data( uint8_t addr, uint8_t *data){
 }
 
 /*return value: 0: is ok    other: is failed*/
-int32_t  i2c_write_byte_data( uint8_t addr, uint8_t data){
+uint8_t  i2c_write_byte_data( uint8_t addr, uint8_t data){
 		
 		int32_t ret = 0;
 		
@@ -425,7 +372,7 @@ int32_t  i2c_write_byte_data( uint8_t addr, uint8_t data){
 }
 
 /*return value: 0: is count    other: is failed*/
-int32_t     i2c_read_block_data( uint8_t base_addr, uint8_t count, uint8_t *data){
+uint8_t     i2c_read_block_data( uint8_t base_addr, uint8_t count, uint8_t *data){
 	int32_t i = 0;
 		
 	for(i = 0; i < count;i++)
@@ -439,7 +386,7 @@ int32_t     i2c_read_block_data( uint8_t base_addr, uint8_t count, uint8_t *data
 	return count;
 }
 
-int32_t msa_register_read( uint8_t addr, uint8_t *data){
+uint8_t msa_register_read( uint8_t addr, uint8_t *data){
     int32_t     res = 0;
 
     res = i2c_read_byte_data(addr, data);
@@ -450,7 +397,7 @@ int32_t msa_register_read( uint8_t addr, uint8_t *data){
     return res;
 }
 
-int32_t msa_register_write( uint8_t addr, uint8_t data){
+uint8_t msa_register_write( uint8_t addr, uint8_t data){
     int32_t     res = 0;
 
     res = i2c_write_byte_data(addr, data);
@@ -461,7 +408,7 @@ int32_t msa_register_write( uint8_t addr, uint8_t data){
     return res;
 }
 
-int32_t msa_register_read_continuously( uint8_t addr, uint8_t count, uint8_t *data)
+uint8_t msa_register_read_continuously( uint8_t addr, uint8_t count, uint8_t *data)
 {
     int32_t     res = 0;
 
@@ -473,25 +420,25 @@ int32_t msa_register_read_continuously( uint8_t addr, uint8_t count, uint8_t *da
     return res;
 }
 
-int32_t msa_register_mask_write(uint8_t addr, uint8_t mask, uint8_t data){
-    int32_t     res = 0;
+uint8_t msa_register_mask_write(uint8_t addr, uint8_t mask, uint8_t data){
+    uint8_t     res = 0;
     uint8_t      tmp_data;
 
-    res = msa_register_read(addr, &tmp_data);
+    res = msa_ReadBytes(&tmp_data,addr);
     if(res) {
         return res;
     }
 
     tmp_data &= ~mask; 
     tmp_data |= data & mask;
-    res = msa_register_write(addr, tmp_data);
+    res = msa_WriteBytes(addr, tmp_data);
 
     return res;
 }
 
 /*return value: 0: is ok    other: is failed*/
 uint8_t msa_init(void){
-	int32_t             res = 0;
+	uint8_t             res = 0;
 	uint8_t data=0;
 	
 //	nrf_gpio_cfg_output(MSA_ENABLE);
@@ -499,10 +446,10 @@ uint8_t msa_init(void){
 //	nrf_delay_ms(500);
 	
 
-	msa_register_read(MSA_REG_WHO_AM_I,&data);
+	msa_ReadBytes(&data,MSA_REG_WHO_AM_I);
 	if(data != 0x13){
 	      	i2c_addr = 0x27;
-	      msa_register_read(MSA_REG_WHO_AM_I,&data);
+	      msa_ReadBytes(&data,MSA_REG_WHO_AM_I);
 	      if(data != 0x13){
 		      return 1;
 	      	}
@@ -510,8 +457,8 @@ uint8_t msa_init(void){
 
 	res =  msa_register_mask_write(MSA_REG_SPI_I2C, 0x24, 0x24);
 
+	//delay_ms(500);
 	msa_DelayMS(5);
-
 	res |= msa_register_mask_write(MSA_REG_G_RANGE, 0x03, 0x00);//lkk modify  0x10
 	
 	res |= msa_register_mask_write(MSA_REG_POWERMODE_BW, 0xFF, 0x5E);//lkk modify 0x5E
@@ -526,16 +473,16 @@ uint8_t msa_init(void){
 	res |= msa_register_mask_write(MSA_REG_INT_PIN_CONFIG, 0xFF, 0x05);//set int_pin level
 	res |= msa_register_mask_write(MSA_REG_INT_LATCH, 0xFF, 0x06);//clear latch and set latch mode
 	
-	res |= msa_register_mask_write(MSA_REG_INTERRUPT_SETTINGS1, 0xFF, 0x20);//ʹ�ܵ���
-	res |= msa_register_mask_write(MSA_REG_INTERRUPT_MAPPING1, 0xFF, 0x20);//ʹ�ܵ���
+	res |= msa_register_mask_write(MSA_REG_INTERRUPT_SETTINGS1, 0xFF, 0x20);//Ê¹ÄÜµ¥ÇÃ
+	res |= msa_register_mask_write(MSA_REG_INTERRUPT_MAPPING1, 0xFF, 0x20);//Ê¹ÄÜµ¥ÇÃ
 	
 	res |= msa_register_mask_write(MSA_REG_TAP_DURATION, 0xFF, 0x00);
-	res |= msa_register_mask_write(MSA_REG_TAP_THRESHOLD, 0xFF, 0x14);//��������������
+	res |= msa_register_mask_write(MSA_REG_TAP_THRESHOLD, 0xFF, 0x14);//µ¥ÇÃÁéÃô¶ÈÅäÖÃ
 
   return 0;
 }
 
-int32_t msa_set_enable(int8_t enable)
+uint8_t msa_set_enable(int8_t enable)
 {
 		int32_t res = 0;
 		if(enable)
@@ -649,7 +596,7 @@ int16_t msa_getZ(int16_t x, int16_t y)
 }
 
 /*return value: 0: is ok    other: is failed*/
-int32_t msa_read_data(int16_t *x, int16_t *y, int16_t *z)
+uint8_t msa_read_data(int16_t *x, int16_t *y, int16_t *z)
 {
     uint8_t    tmp_data[6] = {0};
 
@@ -684,50 +631,11 @@ int32_t msa_read_data(int16_t *x, int16_t *y, int16_t *z)
     return 0;
 }
 
-static float f_step = 0;
-int msa_get_step(void)
-{
-	int16_t x = 0,y = 0, z = 0;
-	int32_t step = 0;
-	AccData AData ;
-	
-	memset(&AData,0,sizeof(AccData));
-	
-	msa_read_data(&x,&y,&z);
-
-	AData.ax = x;
-	AData.ay = y;
-	AData.az = z;
-
-//	f_step += Pedometer_Process_Data(&AData);
-//	
-	step = (int)f_step/2;
-
-	return step;
-}
-
-void msa_uninit_pedometer(void)
-{
-   msa_pwr_down();
-	f_step = 0;
-}
-
-/******save offset to e2prom*************/
-/*return value: 0: ok    other: failed  */
-int32_t msa_save_offset(short x,short y,short z){
-   return 0;	
-}
-
-/******read offset from e2prom*************/
-/*return value: 0: ok    other: failed  */
-int32_t msa_read_offset(short *x,short *y,short *z){
-   return 0;		
-}
 
 
 int16_t msa_sqrt(int32_t x)
 {
-	double a = 1.0;
+	float a = 1.0;
 	while(abs(a * a - x) > 100)
 	{
 		a = (a + x / a) / 2;
@@ -756,7 +664,8 @@ void msa_calibrateZ(int16_t x, int16_t y ,int16_t z){
 		 
 	 if(offsetCnt >= 10)
 	 {
-		 for(int i = 0; i < 10; i++)
+		 int i = 0;
+		 for(i = 0; i < 10; i++)
 		 {
 			 offset_z += offset[i];	 
 		 }	 
@@ -768,41 +677,7 @@ void msa_calibrateZ(int16_t x, int16_t y ,int16_t z){
 	z_last[0] = z;
 }
 
-void msa_calibrate(void){
 
-  uint8_t   tmp_data[6] = {0},i;
-	int32_t x=0,y=0,z=0;
-	short temp_x,temp_y,temp_z;
-
-	msa_init();
-	msa_DelayMS(200);
-
-	for(i=0;i<20;i++){
-		if (msa_register_read_continuously(MSA_REG_ACC_X_LSB, 6, tmp_data) != 0) 
-			return;
-		
-	       msa_DelayMS(10);
-
-		   temp_x = ((short)(tmp_data[1] << 8 | tmp_data[0]))>> 4;
-		   temp_y = ((short)(tmp_data[3] << 8 | tmp_data[2]))>> 4;
-		   temp_z = ((short)(tmp_data[5] << 8 | tmp_data[4]))>> 4;
-		   
-		x += temp_x;
-		y += temp_y;
-		z += temp_z;
-	}
-
-		offset_x = 0 - x/20; 
-		offset_y = 0 - y/20; 	
-		offset_z = ((z>0)?1024:-1024) - z/20; 
-	
-	if(msa_save_offset(offset_x,offset_y,offset_z)!= 0){
-		return;
-	}
-
-	
-	return;
-}
 
 //flip_mute
 void msa_flip_init(void)
@@ -823,5 +698,22 @@ int32_t msa_flip_process(short z)
   return ret;	  	
 }
 
+//uint8_t getData()
+//{
+//	uint16_t hhz;
+//	uint8_t hzL,hzH;
+//	msa_ReadBytes(&hzL,MSA_REG_ACC_Z_LSB);
+//	msa_ReadBytes(&hzH,MSA_REG_ACC_Z_MSB);
+//	hhz = ((short)(hzH << 8 | hzL))>> 4;
+//	hhz &= 0x0FFF;
+//	if(hhz > 0x175 && hhz < 0xE70)
+//	{
+//		return 1;
+//	}
+//	else
+//	{
+//		return 0;
+//	}
+//}
 
 

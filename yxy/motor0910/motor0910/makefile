@@ -1,7 +1,7 @@
 ICBODY       := NY8A054D
 CLIENT_NAME  := yxy
 CB_FILE      := motor0910.cb
-HOST_TOOL    := NYIDE 3.92
+HOST_TOOL    := NYIDE 4.00
 USER_C       := main.c 
 LIBS         :=  
 USER_ASM     := 

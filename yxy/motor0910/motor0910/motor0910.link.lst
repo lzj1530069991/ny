@@ -7,8 +7,28 @@
 00000005 ffef                 RET
 00000008 c7e2                 LGOTO 0x1d; main.o:__sdcc_interrupt=0x1d
 00000009                      crt0.o:initial_ram_bss:
+00000009 e0fc                 BCR 0x3, 0x6
+0000000a e07c                 BCR 0x3, 0x7
+0000000b dedf                 MOVIA 0x20
+0000000c ff7b                 MOVAR 0x4
+0000000d de7f                 MOVIA 0x80
+0000000e d7e8                 LCALL 0x17; crt0.o:startup_exit=0x17
+0000000f e4fc                 BSR 0x3, 0x6
+00000010 e07c                 BCR 0x3, 0x7
+00000011 dedf                 MOVIA 0x20
+00000012 ff7b                 MOVAR 0x4
+00000013 de7f                 MOVIA 0x80
+00000014 d7e8                 LCALL 0x17; crt0.o:startup_exit=0x17
 00000015                      crt0.o:initial_ram_cinit:
+00000015 d66a                 LCALL 0x195; ___cinit_load__=0x195
+00000016 c7a0                 LGOTO 0x5f; _main=0x5f
 00000017                      crt0.o:startup_exit:
+00000017 fd7f                 CLRR 0x0
+00000018 fa7b                 INCR 0x4, 0x1
+00000019 c97b                 CMPAR 0x4
+0000001a f6fc                 BTRSS 0x3, 0x2
+0000001b c7e8                 LGOTO 0x17; crt0.o:startup_exit=0x17
+0000001c ffef                 RET
 0000001d                      main.o:__sdcc_interrupt:
 0000001d ff3d                 MOVAR 0x42
 0000001e eafc                 SWAPR 0x3, 0x0

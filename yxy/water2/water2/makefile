@@ -1,7 +1,7 @@
 ICBODY       := NY8B062D
 CLIENT_NAME  := yxy
 CB_FILE      := water2.cb
-HOST_TOOL    := NYIDE 3.92
+HOST_TOOL    := NYIDE 4.00
 USER_C       := main.c number.c 
 LIBS         :=  
 USER_ASM     := 
@@ -29,7 +29,7 @@ LDFLAGS     := -p $(ICBODY) --client "$(CLIENT_NAME)" -L "$(CC_PATH)/lib"      \
                --codechecksum --opt-banksel  --w-no 32797 --lang en-us
 
 CFLAGS      := -mny8 --errfmt-ny -p$(ICBODY) -D__CPU_$(ICBODY) --debug \
-               -I"$(CC_PATH)/include" -I"C:\Nyquest\NYIDE\\include\NY8 C"  -MD --stack-size 10  \
+               -I"$(CC_PATH)/include" -I"C:\Nyquest\NYIDE\\include\NY8 C"  -MD --stack-size 8  \
                 --backup-stk 2 
 
 ASFLAGS     := -p $(ICBODY) -g -l --w-no 32797 --lang en-us  \
