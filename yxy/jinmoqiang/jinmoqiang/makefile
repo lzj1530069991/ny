@@ -1,11 +1,11 @@
 ICBODY       := NY8B062D
 CLIENT_NAME  := yxy
-CB_FILE      := water2.cb
+CB_FILE      := jinmoqiang.cb
 HOST_TOOL    := NYIDE 4.00
-USER_C       := main.c number.c 
+USER_C       := main.c 
 LIBS         :=  
 USER_ASM     := 
-OUT_NAME     := water2
+OUT_NAME     := jinmoqiang
 CC_PATH      := C:\Nyquest\NYC_NY8
 TEMP_FOLDER  := 
 
@@ -16,7 +16,7 @@ TEMP_FOLDER  :=
 #  - bank4: 4 bank ram
 MODEL := bank2_8b
 
-ENABLE_INIT_BSS := 1
+ENABLE_INIT_BSS := 0
 
 CC := sdcc
 AS := nyas
@@ -29,7 +29,7 @@ LDFLAGS     := -p $(ICBODY) --client "$(CLIENT_NAME)" -L "$(CC_PATH)/lib"      \
                --codechecksum --opt-banksel  --w-no 32797 --lang en-us
 
 CFLAGS      := -mny8 --errfmt-ny -p$(ICBODY) -D__CPU_$(ICBODY) --debug \
-               -I"$(CC_PATH)/include" -I"C:\Nyquest\NYIDE\\include\NY8 C"  -MD --stack-size 16  \
+               -I"$(CC_PATH)/include" -I"C:\Nyquest\NYIDE\\include\NY8 C"  -MD --stack-size 6  \
                 --backup-stk 2 
 
 ASFLAGS     := -p $(ICBODY) -g -l --w-no 32797 --lang en-us  \

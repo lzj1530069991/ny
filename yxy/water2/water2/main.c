@@ -28,7 +28,7 @@ u8t refreshCount = 0;	//刷新计时
 u8t	baiweiNum = 0;	//百位
 u8t shiweiNum = 0;	//十位
 u8t	geweiNum = 0;	//个位
-u16t	klcikTime = 0;
+u8t	klcikTime = 0;
 u16t count300s = 0;
 
 
@@ -47,10 +47,12 @@ u16t  R_AIN5_DATA;
 u8t R_AIN5_DATA_LB;
 u16t  R_AIN9_DATA;	
 u8t R_AIN9_DATA_LB;
-u16t sumR_AIN5_DATA = 0;
-u8t addtime = 0;
 u8t lowWaterTime = 0;
 u8t lowPowerTime = 0;
+u8t lvdTime = 0;
+u8t wateFlag = 1;	//无水 1有水
+u16t nbat = 0;
+u8t lvFlag = 0;
 
 char numArray[10] = {0x3F, 0x06,0x5B,0x4F,0x66,0x6D,0x7D,0x07,0x7F,0x67};
 
@@ -71,7 +73,7 @@ void checkBatAD();
 void checkLowWater();
 void F_AIN9_Convert(char count);
 void refreshNub();
-
+void initAD();
 void isr(void) __interrupt(0)
 {
 	if(INTFbits.T0IF)
@@ -97,16 +99,22 @@ void isr(void) __interrupt(0)
 				{
 					if(douClickFlag)
 					{
-						//双击
-						if(ledAddFlag)
-							ledAddFlag = 0;
-						else
-							ledAddFlag = 1;
+						if(lvFlag == 0)
+						{
+							//双击
+							if(ledAddFlag)
+								ledAddFlag = 0;
+							else
+								ledAddFlag = 1;
+						}
 					}
 					else
 					{
-						if(++workStep >= 3)
-							workStep = 0;
+						if(lvFlag == 0)
+						{
+							if(++workStep >= 3)
+								workStep = 0;
+						}
 					}
 					douClickFlag = 0;
 				}
@@ -132,30 +140,24 @@ void isr(void) __interrupt(0)
 //刷新数码管
 void refreshNub()
 {
-	//PCON1 = C_TMR0_Dis;
-	//T1CR1 = C_TMR1_Dis;
-	if(++refreshCount >= 100)
+	if(count300s >= 30000)
 	{
-		refreshCount = 0;
-		if(tempshiweiNum > shiweiNum || tempgeweiNum > geweiNum)
+		setInput();
+		return;
+	}
+	if(tempshiweiNum != shiweiNum || tempgeweiNum != geweiNum || tempbaiweiNum!= baiweiNum)
+	{
+		if(++refreshCount >= 200)
 		{
-			if(++lowPowerTime > 10)
-			{
-				lowPowerTime = 0;
-				tempbaiweiNum = baiweiNum;
-				tempshiweiNum = shiweiNum;
-				tempgeweiNum = geweiNum;
-			}
-		}
-		else
-		{
-			lowPowerTime = 0;
+			refreshCount = 0;
 			tempbaiweiNum = baiweiNum;
 			tempshiweiNum = shiweiNum;
 			tempgeweiNum = geweiNum;
 		}
-		
-
+	}
+	else
+	{
+		refreshCount = 0;
 	}
 	
 	if(tempbaiweiNum)
@@ -165,8 +167,6 @@ void refreshNub()
 	else if(tempshiweiNum)
 		showNubShiwei(numArray[tempshiweiNum]);
 	showNubGewei(numArray[tempgeweiNum]);
-	//T1CR1 = C_PWM1_En | C_TMR1_Reload | C_TMR1_En;
-	//PCON1 = C_TMR0_En;
 }
 
 
@@ -178,6 +178,7 @@ void main(void)
 	PORTB = 0x00;
 	PORTA = 0x00;
 	APHCON = 0xBF;
+	BPHCON = 0xFF;
 //;Setting Interrupt Enable Register	
 	INTE =  C_INT_TMR0 ;	// Enable Timer0、Timer1、WDT overflow interrupt
 	
@@ -193,6 +194,7 @@ void main(void)
 //;Enable Timer0 & Global interrupt bit 
 	PCON1 = C_TMR0_En;						// Enable Timer0
 	ENI();
+	initAD();
 	//pwmStart();
     while(1)
     {
@@ -200,9 +202,6 @@ void main(void)
         if(!IntFlag)
     		continue;			//5ms执行一次
     	IntFlag = 0;
-//    	showBaiwei();
-//    	showNubShiwei(numArray[2]);
-//    	showNubGewei(numArray[2]);
          refreshNub();
          
          workCtr();
@@ -215,11 +214,14 @@ void workCtr()
 	{
 		count10ms = 0;
 		keyCon();
-		if(++count1s >= 10)
+		if(++count1s >= 100)
 		{
 			count1s = 0;
-			checkBatAD();
 		}
+		if(count1s < 50)
+			checkBatAD();
+		else
+			checkLowWater();
 		if(keyCount == 0 && ledFlag == 0 && workStep == 0 )
 		{
 			if(++count300s > 30000){
@@ -229,7 +231,9 @@ void workCtr()
 		}
 		else
 		{
-			count300s = 0;
+			if(++count300s >= 30000){
+				count300s = 30000;
+			}
 		}
 		if(ledAddFlag)
 		{
@@ -254,21 +258,24 @@ void keyCon()
 		{
 			douClickFlag = 1;
 		}
-		klcikTime = 300;
+		klcikTime = 200;
 	}
 	else if(keyClick == 2)		//长按
 	{
-		if(ledFlag)
+		if(lvFlag == 0)
 		{
-			ledFlag = 0;
-			PORTB &= 0xF9;
-			PORTA &= 0x7F;
-			count60s = 0;
-		}
-		else
-		{
-			ledFlag = 1;
-			ledAddFlag = 1;
+			if(ledFlag)
+			{
+				ledFlag = 0;
+				PORTB &= 0xF9;
+				PORTA &= 0x7F;
+				count60s = 0;
+			}
+			else
+			{
+				ledFlag = 1;
+				ledAddFlag = 1;
+			}
 		}
 	}
 		
@@ -277,11 +284,11 @@ void keyCon()
 void initAD()
 {
 	 //----- Initial ADC-----	  
-	ADMD  = C_ADC_En | C_ADC_CH_Dis | C_ADC_PB0 ;	// Enable ADC power, Disable global ADC input channel, Select PA0 pad as ADC input (SFR "ADMD")
+	ADMD  = C_ADC_En | C_ADC_CH_Dis | C_Quarter_VDD ;	// Enable ADC power, Disable global ADC input channel, Select PA0 pad as ADC input (SFR "ADMD")
  
  //----- ADC high reference voltage source select-----
- 	ADVREFH = C_Vrefh_4V;					// ADC reference high voltage is supplied by internal 4V  (Note: ADC clock freq. must be equal or less than 1MHz)
- 	//ADVREFH = C_Vrefh_3V;					// ADC reference high voltage is supplied by internal 3V  (Note: ADC clock freq. must be equal or less than 500KHz)
+// 	ADVREFH = C_Vrefh_4V;					// ADC reference high voltage is supplied by internal 4V  (Note: ADC clock freq. must be equal or less than 1MHz)
+ 	ADVREFH = C_Vrefh_3V;					// ADC reference high voltage is supplied by internal 3V  (Note: ADC clock freq. must be equal or less than 500KHz)
  	//ADVREFH = C_Vrefh_2V;					// ADC reference high voltage is supplied by internal 2V  (Note: ADC clock freq. must be equal or less than 250KHz)
  
 //----- ADC clock frequency select----------------------------	 
@@ -305,25 +312,28 @@ void checkLowWater()
         R_AIN9_DATA <<= 4;					// R_AIN0_DATA shift left 4 bit
         R_AIN9_DATA_LB &= 0xF0;				// Only get Bit7~4
         R_AIN9_DATA += R_AIN9_DATA_LB;		// R_AIN0_DATA + R_AIN0_DATA_LB
-        R_AIN9_DATA >>=3;					// R_AIN0_DATA divided 8	
+        R_AIN9_DATA >>=4;					// 结果再除以2
         
         if(R_AIN9_DATA > R_AIN5_DATA)
         {
         	if(++lowWaterTime >= 10)
         	{
         		workStep = 0;
+        		wateFlag = 0;
         	}
         }
         else
         {
         	lowWaterTime = 0;
+        	wateFlag = 1;
         }
 }
 
 
 void checkBatAD()
 {	
-		
+		if(workStep == 2 && step2Count < 8)
+			return;
 		R_AIN5_DATA = R_AIN5_DATA_LB = 0x00;
         F_AIN5_Convert(8);					// execute AIN0 ADC converting 8 times
         R_AIN5_DATA <<= 4;					// R_AIN0_DATA shift left 4 bit
@@ -331,32 +341,34 @@ void checkBatAD()
         R_AIN5_DATA += R_AIN5_DATA_LB;		// R_AIN0_DATA + R_AIN0_DATA_LB
         R_AIN5_DATA >>=3;					// R_AIN0_DATA divided 8	
         
-        sumR_AIN5_DATA += R_AIN5_DATA;
-        if(++addtime >=10)
-        {
-        	R_AIN5_DATA = sumR_AIN5_DATA/addtime;
-        	sumR_AIN5_DATA = 0;
-        	addtime = 0;
-        	checkLowWater();
-        }
-       	if(R_AIN5_DATA < 1690)
+       	if(R_AIN5_DATA < 1090)
        	{
        		baiweiNum = 0;
        		shiweiNum = 0;
        		geweiNum = 0;
+       		lvFlag = 1;
+       		//关闭喷雾
+       		workStep = 0;
+       		//灭灯
+       		ledFlag = 0;
+			PORTB &= 0xF9;
+			PORTA &= 0x7F;
+			count60s = 0;
        	}
-       	else if(R_AIN5_DATA > 2100)
+       	else if(R_AIN5_DATA > 1390)
        	{
        		baiweiNum = 1;
        		shiweiNum = 0;
        		geweiNum = 0;
+       		lvFlag = 0;
        	}
        	else
        	{
        		baiweiNum = 0;
-       		char nbat = (R_AIN5_DATA - 1690)/4;
+       		nbat = (R_AIN5_DATA - 1090)/3;
        		shiweiNum = nbat/10;
        		geweiNum = nbat %10;
+       		lvFlag = 0;
        	}
        	
 }
@@ -369,7 +381,7 @@ void F_AIN5_Convert(char count)
 {
   	R_AIN5_DATA=R_AIN5_DATA_LB=0x00;   
   	char i;
-  	ADMD  = 0x90 | C_ADC_PB0;				// Select AIN6(PB1) pad as ADC input
+  	ADMD  = 0x90 | C_Quarter_VDD;				// Select AIN6(PB1) pad as ADC input
   	delay(200);	
   	for(i=1;i<=count;i++)
   	{     			 
@@ -565,6 +577,7 @@ char keyRead(char KeyStatus)
 			if(!longPressFlag)
 			{
 				longPressFlag = 1;
+				count300s = 0;
 				return 2;
 			}
 		}
@@ -580,6 +593,7 @@ char keyRead(char KeyStatus)
 		else if(keyCount >= 8)
 		{
 			keyCount = 0;
+			count300s = 0;
 			return	1;
 		}
 		keyCount = 0;

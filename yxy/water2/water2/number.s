@@ -90,6 +90,14 @@
 	extern PSAVE
 	extern SSAVE
 	extern WSAVE
+	extern STK12
+	extern STK11
+	extern STK10
+	extern STK09
+	extern STK08
+	extern STK07
+	extern STK06
+	extern STK05
 	extern STK04
 	extern STK03
 	extern STK02
@@ -211,7 +219,7 @@ _delayms:
 	.line	280, "number.c"; 	void delayms(u8t time)
 	BANKSEL	r0x1000
 	MOVAR	r0x1000
-	.line	282, "number.c"; 	for(u8t i=0;i<time;i++);
+	.line	282, "number.c"; 	for(u8t i=0;i<time;i++)
 	BANKSEL	r0x1001
 	CLRR	r0x1001
 _00339_DS_:
@@ -221,10 +229,14 @@ _00339_DS_:
 	SUBAR	r0x1001,W
 	BTRSC	STATUS,0
 	LGOTO	_00341_DS_
+	.line	283, "number.c"; 	NOP();
+	nop
+	.line	282, "number.c"; 	for(u8t i=0;i<time;i++)
+	BANKSEL	r0x1001
 	INCR	r0x1001,F
 	LGOTO	_00339_DS_
 _00341_DS_:
-	.line	283, "number.c"; 	}
+	.line	284, "number.c"; 	}
 	RETURN	
 ; exit point of _delayms
 
@@ -1305,6 +1317,6 @@ _00112_DS_:
 
 
 ;	code size estimation:
-;	  370+   42 =   412 instructions (  908 byte)
+;	  370+   43 =   413 instructions (  912 byte)
 
 	end

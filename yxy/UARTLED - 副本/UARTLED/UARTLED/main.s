@@ -704,18 +704,18 @@ _00108_DS_:
 	MOVR	(_revList + 2),W
 	BANKSEL	_workStep
 	MOVAR	_workStep
-;;gen.c:6885: size=0, offset=0, AOP_TYPE (res)=8
+;;gen.c:6903: size=0, offset=0, AOP_TYPE (res)=8
 _00111_DS_:
 	.line	158, "main.c"; 	revList[0] = revList[1] = revList[2] = revList[3] = revList[4] = 0;
 	BANKSEL	_revList
 	CLRR	(_revList + 4)
-;;gen.c:6885: size=0, offset=0, AOP_TYPE (res)=8
+;;gen.c:6903: size=0, offset=0, AOP_TYPE (res)=8
 	CLRR	(_revList + 3)
-;;gen.c:6885: size=0, offset=0, AOP_TYPE (res)=8
+;;gen.c:6903: size=0, offset=0, AOP_TYPE (res)=8
 	CLRR	(_revList + 2)
-;;gen.c:6885: size=0, offset=0, AOP_TYPE (res)=8
+;;gen.c:6903: size=0, offset=0, AOP_TYPE (res)=8
 	CLRR	(_revList + 1)
-;;gen.c:6885: size=0, offset=0, AOP_TYPE (res)=8
+;;gen.c:6903: size=0, offset=0, AOP_TYPE (res)=8
 	CLRR	(_revList + 0)
 	.line	159, "main.c"; 	if(workStep == 9)
 	BANKSEL	_workStep
@@ -1866,7 +1866,7 @@ _00328_DS_:
 	.debuginfo subprogram _work9
 _work9:
 ; 2 exit points
-;;shiftRight_Left2ResultLit:5586: shCount=1, size=2, sign=0, same=0, offr=0
+;;shiftRight_Left2ResultLit:5589: shCount=1, size=2, sign=0, same=0, offr=0
 	.line	448, "main.c"; 	duty = timeCount / 4;
 	BCR	STATUS,0
 	BANKSEL	_timeCount
@@ -1877,7 +1877,7 @@ _work9:
 	RRR	_timeCount,W
 	BANKSEL	r0x1033
 	MOVAR	r0x1033
-;;shiftRight_Left2ResultLit:5586: shCount=1, size=2, sign=0, same=1, offr=0
+;;shiftRight_Left2ResultLit:5589: shCount=1, size=2, sign=0, same=1, offr=0
 	BCR	STATUS,0
 	BANKSEL	r0x1032
 	RRR	r0x1032,F
@@ -2265,7 +2265,7 @@ _00002_DS_:
 _00003_DS_:
 	.line	364, "main.c"; 	WaitTF0();
 	LCALL	_WaitTF0
-;;shiftRight_Left2ResultLit:5586: shCount=1, size=1, sign=0, same=1, offr=0
+;;shiftRight_Left2ResultLit:5589: shCount=1, size=1, sign=0, same=1, offr=0
 	.line	366, "main.c"; 	input = input >> 1;
 	BCR	STATUS,0
 	BANKSEL	r0x103D
@@ -2367,7 +2367,7 @@ _00247_DS_:
 	MOVR	r0x1042,W
 	BTRSC	STATUS,2
 	LGOTO	_00252_DS_
-;;shiftRight_Left2ResultLit:5586: shCount=1, size=1, sign=0, same=1, offr=0
+;;shiftRight_Left2ResultLit:5589: shCount=1, size=1, sign=0, same=1, offr=0
 	.line	311, "main.c"; 	Output >>= 1;
 	BCR	STATUS,0
 	BANKSEL	r0x1040

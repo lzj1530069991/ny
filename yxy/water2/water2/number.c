@@ -279,5 +279,6 @@ void setInput()
 
 void delayms(u8t time)
 {
-	for(u8t i=0;i<time;i++);
+	for(u8t i=0;i<time;i++)
+		NOP();
 }
