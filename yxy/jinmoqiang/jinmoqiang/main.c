@@ -120,14 +120,6 @@ void main(void)
 		if(count500ms == 0)
 		{
 			chrgCtr();
-			if(workStartFlag == 2)
-			{
-				if(ledStep > 0)
-				{
-					ledStep--;
-					workStartFlag = 0;
-				}
-			}
 			if(workStartFlag == 1 || workStartFlag == 3)
 				LedCtr2();
 		}
@@ -381,7 +373,8 @@ void ledCtr()
 		if(ledStep > 0)
 		{
 			ledStep--;
-			workStartFlag = 0;
+			if(ledStep == 0)
+				workStartFlag = 0;
 		}
 	}
 	else
@@ -586,7 +579,7 @@ void checkBatAD()
         R_AIN5_DATA_LB &= 0xF0;				// Only get Bit7~4
         R_AIN5_DATA += R_AIN5_DATA_LB;		// R_AIN0_DATA + R_AIN0_DATA_LB
         R_AIN5_DATA >>=3;					// R_AIN0_DATA divided 8	
-        if(R_AIN5_DATA > 1550)
+        if(R_AIN5_DATA > 1555)
        	{
        		pwStep = 6;
        	}

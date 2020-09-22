@@ -1825,13 +1825,13 @@ _00398_DS_:
 	MOVR	r0x1060,W
 	BANKSEL	_y_last
 	MOVAR	(_y_last + 1)
-;;gen.c:6897: size=1, offset=0, AOP_TYPE (res)=8
+;;gen.c:6903: size=1, offset=0, AOP_TYPE (res)=8
 	.line	673, "msa301.c"; 	z_last[0] = z;
 	BANKSEL	r0x1063
 	MOVR	r0x1063,W
 	BANKSEL	_z_last
 	MOVAR	(_z_last + 0)
-;;gen.c:6897: size=0, offset=1, AOP_TYPE (res)=8
+;;gen.c:6903: size=0, offset=1, AOP_TYPE (res)=8
 	BANKSEL	r0x1062
 	MOVR	r0x1062,W
 	BANKSEL	_z_last
@@ -2343,19 +2343,19 @@ _msa_read_data:
 	MOVR	STK07,W
 	BANKSEL	r0x1093
 	MOVAR	r0x1093
-;;gen.c:6897: size=0, offset=0, AOP_TYPE (res)=8
+;;gen.c:6903: size=0, offset=0, AOP_TYPE (res)=8
 	.line	597, "msa301.c"; 	uint8_t    tmp_data[6] = {0};
 	BANKSEL	_msa_read_data_tmp_data_65536_131
 	CLRR	(_msa_read_data_tmp_data_65536_131 + 0)
-;;gen.c:6897: size=0, offset=0, AOP_TYPE (res)=8
+;;gen.c:6903: size=0, offset=0, AOP_TYPE (res)=8
 	CLRR	(_msa_read_data_tmp_data_65536_131 + 1)
-;;gen.c:6897: size=0, offset=0, AOP_TYPE (res)=8
+;;gen.c:6903: size=0, offset=0, AOP_TYPE (res)=8
 	CLRR	(_msa_read_data_tmp_data_65536_131 + 2)
-;;gen.c:6897: size=0, offset=0, AOP_TYPE (res)=8
+;;gen.c:6903: size=0, offset=0, AOP_TYPE (res)=8
 	CLRR	(_msa_read_data_tmp_data_65536_131 + 3)
-;;gen.c:6897: size=0, offset=0, AOP_TYPE (res)=8
+;;gen.c:6903: size=0, offset=0, AOP_TYPE (res)=8
 	CLRR	(_msa_read_data_tmp_data_65536_131 + 4)
-;;gen.c:6897: size=0, offset=0, AOP_TYPE (res)=8
+;;gen.c:6903: size=0, offset=0, AOP_TYPE (res)=8
 	CLRR	(_msa_read_data_tmp_data_65536_131 + 5)
 	.line	599, "msa301.c"; 	if (msa_register_read_continuously(MSA_REG_ACC_X_LSB, 6, tmp_data) != 0) {
 	MOVIA	((_msa_read_data_tmp_data_65536_131 + 0) >> 8) & 0xff
@@ -3323,7 +3323,7 @@ _00027_DS_:
 	.line	585, "msa301.c"; 	z_last[1] = z;
 	BANKSEL	_z_last
 	MOVAR	(_z_last + 2)
-;;gen.c:6897: size=0, offset=1, AOP_TYPE (res)=8
+;;gen.c:6903: size=0, offset=1, AOP_TYPE (res)=8
 	BANKSEL	r0x106C
 	MOVR	r0x106C,W
 	BANKSEL	_z_last
@@ -3441,19 +3441,19 @@ _msa_read_adc:
 	MOVR	STK07,W
 	BANKSEL	r0x10A5
 	MOVAR	r0x10A5
-;;gen.c:6897: size=0, offset=0, AOP_TYPE (res)=8
+;;gen.c:6903: size=0, offset=0, AOP_TYPE (res)=8
 	.line	542, "msa301.c"; 	uint8_t    tmp_data[6] = {0};
 	BANKSEL	_msa_read_adc_tmp_data_65536_123
 	CLRR	(_msa_read_adc_tmp_data_65536_123 + 0)
-;;gen.c:6897: size=0, offset=0, AOP_TYPE (res)=8
+;;gen.c:6903: size=0, offset=0, AOP_TYPE (res)=8
 	CLRR	(_msa_read_adc_tmp_data_65536_123 + 1)
-;;gen.c:6897: size=0, offset=0, AOP_TYPE (res)=8
+;;gen.c:6903: size=0, offset=0, AOP_TYPE (res)=8
 	CLRR	(_msa_read_adc_tmp_data_65536_123 + 2)
-;;gen.c:6897: size=0, offset=0, AOP_TYPE (res)=8
+;;gen.c:6903: size=0, offset=0, AOP_TYPE (res)=8
 	CLRR	(_msa_read_adc_tmp_data_65536_123 + 3)
-;;gen.c:6897: size=0, offset=0, AOP_TYPE (res)=8
+;;gen.c:6903: size=0, offset=0, AOP_TYPE (res)=8
 	CLRR	(_msa_read_adc_tmp_data_65536_123 + 4)
-;;gen.c:6897: size=0, offset=0, AOP_TYPE (res)=8
+;;gen.c:6903: size=0, offset=0, AOP_TYPE (res)=8
 	CLRR	(_msa_read_adc_tmp_data_65536_123 + 5)
 	.line	544, "msa301.c"; 	if (msa_register_read_continuously(MSA_REG_ACC_X_LSB, 6, tmp_data) != 0) 
 	MOVIA	((_msa_read_adc_tmp_data_65536_123 + 0) >> 8) & 0xff

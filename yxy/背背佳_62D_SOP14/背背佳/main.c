@@ -22,6 +22,9 @@ uint8_t baiwei,shiwei,gewei;
 uint8_t rockStep = 0;		//0不震动  1开机		2 提醒振动
 uint16_t workTime = 0;
 uint16_t sleepTime = 0;
+uint8_t rockTime = 0;
+uint8_t checkTime = 0;
+
 void ind_light_disp(uint8_t ind_num);
 static unsigned char table[]={0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f,0x71,0x38};
 void chrgCtr();
@@ -94,7 +97,11 @@ void main(void)
 		if(keyRead(0x01 & (~PORTA)))
 		{
 			if(workStep)
+			{
 				workStep = 0;
+				rockStep = 0;
+				rockTime = 0;
+			}
 			else
 			{
 				workStep = 1;
@@ -106,12 +113,17 @@ void main(void)
 		chrgCtr();
 		workCtr();
 		if(rockStep == 0 && workStep == 1)
-		{
+		{	
 			getData();
+			if(++checkTime >= 200)
+			{
+				checkTime = 0;
+				rockTime = 0;
+			}
 		}
-		if(workStep == 0 && rockStep == 0 && keyCount== 0)
+		if(workStep == 0 && rockStep == 0 && keyCount== 0 && rockTime == 0)
 		{
-			if(++sleepTime > 50)
+			if(++sleepTime > 100)
 				gotoSleep();
 		}
 	}
@@ -279,11 +291,17 @@ uint8_t getData()
 	hz = (int16_t)(hzH);
 	hz = ((short)(hzH << 8 | hzL))>> 4;
 	hz &= 0x0FFF;
-	if(hz > 0x175 && hz < 0xE70)
+	if(hz > 0x1C0 && hz < 0xE40)
 	{
-		rockStep = 2;
-		workTime = 0;
-		return 1;
+		if(++rockTime >= 20)
+		{
+			rockStep = 2;
+			workTime = 0;
+			rockTime = 0;
+			return 1;
+		}
+		else
+			return 0;
 	}
 	else
 	{
