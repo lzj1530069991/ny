@@ -294,7 +294,16 @@ void workCtr()
 	if(fgPRD > 70)
 	{
 		//堵转了
-		if(duty > 2)
+		u8t minDuty = 20;
+		if(workStep == 1)
+			minDuty = 20;
+		else if(workStep == 2)
+			minDuty = 13;
+		else if(workStep == 3)
+			minDuty = 6;
+		else if(workStep == 4)
+			minDuty = 2;
+		if(duty > minDuty)
 		{
 			--duty;
 			PWM2DUTY = duty;
@@ -409,13 +418,13 @@ void keyCtr()
 		fgCount = 0;
 		workStartFlag = 0;
 		if(workStep == 1)
-			maxDuty = 54;
+			maxDuty = 90;
 		else if(workStep == 2)
-			maxDuty = 30;
+			maxDuty = 80;
 		else if(workStep == 3)
-			maxDuty = 14;
+			maxDuty = 70;
 		else if(workStep == 4)
-			maxDuty = 5;
+			maxDuty = 60;
 		PWM2DUTY = maxDuty;
 	}
 	else if(kclick == 2)
@@ -432,7 +441,7 @@ void keyCtr()
 		else
 		{
 			workStartFlag = 1;
-			maxDuty = 46;
+			maxDuty = 90;
 			workStep = 1;
 			ledStep = 0;
 			count500ms = 0;

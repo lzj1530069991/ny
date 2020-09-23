@@ -24,6 +24,8 @@ uint16_t workTime = 0;
 uint16_t sleepTime = 0;
 uint8_t rockTime = 0;
 uint8_t checkTime = 0;
+uint8_t rockFlag = 0;
+uint8_t deadTime = 0;
 
 void ind_light_disp(uint8_t ind_num);
 static unsigned char table[]={0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f,0x71,0x38};
@@ -101,30 +103,53 @@ void main(void)
 				workStep = 0;
 				rockStep = 0;
 				rockTime = 0;
+				rockFlag = 0;
+				MOTOR = 0;
+				baiwei = shiwei = gewei = 0;
 			}
 			else
 			{
 				workStep = 1;
 				workTime = 0;
 				rockStep = 1;
+				rockFlag = 0;
 				//msa_init();
 			}
 		}
 		chrgCtr();
 		workCtr();
-		if(rockStep == 0 && workStep == 1)
+		if(workStep == 1 && rockStep != 1)
 		{	
 			getData();
-			if(++checkTime >= 200)
+			if(++checkTime >= 25)
 			{
+				if(rockTime >= 5)
+				{
+					rockFlag = 1;
+					if(++deadTime >= 240)
+					{
+						deadTime = 240;
+						rockFlag = 0;
+					}
+				}
+				else
+				{
+					rockFlag = 0;
+					deadTime = 0;
+				}
 				checkTime = 0;
 				rockTime = 0;
+				
 			}
 		}
 		if(workStep == 0 && rockStep == 0 && keyCount== 0 && rockTime == 0)
 		{
 			if(++sleepTime > 100)
 				gotoSleep();
+		}
+		else
+		{
+			sleepTime = 0;
 		}
 	}
 }
@@ -209,18 +234,8 @@ void workCtr()
 		{
 			MOTOR = 0;
 			rockStep = 0;
-			if(++gewei >= 10)
-			{
-				gewei = 0;
-				if(++shiwei >= 10)
-				{
-					shiwei = 0;
-					if(++baiwei >= 10)
-					{
-						baiwei = 0;
-					}
-				}
-			}
+			rockTime = 0;
+			workTime = 0;
 		}
 	}
 }
@@ -291,13 +306,32 @@ uint8_t getData()
 	hz = (int16_t)(hzH);
 	hz = ((short)(hzH << 8 | hzL))>> 4;
 	hz &= 0x0FFF;
-	if(hz > 0x1C0 && hz < 0xE40)
+	if(hz > 0x080 && hz < 0xF70)
 	{
-		if(++rockTime >= 20)
+		if(++rockTime >= 5 && rockFlag == 0)
 		{
+			if(rockStep > 0)
+				return 0;
 			rockStep = 2;
 			workTime = 0;
 			rockTime = 0;
+			rockFlag = 1;
+			if(deadTime < 240)
+			{
+				if(++gewei >= 10)
+				{
+					gewei = 0;
+					if(++shiwei >= 10)
+					{
+						shiwei = 0;
+						if(++baiwei >= 10)
+						{
+							baiwei = 0;
+						}
+					}
+				}
+			}
+			deadTime = 0;
 			return 1;
 		}
 		else
@@ -305,6 +339,10 @@ uint8_t getData()
 	}
 	else
 	{
+		if((hz > 0x080 && hz < 0x0FF0) || (hz > 0x003 && hz < 0x080))
+		{
+			rockTime = 0;
+		}
 		return 0;
 	}
 }

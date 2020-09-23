@@ -1,40 +1,100 @@
 00000000 c7fe                 LGOTO 0x1; crt0.o:initial_ram_cinit=0x1
 00000001                      crt0.o:initial_ram_cinit:
-00000001 d7dc                 LCALL 0x23; ___cinit_load__=0x23
-00000002 c7fc                 LGOTO 0x3; crt0.o:startup_exit=0x3
+00000001 d7a1                 LCALL 0x5e; ___cinit_load__=0x5e
+00000002 c7c8                 LGOTO 0x37; _main=0x37
 00000003                      crt0.o:startup_exit:
-00000003 de34                 MOVIA 0xcb
-00000004 ff79                 MOVAR 0x6
-00000005 de08                 MOVIA 0xf7
-00000006 ff73                 MOVAR 0xc
-00000007 def4                 MOVIA 0xb
-00000008 fff9                 IOST 0x6
-00000009 de34                 MOVIA 0xcb
-0000000a ff79                 MOVAR 0x6
-0000000b de57                 MOVIA 0xa8
-0000000c ff77                 MOVAR 0x8
-0000000d fdff                 CLRA
-0000000e fff0                 IOST 0xf
-0000000f dec8                 MOVIA 0x37
-00000010 ff7e                 MOVAR 0x1
-00000011 fdff                 CLRA
-00000012 fffc                 T0MD
-00000013 deea                 MOVIA 0x15
-00000014 fff0                 IOST 0xf
-00000015 fffb                 ENI
-00000016 d7e5                 LCALL 0x1a; _pwmStart=0x1a
-00000017                      main.o:_00106_DS_:
-00000017 fffd                 CLRWDT
-00000018 c7e8                 LGOTO 0x17; main.o:_00106_DS_=0x17
-00000019 ffef                 RET
-0000001a                      _pwmStart:
-0000001a defa                 MOVIA 0x5
-0000001b ffdf                 SFUN 0x0
-0000001c defd                 MOVIA 0x2
-0000001d ffdc                 SFUN 0x3
-0000001e fdff                 CLRA
-0000001f ffdd                 SFUN 0x2
-00000020 de7c                 MOVIA 0x83
-00000021 ffde                 SFUN 0x1
-00000022 ffef                 RET
-00000023                      ___cinit_load__:
+00000007                      ___cinit_size__:
+00000008 c7f6                 LGOTO 0x9; main.o:__sdcc_interrupt=0x9
+00000009                      main.o:__sdcc_interrupt:
+00000009 ff3d                 MOVAR 0x42
+0000000a eafc                 SWAPR 0x3, 0x0
+0000000b fd7c                 CLRR 0x3
+0000000c ff3e                 MOVAR 0x41
+0000000d fef5                 MOVR 0xa, 0x0
+0000000e fd75                 CLRR 0xa
+0000000f ff3f                 MOVAR 0x40
+00000010 fefb                 MOVR 0x4, 0x0
+00000011 e0fc                 BCR 0x3, 0x6
+00000012 ff5f                 MOVAR 0x20
+00000013 feba                 MOVR 0x45, 0x0
+00000014 ff5e                 MOVAR 0x21
+00000015 febb                 MOVR 0x44, 0x0
+00000016 ff5d                 MOVAR 0x22
+00000017 f7f0                 BTRSS 0xf, 0x0
+00000018 c7dc                 LGOTO 0x23; main.o:_00108_DS_=0x23
+00000019 dec8                 MOVIA 0x37
+0000001a fc7e                 ADDAR 0x1, 0x1
+0000001b fa5c                 INCR 0x23, 0x1
+0000001c fedc                 MOVR 0x23, 0x0
+0000001d db9b                 XORIA 0x64
+0000001e f6fc                 BTRSS 0x3, 0x2
+0000001f c7dc                 LGOTO 0x23; main.o:_00108_DS_=0x23
+00000020 fd5c                 CLRR 0x23
+00000021 defe                 MOVIA 0x1
+00000022 ff5b                 MOVAR 0x24
+00000023                      main.o:_00108_DS_:
+00000023 f770                 BTRSS 0xf, 0x1
+00000024 c7d8                 LGOTO 0x27; main.o:_00110_DS_=0x27
+00000025 de02                 MOVIA 0xfd
+00000026 ff70                 MOVAR 0xf
+00000027                      main.o:_00110_DS_:
+00000027 fd70                 CLRR 0xf
+00000028 e0fc                 BCR 0x3, 0x6
+00000029 fedd                 MOVR 0x22, 0x0
+0000002a ff3b                 MOVAR 0x44
+0000002b fede                 MOVR 0x21, 0x0
+0000002c ff3a                 MOVAR 0x45
+0000002d fedf                 MOVR 0x20, 0x0
+0000002e ff7b                 MOVAR 0x4
+0000002f febf                 MOVR 0x40, 0x0
+00000030 ff75                 MOVAR 0xa
+00000031 fd7c                 CLRR 0x3
+00000032 eabe                 SWAPR 0x41, 0x0
+00000033 ff7c                 MOVAR 0x3
+00000034 ea3d                 SWAPR 0x42, 0x1
+00000035 eabd                 SWAPR 0x42, 0x0
+00000036                      main.o:END_OF_INTERRUPT:
+00000036 ffee                 RETIE
+00000037                      _main:
+00000037 de34                 MOVIA 0xcb
+00000038 ff79                 MOVAR 0x6
+00000039 de08                 MOVIA 0xf7
+0000003a ff73                 MOVAR 0xc
+0000003b def4                 MOVIA 0xb
+0000003c fff9                 IOST 0x6
+0000003d fdff                 CLRA
+0000003e fffa                 IOST 0x5
+0000003f de34                 MOVIA 0xcb
+00000040 ff79                 MOVAR 0x6
+00000041 de57                 MOVIA 0xa8
+00000042 ff77                 MOVAR 0x8
+00000043 fdff                 CLRA
+00000044 fff0                 IOST 0xf
+00000045 dec8                 MOVIA 0x37
+00000046 ff7e                 MOVAR 0x1
+00000047 fdff                 CLRA
+00000048 fffc                 T0MD
+00000049 deee                 MOVIA 0x11
+0000004a fff0                 IOST 0xf
+0000004b fffb                 ENI
+0000004c d7af                 LCALL 0x50; _pwmOn=0x50
+0000004d                      main.o:_00116_DS_:
+0000004d fffd                 CLRWDT
+0000004e c7b2                 LGOTO 0x4d; main.o:_00116_DS_=0x4d
+0000004f ffef                 RET
+00000050                      _pwmOn:
+00000050 fdff                 CLRA
+00000051 ffaa                 SFUN 0x15
+00000052 fd63                 CLRR 0x1c
+00000053 defc                 MOVIA 0x3
+00000054 ffac                 SFUN 0x13
+00000055 defb                 MOVIA 0x4
+00000056 ffaf                 SFUN 0x10
+00000057 fdff                 CLRA
+00000058 ffad                 SFUN 0x12
+00000059 def7                 MOVIA 0x8
+0000005a ffad                 SFUN 0x12
+0000005b de7c                 MOVIA 0x83
+0000005c ffae                 SFUN 0x11
+0000005d ffef                 RET
+0000005e                      ___cinit_load__:

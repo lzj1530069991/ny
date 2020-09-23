@@ -1,4 +1,4 @@
-ICBODY       := NY8A051F
+ICBODY       := NY8B062D
 CLIENT_NAME  := yxy
 CB_FILE      := bsy.cb
 HOST_TOOL    := NYIDE 4.00
@@ -14,7 +14,7 @@ TEMP_FOLDER  :=
 #  - bank2: 2 bank ram
 #  - bank2_8b: 2 bank ram (NY8B series)
 #  - bank4: 4 bank ram
-MODEL := small
+MODEL := bank2_8b
 
 ENABLE_INIT_BSS := 0
 
