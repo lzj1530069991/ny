@@ -391,9 +391,11 @@ _00118_DS_:
 	BANKSEL	_Status
 	BTRSS	_Status,5
 	LGOTO	_00123_DS_
+	BANKSEL	_PORTA
 	BTRSS	_PORTA,2
 	LGOTO	_00123_DS_
 	.line	104, "main.c"; 	INT1Level = 0;
+	BANKSEL	_Status
 	BCR	_Status,5
 	.line	105, "main.c"; 	proLow();
 	LCALL	_proLow
@@ -403,9 +405,11 @@ _00123_DS_:
 	BANKSEL	_Status
 	BTRSC	_Status,5
 	LGOTO	_00124_DS_
+	BANKSEL	_PORTA
 	BTRSC	_PORTA,2
 	LGOTO	_00124_DS_
 	.line	110, "main.c"; 	INT1Level = 1;
+	BANKSEL	_Status
 	BSR	_Status,5
 	.line	111, "main.c"; 	proHight();
 	LCALL	_proHight
@@ -596,6 +600,7 @@ _00255_DS_:
 _initSys:
 ; 2 exit points
 	.line	244, "main.c"; 	PORTA = 0x00;
+	BANKSEL	_PORTA
 	CLRR	_PORTA
 	.line	245, "main.c"; 	APHCON = 0xDF;		//PA5下拉
 	MOVIA	0xdf
@@ -732,6 +737,7 @@ _00002_DS_:
 	SFUN	_T1CR1
 	.line	164, "main.c"; 	PORTA = 0x01;  
 	MOVIA	0x01
+	BANKSEL	_PORTA
 	MOVAR	_PORTA
 	.line	165, "main.c"; 	if(RemoteStart)
 	BANKSEL	_Status
@@ -993,6 +999,7 @@ _00003_DS_:
 	MOVIA	0x03
 	SFUN	_T1CR1
 	.line	129, "main.c"; 	PORTA = 0x00; 
+	BANKSEL	_PORTA
 	CLRR	_PORTA
 	.line	130, "main.c"; 	if(RemoteStart)
 	BANKSEL	_Status
@@ -1072,6 +1079,6 @@ _00142_DS_:
 
 
 ;	code size estimation:
-;	  383+   92 =   475 instructions ( 1134 byte)
+;	  383+   99 =   482 instructions ( 1162 byte)
 
 	end

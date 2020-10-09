@@ -161,6 +161,8 @@ void workCtr()
 	}
 	if(duty < maxDuty)
 		duty++;
+	if(duty < 30)
+		duty = 30;
 		
 	if(count900s >= 900 && keyCount == 0)
 		gotoSleep();

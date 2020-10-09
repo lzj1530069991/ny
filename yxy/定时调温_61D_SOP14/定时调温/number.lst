@@ -1,0 +1,1574 @@
+
+                    Nyquest Technology Co., Ltd.
+
+NYASM 2.26
+
+    ADDR  OPCODE/VALUE              LINE   TAG  SOURCE                   STATEMENT    
+
+                                    1-    1     ;--------------------------------------------------------
+                                    1-    2     ; File Created by SDCC : free open source ANSI-C Compiler
+                                    1-    3     ; Version 3.7.1 #0 (MSVC)
+                                    1-    4     ;--------------------------------------------------------
+                                    1-    5     ; NY8A port
+                                    1-    6     ;--------------------------------------------------------
+                                    1-    7     	.file	"number.c"
+                                    1-    8     	list	p=NY8B061D,c=on
+                                    1-    9     	#include "ny8b061d.inc"
+                                    1-   11     ;--------------------------------------------------------
+                                    1-   12     ; external declarations
+                                    1-   13     ;--------------------------------------------------------
+                                    1-   14     	extern	_PORTAbits
+                                    1-   15     	extern	_PORTBbits
+                                    1-   16     	extern	_PCONbits
+                                    1-   17     	extern	_BWUCONbits
+                                    1-   18     	extern	_ABPLCONbits
+                                    1-   19     	extern	_BPHCONbits
+                                    1-   20     	extern	_INTEbits
+                                    1-   21     	extern	_INTFbits
+                                    1-   22     	extern	_ADMDbits
+                                    1-   23     	extern	_ADRbits
+                                    1-   24     	extern	_ADVREFHbits
+                                    1-   25     	extern	_ADCRbits
+                                    1-   26     	extern	_AWUCONbits
+                                    1-   27     	extern	_PACONbits
+                                    1-   28     	extern	_INTEDGbits
+                                    1-   29     	extern	_RFCbits
+                                    1-   30     	extern	_INTE2bits
+                                    1-   31     	extern	_INDF
+                                    1-   32     	extern	_TMR0
+                                    1-   33     	extern	_PCL
+                                    1-   34     	extern	_STATUS
+                                    1-   35     	extern	_FSR
+                                    1-   36     	extern	_PORTA
+                                    1-   37     	extern	_PORTB
+                                    1-   38     	extern	_PCON
+                                    1-   39     	extern	_BWUCON
+                                    1-   40     	extern	_PCHBUF
+                                    1-   41     	extern	_ABPLCON
+                                    1-   42     	extern	_BPHCON
+                                    1-   43     	extern	_INTE
+                                    1-   44     	extern	_INTF
+                                    1-   45     	extern	_ADMD
+                                    1-   46     	extern	_ADR
+                                    1-   47     	extern	_ADD
+                                    1-   48     	extern	_ADVREFH
+                                    1-   49     	extern	_ADCR
+                                    1-   50     	extern	_AWUCON
+                                    1-   51     	extern	_PACON
+                                    1-   52     	extern	_INTEDG
+                                    1-   53     	extern	_TMRH
+                                    1-   54     	extern	_RFC
+                                    1-   55     	extern	_TM3RH
+                                    1-   56     	extern	_INTE2
+                                    1-   57     	extern	_TMR1
+                                    1-   58     	extern	_T1CR1
+                                    1-   59     	extern	_T1CR2
+                                    1-   60     	extern	_PWM1DUTY
+                                    1-   61     	extern	_PS1CV
+                                    1-   62     	extern	_BZ1CR
+                                    1-   63     	extern	_IRCR
+                                    1-   64     	extern	_TBHP
+                                    1-   65     	extern	_TBHD
+                                    1-   66     	extern	_TMR2
+                                    1-   67     	extern	_T2CR1
+                                    1-   68     	extern	_T2CR2
+                                    1-   69     	extern	_PWM2DUTY
+                                    1-   70     	extern	_PS2CV
+                                    1-   71     	extern	_BZ2CR
+                                    1-   72     	extern	_OSCCR
+                                    1-   73     	extern	_TMR3
+                                    1-   74     	extern	_T3CR1
+                                    1-   75     	extern	_T3CR2
+                                    1-   76     	extern	_PWM3DUTY
+                                    1-   77     	extern	_PS3CV
+                                    1-   78     	extern	_BZ3CR
+                                    1-   79     	extern	_IOSTA
+                                    1-   80     	extern	_IOSTB
+                                    1-   81     	extern	_APHCON
+                                    1-   82     	extern	_PS0CV
+                                    1-   83     	extern	_BODCON
+                                    1-   84     	extern	_PCON1
+                                    1-   85     	extern	_T0MD
+                                    1-   87     	extern PSAVE
+                                    1-   88     	extern SSAVE
+                                    1-   89     	extern WSAVE
+                                    1-   90     	extern STK02
+                                    1-   91     	extern STK01
+                                    1-   92     	extern STK00
+                                    1-   93     ;--------------------------------------------------------
+                                    1-   94     ; global declarations
+                                    1-   95     ;--------------------------------------------------------
+                                    1-   96     	extern	_delayms
+                                    1-   97     	extern	_setInput
+                                    1-   98     	extern	_setOutput
+                                    1-   99     	extern	_setlowOutput
+                                    1-  100     	extern	_setHightOutput
+                                    1-  101     	extern	_showNub
+                                    1-  102     	extern	_MIN
+                                    1-  103     	extern	_LOW
+                                    1-  104     	extern	_MEDIUM
+                                    1-  105     	extern	_HIGHT
+                                    1-  106     	extern	_G3
+                                    1-  107     	extern	_F3
+                                    1-  108     	extern	_E3
+                                    1-  109     	extern	_D3
+                                    1-  110     	extern	_C3
+                                    1-  111     	extern	_B3
+                                    1-  112     	extern	_A3
+                                    1-  113     	extern	_G2
+                                    1-  114     	extern	_F2
+                                    1-  115     	extern	_E2
+                                    1-  116     	extern	_D2
+                                    1-  117     	extern	_C2
+                                    1-  118     	extern	_B2
+                                    1-  119     	extern	_A2
+                                    1-  120     	extern	_C1
+                                    1-  121     	extern	_B1
+                                    1-  122     	extern	_showBaiwei
+                                    1-  123     	extern	_showNubGewei2
+                                    1-  124     	extern	_showNubGewei
+                                    1-  125     	extern	_showNubShiwei2
+                                    1-  126     	extern	_showNubShiwei
+                                    1-  128     ;--------------------------------------------------------
+                                    1-  129     ; global definitions
+                                    1-  130     ;--------------------------------------------------------
+                                    1-  131     ;--------------------------------------------------------
+                                    1-  132     ; absolute symbol definitions
+                                    1-  133     ;--------------------------------------------------------
+                                    1-  134     ;--------------------------------------------------------
+                                    1-  135     ; compiler-defined variables
+                                    1-  136     ;--------------------------------------------------------
+                                    1-  137     .segment "uninit"
+     0000                           1-  138     r0x100D:
+                                    1-  139     	.res	1
+                                    1-  140     .segment "uninit"
+     0000                           1-  141     r0x100E:
+                                    1-  142     	.res	1
+                                    1-  143     .segment "uninit"
+     0000                           1-  144     r0x100F:
+                                    1-  145     	.res	1
+                                    1-  146     .segment "uninit"
+     0000                           1-  147     r0x100C:
+                                    1-  148     	.res	1
+                                    1-  149     .segment "uninit"
+     0000                           1-  150     r0x1009:
+                                    1-  151     	.res	1
+                                    1-  152     .segment "uninit"
+     0000                           1-  153     r0x100A:
+                                    1-  154     	.res	1
+                                    1-  155     .segment "uninit"
+     0000                           1-  156     r0x100B:
+                                    1-  157     	.res	1
+                                    1-  158     .segment "uninit"
+     0000                           1-  159     r0x1008:
+                                    1-  160     	.res	1
+                                    1-  161     .segment "uninit"
+     0000                           1-  162     r0x1006:
+                                    1-  163     	.res	1
+                                    1-  164     .segment "uninit"
+     0000                           1-  165     r0x1007:
+                                    1-  166     	.res	1
+                                    1-  167     .segment "uninit"
+     0000                           1-  168     r0x1005:
+                                    1-  169     	.res	1
+                                    1-  170     .segment "uninit"
+     0000                           1-  171     r0x1004:
+                                    1-  172     	.res	1
+                                    1-  173     .segment "uninit"
+     0000                           1-  174     r0x1003:
+                                    1-  175     	.res	1
+                                    1-  176     .segment "uninit"
+     0000                           1-  177     r0x1002:
+                                    1-  178     	.res	1
+                                    1-  179     .segment "uninit"
+     0000                           1-  180     r0x1000:
+                                    1-  181     	.res	1
+                                    1-  182     .segment "uninit"
+     0000                           1-  183     r0x1001:
+                                    1-  184     	.res	1
+                                    1-  185     ;--------------------------------------------------------
+                                    1-  186     ; initialized data
+                                    1-  187     ;--------------------------------------------------------
+                                    1-  188     ;--------------------------------------------------------
+                                    1-  189     ; overlayable items in internal ram 
+                                    1-  190     ;--------------------------------------------------------
+                                    1-  191     ;	udata_ovr
+                                    1-  192     ;--------------------------------------------------------
+                                    1-  193     ; code
+                                    1-  194     ;--------------------------------------------------------
+                                    1-  195     ;***
+                                    1-  196     ;  pBlock Stats: dbName = C
+                                    1-  197     ;***
+                                    1-  198     ;has an exit
+                                    1-  199     ;2 compiler assigned registers:
+                                    1-  200     ;   r0x1000
+                                    1-  201     ;   r0x1001
+                                    1-  202     ;; Starting pCode block
+                                    1-  203     .segment "code"; module=number, function=_delayms
+                                    1-  205     ;local variable name mapping:
+     0000                           1-  208     _delayms:
+                                    1-  209     ; 2 exit points
+                                    1-  210     	.line	299, "number.c"; 	void delayms(u8t time)
+                                    1-  211     	BANKSEL	r0x1000
+     0000 00rr                      1-  212     	MOVAR	r0x1000
+                                    1-  213     	.line	301, "number.c"; 	for(u8t i=0;i<time;i++)
+                                    1-  214     	BANKSEL	r0x1001
+     0001 02rr                      1-  215     	CLRR	r0x1001
+     0002                           1-  216     _00355_DS_:
+                                    1-  217     	BANKSEL	r0x1000
+     0002 01rr                      1-  218     	MOVR	r0x1000,W
+                                    1-  219     	BANKSEL	r0x1001
+     0003 04rr                      1-  220     	SUBAR	r0x1001,W
+     0004 0C03                      1-  221     	BTRSC	STATUS,0
+     0005 3rrr                      1-  222     	LGOTO	_00357_DS_
+                                    1-  223     	.line	302, "number.c"; 	NOP();
+     0006 0000                      1-  224     	nop
+                                    1-  225     	.line	301, "number.c"; 	for(u8t i=0;i<time;i++)
+                                    1-  226     	BANKSEL	r0x1001
+     0007 05rr                      1-  227     	INCR	r0x1001,F
+     0008 3rrr                      1-  228     	LGOTO	_00355_DS_
+     0009                           1-  229     _00357_DS_:
+                                    1-  230     	.line	303, "number.c"; 	}
+                                    1-  231     	RETURN	
+     0009 0010                      3-   26 m1      ret
+                                    1-  232     ; exit point of _delayms
+                                    1-  234     ;***
+                                    1-  235     ;  pBlock Stats: dbName = C
+                                    1-  236     ;***
+                                    1-  237     ;has an exit
+                                    1-  238     ;1 compiler assigned register :
+                                    1-  239     ;   r0x1002
+                                    1-  240     ;; Starting pCode block
+                                    1-  241     .segment "code"; module=number, function=_setInput
+     0000                           1-  243     _setInput:
+                                    1-  244     ; 2 exit points
+                                    1-  245     	.line	295, "number.c"; 	IOSTA |= 0xC3;		//PA0-PA2设为输入脚
+     0000 001r                      1-  246     	IOSTR	_IOSTA
+                                    1-  247     	BANKSEL	r0x1002
+     0001 00rr                      1-  248     	MOVAR	r0x1002
+     0002 21C3                      1-  249     	MOVIA	0xc3
+     0003 11rr                      1-  250     	IORAR	r0x1002,F
+     0004 01rr                      1-  251     	MOVR	r0x1002,W
+     0005 000r                      1-  252     	IOST	_IOSTA
+                                    1-  253     	.line	296, "number.c"; 	IOSTB |= 0x05;
+     0006 001r                      1-  254     	IOSTR	_IOSTB
+     0007 00rr                      1-  255     	MOVAR	r0x1002
+     0008 2105                      1-  256     	MOVIA	0x05
+     0009 11rr                      1-  257     	IORAR	r0x1002,F
+     000A 01rr                      1-  258     	MOVR	r0x1002,W
+     000B 000r                      1-  259     	IOST	_IOSTB
+                                    1-  260     	.line	297, "number.c"; 	}
+                                    1-  261     	RETURN	
+     000C 0010                      3-   26 m1      ret
+                                    1-  262     ; exit point of _setInput
+                                    1-  264     ;***
+                                    1-  265     ;  pBlock Stats: dbName = C
+                                    1-  266     ;***
+                                    1-  267     ;has an exit
+                                    1-  268     ;1 compiler assigned register :
+                                    1-  269     ;   r0x1003
+                                    1-  270     ;; Starting pCode block
+                                    1-  271     .segment "code"; module=number, function=_setOutput
+                                    1-  273     ;local variable name mapping:
+     0000                           1-  275     _setOutput:
+                                    1-  276     ; 2 exit points
+                                    1-  277     	.line	268, "number.c"; 	void setOutput(char outPut)
+                                    1-  278     	BANKSEL	r0x1003
+     0000 00rr                      1-  279     	MOVAR	r0x1003
+                                    1-  280     ;;unsigned compare: left < lit (0x1=1), size=1
+                                    1-  281     	.line	270, "number.c"; 	switch(outPut)
+     0001 2101                      1-  282     	MOVIA	0x01
+     0002 04rr                      1-  283     	SUBAR	r0x1003,W
+     0003 0803                      1-  284     	BTRSS	STATUS,0
+     0004 3rrr                      1-  285     	LGOTO	_00334_DS_
+                                    1-  286     ;;swapping arguments (AOP_TYPEs 1/2)
+                                    1-  287     ;;unsigned compare: left >= lit (0x7=7), size=1
+     0005 2107                      1-  288     	MOVIA	0x07
+     0006 04rr                      1-  289     	SUBAR	r0x1003,W
+     0007 0C03                      1-  290     	BTRSC	STATUS,0
+     0008 3rrr                      1-  291     	LGOTO	_00334_DS_
+     0009 06rr                      1-  292     	DECR	r0x1003,F
+     000A 21rr                      1-  293     	MOVIA	((_00344_DS_ >> 8) & 0xff)
+     000B 008A                      1-  294     	MOVAR	PCHBUF
+     000C 01rr                      1-  295     	MOVR	r0x1003,W
+     000D 25rr                      1-  296     	ADDIA	_00344_DS_
+     000E 0C03                      1-  297     	BTRSC	STATUS,0
+     000F 058A                      1-  298     	INCR	PCHBUF,F
+     0010 0082                      1-  299     	MOVAR	PCL
+     0011                           1-  300     _00344_DS_:
+     0011 3rrr                      1-  301     	LGOTO	_00332_DS_
+     0012 3rrr                      1-  302     	LGOTO	_00331_DS_
+     0013 3rrr                      1-  303     	LGOTO	_00330_DS_
+     0014 3rrr                      1-  304     	LGOTO	_00329_DS_
+     0015 3rrr                      1-  305     	LGOTO	_00328_DS_
+     0016 3rrr                      1-  306     	LGOTO	_00327_DS_
+     0017                           1-  307     _00327_DS_:
+                                    1-  308     	.line	273, "number.c"; 	IOSTB &= 0xFE;
+     0017 001r                      1-  309     	IOSTR	_IOSTB
+                                    1-  310     	BANKSEL	r0x1003
+     0018 00rr                      1-  311     	MOVAR	r0x1003
+     0019 1Crr                      1-  312     	BCR	r0x1003,0
+     001A 01rr                      1-  313     	MOVR	r0x1003,W
+     001B 000r                      1-  314     	IOST	_IOSTB
+                                    1-  315     	.line	274, "number.c"; 	break;
+     001C 3rrr                      1-  316     	LGOTO	_00334_DS_
+     001D                           1-  317     _00328_DS_:
+                                    1-  318     	.line	276, "number.c"; 	IOSTA &= 0xFD;
+     001D 001r                      1-  319     	IOSTR	_IOSTA
+                                    1-  320     	BANKSEL	r0x1003
+     001E 00rr                      1-  321     	MOVAR	r0x1003
+     001F 1Crr                      1-  322     	BCR	r0x1003,1
+     0020 01rr                      1-  323     	MOVR	r0x1003,W
+     0021 000r                      1-  324     	IOST	_IOSTA
+                                    1-  325     	.line	277, "number.c"; 	break;
+     0022 3rrr                      1-  326     	LGOTO	_00334_DS_
+     0023                           1-  327     _00329_DS_:
+                                    1-  328     	.line	279, "number.c"; 	IOSTA &= 0xFE;
+     0023 001r                      1-  329     	IOSTR	_IOSTA
+                                    1-  330     	BANKSEL	r0x1003
+     0024 00rr                      1-  331     	MOVAR	r0x1003
+     0025 1Crr                      1-  332     	BCR	r0x1003,0
+     0026 01rr                      1-  333     	MOVR	r0x1003,W
+     0027 000r                      1-  334     	IOST	_IOSTA
+                                    1-  335     	.line	280, "number.c"; 	break;
+     0028 3rrr                      1-  336     	LGOTO	_00334_DS_
+     0029                           1-  337     _00330_DS_:
+                                    1-  338     	.line	282, "number.c"; 	IOSTA &= 0x7F;
+     0029 001r                      1-  339     	IOSTR	_IOSTA
+                                    1-  340     	BANKSEL	r0x1003
+     002A 00rr                      1-  341     	MOVAR	r0x1003
+     002B 1Frr                      1-  342     	BCR	r0x1003,7
+     002C 01rr                      1-  343     	MOVR	r0x1003,W
+     002D 000r                      1-  344     	IOST	_IOSTA
+                                    1-  345     	.line	283, "number.c"; 	break;
+     002E 3rrr                      1-  346     	LGOTO	_00334_DS_
+     002F                           1-  347     _00331_DS_:
+                                    1-  348     	.line	285, "number.c"; 	IOSTB &= 0xFB;
+     002F 001r                      1-  349     	IOSTR	_IOSTB
+                                    1-  350     	BANKSEL	r0x1003
+     0030 00rr                      1-  351     	MOVAR	r0x1003
+     0031 1Drr                      1-  352     	BCR	r0x1003,2
+     0032 01rr                      1-  353     	MOVR	r0x1003,W
+     0033 000r                      1-  354     	IOST	_IOSTB
+                                    1-  355     	.line	286, "number.c"; 	break;
+     0034 3rrr                      1-  356     	LGOTO	_00334_DS_
+     0035                           1-  357     _00332_DS_:
+                                    1-  358     	.line	288, "number.c"; 	IOSTA &= 0xBF;
+     0035 001r                      1-  359     	IOSTR	_IOSTA
+                                    1-  360     	BANKSEL	r0x1003
+     0036 00rr                      1-  361     	MOVAR	r0x1003
+     0037 1Frr                      1-  362     	BCR	r0x1003,6
+     0038 01rr                      1-  363     	MOVR	r0x1003,W
+     0039 000r                      1-  364     	IOST	_IOSTA
+     003A                           1-  365     _00334_DS_:
+                                    1-  366     	.line	291, "number.c"; 	}
+                                    1-  367     	RETURN	
+     003A 0010                      3-   26 m1      ret
+                                    1-  368     ; exit point of _setOutput
+                                    1-  370     ;***
+                                    1-  371     ;  pBlock Stats: dbName = C
+                                    1-  372     ;***
+                                    1-  373     ;has an exit
+                                    1-  374     ;1 compiler assigned register :
+                                    1-  375     ;   r0x1004
+                                    1-  376     ;; Starting pCode block
+                                    1-  377     .segment "code"; module=number, function=_setlowOutput
+                                    1-  379     ;local variable name mapping:
+     0000                           1-  381     _setlowOutput:
+                                    1-  382     ; 2 exit points
+                                    1-  383     	.line	242, "number.c"; 	void setlowOutput(char outPut)
+                                    1-  384     	BANKSEL	r0x1004
+     0000 00rr                      1-  385     	MOVAR	r0x1004
+                                    1-  386     ;;unsigned compare: left < lit (0x1=1), size=1
+                                    1-  387     	.line	244, "number.c"; 	switch(outPut)
+     0001 2101                      1-  388     	MOVIA	0x01
+     0002 04rr                      1-  389     	SUBAR	r0x1004,W
+     0003 0803                      1-  390     	BTRSS	STATUS,0
+     0004 3rrr                      1-  391     	LGOTO	_00312_DS_
+                                    1-  392     ;;swapping arguments (AOP_TYPEs 1/2)
+                                    1-  393     ;;unsigned compare: left >= lit (0x7=7), size=1
+     0005 2107                      1-  394     	MOVIA	0x07
+     0006 04rr                      1-  395     	SUBAR	r0x1004,W
+     0007 0C03                      1-  396     	BTRSC	STATUS,0
+     0008 3rrr                      1-  397     	LGOTO	_00312_DS_
+     0009 06rr                      1-  398     	DECR	r0x1004,F
+     000A 21rr                      1-  399     	MOVIA	((_00322_DS_ >> 8) & 0xff)
+     000B 008A                      1-  400     	MOVAR	PCHBUF
+     000C 01rr                      1-  401     	MOVR	r0x1004,W
+     000D 25rr                      1-  402     	ADDIA	_00322_DS_
+     000E 0C03                      1-  403     	BTRSC	STATUS,0
+     000F 058A                      1-  404     	INCR	PCHBUF,F
+     0010 0082                      1-  405     	MOVAR	PCL
+     0011                           1-  406     _00322_DS_:
+     0011 3rrr                      1-  407     	LGOTO	_00310_DS_
+     0012 3rrr                      1-  408     	LGOTO	_00309_DS_
+     0013 3rrr                      1-  409     	LGOTO	_00308_DS_
+     0014 3rrr                      1-  410     	LGOTO	_00307_DS_
+     0015 3rrr                      1-  411     	LGOTO	_00306_DS_
+     0016 3rrr                      1-  412     	LGOTO	_00305_DS_
+     0017                           1-  413     _00305_DS_:
+                                    1-  414     	.line	247, "number.c"; 	PORTB &= 0xFE;
+     0017 1Crr                      1-  415     	BCR	_PORTB,0
+                                    1-  416     	.line	248, "number.c"; 	break;
+     0018 3rrr                      1-  417     	LGOTO	_00312_DS_
+     0019                           1-  418     _00306_DS_:
+                                    1-  419     	.line	250, "number.c"; 	PORTA &= 0xFD;
+     0019 1Crr                      1-  420     	BCR	_PORTA,1
+                                    1-  421     	.line	251, "number.c"; 	break;
+     001A 3rrr                      1-  422     	LGOTO	_00312_DS_
+     001B                           1-  423     _00307_DS_:
+                                    1-  424     	.line	253, "number.c"; 	PORTA &= 0xFE;
+     001B 1Crr                      1-  425     	BCR	_PORTA,0
+                                    1-  426     	.line	254, "number.c"; 	break;
+     001C 3rrr                      1-  427     	LGOTO	_00312_DS_
+     001D                           1-  428     _00308_DS_:
+                                    1-  429     	.line	256, "number.c"; 	PORTA &= 0x7F;
+     001D 1Frr                      1-  430     	BCR	_PORTA,7
+                                    1-  431     	.line	257, "number.c"; 	break;
+     001E 3rrr                      1-  432     	LGOTO	_00312_DS_
+     001F                           1-  433     _00309_DS_:
+                                    1-  434     	.line	259, "number.c"; 	PORTB &= 0xFB;
+     001F 1Drr                      1-  435     	BCR	_PORTB,2
+                                    1-  436     	.line	260, "number.c"; 	break;
+     0020 3rrr                      1-  437     	LGOTO	_00312_DS_
+     0021                           1-  438     _00310_DS_:
+                                    1-  439     	.line	262, "number.c"; 	PORTA &=  0xBF;
+     0021 1Frr                      1-  440     	BCR	_PORTA,6
+     0022                           1-  441     _00312_DS_:
+                                    1-  442     	.line	265, "number.c"; 	}
+                                    1-  443     	RETURN	
+     0022 0010                      3-   26 m1      ret
+                                    1-  444     ; exit point of _setlowOutput
+                                    1-  446     ;***
+                                    1-  447     ;  pBlock Stats: dbName = C
+                                    1-  448     ;***
+                                    1-  449     ;has an exit
+                                    1-  450     ;1 compiler assigned register :
+                                    1-  451     ;   r0x1005
+                                    1-  452     ;; Starting pCode block
+                                    1-  453     .segment "code"; module=number, function=_setHightOutput
+                                    1-  455     ;local variable name mapping:
+     0000                           1-  457     _setHightOutput:
+                                    1-  458     ; 2 exit points
+                                    1-  459     	.line	216, "number.c"; 	void setHightOutput(char outPut)
+                                    1-  460     	BANKSEL	r0x1005
+     0000 00rr                      1-  461     	MOVAR	r0x1005
+                                    1-  462     ;;unsigned compare: left < lit (0x1=1), size=1
+                                    1-  463     	.line	218, "number.c"; 	switch(outPut)
+     0001 2101                      1-  464     	MOVIA	0x01
+     0002 04rr                      1-  465     	SUBAR	r0x1005,W
+     0003 0803                      1-  466     	BTRSS	STATUS,0
+     0004 3rrr                      1-  467     	LGOTO	_00290_DS_
+                                    1-  468     ;;swapping arguments (AOP_TYPEs 1/2)
+                                    1-  469     ;;unsigned compare: left >= lit (0x7=7), size=1
+     0005 2107                      1-  470     	MOVIA	0x07
+     0006 04rr                      1-  471     	SUBAR	r0x1005,W
+     0007 0C03                      1-  472     	BTRSC	STATUS,0
+     0008 3rrr                      1-  473     	LGOTO	_00290_DS_
+     0009 06rr                      1-  474     	DECR	r0x1005,F
+     000A 21rr                      1-  475     	MOVIA	((_00300_DS_ >> 8) & 0xff)
+     000B 008A                      1-  476     	MOVAR	PCHBUF
+     000C 01rr                      1-  477     	MOVR	r0x1005,W
+     000D 25rr                      1-  478     	ADDIA	_00300_DS_
+     000E 0C03                      1-  479     	BTRSC	STATUS,0
+     000F 058A                      1-  480     	INCR	PCHBUF,F
+     0010 0082                      1-  481     	MOVAR	PCL
+     0011                           1-  482     _00300_DS_:
+     0011 3rrr                      1-  483     	LGOTO	_00288_DS_
+     0012 3rrr                      1-  484     	LGOTO	_00287_DS_
+     0013 3rrr                      1-  485     	LGOTO	_00286_DS_
+     0014 3rrr                      1-  486     	LGOTO	_00285_DS_
+     0015 3rrr                      1-  487     	LGOTO	_00284_DS_
+     0016 3rrr                      1-  488     	LGOTO	_00283_DS_
+     0017                           1-  489     _00283_DS_:
+                                    1-  490     	.line	221, "number.c"; 	PORTB |= 0x01;
+     0017 18rr                      1-  491     	BSR	_PORTB,0
+                                    1-  492     	.line	222, "number.c"; 	break;
+     0018 3rrr                      1-  493     	LGOTO	_00290_DS_
+     0019                           1-  494     _00284_DS_:
+                                    1-  495     	.line	224, "number.c"; 	PORTA |= 0x02;
+     0019 18rr                      1-  496     	BSR	_PORTA,1
+                                    1-  497     	.line	225, "number.c"; 	break;
+     001A 3rrr                      1-  498     	LGOTO	_00290_DS_
+     001B                           1-  499     _00285_DS_:
+                                    1-  500     	.line	227, "number.c"; 	PORTA |= 0x01;
+     001B 18rr                      1-  501     	BSR	_PORTA,0
+                                    1-  502     	.line	228, "number.c"; 	break;
+     001C 3rrr                      1-  503     	LGOTO	_00290_DS_
+     001D                           1-  504     _00286_DS_:
+                                    1-  505     	.line	230, "number.c"; 	PORTA |= 0x80;
+     001D 1Brr                      1-  506     	BSR	_PORTA,7
+                                    1-  507     	.line	231, "number.c"; 	break;
+     001E 3rrr                      1-  508     	LGOTO	_00290_DS_
+     001F                           1-  509     _00287_DS_:
+                                    1-  510     	.line	233, "number.c"; 	PORTB |= 0x04;
+     001F 19rr                      1-  511     	BSR	_PORTB,2
+                                    1-  512     	.line	234, "number.c"; 	break;
+     0020 3rrr                      1-  513     	LGOTO	_00290_DS_
+     0021                           1-  514     _00288_DS_:
+                                    1-  515     	.line	236, "number.c"; 	PORTA |= 0x40;
+     0021 1Brr                      1-  516     	BSR	_PORTA,6
+     0022                           1-  517     _00290_DS_:
+                                    1-  518     	.line	239, "number.c"; 	}
+                                    1-  519     	RETURN	
+     0022 0010                      3-   26 m1      ret
+                                    1-  520     ; exit point of _setHightOutput
+                                    1-  522     ;***
+                                    1-  523     ;  pBlock Stats: dbName = C
+                                    1-  524     ;***
+                                    1-  525     ;has an exit
+                                    1-  526     ;functions called:
+                                    1-  527     ;   _setInput
+                                    1-  528     ;   _setOutput
+                                    1-  529     ;   _setHightOutput
+                                    1-  530     ;   _setOutput
+                                    1-  531     ;   _setlowOutput
+                                    1-  532     ;   _delayms
+                                    1-  533     ;   _setInput
+                                    1-  534     ;   _setOutput
+                                    1-  535     ;   _setHightOutput
+                                    1-  536     ;   _setOutput
+                                    1-  537     ;   _setlowOutput
+                                    1-  538     ;   _delayms
+                                    1-  539     ;3 compiler assigned registers:
+                                    1-  540     ;   r0x1006
+                                    1-  541     ;   STK00
+                                    1-  542     ;   r0x1007
+                                    1-  543     ;; Starting pCode block
+                                    1-  544     .segment "code"; module=number, function=_showNub
+                                    1-  546     ;local variable name mapping:
+     0000                           1-  549     _showNub:
+                                    1-  550     ; 2 exit points
+                                    1-  551     	.line	200, "number.c"; 	void showNub(char hight,char low)
+                                    1-  552     	BANKSEL	r0x1006
+     0000 00rr                      1-  553     	MOVAR	r0x1006
+     0001 01rr                      1-  554     	MOVR	STK00,W
+                                    1-  555     	BANKSEL	r0x1007
+     0002 00rr                      1-  556     	MOVAR	r0x1007
+                                    1-  557     	.line	202, "number.c"; 	setInput();
+     0003 2rrr                      1-  558     	LCALL	_setInput
+                                    1-  559     	.line	203, "number.c"; 	PORTA &= 0x3C;		
+     0004 213C                      1-  560     	MOVIA	0x3c
+     0005 10rr                      1-  561     	ANDAR	_PORTA,F
+                                    1-  562     	.line	204, "number.c"; 	PORTB &= 0xFA;
+     0006 21FA                      1-  563     	MOVIA	0xfa
+     0007 10rr                      1-  564     	ANDAR	_PORTB,F
+                                    1-  565     	.line	205, "number.c"; 	setOutput(hight);	//设置输出方向
+                                    1-  566     	BANKSEL	r0x1006
+     0008 01rr                      1-  567     	MOVR	r0x1006,W
+     0009 2rrr                      1-  568     	LCALL	_setOutput
+                                    1-  569     	.line	206, "number.c"; 	setHightOutput(hight);
+                                    1-  570     	BANKSEL	r0x1006
+     000A 01rr                      1-  571     	MOVR	r0x1006,W
+     000B 2rrr                      1-  572     	LCALL	_setHightOutput
+                                    1-  573     	.line	207, "number.c"; 	setOutput(low);		//设置输出方向
+                                    1-  574     	BANKSEL	r0x1007
+     000C 01rr                      1-  575     	MOVR	r0x1007,W
+     000D 2rrr                      1-  576     	LCALL	_setOutput
+                                    1-  577     	.line	208, "number.c"; 	setlowOutput(low);
+                                    1-  578     	BANKSEL	r0x1007
+     000E 01rr                      1-  579     	MOVR	r0x1007,W
+     000F 2rrr                      1-  580     	LCALL	_setlowOutput
+                                    1-  581     	.line	209, "number.c"; 	delayms(10);
+     0010 210A                      1-  582     	MOVIA	0x0a
+     0011 2rrr                      1-  583     	LCALL	_delayms
+                                    1-  584     	.line	210, "number.c"; 	CLRWDT(); 
+     0012 0002                      1-  585     	clrwdt
+                                    1-  586     	.line	211, "number.c"; 	PORTA &= 0x3C;	
+     0013 213C                      1-  587     	MOVIA	0x3c
+     0014 10rr                      1-  588     	ANDAR	_PORTA,F
+                                    1-  589     	.line	212, "number.c"; 	PORTB &= 0xFA;
+     0015 21FA                      1-  590     	MOVIA	0xfa
+     0016 10rr                      1-  591     	ANDAR	_PORTB,F
+                                    1-  592     	.line	213, "number.c"; 	}
+                                    1-  593     	RETURN	
+     0017 0010                      3-   26 m1      ret
+                                    1-  594     ; exit point of _showNub
+                                    1-  596     ;***
+                                    1-  597     ;  pBlock Stats: dbName = C
+                                    1-  598     ;***
+                                    1-  599     ;has an exit
+                                    1-  600     ;functions called:
+                                    1-  601     ;   _showNub
+                                    1-  602     ;   _showNub
+                                    1-  603     ;1 compiler assigned register :
+                                    1-  604     ;   STK00
+                                    1-  605     ;; Starting pCode block
+                                    1-  606     .segment "code"; module=number, function=_MIN
+     0000                           1-  608     _MIN:
+                                    1-  609     ; 2 exit points
+                                    1-  610     	.line	197, "number.c"; 	showNub(4,5);
+     0000 2105                      1-  611     	MOVIA	0x05
+     0001 00rr                      1-  612     	MOVAR	STK00
+     0002 2104                      1-  613     	MOVIA	0x04
+     0003 2rrr                      1-  614     	LCALL	_showNub
+                                    1-  615     	.line	198, "number.c"; 	}
+                                    1-  616     	RETURN	
+     0004 0010                      3-   26 m1      ret
+                                    1-  617     ; exit point of _MIN
+                                    1-  619     ;***
+                                    1-  620     ;  pBlock Stats: dbName = C
+                                    1-  621     ;***
+                                    1-  622     ;has an exit
+                                    1-  623     ;functions called:
+                                    1-  624     ;   _showNub
+                                    1-  625     ;   _showNub
+                                    1-  626     ;1 compiler assigned register :
+                                    1-  627     ;   STK00
+                                    1-  628     ;; Starting pCode block
+                                    1-  629     .segment "code"; module=number, function=_LOW
+     0000                           1-  631     _LOW:
+                                    1-  632     ; 2 exit points
+                                    1-  633     	.line	192, "number.c"; 	showNub(1,2);
+     0000 2102                      1-  634     	MOVIA	0x02
+     0001 00rr                      1-  635     	MOVAR	STK00
+     0002 2101                      1-  636     	MOVIA	0x01
+     0003 2rrr                      1-  637     	LCALL	_showNub
+                                    1-  638     	.line	193, "number.c"; 	}
+                                    1-  639     	RETURN	
+     0004 0010                      3-   26 m1      ret
+                                    1-  640     ; exit point of _LOW
+                                    1-  642     ;***
+                                    1-  643     ;  pBlock Stats: dbName = C
+                                    1-  644     ;***
+                                    1-  645     ;has an exit
+                                    1-  646     ;functions called:
+                                    1-  647     ;   _showNub
+                                    1-  648     ;   _showNub
+                                    1-  649     ;1 compiler assigned register :
+                                    1-  650     ;   STK00
+                                    1-  651     ;; Starting pCode block
+                                    1-  652     .segment "code"; module=number, function=_MEDIUM
+     0000                           1-  654     _MEDIUM:
+                                    1-  655     ; 2 exit points
+                                    1-  656     	.line	187, "number.c"; 	showNub(2,1);
+     0000 2101                      1-  657     	MOVIA	0x01
+     0001 00rr                      1-  658     	MOVAR	STK00
+     0002 2102                      1-  659     	MOVIA	0x02
+     0003 2rrr                      1-  660     	LCALL	_showNub
+                                    1-  661     	.line	188, "number.c"; 	}
+                                    1-  662     	RETURN	
+     0004 0010                      3-   26 m1      ret
+                                    1-  663     ; exit point of _MEDIUM
+                                    1-  665     ;***
+                                    1-  666     ;  pBlock Stats: dbName = C
+                                    1-  667     ;***
+                                    1-  668     ;has an exit
+                                    1-  669     ;functions called:
+                                    1-  670     ;   _showNub
+                                    1-  671     ;   _showNub
+                                    1-  672     ;1 compiler assigned register :
+                                    1-  673     ;   STK00
+                                    1-  674     ;; Starting pCode block
+                                    1-  675     .segment "code"; module=number, function=_HIGHT
+     0000                           1-  677     _HIGHT:
+                                    1-  678     ; 2 exit points
+                                    1-  679     	.line	182, "number.c"; 	showNub(3,2);
+     0000 2102                      1-  680     	MOVIA	0x02
+     0001 00rr                      1-  681     	MOVAR	STK00
+     0002 2103                      1-  682     	MOVIA	0x03
+     0003 2rrr                      1-  683     	LCALL	_showNub
+                                    1-  684     	.line	183, "number.c"; 	}
+                                    1-  685     	RETURN	
+     0004 0010                      3-   26 m1      ret
+                                    1-  686     ; exit point of _HIGHT
+                                    1-  688     ;***
+                                    1-  689     ;  pBlock Stats: dbName = C
+                                    1-  690     ;***
+                                    1-  691     ;has an exit
+                                    1-  692     ;functions called:
+                                    1-  693     ;   _showNub
+                                    1-  694     ;   _showNub
+                                    1-  695     ;1 compiler assigned register :
+                                    1-  696     ;   STK00
+                                    1-  697     ;; Starting pCode block
+                                    1-  698     .segment "code"; module=number, function=_G3
+     0000                           1-  700     _G3:
+                                    1-  701     ; 2 exit points
+                                    1-  702     	.line	177, "number.c"; 	showNub(4,3);
+     0000 2103                      1-  703     	MOVIA	0x03
+     0001 00rr                      1-  704     	MOVAR	STK00
+     0002 2104                      1-  705     	MOVIA	0x04
+     0003 2rrr                      1-  706     	LCALL	_showNub
+                                    1-  707     	.line	178, "number.c"; 	}
+                                    1-  708     	RETURN	
+     0004 0010                      3-   26 m1      ret
+                                    1-  709     ; exit point of _G3
+                                    1-  711     ;***
+                                    1-  712     ;  pBlock Stats: dbName = C
+                                    1-  713     ;***
+                                    1-  714     ;has an exit
+                                    1-  715     ;functions called:
+                                    1-  716     ;   _showNub
+                                    1-  717     ;   _showNub
+                                    1-  718     ;1 compiler assigned register :
+                                    1-  719     ;   STK00
+                                    1-  720     ;; Starting pCode block
+                                    1-  721     .segment "code"; module=number, function=_F3
+     0000                           1-  723     _F3:
+                                    1-  724     ; 2 exit points
+                                    1-  725     	.line	172, "number.c"; 	showNub(4,6);
+     0000 2106                      1-  726     	MOVIA	0x06
+     0001 00rr                      1-  727     	MOVAR	STK00
+     0002 2104                      1-  728     	MOVIA	0x04
+     0003 2rrr                      1-  729     	LCALL	_showNub
+                                    1-  730     	.line	173, "number.c"; 	}
+                                    1-  731     	RETURN	
+     0004 0010                      3-   26 m1      ret
+                                    1-  732     ; exit point of _F3
+                                    1-  734     ;***
+                                    1-  735     ;  pBlock Stats: dbName = C
+                                    1-  736     ;***
+                                    1-  737     ;has an exit
+                                    1-  738     ;functions called:
+                                    1-  739     ;   _showNub
+                                    1-  740     ;   _showNub
+                                    1-  741     ;1 compiler assigned register :
+                                    1-  742     ;   STK00
+                                    1-  743     ;; Starting pCode block
+                                    1-  744     .segment "code"; module=number, function=_E3
+     0000                           1-  746     _E3:
+                                    1-  747     ; 2 exit points
+                                    1-  748     	.line	167, "number.c"; 	showNub(6,3);
+     0000 2103                      1-  749     	MOVIA	0x03
+     0001 00rr                      1-  750     	MOVAR	STK00
+     0002 2106                      1-  751     	MOVIA	0x06
+     0003 2rrr                      1-  752     	LCALL	_showNub
+                                    1-  753     	.line	168, "number.c"; 	}
+                                    1-  754     	RETURN	
+     0004 0010                      3-   26 m1      ret
+                                    1-  755     ; exit point of _E3
+                                    1-  757     ;***
+                                    1-  758     ;  pBlock Stats: dbName = C
+                                    1-  759     ;***
+                                    1-  760     ;has an exit
+                                    1-  761     ;functions called:
+                                    1-  762     ;   _showNub
+                                    1-  763     ;   _showNub
+                                    1-  764     ;1 compiler assigned register :
+                                    1-  765     ;   STK00
+                                    1-  766     ;; Starting pCode block
+                                    1-  767     .segment "code"; module=number, function=_D3
+     0000                           1-  769     _D3:
+                                    1-  770     ; 2 exit points
+                                    1-  771     	.line	162, "number.c"; 	showNub(3,1);
+     0000 2101                      1-  772     	MOVIA	0x01
+     0001 00rr                      1-  773     	MOVAR	STK00
+     0002 2103                      1-  774     	MOVIA	0x03
+     0003 2rrr                      1-  775     	LCALL	_showNub
+                                    1-  776     	.line	163, "number.c"; 	}
+                                    1-  777     	RETURN	
+     0004 0010                      3-   26 m1      ret
+                                    1-  778     ; exit point of _D3
+                                    1-  780     ;***
+                                    1-  781     ;  pBlock Stats: dbName = C
+                                    1-  782     ;***
+                                    1-  783     ;has an exit
+                                    1-  784     ;functions called:
+                                    1-  785     ;   _showNub
+                                    1-  786     ;   _showNub
+                                    1-  787     ;1 compiler assigned register :
+                                    1-  788     ;   STK00
+                                    1-  789     ;; Starting pCode block
+                                    1-  790     .segment "code"; module=number, function=_C3
+     0000                           1-  792     _C3:
+                                    1-  793     ; 2 exit points
+                                    1-  794     	.line	157, "number.c"; 	showNub(1,3);
+     0000 2103                      1-  795     	MOVIA	0x03
+     0001 00rr                      1-  796     	MOVAR	STK00
+     0002 2101                      1-  797     	MOVIA	0x01
+     0003 2rrr                      1-  798     	LCALL	_showNub
+                                    1-  799     	.line	158, "number.c"; 	}
+                                    1-  800     	RETURN	
+     0004 0010                      3-   26 m1      ret
+                                    1-  801     ; exit point of _C3
+                                    1-  803     ;***
+                                    1-  804     ;  pBlock Stats: dbName = C
+                                    1-  805     ;***
+                                    1-  806     ;has an exit
+                                    1-  807     ;functions called:
+                                    1-  808     ;   _showNub
+                                    1-  809     ;   _showNub
+                                    1-  810     ;1 compiler assigned register :
+                                    1-  811     ;   STK00
+                                    1-  812     ;; Starting pCode block
+                                    1-  813     .segment "code"; module=number, function=_B3
+     0000                           1-  815     _B3:
+                                    1-  816     ; 2 exit points
+                                    1-  817     	.line	152, "number.c"; 	showNub(1,4);
+     0000 2104                      1-  818     	MOVIA	0x04
+     0001 00rr                      1-  819     	MOVAR	STK00
+     0002 2101                      1-  820     	MOVIA	0x01
+     0003 2rrr                      1-  821     	LCALL	_showNub
+                                    1-  822     	.line	153, "number.c"; 	}
+                                    1-  823     	RETURN	
+     0004 0010                      3-   26 m1      ret
+                                    1-  824     ; exit point of _B3
+                                    1-  826     ;***
+                                    1-  827     ;  pBlock Stats: dbName = C
+                                    1-  828     ;***
+                                    1-  829     ;has an exit
+                                    1-  830     ;functions called:
+                                    1-  831     ;   _showNub
+                                    1-  832     ;   _showNub
+                                    1-  833     ;1 compiler assigned register :
+                                    1-  834     ;   STK00
+                                    1-  835     ;; Starting pCode block
+                                    1-  836     .segment "code"; module=number, function=_A3
+     0000                           1-  838     _A3:
+                                    1-  839     ; 2 exit points
+                                    1-  840     	.line	147, "number.c"; 	showNub(6,4);
+     0000 2104                      1-  841     	MOVIA	0x04
+     0001 00rr                      1-  842     	MOVAR	STK00
+     0002 2106                      1-  843     	MOVIA	0x06
+     0003 2rrr                      1-  844     	LCALL	_showNub
+                                    1-  845     	.line	148, "number.c"; 	}
+                                    1-  846     	RETURN	
+     0004 0010                      3-   26 m1      ret
+                                    1-  847     ; exit point of _A3
+                                    1-  849     ;***
+                                    1-  850     ;  pBlock Stats: dbName = C
+                                    1-  851     ;***
+                                    1-  852     ;has an exit
+                                    1-  853     ;functions called:
+                                    1-  854     ;   _showNub
+                                    1-  855     ;   _showNub
+                                    1-  856     ;1 compiler assigned register :
+                                    1-  857     ;   STK00
+                                    1-  858     ;; Starting pCode block
+                                    1-  859     .segment "code"; module=number, function=_G2
+     0000                           1-  861     _G2:
+                                    1-  862     ; 2 exit points
+                                    1-  863     	.line	142, "number.c"; 	showNub(6,2);
+     0000 2102                      1-  864     	MOVIA	0x02
+     0001 00rr                      1-  865     	MOVAR	STK00
+     0002 2106                      1-  866     	MOVIA	0x06
+     0003 2rrr                      1-  867     	LCALL	_showNub
+                                    1-  868     	.line	143, "number.c"; 	}
+                                    1-  869     	RETURN	
+     0004 0010                      3-   26 m1      ret
+                                    1-  870     ; exit point of _G2
+                                    1-  872     ;***
+                                    1-  873     ;  pBlock Stats: dbName = C
+                                    1-  874     ;***
+                                    1-  875     ;has an exit
+                                    1-  876     ;functions called:
+                                    1-  877     ;   _showNub
+                                    1-  878     ;   _showNub
+                                    1-  879     ;1 compiler assigned register :
+                                    1-  880     ;   STK00
+                                    1-  881     ;; Starting pCode block
+                                    1-  882     .segment "code"; module=number, function=_F2
+     0000                           1-  884     _F2:
+                                    1-  885     ; 2 exit points
+                                    1-  886     	.line	137, "number.c"; 	showNub(5,6);
+     0000 2106                      1-  887     	MOVIA	0x06
+     0001 00rr                      1-  888     	MOVAR	STK00
+     0002 2105                      1-  889     	MOVIA	0x05
+     0003 2rrr                      1-  890     	LCALL	_showNub
+                                    1-  891     	.line	138, "number.c"; 	}
+                                    1-  892     	RETURN	
+     0004 0010                      3-   26 m1      ret
+                                    1-  893     ; exit point of _F2
+                                    1-  895     ;***
+                                    1-  896     ;  pBlock Stats: dbName = C
+                                    1-  897     ;***
+                                    1-  898     ;has an exit
+                                    1-  899     ;functions called:
+                                    1-  900     ;   _showNub
+                                    1-  901     ;   _showNub
+                                    1-  902     ;1 compiler assigned register :
+                                    1-  903     ;   STK00
+                                    1-  904     ;; Starting pCode block
+                                    1-  905     .segment "code"; module=number, function=_E2
+     0000                           1-  907     _E2:
+                                    1-  908     ; 2 exit points
+                                    1-  909     	.line	132, "number.c"; 	showNub(2,6);
+     0000 2106                      1-  910     	MOVIA	0x06
+     0001 00rr                      1-  911     	MOVAR	STK00
+     0002 2102                      1-  912     	MOVIA	0x02
+     0003 2rrr                      1-  913     	LCALL	_showNub
+                                    1-  914     	.line	133, "number.c"; 	}
+                                    1-  915     	RETURN	
+     0004 0010                      3-   26 m1      ret
+                                    1-  916     ; exit point of _E2
+                                    1-  918     ;***
+                                    1-  919     ;  pBlock Stats: dbName = C
+                                    1-  920     ;***
+                                    1-  921     ;has an exit
+                                    1-  922     ;functions called:
+                                    1-  923     ;   _showNub
+                                    1-  924     ;   _showNub
+                                    1-  925     ;1 compiler assigned register :
+                                    1-  926     ;   STK00
+                                    1-  927     ;; Starting pCode block
+                                    1-  928     .segment "code"; module=number, function=_D2
+     0000                           1-  930     _D2:
+                                    1-  931     ; 2 exit points
+                                    1-  932     	.line	127, "number.c"; 	showNub(2,3);
+     0000 2103                      1-  933     	MOVIA	0x03
+     0001 00rr                      1-  934     	MOVAR	STK00
+     0002 2102                      1-  935     	MOVIA	0x02
+     0003 2rrr                      1-  936     	LCALL	_showNub
+                                    1-  937     	.line	128, "number.c"; 	}
+                                    1-  938     	RETURN	
+     0004 0010                      3-   26 m1      ret
+                                    1-  939     ; exit point of _D2
+                                    1-  941     ;***
+                                    1-  942     ;  pBlock Stats: dbName = C
+                                    1-  943     ;***
+                                    1-  944     ;has an exit
+                                    1-  945     ;functions called:
+                                    1-  946     ;   _showNub
+                                    1-  947     ;   _showNub
+                                    1-  948     ;1 compiler assigned register :
+                                    1-  949     ;   STK00
+                                    1-  950     ;; Starting pCode block
+                                    1-  951     .segment "code"; module=number, function=_C2
+     0000                           1-  953     _C2:
+                                    1-  954     ; 2 exit points
+                                    1-  955     	.line	122, "number.c"; 	showNub(3,6);
+     0000 2106                      1-  956     	MOVIA	0x06
+     0001 00rr                      1-  957     	MOVAR	STK00
+     0002 2103                      1-  958     	MOVIA	0x03
+     0003 2rrr                      1-  959     	LCALL	_showNub
+                                    1-  960     	.line	123, "number.c"; 	}
+                                    1-  961     	RETURN	
+     0004 0010                      3-   26 m1      ret
+                                    1-  962     ; exit point of _C2
+                                    1-  964     ;***
+                                    1-  965     ;  pBlock Stats: dbName = C
+                                    1-  966     ;***
+                                    1-  967     ;has an exit
+                                    1-  968     ;functions called:
+                                    1-  969     ;   _showNub
+                                    1-  970     ;   _showNub
+                                    1-  971     ;1 compiler assigned register :
+                                    1-  972     ;   STK00
+                                    1-  973     ;; Starting pCode block
+                                    1-  974     .segment "code"; module=number, function=_B2
+     0000                           1-  976     _B2:
+                                    1-  977     ; 2 exit points
+                                    1-  978     	.line	117, "number.c"; 	showNub(6,5);
+     0000 2105                      1-  979     	MOVIA	0x05
+     0001 00rr                      1-  980     	MOVAR	STK00
+     0002 2106                      1-  981     	MOVIA	0x06
+     0003 2rrr                      1-  982     	LCALL	_showNub
+                                    1-  983     	.line	118, "number.c"; 	}
+                                    1-  984     	RETURN	
+     0004 0010                      3-   26 m1      ret
+                                    1-  985     ; exit point of _B2
+                                    1-  987     ;***
+                                    1-  988     ;  pBlock Stats: dbName = C
+                                    1-  989     ;***
+                                    1-  990     ;has an exit
+                                    1-  991     ;functions called:
+                                    1-  992     ;   _showNub
+                                    1-  993     ;   _showNub
+                                    1-  994     ;1 compiler assigned register :
+                                    1-  995     ;   STK00
+                                    1-  996     ;; Starting pCode block
+                                    1-  997     .segment "code"; module=number, function=_A2
+     0000                           1-  999     _A2:
+                                    1- 1000     ; 2 exit points
+                                    1- 1001     	.line	112, "number.c"; 	showNub(5,4);
+     0000 2104                      1- 1002     	MOVIA	0x04
+     0001 00rr                      1- 1003     	MOVAR	STK00
+     0002 2105                      1- 1004     	MOVIA	0x05
+     0003 2rrr                      1- 1005     	LCALL	_showNub
+                                    1- 1006     	.line	113, "number.c"; 	}
+                                    1- 1007     	RETURN	
+     0004 0010                      3-   26 m1      ret
+                                    1- 1008     ; exit point of _A2
+                                    1- 1010     ;***
+                                    1- 1011     ;  pBlock Stats: dbName = C
+                                    1- 1012     ;***
+                                    1- 1013     ;has an exit
+                                    1- 1014     ;functions called:
+                                    1- 1015     ;   _showNub
+                                    1- 1016     ;   _showNub
+                                    1- 1017     ;1 compiler assigned register :
+                                    1- 1018     ;   STK00
+                                    1- 1019     ;; Starting pCode block
+                                    1- 1020     .segment "code"; module=number, function=_C1
+     0000                           1- 1022     _C1:
+                                    1- 1023     ; 2 exit points
+                                    1- 1024     	.line	107, "number.c"; 	showNub(2,5);
+     0000 2105                      1- 1025     	MOVIA	0x05
+     0001 00rr                      1- 1026     	MOVAR	STK00
+     0002 2102                      1- 1027     	MOVIA	0x02
+     0003 2rrr                      1- 1028     	LCALL	_showNub
+                                    1- 1029     	.line	108, "number.c"; 	}
+                                    1- 1030     	RETURN	
+     0004 0010                      3-   26 m1      ret
+                                    1- 1031     ; exit point of _C1
+                                    1- 1033     ;***
+                                    1- 1034     ;  pBlock Stats: dbName = C
+                                    1- 1035     ;***
+                                    1- 1036     ;has an exit
+                                    1- 1037     ;functions called:
+                                    1- 1038     ;   _showNub
+                                    1- 1039     ;   _showNub
+                                    1- 1040     ;1 compiler assigned register :
+                                    1- 1041     ;   STK00
+                                    1- 1042     ;; Starting pCode block
+                                    1- 1043     .segment "code"; module=number, function=_B1
+     0000                           1- 1045     _B1:
+                                    1- 1046     ; 2 exit points
+                                    1- 1047     	.line	102, "number.c"; 	showNub(4,2);
+     0000 2102                      1- 1048     	MOVIA	0x02
+     0001 00rr                      1- 1049     	MOVAR	STK00
+     0002 2104                      1- 1050     	MOVIA	0x04
+     0003 2rrr                      1- 1051     	LCALL	_showNub
+                                    1- 1052     	.line	103, "number.c"; 	}
+                                    1- 1053     	RETURN	
+     0004 0010                      3-   26 m1      ret
+                                    1- 1054     ; exit point of _B1
+                                    1- 1056     ;***
+                                    1- 1057     ;  pBlock Stats: dbName = C
+                                    1- 1058     ;***
+                                    1- 1059     ;has an exit
+                                    1- 1060     ;functions called:
+                                    1- 1061     ;   _B1
+                                    1- 1062     ;   _C1
+                                    1- 1063     ;   _B1
+                                    1- 1064     ;   _C1
+                                    1- 1065     ;; Starting pCode block
+                                    1- 1066     .segment "code"; module=number, function=_showBaiwei
+     0000                           1- 1068     _showBaiwei:
+                                    1- 1069     ; 2 exit points
+                                    1- 1070     	.line	95, "number.c"; 	B1();
+     0000 2rrr                      1- 1071     	LCALL	_B1
+                                    1- 1072     	.line	96, "number.c"; 	C1();
+     0001 2rrr                      1- 1073     	LCALL	_C1
+                                    1- 1074     	.line	97, "number.c"; 	}
+                                    1- 1075     	RETURN	
+     0002 0010                      3-   26 m1      ret
+                                    1- 1076     ; exit point of _showBaiwei
+                                    1- 1078     ;***
+                                    1- 1079     ;  pBlock Stats: dbName = C
+                                    1- 1080     ;***
+                                    1- 1081     ;has an exit
+                                    1- 1082     ;functions called:
+                                    1- 1083     ;   _A3
+                                    1- 1084     ;   _B3
+                                    1- 1085     ;   _C3
+                                    1- 1086     ;   _D3
+                                    1- 1087     ;   _E3
+                                    1- 1088     ;   _F3
+                                    1- 1089     ;   _G3
+                                    1- 1090     ;   _A3
+                                    1- 1091     ;   _B3
+                                    1- 1092     ;   _C3
+                                    1- 1093     ;   _D3
+                                    1- 1094     ;   _E3
+                                    1- 1095     ;   _F3
+                                    1- 1096     ;   _G3
+                                    1- 1097     ;1 compiler assigned register :
+                                    1- 1098     ;   r0x1008
+                                    1- 1099     ;; Starting pCode block
+                                    1- 1100     .segment "code"; module=number, function=_showNubGewei2
+                                    1- 1102     ;local variable name mapping:
+     0000                           1- 1104     _showNubGewei2:
+                                    1- 1105     ; 2 exit points
+                                    1- 1106     	.line	64, "number.c"; 	void showNubGewei2(char index)
+                                    1- 1107     	BANKSEL	r0x1008
+     0000 00rr                      1- 1108     	MOVAR	r0x1008
+                                    1- 1109     ;;swapping arguments (AOP_TYPEs 1/2)
+                                    1- 1110     ;;unsigned compare: left >= lit (0x7=7), size=1
+                                    1- 1111     	.line	66, "number.c"; 	switch(index)
+     0001 2107                      1- 1112     	MOVIA	0x07
+     0002 04rr                      1- 1113     	SUBAR	r0x1008,W
+     0003 0C03                      1- 1114     	BTRSC	STATUS,0
+     0004 3rrr                      1- 1115     	LGOTO	_00184_DS_
+     0005 21rr                      1- 1116     	MOVIA	((_00190_DS_ >> 8) & 0xff)
+     0006 008A                      1- 1117     	MOVAR	PCHBUF
+     0007 01rr                      1- 1118     	MOVR	r0x1008,W
+     0008 25rr                      1- 1119     	ADDIA	_00190_DS_
+     0009 0C03                      1- 1120     	BTRSC	STATUS,0
+     000A 058A                      1- 1121     	INCR	PCHBUF,F
+     000B 0082                      1- 1122     	MOVAR	PCL
+     000C                           1- 1123     _00190_DS_:
+     000C 3rrr                      1- 1124     	LGOTO	_00176_DS_
+     000D 3rrr                      1- 1125     	LGOTO	_00177_DS_
+     000E 3rrr                      1- 1126     	LGOTO	_00178_DS_
+     000F 3rrr                      1- 1127     	LGOTO	_00179_DS_
+     0010 3rrr                      1- 1128     	LGOTO	_00180_DS_
+     0011 3rrr                      1- 1129     	LGOTO	_00181_DS_
+     0012 3rrr                      1- 1130     	LGOTO	_00182_DS_
+     0013                           1- 1131     _00176_DS_:
+                                    1- 1132     	.line	69, "number.c"; 	A3();
+     0013 2rrr                      1- 1133     	LCALL	_A3
+                                    1- 1134     	.line	70, "number.c"; 	break;
+     0014 3rrr                      1- 1135     	LGOTO	_00184_DS_
+     0015                           1- 1136     _00177_DS_:
+                                    1- 1137     	.line	72, "number.c"; 	B3();
+     0015 2rrr                      1- 1138     	LCALL	_B3
+                                    1- 1139     	.line	73, "number.c"; 	break;
+     0016 3rrr                      1- 1140     	LGOTO	_00184_DS_
+     0017                           1- 1141     _00178_DS_:
+                                    1- 1142     	.line	75, "number.c"; 	C3();
+     0017 2rrr                      1- 1143     	LCALL	_C3
+                                    1- 1144     	.line	76, "number.c"; 	break;
+     0018 3rrr                      1- 1145     	LGOTO	_00184_DS_
+     0019                           1- 1146     _00179_DS_:
+                                    1- 1147     	.line	78, "number.c"; 	D3();
+     0019 2rrr                      1- 1148     	LCALL	_D3
+                                    1- 1149     	.line	79, "number.c"; 	break;
+     001A 3rrr                      1- 1150     	LGOTO	_00184_DS_
+     001B                           1- 1151     _00180_DS_:
+                                    1- 1152     	.line	81, "number.c"; 	E3();
+     001B 2rrr                      1- 1153     	LCALL	_E3
+                                    1- 1154     	.line	82, "number.c"; 	break;
+     001C 3rrr                      1- 1155     	LGOTO	_00184_DS_
+     001D                           1- 1156     _00181_DS_:
+                                    1- 1157     	.line	84, "number.c"; 	F3();
+     001D 2rrr                      1- 1158     	LCALL	_F3
+                                    1- 1159     	.line	85, "number.c"; 	break;
+     001E 3rrr                      1- 1160     	LGOTO	_00184_DS_
+     001F                           1- 1161     _00182_DS_:
+                                    1- 1162     	.line	87, "number.c"; 	G3();
+     001F 2rrr                      1- 1163     	LCALL	_G3
+     0020                           1- 1164     _00184_DS_:
+                                    1- 1165     	.line	90, "number.c"; 	}
+                                    1- 1166     	RETURN	
+     0020 0010                      3-   26 m1      ret
+                                    1- 1167     ; exit point of _showNubGewei2
+                                    1- 1169     ;***
+                                    1- 1170     ;  pBlock Stats: dbName = C
+                                    1- 1171     ;***
+                                    1- 1172     ;has an exit
+                                    1- 1173     ;functions called:
+                                    1- 1174     ;   _showNubGewei2
+                                    1- 1175     ;   _setInput
+                                    1- 1176     ;   _showNubGewei2
+                                    1- 1177     ;   _setInput
+                                    1- 1178     ;3 compiler assigned registers:
+                                    1- 1179     ;   r0x1009
+                                    1- 1180     ;   r0x100A
+                                    1- 1181     ;   r0x100B
+                                    1- 1182     ;; Starting pCode block
+                                    1- 1183     .segment "code"; module=number, function=_showNubGewei
+                                    1- 1185     ;local variable name mapping:
+     0000                           1- 1188     _showNubGewei:
+                                    1- 1189     ; 2 exit points
+                                    1- 1190     	.line	52, "number.c"; 	void showNubGewei(char num)
+                                    1- 1191     	BANKSEL	r0x1009
+     0000 00rr                      1- 1192     	MOVAR	r0x1009
+                                    1- 1193     	.line	54, "number.c"; 	for(char i=0;i<7;i++)
+                                    1- 1194     	BANKSEL	r0x100A
+     0001 02rr                      1- 1195     	CLRR	r0x100A
+                                    1- 1196     ;;unsigned compare: left < lit (0x7=7), size=1
+     0002                           1- 1197     _00155_DS_:
+     0002 2107                      1- 1198     	MOVIA	0x07
+                                    1- 1199     	BANKSEL	r0x100A
+     0003 04rr                      1- 1200     	SUBAR	r0x100A,W
+     0004 0C03                      1- 1201     	BTRSC	STATUS,0
+     0005 3rrr                      1- 1202     	LGOTO	_00157_DS_
+                                    1- 1203     	.line	56, "number.c"; 	if((num >> i) & 0x01)
+                                    1- 1204     	BANKSEL	r0x1009
+     0006 01rr                      1- 1205     	MOVR	r0x1009,W
+                                    1- 1206     	BANKSEL	r0x100B
+     0007 00rr                      1- 1207     	MOVAR	r0x100B
+                                    1- 1208     	BANKSEL	r0x100A
+     0008 01rr                      1- 1209     	MOVR	r0x100A,W
+     0009 2700                      1- 1210     	SUBIA	0x00
+     000A 0D03                      1- 1211     	BTRSC	STATUS,2
+     000B 3rrr                      1- 1212     	LGOTO	_00171_DS_
+     000C                           1- 1213     _00170_DS_:
+                                    1- 1214     	BANKSEL	r0x100B
+     000C 13rr                      1- 1215     	RRR	r0x100B,F
+     000D 2501                      1- 1216     	ADDIA	0x01
+     000E 0803                      1- 1217     	BTRSS	STATUS,0
+     000F 3rrr                      1- 1218     	LGOTO	_00170_DS_
+     0010                           1- 1219     _00171_DS_:
+                                    1- 1220     	BANKSEL	r0x100B
+     0010 08rr                      1- 1221     	BTRSS	r0x100B,0
+     0011 3rrr                      1- 1222     	LGOTO	_00151_DS_
+                                    1- 1223     	.line	57, "number.c"; 	showNubGewei2(i);
+                                    1- 1224     	BANKSEL	r0x100A
+     0012 01rr                      1- 1225     	MOVR	r0x100A,W
+     0013 2rrr                      1- 1226     	LCALL	_showNubGewei2
+     0014 3rrr                      1- 1227     	LGOTO	_00156_DS_
+     0015                           1- 1228     _00151_DS_:
+                                    1- 1229     	.line	59, "number.c"; 	setInput();
+     0015 2rrr                      1- 1230     	LCALL	_setInput
+     0016                           1- 1231     _00156_DS_:
+                                    1- 1232     	.line	54, "number.c"; 	for(char i=0;i<7;i++)
+                                    1- 1233     	BANKSEL	r0x100A
+     0016 05rr                      1- 1234     	INCR	r0x100A,F
+     0017 3rrr                      1- 1235     	LGOTO	_00155_DS_
+     0018                           1- 1236     _00157_DS_:
+                                    1- 1237     	.line	61, "number.c"; 	}
+                                    1- 1238     	RETURN	
+     0018 0010                      3-   26 m1      ret
+                                    1- 1239     ; exit point of _showNubGewei
+                                    1- 1241     ;***
+                                    1- 1242     ;  pBlock Stats: dbName = C
+                                    1- 1243     ;***
+                                    1- 1244     ;has an exit
+                                    1- 1245     ;functions called:
+                                    1- 1246     ;   _A2
+                                    1- 1247     ;   _B2
+                                    1- 1248     ;   _C2
+                                    1- 1249     ;   _D2
+                                    1- 1250     ;   _E2
+                                    1- 1251     ;   _F2
+                                    1- 1252     ;   _G2
+                                    1- 1253     ;   _A2
+                                    1- 1254     ;   _B2
+                                    1- 1255     ;   _C2
+                                    1- 1256     ;   _D2
+                                    1- 1257     ;   _E2
+                                    1- 1258     ;   _F2
+                                    1- 1259     ;   _G2
+                                    1- 1260     ;1 compiler assigned register :
+                                    1- 1261     ;   r0x100C
+                                    1- 1262     ;; Starting pCode block
+                                    1- 1263     .segment "code"; module=number, function=_showNubShiwei2
+                                    1- 1265     ;local variable name mapping:
+     0000                           1- 1267     _showNubShiwei2:
+                                    1- 1268     ; 2 exit points
+                                    1- 1269     	.line	24, "number.c"; 	void showNubShiwei2(char index)
+                                    1- 1270     	BANKSEL	r0x100C
+     0000 00rr                      1- 1271     	MOVAR	r0x100C
+                                    1- 1272     ;;swapping arguments (AOP_TYPEs 1/2)
+                                    1- 1273     ;;unsigned compare: left >= lit (0x7=7), size=1
+                                    1- 1274     	.line	26, "number.c"; 	switch(index)
+     0001 2107                      1- 1275     	MOVIA	0x07
+     0002 04rr                      1- 1276     	SUBAR	r0x100C,W
+     0003 0C03                      1- 1277     	BTRSC	STATUS,0
+     0004 3rrr                      1- 1278     	LGOTO	_00139_DS_
+     0005 21rr                      1- 1279     	MOVIA	((_00145_DS_ >> 8) & 0xff)
+     0006 008A                      1- 1280     	MOVAR	PCHBUF
+     0007 01rr                      1- 1281     	MOVR	r0x100C,W
+     0008 25rr                      1- 1282     	ADDIA	_00145_DS_
+     0009 0C03                      1- 1283     	BTRSC	STATUS,0
+     000A 058A                      1- 1284     	INCR	PCHBUF,F
+     000B 0082                      1- 1285     	MOVAR	PCL
+     000C                           1- 1286     _00145_DS_:
+     000C 3rrr                      1- 1287     	LGOTO	_00131_DS_
+     000D 3rrr                      1- 1288     	LGOTO	_00132_DS_
+     000E 3rrr                      1- 1289     	LGOTO	_00133_DS_
+     000F 3rrr                      1- 1290     	LGOTO	_00134_DS_
+     0010 3rrr                      1- 1291     	LGOTO	_00135_DS_
+     0011 3rrr                      1- 1292     	LGOTO	_00136_DS_
+     0012 3rrr                      1- 1293     	LGOTO	_00137_DS_
+     0013                           1- 1294     _00131_DS_:
+                                    1- 1295     	.line	29, "number.c"; 	A2();
+     0013 2rrr                      1- 1296     	LCALL	_A2
+                                    1- 1297     	.line	30, "number.c"; 	break;
+     0014 3rrr                      1- 1298     	LGOTO	_00139_DS_
+     0015                           1- 1299     _00132_DS_:
+                                    1- 1300     	.line	32, "number.c"; 	B2();
+     0015 2rrr                      1- 1301     	LCALL	_B2
+                                    1- 1302     	.line	33, "number.c"; 	break;
+     0016 3rrr                      1- 1303     	LGOTO	_00139_DS_
+     0017                           1- 1304     _00133_DS_:
+                                    1- 1305     	.line	35, "number.c"; 	C2();
+     0017 2rrr                      1- 1306     	LCALL	_C2
+                                    1- 1307     	.line	36, "number.c"; 	break;
+     0018 3rrr                      1- 1308     	LGOTO	_00139_DS_
+     0019                           1- 1309     _00134_DS_:
+                                    1- 1310     	.line	38, "number.c"; 	D2();
+     0019 2rrr                      1- 1311     	LCALL	_D2
+                                    1- 1312     	.line	39, "number.c"; 	break;
+     001A 3rrr                      1- 1313     	LGOTO	_00139_DS_
+     001B                           1- 1314     _00135_DS_:
+                                    1- 1315     	.line	41, "number.c"; 	E2();
+     001B 2rrr                      1- 1316     	LCALL	_E2
+                                    1- 1317     	.line	42, "number.c"; 	break;
+     001C 3rrr                      1- 1318     	LGOTO	_00139_DS_
+     001D                           1- 1319     _00136_DS_:
+                                    1- 1320     	.line	44, "number.c"; 	F2();
+     001D 2rrr                      1- 1321     	LCALL	_F2
+                                    1- 1322     	.line	45, "number.c"; 	break;
+     001E 3rrr                      1- 1323     	LGOTO	_00139_DS_
+     001F                           1- 1324     _00137_DS_:
+                                    1- 1325     	.line	47, "number.c"; 	G2();
+     001F 2rrr                      1- 1326     	LCALL	_G2
+     0020                           1- 1327     _00139_DS_:
+                                    1- 1328     	.line	50, "number.c"; 	}
+                                    1- 1329     	RETURN	
+     0020 0010                      3-   26 m1      ret
+                                    1- 1330     ; exit point of _showNubShiwei2
+                                    1- 1332     ;***
+                                    1- 1333     ;  pBlock Stats: dbName = C
+                                    1- 1334     ;***
+                                    1- 1335     ;has an exit
+                                    1- 1336     ;functions called:
+                                    1- 1337     ;   _showNubShiwei2
+                                    1- 1338     ;   _setInput
+                                    1- 1339     ;   _showNubShiwei2
+                                    1- 1340     ;   _setInput
+                                    1- 1341     ;3 compiler assigned registers:
+                                    1- 1342     ;   r0x100D
+                                    1- 1343     ;   r0x100E
+                                    1- 1344     ;   r0x100F
+                                    1- 1345     ;; Starting pCode block
+                                    1- 1346     .segment "code"; module=number, function=_showNubShiwei
+                                    1- 1348     ;local variable name mapping:
+     0000                           1- 1351     _showNubShiwei:
+                                    1- 1352     ; 2 exit points
+                                    1- 1353     	.line	12, "number.c"; 	void showNubShiwei(char num)
+                                    1- 1354     	BANKSEL	r0x100D
+     0000 00rr                      1- 1355     	MOVAR	r0x100D
+                                    1- 1356     	.line	14, "number.c"; 	for(char i=0;i<7;i++)
+                                    1- 1357     	BANKSEL	r0x100E
+     0001 02rr                      1- 1358     	CLRR	r0x100E
+                                    1- 1359     ;;unsigned compare: left < lit (0x7=7), size=1
+     0002                           1- 1360     _00110_DS_:
+     0002 2107                      1- 1361     	MOVIA	0x07
+                                    1- 1362     	BANKSEL	r0x100E
+     0003 04rr                      1- 1363     	SUBAR	r0x100E,W
+     0004 0C03                      1- 1364     	BTRSC	STATUS,0
+     0005 3rrr                      1- 1365     	LGOTO	_00112_DS_
+                                    1- 1366     	.line	16, "number.c"; 	if((num >> i) & 0x01)
+                                    1- 1367     	BANKSEL	r0x100D
+     0006 01rr                      1- 1368     	MOVR	r0x100D,W
+                                    1- 1369     	BANKSEL	r0x100F
+     0007 00rr                      1- 1370     	MOVAR	r0x100F
+                                    1- 1371     	BANKSEL	r0x100E
+     0008 01rr                      1- 1372     	MOVR	r0x100E,W
+     0009 2700                      1- 1373     	SUBIA	0x00
+     000A 0D03                      1- 1374     	BTRSC	STATUS,2
+     000B 3rrr                      1- 1375     	LGOTO	_00126_DS_
+     000C                           1- 1376     _00125_DS_:
+                                    1- 1377     	BANKSEL	r0x100F
+     000C 13rr                      1- 1378     	RRR	r0x100F,F
+     000D 2501                      1- 1379     	ADDIA	0x01
+     000E 0803                      1- 1380     	BTRSS	STATUS,0
+     000F 3rrr                      1- 1381     	LGOTO	_00125_DS_
+     0010                           1- 1382     _00126_DS_:
+                                    1- 1383     	BANKSEL	r0x100F
+     0010 08rr                      1- 1384     	BTRSS	r0x100F,0
+     0011 3rrr                      1- 1385     	LGOTO	_00106_DS_
+                                    1- 1386     	.line	17, "number.c"; 	showNubShiwei2(i);
+                                    1- 1387     	BANKSEL	r0x100E
+     0012 01rr                      1- 1388     	MOVR	r0x100E,W
+     0013 2rrr                      1- 1389     	LCALL	_showNubShiwei2
+     0014 3rrr                      1- 1390     	LGOTO	_00111_DS_
+     0015                           1- 1391     _00106_DS_:
+                                    1- 1392     	.line	19, "number.c"; 	setInput();
+     0015 2rrr                      1- 1393     	LCALL	_setInput
+     0016                           1- 1394     _00111_DS_:
+                                    1- 1395     	.line	14, "number.c"; 	for(char i=0;i<7;i++)
+                                    1- 1396     	BANKSEL	r0x100E
+     0016 05rr                      1- 1397     	INCR	r0x100E,F
+     0017 3rrr                      1- 1398     	LGOTO	_00110_DS_
+     0018                           1- 1399     _00112_DS_:
+                                    1- 1400     	.line	21, "number.c"; 	}
+                                    1- 1401     	RETURN	
+     0018 0010                      3-   26 m1      ret
+                                    1- 1402     ; exit point of _showNubShiwei
+                                    1- 1405     ;	code size estimation:
+                                    1- 1406     ;	  393+   43 =   436 instructions (  958 byte)
+                                    1- 1408     	end
+                                    1- 1408     	end
+
+SYMBOL TABLE            TYPE     VALUE
+__CHECKSUM_ADDR__       Label    00000000
+__PIN_COUNT__           Constant 0000000E
+__PROCESSOR__           Constant 00810613
+_00106_DS_              Label    00000015
+_00110_DS_              Label    00000002
+_00111_DS_              Label    00000016
+_00112_DS_              Label    00000018
+_00125_DS_              Label    0000000C
+_00126_DS_              Label    00000010
+_00131_DS_              Label    00000013
+_00132_DS_              Label    00000015
+_00133_DS_              Label    00000017
+_00134_DS_              Label    00000019
+_00135_DS_              Label    0000001B
+_00136_DS_              Label    0000001D
+_00137_DS_              Label    0000001F
+_00139_DS_              Label    00000020
+_00145_DS_              Label    0000000C
+_00151_DS_              Label    00000015
+_00155_DS_              Label    00000002
+_00156_DS_              Label    00000016
+_00157_DS_              Label    00000018
+_00170_DS_              Label    0000000C
+_00171_DS_              Label    00000010
+_00176_DS_              Label    00000013
+_00177_DS_              Label    00000015
+_00178_DS_              Label    00000017
+_00179_DS_              Label    00000019
+_00180_DS_              Label    0000001B
+_00181_DS_              Label    0000001D
+_00182_DS_              Label    0000001F
+_00184_DS_              Label    00000020
+_00190_DS_              Label    0000000C
+_00283_DS_              Label    00000017
+_00284_DS_              Label    00000019
+_00285_DS_              Label    0000001B
+_00286_DS_              Label    0000001D
+_00287_DS_              Label    0000001F
+_00288_DS_              Label    00000021
+_00290_DS_              Label    00000022
+_00300_DS_              Label    00000011
+_00305_DS_              Label    00000017
+_00306_DS_              Label    00000019
+_00307_DS_              Label    0000001B
+_00308_DS_              Label    0000001D
+_00309_DS_              Label    0000001F
+_00310_DS_              Label    00000021
+_00312_DS_              Label    00000022
+_00322_DS_              Label    00000011
+_00327_DS_              Label    00000017
+_00328_DS_              Label    0000001D
+_00329_DS_              Label    00000023
+_00330_DS_              Label    00000029
+_00331_DS_              Label    0000002F
+_00332_DS_              Label    00000035
+_00334_DS_              Label    0000003A
+_00344_DS_              Label    00000011
+_00355_DS_              Label    00000002
+_00357_DS_              Label    00000009
+_A2                     Label    00000000
+_A3                     Label    00000000
+_ABPLCON                Label    00000000
+_ABPLCONbits            Label    00000000
+_ADCR                   Label    00000000
+_ADCRbits               Label    00000000
+_ADD                    Label    00000000
+_ADMD                   Label    00000000
+_ADMDbits               Label    00000000
+_ADR                    Label    00000000
+_ADRbits                Label    00000000
+_ADVREFH                Label    00000000
+_ADVREFHbits            Label    00000000
+_APHCON                 Label    00000000
+_AWUCON                 Label    00000000
+_AWUCONbits             Label    00000000
+_B1                     Label    00000000
+_B2                     Label    00000000
+_B3                     Label    00000000
+_BODCON                 Label    00000000
+_BPHCON                 Label    00000000
+_BPHCONbits             Label    00000000
+_BWUCON                 Label    00000000
+_BWUCONbits             Label    00000000
+_BZ1CR                  Label    00000000
+_BZ2CR                  Label    00000000
+_BZ3CR                  Label    00000000
+_C1                     Label    00000000
+_C2                     Label    00000000
+_C3                     Label    00000000
+_D2                     Label    00000000
+_D3                     Label    00000000
+_delayms                Label    00000000
+_E2                     Label    00000000
+_E3                     Label    00000000
+_F2                     Label    00000000
+_F3                     Label    00000000
+_FSR                    Label    00000000
+_G2                     Label    00000000
+_G3                     Label    00000000
+_HIGHT                  Label    00000000
+_INDF                   Label    00000000
+_INTE                   Label    00000000
+_INTE2                  Label    00000000
+_INTE2bits              Label    00000000
+_INTEbits               Label    00000000
+_INTEDG                 Label    00000000
+_INTEDGbits             Label    00000000
+_INTF                   Label    00000000
+_INTFbits               Label    00000000
+_IOSTA                  Label    00000000
+_IOSTB                  Label    00000000
+_IRCR                   Label    00000000
+_LOW                    Label    00000000
+_MEDIUM                 Label    00000000
+_MIN                    Label    00000000
+_OSCCR                  Label    00000000
+_PACON                  Label    00000000
+_PACONbits              Label    00000000
+_PCHBUF                 Label    00000000
+_PCL                    Label    00000000
+_PCON                   Label    00000000
+_PCON1                  Label    00000000
+_PCONbits               Label    00000000
+_PORTA                  Label    00000000
+_PORTAbits              Label    00000000
+_PORTB                  Label    00000000
+_PORTBbits              Label    00000000
+_PS0CV                  Label    00000000
+_PS1CV                  Label    00000000
+_PS2CV                  Label    00000000
+_PS3CV                  Label    00000000
+_PWM1DUTY               Label    00000000
+_PWM2DUTY               Label    00000000
+_PWM3DUTY               Label    00000000
+_RFC                    Label    00000000
+_RFCbits                Label    00000000
+_setHightOutput         Label    00000000
+_setInput               Label    00000000
+_setlowOutput           Label    00000000
+_setOutput              Label    00000000
+_showBaiwei             Label    00000000
+_showNub                Label    00000000
+_showNubGewei           Label    00000000
+_showNubGewei2          Label    00000000
+_showNubShiwei          Label    00000000
+_showNubShiwei2         Label    00000000
+_STATUS                 Label    00000000
+_T0MD                   Label    00000000
+_T1CR1                  Label    00000000
+_T1CR2                  Label    00000000
+_T2CR1                  Label    00000000
+_T2CR2                  Label    00000000
+_T3CR1                  Label    00000000
+_T3CR2                  Label    00000000
+_TBHD                   Label    00000000
+_TBHP                   Label    00000000
+_TM3RH                  Label    00000000
+_TMR0                   Label    00000000
+_TMR1                   Label    00000000
+_TMR2                   Label    00000000
+_TMR3                   Label    00000000
+_TMRH                   Label    00000000
+ENABLE_RAM_BANK         Variable 00000000
+F                       Constant 00000001
+FSR                     Constant 00000004
+INDF                    Constant 00000000
+PCHBUF                  Constant 0000000A
+PCL                     Constant 00000002
+PSAVE                   Label    00000000
+r0x1000                 Label    00000000
+r0x1001                 Label    00000000
+r0x1002                 Label    00000000
+r0x1003                 Label    00000000
+r0x1004                 Label    00000000
+r0x1005                 Label    00000000
+r0x1006                 Label    00000000
+r0x1007                 Label    00000000
+r0x1008                 Label    00000000
+r0x1009                 Label    00000000
+r0x100A                 Label    00000000
+r0x100B                 Label    00000000
+r0x100C                 Label    00000000
+r0x100D                 Label    00000000
+r0x100E                 Label    00000000
+r0x100F                 Label    00000000
+SSAVE                   Label    00000000
+STATUS                  Constant 00000003
+STK00                   Label    00000000
+STK01                   Label    00000000
+STK02                   Label    00000000
+W                       Constant 00000000
+WSAVE                   Label    00000000
+
+
+SOURCE FILE TABLE
+001 number.s
+002 ny8b061d.inc
+003 common.inc
+004 number.c
+
+PROCESSOR    = NY8B061D (8 bits)
+PROGRAM ROM  = 0x00000000 - 0x000005FF
+DATA ROM     = 0x00000000 - 0x000005FF
+RESERVED MEM = 0x00000800 - 0x00000810
+SRAM / SFR   = 0x00000000 - 0x00000000

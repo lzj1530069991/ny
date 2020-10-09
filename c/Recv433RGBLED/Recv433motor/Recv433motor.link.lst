@@ -1,9 +1,29 @@
 00000000 c7f6                 LGOTO 0x9; crt0.o:initial_ram_bss=0x9
 00000008 c7e2                 LGOTO 0x1d; main.o:__sdcc_interrupt=0x1d
 00000009                      crt0.o:initial_ram_bss:
+00000009 e0fc                 BCR 0x3, 0x6
+0000000a e07c                 BCR 0x3, 0x7
+0000000b dedf                 MOVIA 0x20
+0000000c ff7b                 MOVAR 0x4
+0000000d de7f                 MOVIA 0x80
+0000000e d7e8                 LCALL 0x17; crt0.o:startup_exit=0x17
 0000000f                      ___cinit_size__:
+0000000f e4fc                 BSR 0x3, 0x6
+00000010 e07c                 BCR 0x3, 0x7
+00000011 dedf                 MOVIA 0x20
+00000012 ff7b                 MOVAR 0x4
+00000013 de7f                 MOVIA 0x80
+00000014 d7e8                 LCALL 0x17; crt0.o:startup_exit=0x17
 00000015                      crt0.o:initial_ram_cinit:
+00000015 d63b                 LCALL 0x1c4; ___cinit_load__=0x1c4
+00000016 c7b0                 LGOTO 0x4f; _main=0x4f
 00000017                      crt0.o:startup_exit:
+00000017 fd7f                 CLRR 0x0
+00000018 fa7b                 INCR 0x4, 0x1
+00000019 c97b                 CMPAR 0x4
+0000001a f6fc                 BTRSS 0x3, 0x2
+0000001b c7e8                 LGOTO 0x17; crt0.o:startup_exit=0x17
+0000001c ffef                 RET
 0000001d                      main.o:__sdcc_interrupt:
 0000001d ff3d                 MOVAR 0x42
 0000001e eafc                 SWAPR 0x3, 0x0
@@ -170,35 +190,35 @@
 000000ab                      main.o:_00255_DS_:
 000000ab ffef                 RET
 000000ac                      _initSys:
-000000ac fd7a                 CLRR 0x5
-000000ad de20                 MOVIA 0xdf
-000000ae fff6                 IOST 0x9
-000000af defb                 MOVIA 0x4
-000000b0 fffa                 IOST 0x5
-000000b1 defe                 MOVIA 0x1
-000000b2 fff9                 IOST 0x6
-000000b3 fd7a                 CLRR 0x5
-000000b4 de57                 MOVIA 0xa8
-000000b5 ff77                 MOVAR 0x8
-000000b6 fdff                 CLRA
-000000b7 fff0                 IOST 0xf
-000000b8 dec8                 MOVIA 0x37
-000000b9 ff7e                 MOVAR 0x1
-000000ba fdff                 CLRA
-000000bb fffc                 T0MD
-000000bc def4                 MOVIA 0xb
-000000bd ff71                 MOVAR 0xe
-000000be deee                 MOVIA 0x11
-000000bf fff0                 IOST 0xf
-000000c0 decf                 MOVIA 0x30
-000000c1 ff66                 MOVAR 0x19
-000000c2 de00                 MOVIA 0xff
-000000c3 ffbf                 SFUN 0x0
-000000c4 defa                 MOVIA 0x5
-000000c5 ffbd                 SFUN 0x2
-000000c6 defc                 MOVIA 0x3
-000000c7 ffbe                 SFUN 0x1
-000000c8 e0fc                 BCR 0x3, 0x6
+000000ac e0fc                 BCR 0x3, 0x6
+000000ad fd7a                 CLRR 0x5
+000000ae de20                 MOVIA 0xdf
+000000af fff6                 IOST 0x9
+000000b0 defb                 MOVIA 0x4
+000000b1 fffa                 IOST 0x5
+000000b2 defe                 MOVIA 0x1
+000000b3 fff9                 IOST 0x6
+000000b4 fd7a                 CLRR 0x5
+000000b5 de57                 MOVIA 0xa8
+000000b6 ff77                 MOVAR 0x8
+000000b7 fdff                 CLRA
+000000b8 fff0                 IOST 0xf
+000000b9 dec8                 MOVIA 0x37
+000000ba ff7e                 MOVAR 0x1
+000000bb fdff                 CLRA
+000000bc fffc                 T0MD
+000000bd def4                 MOVIA 0xb
+000000be ff71                 MOVAR 0xe
+000000bf deee                 MOVIA 0x11
+000000c0 fff0                 IOST 0xf
+000000c1 decf                 MOVIA 0x30
+000000c2 ff66                 MOVAR 0x19
+000000c3 de00                 MOVIA 0xff
+000000c4 ffbf                 SFUN 0x0
+000000c5 defa                 MOVIA 0x5
+000000c6 ffbd                 SFUN 0x2
+000000c7 defc                 MOVIA 0x3
+000000c8 ffbe                 SFUN 0x1
 000000c9 e54b                 BSR 0x34, 0x5
 000000ca fffb                 ENI
 000000cb ffef                 RET

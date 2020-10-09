@@ -277,7 +277,7 @@ void pwmInit()
 		return;
 	TMRH = 0x00;
 	TMR2 = 128;							//频率为110K
-	PWM2DUTY = 0x08;				// 		
+	//PWM2DUTY = 0x08;				// 		
 	
 	T2CR2 = C_TMR2_ClkSrc_Inst | C_PS2_Div2;	// Enable Prescaler1, Prescaler1 dividing rate = 1:2, Timer1 clock source is instruction clock 
 	T2CR1 = C_PWM2_En | C_TMR2_Reload | C_TMR2_En;	// PWM1 output will be present on PB6 , PWM1 output is active high, reloaded from TMR1, non-stop mode
@@ -296,26 +296,27 @@ void workCtr()
 		//堵转了
 		u8t minDuty = 20;
 		if(workStep == 1)
-			minDuty = 20;
+			minDuty = 15;
 		else if(workStep == 2)
-			minDuty = 13;
+			minDuty = 10;
 		else if(workStep == 3)
 			minDuty = 6;
 		else if(workStep == 4)
 			minDuty = 2;
-		if(duty > minDuty)
-		{
-			--duty;
-			PWM2DUTY = duty;
-		}
+		PWM2DUTY = minDuty;
+//		if(duty > minDuty)
+//		{
+//			--duty;
+//			PWM2DUTY = duty;
+//		}
 	}
 	else
 	{
-		if(++duty >= maxDuty)
-		{
-			duty = maxDuty;
-		}
-		PWM2DUTY = duty;
+//		if(++duty >= maxDuty)
+//		{
+//			duty = maxDuty;
+//		}
+		PWM2DUTY = maxDuty;
 	}
 }
 
@@ -413,19 +414,20 @@ void keyCtr()
 		count500ms = 0;
 		if(++workStep > 4)
 			workStep = 1;
-		pwmInit();
+		
 		duty = 1;
 		fgCount = 0;
 		workStartFlag = 0;
 		if(workStep == 1)
-			maxDuty = 90;
+			maxDuty = 35;
 		else if(workStep == 2)
-			maxDuty = 80;
+			maxDuty = 15;
 		else if(workStep == 3)
-			maxDuty = 70;
+			maxDuty = 7;
 		else if(workStep == 4)
-			maxDuty = 60;
+			maxDuty = 1;
 		PWM2DUTY = maxDuty;
+		pwmInit();
 	}
 	else if(kclick == 2)
 	{
@@ -441,7 +443,7 @@ void keyCtr()
 		else
 		{
 			workStartFlag = 1;
-			maxDuty = 90;
+			maxDuty = 75;
 			workStep = 1;
 			ledStep = 0;
 			count500ms = 0;

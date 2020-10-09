@@ -26,6 +26,11 @@ uint8_t rockTime = 0;
 uint8_t checkTime = 0;
 uint8_t rockFlag = 0;
 uint8_t deadTime = 0;
+uint8_t wrongTime = 0;
+uint8_t	rightTime = 0;
+uint8_t chrgFullTime = 0;
+uint8_t waitTime = 0;
+int8_t  countTime = 0;	//倾斜统计次数
 
 void ind_light_disp(uint8_t ind_num);
 static unsigned char table[]={0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f,0x71,0x38};
@@ -34,6 +39,7 @@ char keyRead(char KeyStatus);
 void refreshLed();
 void workCtr();
 void gotoSleep();
+void refreshChrg();
 
 void isr(void) __interrupt(0)
 {
@@ -88,14 +94,27 @@ void main(void)
 	while(1)
 	{
 		CLRWDT();			//Clear WDT, this function is defined in ny8command.h
-		//getData();
 		if(workStep)
 		{
 			refreshLed();
 		}
+		else if(chrgStep)
+		{
+			refreshChrg();
+		}
+		else
+		{
+			COM1 = 1;
+			COM2 = 1;
+			COM3 = 1;
+		}
 		if(!IntFlag)
         	continue;			//10ms执行一次
         IntFlag = 0;
+        if(waitTime > 0)
+        {
+        	waitTime--;
+        }
 		if(keyRead(0x01 & (~PORTA)))
 		{
 			if(workStep)
@@ -106,6 +125,8 @@ void main(void)
 				rockFlag = 0;
 				MOTOR = 0;
 				baiwei = shiwei = gewei = 0;
+				ind_light_disp(table[gewei]);
+				
 			}
 			else
 			{
@@ -113,6 +134,11 @@ void main(void)
 				workTime = 0;
 				rockStep = 1;
 				rockFlag = 0;
+				if(chrgStep)
+				{
+					workStep = 0;
+					rockStep = 0;
+				}
 				//msa_init();
 			}
 		}
@@ -123,7 +149,7 @@ void main(void)
 			getData();
 			if(++checkTime >= 25)
 			{
-				if(rockTime >= 5)
+				if(rockTime >= 7)
 				{
 					rockFlag = 1;
 					if(++deadTime >= 240)
@@ -131,18 +157,26 @@ void main(void)
 						deadTime = 240;
 						rockFlag = 0;
 					}
+					
 				}
 				else
 				{
-					rockFlag = 0;
+					deadTime = 0;
+					
+				}
+				
+				if(wrongTime >= 20)
+				{
+					rockFlag = 1;
 					deadTime = 0;
 				}
 				checkTime = 0;
 				rockTime = 0;
+				wrongTime = 0;
 				
 			}
 		}
-		if(workStep == 0 && rockStep == 0 && keyCount== 0 && rockTime == 0)
+		if(workStep == 0 && rockStep == 0 && keyCount== 0 && rockTime == 0 && chrgStep == 0)
 		{
 			if(++sleepTime > 100)
 				gotoSleep();
@@ -177,19 +211,26 @@ void workCtr()
 		{
 			MOTOR = 0;
 			rockStep = 0;
+			workTime = 0;
 		}
 	}
 	else if(rockStep == 2)
 	{
 		++workTime;
 		if(workTime < 79)
+		{
 			MOTOR = 0;
+		}
 		if(workTime < 90)
+		{
 			MOTOR = 1;
+		}
 		else if(workTime < 95)
 			MOTOR = 0;
 		else if(workTime < 112)
+		{
 			MOTOR = 1;
+		}
 		else if(workTime < 115)
 			MOTOR = 0;
 		else if(workTime < 129)
@@ -240,9 +281,30 @@ void workCtr()
 	}
 }
 
+void refreshChrg()
+{
+	
+	COM1 = 1;
+	COM2 = 1;
+	COM3 = 1;
+	delay_us(10);
+	if(chrgStep == 1)
+	{
+		ind_light_disp(table[11]);
+	}
+	else if(chrgStep == 2)
+	{
+		ind_light_disp(table[10]);
+	}
+	COM1 = 0;
+	COM2 = 0;
+	COM3 = 0;
+	delay_us(100);
+}
+
 void refreshLed()
 {
-	ind_light_disp(0);
+	
 	COM1 = 1;
 	COM2 = 1;
 	COM3 = 1;
@@ -278,21 +340,28 @@ void chrgCtr()
 	{
 		//充电中
 		workStep = 0;	//充电中不能使用
+		baiwei = shiwei = gewei = 0;
 		COM1 = COM2 = COM3 = 1;
 		if(PORTA & 0x10)
 		{
 			//充满了
-			chrgStep = 2;
-			ind_light_disp(table[10]);
+			if(++chrgFullTime >= 200)
+			{
+				chrgFullTime = 200;
+				chrgStep = 2;
+			}
+			else
+				chrgStep = 1;
 		}
 		else
 		{
+			chrgFullTime = 0;
 			chrgStep = 1;
-			ind_light_disp(table[11]);
 		}
 	}
 	else
 	{
+		chrgFullTime = 0;
 		chrgStep = 0;
 	}
 }
@@ -306,18 +375,22 @@ uint8_t getData()
 	hz = (int16_t)(hzH);
 	hz = ((short)(hzH << 8 | hzL))>> 4;
 	hz &= 0x0FFF;
-	if(hz > 0x080 && hz < 0xF70)
+	if(hz > 0x090 && hz < 0xF70)
 	{
-		if(++rockTime >= 5 && rockFlag == 0)
+		rightTime = 0;
+		if(++rockTime >= 7 && rockFlag == 0)
 		{
-			if(rockStep > 0)
+			
+			if(rockStep > 0 || waitTime > 0)
 				return 0;
-			rockStep = 2;
-			workTime = 0;
-			rockTime = 0;
-			rockFlag = 1;
 			if(deadTime < 240)
 			{
+				if(++countTime < 2)
+				{
+					rockTime = 0;
+					return 0;
+				}
+				waitTime = 100;
 				if(++gewei >= 10)
 				{
 					gewei = 0;
@@ -330,7 +403,11 @@ uint8_t getData()
 						}
 					}
 				}
-			}
+			}	
+			rockStep = 2;
+			rockFlag = 1;
+			workTime = 0;
+			rockTime = 0;
 			deadTime = 0;
 			return 1;
 		}
@@ -339,9 +416,22 @@ uint8_t getData()
 	}
 	else
 	{
-		if((hz > 0x080 && hz < 0x0FF0) || (hz > 0x003 && hz < 0x080))
+		if((hz > 0xFD0 && hz < 0x0FFF) || (hz > 0x000 && hz < 0x030))
 		{
-			rockTime = 0;
+			if(++rightTime >= 14)	//灵敏度调节
+			{
+				countTime = 0;
+				rockTime = 0;
+				MOTOR = 0;
+				rockStep = 0;
+				workTime = 0;
+				rockFlag = 0;
+				rightTime = 14;
+			}
+		}
+		else
+		{
+			wrongTime++;
 		}
 		return 0;
 	}
