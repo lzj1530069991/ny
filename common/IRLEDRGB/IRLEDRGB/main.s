@@ -712,7 +712,7 @@ _00226_DS_:
 	BCR	_Status,3
 	.line	256, "main.c"; 	bitIndex = 0;
 	CLRR	_bitIndex
-;;shiftRight_Left2ResultLit:5586: shCount=1, size=1, sign=0, same=1, offr=0
+;;shiftRight_Left2ResultLit:5589: shCount=1, size=1, sign=0, same=1, offr=0
 _00233_DS_:
 	.line	259, "main.c"; 	value = value >> 1;
 	BCR	STATUS,0

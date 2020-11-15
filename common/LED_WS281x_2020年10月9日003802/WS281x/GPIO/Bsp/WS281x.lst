@@ -1,0 +1,332 @@
+
+                    Nyquest Technology Co., Ltd.
+
+NYASM 2.25
+
+    ADDR  OPCODE/VALUE              LINE   TAG  SOURCE                   STATEMENT    
+
+                                    1-    1     ;--------------------------------------------------------
+                                    1-    2     ; File Created by SDCC : free open source ANSI-C Compiler
+                                    1-    3     ; Version 3.7.1 #0 (MSVC)
+                                    1-    4     ;--------------------------------------------------------
+                                    1-    5     ; NY8A port
+                                    1-    6     ;--------------------------------------------------------
+                                    1-    7     	.file	"Bsp\WS281x.c"
+                                    1-    8     	list	p=NY8A054D,c=on
+                                    1-    9     	#include "ny8a054d.inc"
+                                    1-   11     ;--------------------------------------------------------
+                                    1-   12     ; external declarations
+                                    1-   13     ;--------------------------------------------------------
+                                    1-   14     	extern	_KEY_Proess
+                                    1-   15     	extern	_ScanKey_Config
+                                    1-   16     	extern	_ScanKey
+                                    1-   17     	extern	_IR_Decode
+                                    1-   18     	extern	_IR_KEY_Proess
+                                    1-   19     	extern	_WS281x_Drive_Write_Byte
+                                    1-   20     	extern	_GPIO_Init
+                                    1-   21     	extern	_KEY_GPIO_Init
+                                    1-   22     	extern	_Timer1_Init
+                                    1-   23     	extern	_Timer3_Init
+                                    1-   24     	extern	_INT1_Init
+                                    1-   25     	extern	_delay
+                                    1-   26     	extern	_PORTAbits
+                                    1-   27     	extern	_PORTBbits
+                                    1-   28     	extern	_PCONbits
+                                    1-   29     	extern	_BWUCONbits
+                                    1-   30     	extern	_ABPLCONbits
+                                    1-   31     	extern	_BPHCONbits
+                                    1-   32     	extern	_INTEbits
+                                    1-   33     	extern	_INTFbits
+                                    1-   34     	extern	_AWUCONbits
+                                    1-   35     	extern	_INTEDGbits
+                                    1-   36     	extern	_RFCbits
+                                    1-   37     	extern	_INTE2bits
+                                    1-   38     	extern	_K1_struct
+                                    1-   39     	extern	_K2_struct
+                                    1-   40     	extern	_K3_struct
+                                    1-   41     	extern	_irDeCodeTimeOverFlow
+                                    1-   42     	extern	_irDeCodeDat
+                                    1-   43     	extern	_irDeCodeBitTime
+                                    1-   44     	extern	_irDeCodeBitIndex
+                                    1-   45     	extern	_INDF
+                                    1-   46     	extern	_TMR0
+                                    1-   47     	extern	_PCL
+                                    1-   48     	extern	_STATUS
+                                    1-   49     	extern	_FSR
+                                    1-   50     	extern	_PORTA
+                                    1-   51     	extern	_PORTB
+                                    1-   52     	extern	_PCON
+                                    1-   53     	extern	_BWUCON
+                                    1-   54     	extern	_PCHBUF
+                                    1-   55     	extern	_ABPLCON
+                                    1-   56     	extern	_BPHCON
+                                    1-   57     	extern	_INTE
+                                    1-   58     	extern	_INTF
+                                    1-   59     	extern	_AWUCON
+                                    1-   60     	extern	_INTEDG
+                                    1-   61     	extern	_TMRH
+                                    1-   62     	extern	_RFC
+                                    1-   63     	extern	_TM34RH
+                                    1-   64     	extern	_INTE2
+                                    1-   65     	extern	_TMR1
+                                    1-   66     	extern	_T1CR1
+                                    1-   67     	extern	_T1CR2
+                                    1-   68     	extern	_PWM1DUTY
+                                    1-   69     	extern	_PS1CV
+                                    1-   70     	extern	_BZ1CR
+                                    1-   71     	extern	_IRCR
+                                    1-   72     	extern	_TBHP
+                                    1-   73     	extern	_TBHD
+                                    1-   74     	extern	_P2CR1
+                                    1-   75     	extern	_PWM2DUTY
+                                    1-   76     	extern	_OSCCR
+                                    1-   77     	extern	_TMR3
+                                    1-   78     	extern	_T3CR1
+                                    1-   79     	extern	_T3CR2
+                                    1-   80     	extern	_PWM3DUTY
+                                    1-   81     	extern	_PS3CV
+                                    1-   82     	extern	_P4CR1
+                                    1-   83     	extern	_PWM4DUTY
+                                    1-   84     	extern	_P5CR1
+                                    1-   85     	extern	_PWM5DUTY
+                                    1-   86     	extern	_PWM5RH
+                                    1-   87     	extern	_IOSTA
+                                    1-   88     	extern	_IOSTB
+                                    1-   89     	extern	_APHCON
+                                    1-   90     	extern	_PS0CV
+                                    1-   91     	extern	_BODCON
+                                    1-   92     	extern	_CMPCR
+                                    1-   93     	extern	_PCON1
+                                    1-   94     	extern	_T0MD
+                                    1-   96     	extern PSAVE
+                                    1-   97     	extern SSAVE
+                                    1-   98     	extern WSAVE
+                                    1-   99     	extern STK12
+                                    1-  100     	extern STK11
+                                    1-  101     	extern STK10
+                                    1-  102     	extern STK09
+                                    1-  103     	extern STK08
+                                    1-  104     	extern STK07
+                                    1-  105     	extern STK06
+                                    1-  106     	extern STK05
+                                    1-  107     	extern STK04
+                                    1-  108     	extern STK03
+                                    1-  109     	extern STK02
+                                    1-  110     	extern STK01
+                                    1-  111     	extern STK00
+                                    1-  112     ;--------------------------------------------------------
+                                    1-  113     ; global declarations
+                                    1-  114     ;--------------------------------------------------------
+                                    1-  115     	extern	_WS281x_RGB
+                                    1-  117     ;--------------------------------------------------------
+                                    1-  118     ; global definitions
+                                    1-  119     ;--------------------------------------------------------
+                                    1-  120     ;--------------------------------------------------------
+                                    1-  121     ; absolute symbol definitions
+                                    1-  122     ;--------------------------------------------------------
+                                    1-  123     ;--------------------------------------------------------
+                                    1-  124     ; compiler-defined variables
+                                    1-  125     ;--------------------------------------------------------
+                                    1-  126     .segment "uninit"
+     0000                           1-  127     r0x1000:
+                                    1-  128     	.res	1
+                                    1-  129     .segment "uninit"
+     0000                           1-  130     r0x1001:
+                                    1-  131     	.res	1
+                                    1-  132     .segment "uninit"
+     0000                           1-  133     r0x1002:
+                                    1-  134     	.res	1
+                                    1-  135     ;--------------------------------------------------------
+                                    1-  136     ; initialized data
+                                    1-  137     ;--------------------------------------------------------
+                                    1-  138     ;--------------------------------------------------------
+                                    1-  139     ; overlayable items in internal ram 
+                                    1-  140     ;--------------------------------------------------------
+                                    1-  141     ;	udata_ovr
+                                    1-  142     ;--------------------------------------------------------
+                                    1-  143     ; code
+                                    1-  144     ;--------------------------------------------------------
+                                    1-  145     ;***
+                                    1-  146     ;  pBlock Stats: dbName = C
+                                    1-  147     ;***
+                                    1-  148     ;has an exit
+                                    1-  149     ;functions called:
+                                    1-  150     ;   _WS281x_Drive_Write_Byte
+                                    1-  151     ;   _WS281x_Drive_Write_Byte
+                                    1-  152     ;   _WS281x_Drive_Write_Byte
+                                    1-  153     ;   _WS281x_Drive_Write_Byte
+                                    1-  154     ;   _WS281x_Drive_Write_Byte
+                                    1-  155     ;   _WS281x_Drive_Write_Byte
+                                    1-  156     ;5 compiler assigned registers:
+                                    1-  157     ;   r0x1000
+                                    1-  158     ;   STK00
+                                    1-  159     ;   r0x1001
+                                    1-  160     ;   STK01
+                                    1-  161     ;   r0x1002
+                                    1-  162     ;; Starting pCode block
+                                    1-  163     .segment "code"; module=WS281x, function=_WS281x_RGB
+                                    1-  165     ;local variable name mapping:
+     0000                           1-  169     _WS281x_RGB:
+                                    1-  170     ; 2 exit points
+                                    1-  171     	.line	9, "Bsp\WS281x.c"; 	void WS281x_RGB(uint8_t R,uint8_t G,uint8_t B) {
+                                    1-  172     	BANKSEL	r0x1000
+     0000 rrrr                      3-   71 m1      .banksel ram_address
+     0001 00rr                      1-  173     	MOVAR	r0x1000
+     0002 01rr                      1-  174     	MOVR	STK00,W
+                                    1-  175     	BANKSEL	r0x1001
+     0003 rrrr                      3-   71 m1      .banksel ram_address
+     0004 00rr                      1-  176     	MOVAR	r0x1001
+     0005 01rr                      1-  177     	MOVR	STK01,W
+                                    1-  178     	BANKSEL	r0x1002
+     0006 rrrr                      3-   71 m1      .banksel ram_address
+     0007 00rr                      1-  179     	MOVAR	r0x1002
+                                    1-  180     	.line	11, "Bsp\WS281x.c"; 	WS281x_Drive_Write_Byte(G);
+                                    1-  181     	BANKSEL	r0x1001
+     0008 rrrr                      3-   71 m1      .banksel ram_address
+     0009 01rr                      1-  182     	MOVR	r0x1001,W
+     000A 2rrr                      1-  183     	LCALL	_WS281x_Drive_Write_Byte
+                                    1-  184     	.line	12, "Bsp\WS281x.c"; 	WS281x_Drive_Write_Byte(R);
+                                    1-  185     	BANKSEL	r0x1000
+     000B rrrr                      3-   71 m1      .banksel ram_address
+     000C 01rr                      1-  186     	MOVR	r0x1000,W
+     000D 2rrr                      1-  187     	LCALL	_WS281x_Drive_Write_Byte
+                                    1-  188     	.line	13, "Bsp\WS281x.c"; 	WS281x_Drive_Write_Byte(B);
+                                    1-  189     	BANKSEL	r0x1002
+     000E rrrr                      3-   71 m1      .banksel ram_address
+     000F 01rr                      1-  190     	MOVR	r0x1002,W
+     0010 2rrr                      1-  191     	LCALL	_WS281x_Drive_Write_Byte
+                                    1-  192     	.line	15, "Bsp\WS281x.c"; 	}
+                                    1-  193     	RETURN	
+     0011 0010                      3-   26 m1      ret
+                                    1-  194     ; exit point of _WS281x_RGB
+                                    1-  197     ;	code size estimation:
+                                    1-  198     ;	   12+    6 =    18 instructions (   48 byte)
+                                    1-  200     	end
+                                    1-  200     	end
+
+SYMBOL TABLE            TYPE     VALUE
+__CHECKSUM_ADDR__       Label    00000000
+__PIN_COUNT__           Constant 0000000E
+__PROCESSOR__           Constant 00800543
+_ABPLCON                Label    00000000
+_ABPLCONbits            Label    00000000
+_APHCON                 Label    00000000
+_AWUCON                 Label    00000000
+_AWUCONbits             Label    00000000
+_BODCON                 Label    00000000
+_BPHCON                 Label    00000000
+_BPHCONbits             Label    00000000
+_BWUCON                 Label    00000000
+_BWUCONbits             Label    00000000
+_BZ1CR                  Label    00000000
+_CMPCR                  Label    00000000
+_delay                  Label    00000000
+_FSR                    Label    00000000
+_GPIO_Init              Label    00000000
+_INDF                   Label    00000000
+_INT1_Init              Label    00000000
+_INTE                   Label    00000000
+_INTE2                  Label    00000000
+_INTE2bits              Label    00000000
+_INTEbits               Label    00000000
+_INTEDG                 Label    00000000
+_INTEDGbits             Label    00000000
+_INTF                   Label    00000000
+_INTFbits               Label    00000000
+_IOSTA                  Label    00000000
+_IOSTB                  Label    00000000
+_IR_Decode              Label    00000000
+_IR_KEY_Proess          Label    00000000
+_IRCR                   Label    00000000
+_irDeCodeBitIndex       Label    00000000
+_irDeCodeBitTime        Label    00000000
+_irDeCodeDat            Label    00000000
+_irDeCodeTimeOverFlow   Label    00000000
+_K1_struct              Label    00000000
+_K2_struct              Label    00000000
+_K3_struct              Label    00000000
+_KEY_GPIO_Init          Label    00000000
+_KEY_Proess             Label    00000000
+_OSCCR                  Label    00000000
+_P2CR1                  Label    00000000
+_P4CR1                  Label    00000000
+_P5CR1                  Label    00000000
+_PCHBUF                 Label    00000000
+_PCL                    Label    00000000
+_PCON                   Label    00000000
+_PCON1                  Label    00000000
+_PCONbits               Label    00000000
+_PORTA                  Label    00000000
+_PORTAbits              Label    00000000
+_PORTB                  Label    00000000
+_PORTBbits              Label    00000000
+_PS0CV                  Label    00000000
+_PS1CV                  Label    00000000
+_PS3CV                  Label    00000000
+_PWM1DUTY               Label    00000000
+_PWM2DUTY               Label    00000000
+_PWM3DUTY               Label    00000000
+_PWM4DUTY               Label    00000000
+_PWM5DUTY               Label    00000000
+_PWM5RH                 Label    00000000
+_RFC                    Label    00000000
+_RFCbits                Label    00000000
+_ScanKey                Label    00000000
+_ScanKey_Config         Label    00000000
+_STATUS                 Label    00000000
+_T0MD                   Label    00000000
+_T1CR1                  Label    00000000
+_T1CR2                  Label    00000000
+_T3CR1                  Label    00000000
+_T3CR2                  Label    00000000
+_TBHD                   Label    00000000
+_TBHP                   Label    00000000
+_Timer1_Init            Label    00000000
+_Timer3_Init            Label    00000000
+_TM34RH                 Label    00000000
+_TMR0                   Label    00000000
+_TMR1                   Label    00000000
+_TMR3                   Label    00000000
+_TMRH                   Label    00000000
+_WS281x_Drive_Write_Byte Label    00000000
+_WS281x_RGB             Label    00000000
+ENABLE_RAM_BANK         Constant 00000001
+F                       Constant 00000001
+FSR                     Constant 00000004
+INDF                    Constant 00000000
+PCHBUF                  Constant 0000000A
+PCL                     Constant 00000002
+PSAVE                   Label    00000000
+r0x1000                 Label    00000000
+r0x1001                 Label    00000000
+r0x1002                 Label    00000000
+SSAVE                   Label    00000000
+STATUS                  Constant 00000003
+STK00                   Label    00000000
+STK01                   Label    00000000
+STK02                   Label    00000000
+STK03                   Label    00000000
+STK04                   Label    00000000
+STK05                   Label    00000000
+STK06                   Label    00000000
+STK07                   Label    00000000
+STK08                   Label    00000000
+STK09                   Label    00000000
+STK10                   Label    00000000
+STK11                   Label    00000000
+STK12                   Label    00000000
+W                       Constant 00000000
+WSAVE                   Label    00000000
+
+
+SOURCE FILE TABLE
+001 Bsp\WS281x.s
+002 ny8a054d.inc
+003 common.inc
+004 Bsp\WS281x.c
+
+PROCESSOR    = NY8A054D (8 bits)
+PROGRAM ROM  = 0x00000000 - 0x000007FF
+DATA ROM     = 0x00000000 - 0x000007FF
+RESERVED MEM = 0x00000800 - 0x00000810
+SRAM / SFR   = 0x00000000 - 0x00000000

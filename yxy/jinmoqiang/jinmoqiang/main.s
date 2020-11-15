@@ -1233,6 +1233,8 @@ _gotoSleep:
 	.line	475, "main.c"; 	PCON = C_WDT_En | C_LVR_En | C_LVD_En;				// Enable WDT ,  Enable LVR
 	MOVIA	0xa8
 	MOVAR	_PCON
+	.line	476, "main.c"; 	PCON &= 0xEF;
+	BCR	_PCON,4
 	.line	477, "main.c"; 	}
 	RETURN	
 ; exit point of _gotoSleep
@@ -2113,6 +2115,8 @@ _initSys:
 	.line	196, "main.c"; 	PCON = C_WDT_En | C_LVR_En;				// Enable WDT ,  Enable LVR
 	MOVIA	0x88
 	MOVAR	_PCON
+	.line	197, "main.c"; 	PCON &= 0xEF;
+	BCR	_PCON,4
 	.line	199, "main.c"; 	PCON1 = C_TMR0_En;						// Enable Timer0
 	MOVIA	0x01
 	IOST	_PCON1
@@ -2233,6 +2237,6 @@ _LEDHON:
 
 
 ;	code size estimation:
-;	  781+  181 =   962 instructions ( 2286 byte)
+;	  783+  181 =   964 instructions ( 2290 byte)
 
 	end

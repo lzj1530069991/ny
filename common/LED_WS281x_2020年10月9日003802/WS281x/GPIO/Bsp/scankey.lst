@@ -1,0 +1,955 @@
+
+                    Nyquest Technology Co., Ltd.
+
+NYASM 2.26
+
+    ADDR  OPCODE/VALUE              LINE   TAG  SOURCE                   STATEMENT    
+
+                                    1-    1     ;--------------------------------------------------------
+                                    1-    2     ; File Created by SDCC : free open source ANSI-C Compiler
+                                    1-    3     ; Version 3.7.1 #0 (MSVC)
+                                    1-    4     ;--------------------------------------------------------
+                                    1-    5     ; NY8A port
+                                    1-    6     ;--------------------------------------------------------
+                                    1-    7     	.file	"Bsp\scankey.c"
+                                    1-    8     	list	p=NY8A054D,c=on
+                                    1-    9     	#include "ny8a054d.inc"
+                                    1-   11     ;--------------------------------------------------------
+                                    1-   12     ; external declarations
+                                    1-   13     ;--------------------------------------------------------
+                                    1-   14     	extern	_WS281x_Style_Process
+                                    1-   15     	extern	_WS281x_Style_1
+                                    1-   16     	extern	_WS281x_Style_2
+                                    1-   17     	extern	_WS281x_Style_3
+                                    1-   18     	extern	_WS281x_Style_All
+                                    1-   19     	extern	_WS281x_RGB
+                                    1-   20     	extern	_IR_Decode_Time_Process
+                                    1-   21     	extern	_IR_Decode
+                                    1-   22     	extern	_IR_KEY_Proess
+                                    1-   23     	extern	_User_Style_Breath_Start
+                                    1-   24     	extern	_User_Style_Breath_Process
+                                    1-   25     	extern	_User_Style_Sweep_Start
+                                    1-   26     	extern	_User_Style_Sweep_Process
+                                    1-   27     	extern	_User_Style_Collision_Start
+                                    1-   28     	extern	_User_Style_Collision_Process
+                                    1-   29     	extern	_WS281x_Drive_Write_Byte
+                                    1-   30     	extern	_GPIO_Init
+                                    1-   31     	extern	_KEY_GPIO_Init
+                                    1-   32     	extern	_Timer1_Init
+                                    1-   33     	extern	_Timer3_Init
+                                    1-   34     	extern	_INT1_Init
+                                    1-   35     	extern	_delay
+                                    1-   36     	extern	_PORTAbits
+                                    1-   37     	extern	_PORTBbits
+                                    1-   38     	extern	_PCONbits
+                                    1-   39     	extern	_BWUCONbits
+                                    1-   40     	extern	_ABPLCONbits
+                                    1-   41     	extern	_BPHCONbits
+                                    1-   42     	extern	_INTEbits
+                                    1-   43     	extern	_INTFbits
+                                    1-   44     	extern	_AWUCONbits
+                                    1-   45     	extern	_INTEDGbits
+                                    1-   46     	extern	_RFCbits
+                                    1-   47     	extern	_INTE2bits
+                                    1-   48     	extern	_stylePhase
+                                    1-   49     	extern	_styleIndex
+                                    1-   50     	extern	_styleIndexMax
+                                    1-   51     	extern	_currentStream
+                                    1-   52     	extern	_styleNum
+                                    1-   53     	extern	_styleTime
+                                    1-   54     	extern	_userPhase
+                                    1-   55     	extern	_accColor
+                                    1-   56     	extern	_backdropColor
+                                    1-   57     	extern	_irDeCodeTimeOverFlow
+                                    1-   58     	extern	_irDeCodeDat
+                                    1-   59     	extern	_irDeCodeBitTime
+                                    1-   60     	extern	_irDeCodeBitIndex
+                                    1-   61     	extern	_User_Style_Time_SET
+                                    1-   62     	extern	_INDF
+                                    1-   63     	extern	_TMR0
+                                    1-   64     	extern	_PCL
+                                    1-   65     	extern	_STATUS
+                                    1-   66     	extern	_FSR
+                                    1-   67     	extern	_PORTA
+                                    1-   68     	extern	_PORTB
+                                    1-   69     	extern	_PCON
+                                    1-   70     	extern	_BWUCON
+                                    1-   71     	extern	_PCHBUF
+                                    1-   72     	extern	_ABPLCON
+                                    1-   73     	extern	_BPHCON
+                                    1-   74     	extern	_INTE
+                                    1-   75     	extern	_INTF
+                                    1-   76     	extern	_AWUCON
+                                    1-   77     	extern	_INTEDG
+                                    1-   78     	extern	_TMRH
+                                    1-   79     	extern	_RFC
+                                    1-   80     	extern	_TM34RH
+                                    1-   81     	extern	_INTE2
+                                    1-   82     	extern	_TMR1
+                                    1-   83     	extern	_T1CR1
+                                    1-   84     	extern	_T1CR2
+                                    1-   85     	extern	_PWM1DUTY
+                                    1-   86     	extern	_PS1CV
+                                    1-   87     	extern	_BZ1CR
+                                    1-   88     	extern	_IRCR
+                                    1-   89     	extern	_TBHP
+                                    1-   90     	extern	_TBHD
+                                    1-   91     	extern	_P2CR1
+                                    1-   92     	extern	_PWM2DUTY
+                                    1-   93     	extern	_OSCCR
+                                    1-   94     	extern	_TMR3
+                                    1-   95     	extern	_T3CR1
+                                    1-   96     	extern	_T3CR2
+                                    1-   97     	extern	_PWM3DUTY
+                                    1-   98     	extern	_PS3CV
+                                    1-   99     	extern	_P4CR1
+                                    1-  100     	extern	_PWM4DUTY
+                                    1-  101     	extern	_P5CR1
+                                    1-  102     	extern	_PWM5DUTY
+                                    1-  103     	extern	_PWM5RH
+                                    1-  104     	extern	_IOSTA
+                                    1-  105     	extern	_IOSTB
+                                    1-  106     	extern	_APHCON
+                                    1-  107     	extern	_PS0CV
+                                    1-  108     	extern	_BODCON
+                                    1-  109     	extern	_CMPCR
+                                    1-  110     	extern	_PCON1
+                                    1-  111     	extern	_T0MD
+                                    1-  112     	extern	__gptrget2
+                                    1-  113     	extern	__gptrput2
+                                    1-  114     	extern	__gptrget1
+                                    1-  115     	extern	__gptrput1
+                                    1-  117     	extern PSAVE
+                                    1-  118     	extern SSAVE
+                                    1-  119     	extern WSAVE
+                                    1-  120     	extern STK12
+                                    1-  121     	extern STK11
+                                    1-  122     	extern STK10
+                                    1-  123     	extern STK09
+                                    1-  124     	extern STK08
+                                    1-  125     	extern STK07
+                                    1-  126     	extern STK06
+                                    1-  127     	extern STK05
+                                    1-  128     	extern STK04
+                                    1-  129     	extern STK03
+                                    1-  130     	extern STK02
+                                    1-  131     	extern STK01
+                                    1-  132     	extern STK00
+                                    1-  133     ;--------------------------------------------------------
+                                    1-  134     ; global declarations
+                                    1-  135     ;--------------------------------------------------------
+                                    1-  136     	extern	_ScanKey
+                                    1-  137     	extern	_ScanKey_Config
+                                    1-  138     	extern	_KEY_Proess
+                                    1-  139     	extern	_K1_struct
+                                    1-  141     ;--------------------------------------------------------
+                                    1-  142     ; global definitions
+                                    1-  143     ;--------------------------------------------------------
+                                    1-  144     .segment "uninit"
+     0000                           1-  145     _K1_struct:
+                                    1-  146     	.res	6
+                                    1-  149     ;--------------------------------------------------------
+                                    1-  150     ; absolute symbol definitions
+                                    1-  151     ;--------------------------------------------------------
+                                    1-  152     ;--------------------------------------------------------
+                                    1-  153     ; compiler-defined variables
+                                    1-  154     ;--------------------------------------------------------
+                                    1-  155     .segment "uninit"
+     0000                           1-  156     r0x1008:
+                                    1-  157     	.res	1
+                                    1-  158     .segment "uninit"
+     0000                           1-  159     r0x1009:
+                                    1-  160     	.res	1
+                                    1-  161     .segment "uninit"
+     0000                           1-  162     r0x100C:
+                                    1-  163     	.res	1
+                                    1-  164     .segment "uninit"
+     0000                           1-  165     r0x100B:
+                                    1-  166     	.res	1
+                                    1-  167     .segment "uninit"
+     0000                           1-  168     r0x100A:
+                                    1-  169     	.res	1
+                                    1-  170     .segment "uninit"
+     0000                           1-  171     r0x100D:
+                                    1-  172     	.res	1
+                                    1-  173     .segment "uninit"
+     0000                           1-  174     r0x100E:
+                                    1-  175     	.res	1
+                                    1-  176     .segment "uninit"
+     0000                           1-  177     r0x100F:
+                                    1-  178     	.res	1
+                                    1-  179     .segment "uninit"
+     0000                           1-  180     r0x1010:
+                                    1-  181     	.res	1
+                                    1-  182     .segment "uninit"
+     0000                           1-  183     r0x1012:
+                                    1-  184     	.res	1
+                                    1-  185     .segment "uninit"
+     0000                           1-  186     r0x1011:
+                                    1-  187     	.res	1
+                                    1-  188     .segment "uninit"
+     0000                           1-  189     r0x1013:
+                                    1-  190     	.res	1
+                                    1-  191     .segment "uninit"
+     0000                           1-  192     r0x1014:
+                                    1-  193     	.res	1
+                                    1-  194     .segment "uninit"
+     0000                           1-  195     r0x1015:
+                                    1-  196     	.res	1
+                                    1-  197     ;--------------------------------------------------------
+                                    1-  198     ; initialized data
+                                    1-  199     ;--------------------------------------------------------
+                                    1-  200     ;--------------------------------------------------------
+                                    1-  201     ; overlayable items in internal ram 
+                                    1-  202     ;--------------------------------------------------------
+                                    1-  203     ;	udata_ovr
+                                    1-  204     ;--------------------------------------------------------
+                                    1-  205     ; code
+                                    1-  206     ;--------------------------------------------------------
+                                    1-  207     ;***
+                                    1-  208     ;  pBlock Stats: dbName = C
+                                    1-  209     ;***
+                                    1-  210     ;has an exit
+                                    1-  211     ;functions called:
+                                    1-  212     ;   __gptrget2
+                                    1-  213     ;   __gptrput2
+                                    1-  214     ;   __gptrget1
+                                    1-  215     ;   __gptrget1
+                                    1-  216     ;   __gptrput2
+                                    1-  217     ;   __gptrput1
+                                    1-  218     ;   __gptrput1
+                                    1-  219     ;   __gptrput2
+                                    1-  220     ;   __gptrput1
+                                    1-  221     ;   __gptrput1
+                                    1-  222     ;   __gptrput2
+                                    1-  223     ;   __gptrput1
+                                    1-  224     ;   __gptrget1
+                                    1-  225     ;   _KEY_Proess
+                                    1-  226     ;   __gptrget2
+                                    1-  227     ;   __gptrput2
+                                    1-  228     ;   __gptrput1
+                                    1-  229     ;   __gptrget1
+                                    1-  230     ;   _KEY_Proess
+                                    1-  231     ;   __gptrget2
+                                    1-  232     ;   __gptrput2
+                                    1-  233     ;   __gptrput1
+                                    1-  234     ;   __gptrget2
+                                    1-  235     ;   __gptrput2
+                                    1-  236     ;   __gptrget1
+                                    1-  237     ;   __gptrget1
+                                    1-  238     ;   __gptrput2
+                                    1-  239     ;   __gptrput1
+                                    1-  240     ;   __gptrput1
+                                    1-  241     ;   __gptrput2
+                                    1-  242     ;   __gptrput1
+                                    1-  243     ;   __gptrput1
+                                    1-  244     ;   __gptrput2
+                                    1-  245     ;   __gptrput1
+                                    1-  246     ;   __gptrget1
+                                    1-  247     ;   _KEY_Proess
+                                    1-  248     ;   __gptrget2
+                                    1-  249     ;   __gptrput2
+                                    1-  250     ;   __gptrput1
+                                    1-  251     ;   __gptrget1
+                                    1-  252     ;   _KEY_Proess
+                                    1-  253     ;   __gptrget2
+                                    1-  254     ;   __gptrput2
+                                    1-  255     ;   __gptrput1
+                                    1-  256     ;16 compiler assigned registers:
+                                    1-  257     ;   r0x100A
+                                    1-  258     ;   STK00
+                                    1-  259     ;   r0x100B
+                                    1-  260     ;   STK01
+                                    1-  261     ;   r0x100C
+                                    1-  262     ;   r0x100D
+                                    1-  263     ;   r0x100E
+                                    1-  264     ;   r0x100F
+                                    1-  265     ;   r0x1010
+                                    1-  266     ;   r0x1011
+                                    1-  267     ;   r0x1012
+                                    1-  268     ;   STK02
+                                    1-  269     ;   STK03
+                                    1-  270     ;   r0x1013
+                                    1-  271     ;   r0x1014
+                                    1-  272     ;   r0x1015
+                                    1-  273     ;; Starting pCode block
+                                    1-  274     .segment "code"; module=scankey, function=_ScanKey
+                                    1-  276     ;local variable name mapping:
+     0000                           1-  281     _ScanKey:
+                                    1-  282     ; 2 exit points
+                                    1-  283     	.line	70, "Bsp\scankey.c"; 	void ScanKey(key_struct *keyStruct) {
+                                    1-  284     	BANKSEL	r0x100A
+     0000 00rr                      1-  285     	MOVAR	r0x100A
+     0001 01rr                      1-  286     	MOVR	STK00,W
+                                    1-  287     	BANKSEL	r0x100B
+     0002 00rr                      1-  288     	MOVAR	r0x100B
+     0003 01rr                      1-  289     	MOVR	STK01,W
+                                    1-  290     	BANKSEL	r0x100C
+     0004 00rr                      1-  291     	MOVAR	r0x100C
+                                    1-  292     	.line	71, "Bsp\scankey.c"; 	uint8_t KEY_currentSTA = 0;
+                                    1-  293     	BANKSEL	r0x100D
+     0005 02rr                      1-  294     	CLRR	r0x100D
+                                    1-  295     	.line	73, "Bsp\scankey.c"; 	keyStruct->debounceTime++;
+     0006 2101                      1-  296     	MOVIA	0x01
+                                    1-  297     	BANKSEL	r0x100C
+     0007 03rr                      1-  298     	ADDAR	r0x100C,W
+                                    1-  299     	BANKSEL	r0x100E
+     0008 00rr                      1-  300     	MOVAR	r0x100E
+                                    1-  301     	BANKSEL	r0x100F
+     0009 02rr                      1-  302     	CLRR	r0x100F
+     000A 14rr                      1-  303     	RLR	r0x100F,F
+                                    1-  304     	BANKSEL	r0x100B
+     000B 01rr                      1-  305     	MOVR	r0x100B,W
+                                    1-  306     	BANKSEL	r0x100F
+     000C 03rr                      1-  307     	ADDAR	r0x100F,F
+                                    1-  308     	BANKSEL	r0x1010
+     000D 02rr                      1-  309     	CLRR	r0x1010
+     000E 14rr                      1-  310     	RLR	r0x1010,F
+                                    1-  311     	BANKSEL	r0x100A
+     000F 01rr                      1-  312     	MOVR	r0x100A,W
+                                    1-  313     	BANKSEL	r0x1010
+     0010 03rr                      1-  314     	ADDAR	r0x1010,F
+                                    1-  315     	BANKSEL	r0x100E
+     0011 01rr                      1-  316     	MOVR	r0x100E,W
+     0012 00rr                      1-  317     	MOVAR	STK01
+                                    1-  318     	BANKSEL	r0x100F
+     0013 01rr                      1-  319     	MOVR	r0x100F,W
+     0014 00rr                      1-  320     	MOVAR	STK00
+                                    1-  321     	BANKSEL	r0x1010
+     0015 01rr                      1-  322     	MOVR	r0x1010,W
+     0016 2rrr                      1-  323     	LCALL	__gptrget2
+                                    1-  324     	BANKSEL	r0x1011
+     0017 00rr                      1-  325     	MOVAR	r0x1011
+     0018 01rr                      1-  326     	MOVR	STK00,W
+                                    1-  327     	BANKSEL	r0x1012
+     0019 00rr                      1-  328     	MOVAR	r0x1012
+     001A 05rr                      1-  329     	INCR	r0x1012,F
+     001B 0903                      1-  330     	BTRSS	STATUS,2
+     001C 3rrr                      1-  331     	LGOTO	_00001_DS_
+                                    1-  332     	BANKSEL	r0x1011
+     001D 05rr                      1-  333     	INCR	r0x1011,F
+     001E                           1-  334     _00001_DS_:
+                                    1-  335     	BANKSEL	r0x1011
+     001E 01rr                      1-  336     	MOVR	r0x1011,W
+     001F 00rr                      1-  337     	MOVAR	STK02
+                                    1-  338     	BANKSEL	r0x1012
+     0020 01rr                      1-  339     	MOVR	r0x1012,W
+     0021 00rr                      1-  340     	MOVAR	STK03
+                                    1-  341     	BANKSEL	r0x100E
+     0022 01rr                      1-  342     	MOVR	r0x100E,W
+     0023 00rr                      1-  343     	MOVAR	STK01
+                                    1-  344     	BANKSEL	r0x100F
+     0024 01rr                      1-  345     	MOVR	r0x100F,W
+     0025 00rr                      1-  346     	MOVAR	STK00
+                                    1-  347     	BANKSEL	r0x1010
+     0026 01rr                      1-  348     	MOVR	r0x1010,W
+     0027 2rrr                      1-  349     	LCALL	__gptrput2
+                                    1-  350     	.line	75, "Bsp\scankey.c"; 	switch(keyStruct->key_x) {
+                                    1-  351     	BANKSEL	r0x100C
+     0028 01rr                      1-  352     	MOVR	r0x100C,W
+     0029 00rr                      1-  353     	MOVAR	STK01
+                                    1-  354     	BANKSEL	r0x100B
+     002A 01rr                      1-  355     	MOVR	r0x100B,W
+     002B 00rr                      1-  356     	MOVAR	STK00
+                                    1-  357     	BANKSEL	r0x100A
+     002C 01rr                      1-  358     	MOVR	r0x100A,W
+     002D 2rrr                      1-  359     	LCALL	__gptrget1
+                                    1-  360     	BANKSEL	r0x1012
+     002E 00rr                      1-  361     	MOVAR	r0x1012
+     002F 2401                      1-  362     	XORIA	0x01
+     0030 0903                      1-  363     	BTRSS	STATUS,2
+     0031 3rrr                      1-  364     	LGOTO	_00121_DS_
+                                    1-  365     	.line	76, "Bsp\scankey.c"; 	case 1:KEY_currentSTA = PORTAbits.PA7; break;
+     0032 02rr                      1-  366     	CLRR	r0x1012
+     0033 0Frr                      1-  367     	BTRSC	_PORTAbits,7
+     0034 05rr                      1-  368     	INCR	r0x1012,F
+     0035 01rr                      1-  369     	MOVR	r0x1012,W
+                                    1-  370     	BANKSEL	r0x100D
+     0036 00rr                      1-  371     	MOVAR	r0x100D
+     0037                           1-  372     _00121_DS_:
+                                    1-  373     	.line	81, "Bsp\scankey.c"; 	switch(keyStruct->keyFlowFlag) {
+     0037 2103                      1-  374     	MOVIA	0x03
+                                    1-  375     	BANKSEL	r0x100C
+     0038 03rr                      1-  376     	ADDAR	r0x100C,W
+                                    1-  377     	BANKSEL	r0x1012
+     0039 00rr                      1-  378     	MOVAR	r0x1012
+                                    1-  379     	BANKSEL	r0x1011
+     003A 02rr                      1-  380     	CLRR	r0x1011
+     003B 14rr                      1-  381     	RLR	r0x1011,F
+                                    1-  382     	BANKSEL	r0x100B
+     003C 01rr                      1-  383     	MOVR	r0x100B,W
+                                    1-  384     	BANKSEL	r0x1011
+     003D 03rr                      1-  385     	ADDAR	r0x1011,F
+                                    1-  386     	BANKSEL	r0x1013
+     003E 02rr                      1-  387     	CLRR	r0x1013
+     003F 14rr                      1-  388     	RLR	r0x1013,F
+                                    1-  389     	BANKSEL	r0x100A
+     0040 01rr                      1-  390     	MOVR	r0x100A,W
+                                    1-  391     	BANKSEL	r0x1013
+     0041 03rr                      1-  392     	ADDAR	r0x1013,F
+                                    1-  393     	BANKSEL	r0x1012
+     0042 01rr                      1-  394     	MOVR	r0x1012,W
+     0043 00rr                      1-  395     	MOVAR	STK01
+                                    1-  396     	BANKSEL	r0x1011
+     0044 01rr                      1-  397     	MOVR	r0x1011,W
+     0045 00rr                      1-  398     	MOVAR	STK00
+                                    1-  399     	BANKSEL	r0x1013
+     0046 01rr                      1-  400     	MOVR	r0x1013,W
+     0047 2rrr                      1-  401     	LCALL	__gptrget1
+                                    1-  402     	BANKSEL	r0x1014
+     0048 00rr                      1-  403     	MOVAR	r0x1014
+                                    1-  404     ;;swapping arguments (AOP_TYPEs 1/2)
+                                    1-  405     ;;unsigned compare: left >= lit (0x4=4), size=1
+     0049 2104                      1-  406     	MOVIA	0x04
+     004A 04rr                      1-  407     	SUBAR	r0x1014,W
+     004B 0C03                      1-  408     	BTRSC	STATUS,0
+     004C 3rrr                      1-  409     	LGOTO	_00142_DS_
+     004D 21rr                      1-  410     	MOVIA	((_00169_DS_ >> 8) & 0xff)
+     004E 008A                      1-  411     	MOVAR	PCHBUF
+     004F 01rr                      1-  412     	MOVR	r0x1014,W
+     0050 25rr                      1-  413     	ADDIA	_00169_DS_
+     0051 0C03                      1-  414     	BTRSC	STATUS,0
+     0052 058A                      1-  415     	INCR	PCHBUF,F
+     0053 0082                      1-  416     	MOVAR	PCL
+     0054                           1-  417     _00169_DS_:
+     0054 3rrr                      1-  418     	LGOTO	_00122_DS_
+     0055 3rrr                      1-  419     	LGOTO	_00126_DS_
+     0056 3rrr                      1-  420     	LGOTO	_00130_DS_
+     0057 3rrr                      1-  421     	LGOTO	_00136_DS_
+     0058                           1-  422     _00122_DS_:
+                                    1-  423     	.line	84, "Bsp\scankey.c"; 	if(KEY_currentSTA == _press_) {
+                                    1-  424     	BANKSEL	r0x100D
+     0058 01rr                      1-  425     	MOVR	r0x100D,W
+     0059 0903                      1-  426     	BTRSS	STATUS,2
+     005A 3rrr                      1-  427     	LGOTO	_00124_DS_
+                                    1-  428     	.line	85, "Bsp\scankey.c"; 	keyStruct->debounceTime = 0;
+     005B 2100                      1-  429     	MOVIA	0x00
+     005C 00rr                      1-  430     	MOVAR	STK02
+     005D 00rr                      1-  431     	MOVAR	STK03
+                                    1-  432     	BANKSEL	r0x100E
+     005E 01rr                      1-  433     	MOVR	r0x100E,W
+     005F 00rr                      1-  434     	MOVAR	STK01
+                                    1-  435     	BANKSEL	r0x100F
+     0060 01rr                      1-  436     	MOVR	r0x100F,W
+     0061 00rr                      1-  437     	MOVAR	STK00
+                                    1-  438     	BANKSEL	r0x1010
+     0062 01rr                      1-  439     	MOVR	r0x1010,W
+     0063 2rrr                      1-  440     	LCALL	__gptrput2
+                                    1-  441     	.line	86, "Bsp\scankey.c"; 	keyStruct->keyFlowFlag = Affirm_State;	//下次进入确认状态
+     0064 2101                      1-  442     	MOVIA	0x01
+     0065 00rr                      1-  443     	MOVAR	STK02
+                                    1-  444     	BANKSEL	r0x1012
+     0066 01rr                      1-  445     	MOVR	r0x1012,W
+     0067 00rr                      1-  446     	MOVAR	STK01
+                                    1-  447     	BANKSEL	r0x1011
+     0068 01rr                      1-  448     	MOVR	r0x1011,W
+     0069 00rr                      1-  449     	MOVAR	STK00
+                                    1-  450     	BANKSEL	r0x1013
+     006A 01rr                      1-  451     	MOVR	r0x1013,W
+     006B 2rrr                      1-  452     	LCALL	__gptrput1
+     006C 3rrr                      1-  453     	LGOTO	_00142_DS_
+     006D                           1-  454     _00124_DS_:
+                                    1-  455     	.line	88, "Bsp\scankey.c"; 	else{keyStruct->keyFlowFlag = Init_State;}	//否则进入初始化状态
+     006D 2100                      1-  456     	MOVIA	0x00
+     006E 00rr                      1-  457     	MOVAR	STK02
+                                    1-  458     	BANKSEL	r0x1012
+     006F 01rr                      1-  459     	MOVR	r0x1012,W
+     0070 00rr                      1-  460     	MOVAR	STK01
+                                    1-  461     	BANKSEL	r0x1011
+     0071 01rr                      1-  462     	MOVR	r0x1011,W
+     0072 00rr                      1-  463     	MOVAR	STK00
+                                    1-  464     	BANKSEL	r0x1013
+     0073 01rr                      1-  465     	MOVR	r0x1013,W
+     0074 2rrr                      1-  466     	LCALL	__gptrput1
+                                    1-  467     	.line	89, "Bsp\scankey.c"; 	} break;
+     0075 3rrr                      1-  468     	LGOTO	_00142_DS_
+     0076                           1-  469     _00126_DS_:
+                                    1-  470     	.line	92, "Bsp\scankey.c"; 	if(KEY_currentSTA == _press_) {
+                                    1-  471     	BANKSEL	r0x100D
+     0076 01rr                      1-  472     	MOVR	r0x100D,W
+     0077 0903                      1-  473     	BTRSS	STATUS,2
+     0078 3rrr                      1-  474     	LGOTO	_00128_DS_
+                                    1-  475     	.line	93, "Bsp\scankey.c"; 	keyStruct->debounceTime = 0;
+     0079 2100                      1-  476     	MOVIA	0x00
+     007A 00rr                      1-  477     	MOVAR	STK02
+     007B 00rr                      1-  478     	MOVAR	STK03
+                                    1-  479     	BANKSEL	r0x100E
+     007C 01rr                      1-  480     	MOVR	r0x100E,W
+     007D 00rr                      1-  481     	MOVAR	STK01
+                                    1-  482     	BANKSEL	r0x100F
+     007E 01rr                      1-  483     	MOVR	r0x100F,W
+     007F 00rr                      1-  484     	MOVAR	STK00
+                                    1-  485     	BANKSEL	r0x1010
+     0080 01rr                      1-  486     	MOVR	r0x1010,W
+     0081 2rrr                      1-  487     	LCALL	__gptrput2
+                                    1-  488     	.line	94, "Bsp\scankey.c"; 	keyStruct->keyFlowFlag = Single_State;	//下次进入单次触发状态
+     0082 2102                      1-  489     	MOVIA	0x02
+     0083 00rr                      1-  490     	MOVAR	STK02
+                                    1-  491     	BANKSEL	r0x1012
+     0084 01rr                      1-  492     	MOVR	r0x1012,W
+     0085 00rr                      1-  493     	MOVAR	STK01
+                                    1-  494     	BANKSEL	r0x1011
+     0086 01rr                      1-  495     	MOVR	r0x1011,W
+     0087 00rr                      1-  496     	MOVAR	STK00
+                                    1-  497     	BANKSEL	r0x1013
+     0088 01rr                      1-  498     	MOVR	r0x1013,W
+     0089 2rrr                      1-  499     	LCALL	__gptrput1
+     008A 3rrr                      1-  500     	LGOTO	_00142_DS_
+     008B                           1-  501     _00128_DS_:
+                                    1-  502     	.line	96, "Bsp\scankey.c"; 	else{keyStruct->keyFlowFlag = Init_State;}	//否则进入初始化状态
+     008B 2100                      1-  503     	MOVIA	0x00
+     008C 00rr                      1-  504     	MOVAR	STK02
+                                    1-  505     	BANKSEL	r0x1012
+     008D 01rr                      1-  506     	MOVR	r0x1012,W
+     008E 00rr                      1-  507     	MOVAR	STK01
+                                    1-  508     	BANKSEL	r0x1011
+     008F 01rr                      1-  509     	MOVR	r0x1011,W
+     0090 00rr                      1-  510     	MOVAR	STK00
+                                    1-  511     	BANKSEL	r0x1013
+     0091 01rr                      1-  512     	MOVR	r0x1013,W
+     0092 2rrr                      1-  513     	LCALL	__gptrput1
+                                    1-  514     	.line	97, "Bsp\scankey.c"; 	} break;
+     0093 3rrr                      1-  515     	LGOTO	_00142_DS_
+     0094                           1-  516     _00130_DS_:
+                                    1-  517     	.line	100, "Bsp\scankey.c"; 	if(KEY_currentSTA == _release_) {	//按下弹开触发
+                                    1-  518     	BANKSEL	r0x100D
+     0094 01rr                      1-  519     	MOVR	r0x100D,W
+     0095 2401                      1-  520     	XORIA	0x01
+     0096 0903                      1-  521     	BTRSS	STATUS,2
+     0097 3rrr                      1-  522     	LGOTO	_00134_DS_
+                                    1-  523     	.line	101, "Bsp\scankey.c"; 	keyStruct->debounceTime = 0;
+     0098 2100                      1-  524     	MOVIA	0x00
+     0099 00rr                      1-  525     	MOVAR	STK02
+     009A 00rr                      1-  526     	MOVAR	STK03
+                                    1-  527     	BANKSEL	r0x100E
+     009B 01rr                      1-  528     	MOVR	r0x100E,W
+     009C 00rr                      1-  529     	MOVAR	STK01
+                                    1-  530     	BANKSEL	r0x100F
+     009D 01rr                      1-  531     	MOVR	r0x100F,W
+     009E 00rr                      1-  532     	MOVAR	STK00
+                                    1-  533     	BANKSEL	r0x1010
+     009F 01rr                      1-  534     	MOVR	r0x1010,W
+     00A0 2rrr                      1-  535     	LCALL	__gptrput2
+                                    1-  536     	.line	102, "Bsp\scankey.c"; 	keyStruct->keyFlowFlag = Init_State;
+     00A1 2100                      1-  537     	MOVIA	0x00
+     00A2 00rr                      1-  538     	MOVAR	STK02
+                                    1-  539     	BANKSEL	r0x1012
+     00A3 01rr                      1-  540     	MOVR	r0x1012,W
+     00A4 00rr                      1-  541     	MOVAR	STK01
+                                    1-  542     	BANKSEL	r0x1011
+     00A5 01rr                      1-  543     	MOVR	r0x1011,W
+     00A6 00rr                      1-  544     	MOVAR	STK00
+                                    1-  545     	BANKSEL	r0x1013
+     00A7 01rr                      1-  546     	MOVR	r0x1013,W
+     00A8 2rrr                      1-  547     	LCALL	__gptrput1
+                                    1-  548     	.line	105, "Bsp\scankey.c"; 	KEY_Proess(keyStruct->key_x, shortPress);
+                                    1-  549     	BANKSEL	r0x100C
+     00A9 01rr                      1-  550     	MOVR	r0x100C,W
+     00AA 00rr                      1-  551     	MOVAR	STK01
+                                    1-  552     	BANKSEL	r0x100B
+     00AB 01rr                      1-  553     	MOVR	r0x100B,W
+     00AC 00rr                      1-  554     	MOVAR	STK00
+                                    1-  555     	BANKSEL	r0x100A
+     00AD 01rr                      1-  556     	MOVR	r0x100A,W
+     00AE 2rrr                      1-  557     	LCALL	__gptrget1
+                                    1-  558     	BANKSEL	r0x1014
+     00AF 00rr                      1-  559     	MOVAR	r0x1014
+     00B0 2100                      1-  560     	MOVIA	0x00
+     00B1 00rr                      1-  561     	MOVAR	STK00
+     00B2 01rr                      1-  562     	MOVR	r0x1014,W
+     00B3 2rrr                      1-  563     	LCALL	_KEY_Proess
+     00B4 3rrr                      1-  564     	LGOTO	_00142_DS_
+     00B5                           1-  565     _00134_DS_:
+                                    1-  566     	.line	107, "Bsp\scankey.c"; 	else if(keyStruct->debounceTime >= 100) { 	//持续按下时间是否大于x*10ms
+                                    1-  567     	BANKSEL	r0x100E
+     00B5 01rr                      1-  568     	MOVR	r0x100E,W
+     00B6 00rr                      1-  569     	MOVAR	STK01
+                                    1-  570     	BANKSEL	r0x100F
+     00B7 01rr                      1-  571     	MOVR	r0x100F,W
+     00B8 00rr                      1-  572     	MOVAR	STK00
+                                    1-  573     	BANKSEL	r0x1010
+     00B9 01rr                      1-  574     	MOVR	r0x1010,W
+     00BA 2rrr                      1-  575     	LCALL	__gptrget2
+                                    1-  576     	BANKSEL	r0x1015
+     00BB 00rr                      1-  577     	MOVAR	r0x1015
+     00BC 01rr                      1-  578     	MOVR	STK00,W
+                                    1-  579     	BANKSEL	r0x1014
+     00BD 00rr                      1-  580     	MOVAR	r0x1014
+                                    1-  581     ;;unsigned compare: left < lit (0x64=100), size=2
+     00BE 2100                      1-  582     	MOVIA	0x00
+                                    1-  583     	BANKSEL	r0x1015
+     00BF 04rr                      1-  584     	SUBAR	r0x1015,W
+     00C0 0903                      1-  585     	BTRSS	STATUS,2
+     00C1 3rrr                      1-  586     	LGOTO	_00170_DS_
+     00C2 2164                      1-  587     	MOVIA	0x64
+                                    1-  588     	BANKSEL	r0x1014
+     00C3 04rr                      1-  589     	SUBAR	r0x1014,W
+     00C4                           1-  590     _00170_DS_:
+     00C4 0803                      1-  591     	BTRSS	STATUS,0
+     00C5 3rrr                      1-  592     	LGOTO	_00142_DS_
+                                    1-  593     	.line	108, "Bsp\scankey.c"; 	keyStruct->debounceTime = 0;
+     00C6 2100                      1-  594     	MOVIA	0x00
+     00C7 00rr                      1-  595     	MOVAR	STK02
+     00C8 00rr                      1-  596     	MOVAR	STK03
+                                    1-  597     	BANKSEL	r0x100E
+     00C9 01rr                      1-  598     	MOVR	r0x100E,W
+     00CA 00rr                      1-  599     	MOVAR	STK01
+                                    1-  600     	BANKSEL	r0x100F
+     00CB 01rr                      1-  601     	MOVR	r0x100F,W
+     00CC 00rr                      1-  602     	MOVAR	STK00
+                                    1-  603     	BANKSEL	r0x1010
+     00CD 01rr                      1-  604     	MOVR	r0x1010,W
+     00CE 2rrr                      1-  605     	LCALL	__gptrput2
+                                    1-  606     	.line	109, "Bsp\scankey.c"; 	keyStruct->keyFlowFlag = Repeat_State;
+     00CF 2103                      1-  607     	MOVIA	0x03
+     00D0 00rr                      1-  608     	MOVAR	STK02
+                                    1-  609     	BANKSEL	r0x1012
+     00D1 01rr                      1-  610     	MOVR	r0x1012,W
+     00D2 00rr                      1-  611     	MOVAR	STK01
+                                    1-  612     	BANKSEL	r0x1011
+     00D3 01rr                      1-  613     	MOVR	r0x1011,W
+     00D4 00rr                      1-  614     	MOVAR	STK00
+                                    1-  615     	BANKSEL	r0x1013
+     00D5 01rr                      1-  616     	MOVR	r0x1013,W
+     00D6 2rrr                      1-  617     	LCALL	__gptrput1
+                                    1-  618     	.line	112, "Bsp\scankey.c"; 	KEY_Proess(keyStruct->key_x, extendedPress);
+                                    1-  619     	BANKSEL	r0x100C
+     00D7 01rr                      1-  620     	MOVR	r0x100C,W
+     00D8 00rr                      1-  621     	MOVAR	STK01
+                                    1-  622     	BANKSEL	r0x100B
+     00D9 01rr                      1-  623     	MOVR	r0x100B,W
+     00DA 00rr                      1-  624     	MOVAR	STK00
+                                    1-  625     	BANKSEL	r0x100A
+     00DB 01rr                      1-  626     	MOVR	r0x100A,W
+     00DC 2rrr                      1-  627     	LCALL	__gptrget1
+                                    1-  628     	BANKSEL	r0x1014
+     00DD 00rr                      1-  629     	MOVAR	r0x1014
+     00DE 2101                      1-  630     	MOVIA	0x01
+     00DF 00rr                      1-  631     	MOVAR	STK00
+     00E0 01rr                      1-  632     	MOVR	r0x1014,W
+     00E1 2rrr                      1-  633     	LCALL	_KEY_Proess
+                                    1-  634     	.line	114, "Bsp\scankey.c"; 	} break;
+     00E2 3rrr                      1-  635     	LGOTO	_00142_DS_
+     00E3                           1-  636     _00136_DS_:
+                                    1-  637     	.line	117, "Bsp\scankey.c"; 	if(keyStruct->debounceTime >= 10) {
+                                    1-  638     	BANKSEL	r0x100E
+     00E3 01rr                      1-  639     	MOVR	r0x100E,W
+     00E4 00rr                      1-  640     	MOVAR	STK01
+                                    1-  641     	BANKSEL	r0x100F
+     00E5 01rr                      1-  642     	MOVR	r0x100F,W
+     00E6 00rr                      1-  643     	MOVAR	STK00
+                                    1-  644     	BANKSEL	r0x1010
+     00E7 01rr                      1-  645     	MOVR	r0x1010,W
+     00E8 2rrr                      1-  646     	LCALL	__gptrget2
+                                    1-  647     	BANKSEL	r0x100B
+     00E9 00rr                      1-  648     	MOVAR	r0x100B
+     00EA 01rr                      1-  649     	MOVR	STK00,W
+                                    1-  650     	BANKSEL	r0x100C
+     00EB 00rr                      1-  651     	MOVAR	r0x100C
+                                    1-  652     ;;unsigned compare: left < lit (0xA=10), size=2
+     00EC 2100                      1-  653     	MOVIA	0x00
+                                    1-  654     	BANKSEL	r0x100B
+     00ED 04rr                      1-  655     	SUBAR	r0x100B,W
+     00EE 0903                      1-  656     	BTRSS	STATUS,2
+     00EF 3rrr                      1-  657     	LGOTO	_00171_DS_
+     00F0 210A                      1-  658     	MOVIA	0x0a
+                                    1-  659     	BANKSEL	r0x100C
+     00F1 04rr                      1-  660     	SUBAR	r0x100C,W
+     00F2                           1-  661     _00171_DS_:
+     00F2 0803                      1-  662     	BTRSS	STATUS,0
+     00F3 3rrr                      1-  663     	LGOTO	_00142_DS_
+                                    1-  664     	.line	118, "Bsp\scankey.c"; 	keyStruct->debounceTime = 0;
+     00F4 2100                      1-  665     	MOVIA	0x00
+     00F5 00rr                      1-  666     	MOVAR	STK02
+     00F6 00rr                      1-  667     	MOVAR	STK03
+                                    1-  668     	BANKSEL	r0x100E
+     00F7 01rr                      1-  669     	MOVR	r0x100E,W
+     00F8 00rr                      1-  670     	MOVAR	STK01
+                                    1-  671     	BANKSEL	r0x100F
+     00F9 01rr                      1-  672     	MOVR	r0x100F,W
+     00FA 00rr                      1-  673     	MOVAR	STK00
+                                    1-  674     	BANKSEL	r0x1010
+     00FB 01rr                      1-  675     	MOVR	r0x1010,W
+     00FC 2rrr                      1-  676     	LCALL	__gptrput2
+                                    1-  677     	.line	119, "Bsp\scankey.c"; 	if(KEY_currentSTA == _release_)
+                                    1-  678     	BANKSEL	r0x100D
+     00FD 01rr                      1-  679     	MOVR	r0x100D,W
+     00FE 2401                      1-  680     	XORIA	0x01
+     00FF 0903                      1-  681     	BTRSS	STATUS,2
+     0100 3rrr                      1-  682     	LGOTO	_00142_DS_
+                                    1-  683     	.line	120, "Bsp\scankey.c"; 	keyStruct->keyFlowFlag = Init_State;
+     0101 2100                      1-  684     	MOVIA	0x00
+     0102 00rr                      1-  685     	MOVAR	STK02
+                                    1-  686     	BANKSEL	r0x1012
+     0103 01rr                      1-  687     	MOVR	r0x1012,W
+     0104 00rr                      1-  688     	MOVAR	STK01
+                                    1-  689     	BANKSEL	r0x1011
+     0105 01rr                      1-  690     	MOVR	r0x1011,W
+     0106 00rr                      1-  691     	MOVAR	STK00
+                                    1-  692     	BANKSEL	r0x1013
+     0107 01rr                      1-  693     	MOVR	r0x1013,W
+     0108 2rrr                      1-  694     	LCALL	__gptrput1
+     0109                           1-  695     _00142_DS_:
+                                    1-  696     	.line	124, "Bsp\scankey.c"; 	}
+                                    1-  697     	RETURN	
+     0109 0010                      3-   26 m1      ret
+                                    1-  698     ; exit point of _ScanKey
+                                    1-  700     ;***
+                                    1-  701     ;  pBlock Stats: dbName = C
+                                    1-  702     ;***
+                                    1-  703     ;has an exit
+                                    1-  704     ;; Starting pCode block
+                                    1-  705     .segment "code"; module=scankey, function=_ScanKey_Config
+     0000                           1-  707     _ScanKey_Config:
+                                    1-  708     ; 2 exit points
+                                    1-  709     ;;gen.c:6903: size=0, offset=0, AOP_TYPE (res)=8
+                                    1-  710     	.line	51, "Bsp\scankey.c"; 	K1_struct.key_x = 1;
+     0000 2101                      1-  711     	MOVIA	0x01
+                                    1-  712     	BANKSEL	_K1_struct
+     0001 00rr                      1-  713     	MOVAR	(_K1_struct + 0)
+                                    1-  714     ;;gen.c:6903: size=1, offset=0, AOP_TYPE (res)=8
+                                    1-  715     	.line	52, "Bsp\scankey.c"; 	K1_struct.debounceTime = 0;
+     0002 02rr                      1-  716     	CLRR	(_K1_struct + 1)
+                                    1-  717     ;;gen.c:6903: size=0, offset=1, AOP_TYPE (res)=8
+     0003 02rr                      1-  718     	CLRR	(_K1_struct + 2)
+                                    1-  719     ;;gen.c:6903: size=0, offset=0, AOP_TYPE (res)=8
+                                    1-  720     	.line	53, "Bsp\scankey.c"; 	K1_struct.keyFlowFlag = Init_State;
+     0004 02rr                      1-  721     	CLRR	(_K1_struct + 3)
+                                    1-  722     	.line	62, "Bsp\scankey.c"; 	}
+                                    1-  723     	RETURN	
+     0005 0010                      3-   26 m1      ret
+                                    1-  724     ; exit point of _ScanKey_Config
+                                    1-  726     ;***
+                                    1-  727     ;  pBlock Stats: dbName = C
+                                    1-  728     ;***
+                                    1-  729     ;has an exit
+                                    1-  730     ;3 compiler assigned registers:
+                                    1-  731     ;   r0x1008
+                                    1-  732     ;   STK00
+                                    1-  733     ;   r0x1009
+                                    1-  734     ;; Starting pCode block
+                                    1-  735     .segment "code"; module=scankey, function=_KEY_Proess
+                                    1-  737     ;local variable name mapping:
+     0000                           1-  740     _KEY_Proess:
+                                    1-  741     ; 2 exit points
+                                    1-  742     	.line	7, "Bsp\scankey.c"; 	void KEY_Proess(uint8_t currentKey, key_press_type type) {
+                                    1-  743     	BANKSEL	r0x1008
+     0000 00rr                      1-  744     	MOVAR	r0x1008
+     0001 01rr                      1-  745     	MOVR	STK00,W
+                                    1-  746     	BANKSEL	r0x1009
+     0002 00rr                      1-  747     	MOVAR	r0x1009
+                                    1-  748     	.line	9, "Bsp\scankey.c"; 	switch(currentKey) {
+                                    1-  749     	BANKSEL	r0x1008
+     0003 01rr                      1-  750     	MOVR	r0x1008,W
+     0004 2401                      1-  751     	XORIA	0x01
+     0005 0903                      1-  752     	BTRSS	STATUS,2
+     0006 3rrr                      1-  753     	LGOTO	_00111_DS_
+                                    1-  754     	.line	12, "Bsp\scankey.c"; 	if(type == shortPress) {					// 短按
+                                    1-  755     	BANKSEL	r0x1009
+     0007 01rr                      1-  756     	MOVR	r0x1009,W
+     0008 0903                      1-  757     	BTRSS	STATUS,2
+     0009 3rrr                      1-  758     	LGOTO	_00111_DS_
+                                    1-  759     	.line	14, "Bsp\scankey.c"; 	User_Style_Time_SET += 200;
+     000A 21C8                      1-  760     	MOVIA	0xc8
+                                    1-  761     	BANKSEL	_User_Style_Time_SET
+     000B 03rr                      1-  762     	ADDAR	_User_Style_Time_SET,F
+     000C 0C03                      1-  763     	BTRSC	STATUS,0
+     000D 05rr                      1-  764     	INCR	(_User_Style_Time_SET + 1),F
+                                    1-  765     	.line	15, "Bsp\scankey.c"; 	if(User_Style_Time_SET == 1100)
+     000E 01rr                      1-  766     	MOVR	_User_Style_Time_SET,W
+     000F 244C                      1-  767     	XORIA	0x4c
+     0010 0903                      1-  768     	BTRSS	STATUS,2
+     0011 3rrr                      1-  769     	LGOTO	_00111_DS_
+     0012 01rr                      1-  770     	MOVR	(_User_Style_Time_SET + 1),W
+     0013 2404                      1-  771     	XORIA	0x04
+     0014 0903                      1-  772     	BTRSS	STATUS,2
+     0015 3rrr                      1-  773     	LGOTO	_00111_DS_
+                                    1-  774     	.line	16, "Bsp\scankey.c"; 	User_Style_Time_SET = 100;
+     0016 2164                      1-  775     	MOVIA	0x64
+     0017 00rr                      1-  776     	MOVAR	_User_Style_Time_SET
+     0018 02rr                      1-  777     	CLRR	(_User_Style_Time_SET + 1)
+     0019                           1-  778     _00111_DS_:
+                                    1-  779     	.line	39, "Bsp\scankey.c"; 	}
+                                    1-  780     	RETURN	
+     0019 0010                      3-   26 m1      ret
+                                    1-  781     ; exit point of _KEY_Proess
+                                    1-  784     ;	code size estimation:
+                                    1-  785     ;	  298+  108 =   406 instructions ( 1028 byte)
+                                    1-  787     	end
+                                    1-  787     	end
+
+SYMBOL TABLE            TYPE     VALUE
+__CHECKSUM_ADDR__       Label    00000000
+__gptrget1              Label    00000000
+__gptrget2              Label    00000000
+__gptrput1              Label    00000000
+__gptrput2              Label    00000000
+__PIN_COUNT__           Constant 0000000E
+__PROCESSOR__           Constant 00800543
+_00001_DS_              Label    0000001E
+_00111_DS_              Label    00000019
+_00121_DS_              Label    00000037
+_00122_DS_              Label    00000058
+_00124_DS_              Label    0000006D
+_00126_DS_              Label    00000076
+_00128_DS_              Label    0000008B
+_00130_DS_              Label    00000094
+_00134_DS_              Label    000000B5
+_00136_DS_              Label    000000E3
+_00142_DS_              Label    00000109
+_00169_DS_              Label    00000054
+_00170_DS_              Label    000000C4
+_00171_DS_              Label    000000F2
+_ABPLCON                Label    00000000
+_ABPLCONbits            Label    00000000
+_accColor               Label    00000000
+_APHCON                 Label    00000000
+_AWUCON                 Label    00000000
+_AWUCONbits             Label    00000000
+_backdropColor          Label    00000000
+_BODCON                 Label    00000000
+_BPHCON                 Label    00000000
+_BPHCONbits             Label    00000000
+_BWUCON                 Label    00000000
+_BWUCONbits             Label    00000000
+_BZ1CR                  Label    00000000
+_CMPCR                  Label    00000000
+_currentStream          Label    00000000
+_delay                  Label    00000000
+_FSR                    Label    00000000
+_GPIO_Init              Label    00000000
+_INDF                   Label    00000000
+_INT1_Init              Label    00000000
+_INTE                   Label    00000000
+_INTE2                  Label    00000000
+_INTE2bits              Label    00000000
+_INTEbits               Label    00000000
+_INTEDG                 Label    00000000
+_INTEDGbits             Label    00000000
+_INTF                   Label    00000000
+_INTFbits               Label    00000000
+_IOSTA                  Label    00000000
+_IOSTB                  Label    00000000
+_IR_Decode              Label    00000000
+_IR_Decode_Time_Process Label    00000000
+_IR_KEY_Proess          Label    00000000
+_IRCR                   Label    00000000
+_irDeCodeBitIndex       Label    00000000
+_irDeCodeBitTime        Label    00000000
+_irDeCodeDat            Label    00000000
+_irDeCodeTimeOverFlow   Label    00000000
+_K1_struct              Label    00000000
+_KEY_GPIO_Init          Label    00000000
+_KEY_Proess             Label    00000000
+_OSCCR                  Label    00000000
+_P2CR1                  Label    00000000
+_P4CR1                  Label    00000000
+_P5CR1                  Label    00000000
+_PCHBUF                 Label    00000000
+_PCL                    Label    00000000
+_PCON                   Label    00000000
+_PCON1                  Label    00000000
+_PCONbits               Label    00000000
+_PORTA                  Label    00000000
+_PORTAbits              Label    00000000
+_PORTB                  Label    00000000
+_PORTBbits              Label    00000000
+_PS0CV                  Label    00000000
+_PS1CV                  Label    00000000
+_PS3CV                  Label    00000000
+_PWM1DUTY               Label    00000000
+_PWM2DUTY               Label    00000000
+_PWM3DUTY               Label    00000000
+_PWM4DUTY               Label    00000000
+_PWM5DUTY               Label    00000000
+_PWM5RH                 Label    00000000
+_RFC                    Label    00000000
+_RFCbits                Label    00000000
+_ScanKey                Label    00000000
+_ScanKey_Config         Label    00000000
+_STATUS                 Label    00000000
+_styleIndex             Label    00000000
+_styleIndexMax          Label    00000000
+_styleNum               Label    00000000
+_stylePhase             Label    00000000
+_styleTime              Label    00000000
+_T0MD                   Label    00000000
+_T1CR1                  Label    00000000
+_T1CR2                  Label    00000000
+_T3CR1                  Label    00000000
+_T3CR2                  Label    00000000
+_TBHD                   Label    00000000
+_TBHP                   Label    00000000
+_Timer1_Init            Label    00000000
+_Timer3_Init            Label    00000000
+_TM34RH                 Label    00000000
+_TMR0                   Label    00000000
+_TMR1                   Label    00000000
+_TMR3                   Label    00000000
+_TMRH                   Label    00000000
+_User_Style_Breath_Process Label    00000000
+_User_Style_Breath_Start Label    00000000
+_User_Style_Collision_Process Label    00000000
+_User_Style_Collision_Start Label    00000000
+_User_Style_Sweep_Process Label    00000000
+_User_Style_Sweep_Start Label    00000000
+_User_Style_Time_SET    Label    00000000
+_userPhase              Label    00000000
+_WS281x_Drive_Write_Byte Label    00000000
+_WS281x_RGB             Label    00000000
+_WS281x_Style_1         Label    00000000
+_WS281x_Style_2         Label    00000000
+_WS281x_Style_3         Label    00000000
+_WS281x_Style_All       Label    00000000
+_WS281x_Style_Process   Label    00000000
+ENABLE_RAM_BANK         Variable 00000000
+F                       Constant 00000001
+FSR                     Constant 00000004
+INDF                    Constant 00000000
+PCHBUF                  Constant 0000000A
+PCL                     Constant 00000002
+PSAVE                   Label    00000000
+r0x1008                 Label    00000000
+r0x1009                 Label    00000000
+r0x100A                 Label    00000000
+r0x100B                 Label    00000000
+r0x100C                 Label    00000000
+r0x100D                 Label    00000000
+r0x100E                 Label    00000000
+r0x100F                 Label    00000000
+r0x1010                 Label    00000000
+r0x1011                 Label    00000000
+r0x1012                 Label    00000000
+r0x1013                 Label    00000000
+r0x1014                 Label    00000000
+r0x1015                 Label    00000000
+SSAVE                   Label    00000000
+STATUS                  Constant 00000003
+STK00                   Label    00000000
+STK01                   Label    00000000
+STK02                   Label    00000000
+STK03                   Label    00000000
+STK04                   Label    00000000
+STK05                   Label    00000000
+STK06                   Label    00000000
+STK07                   Label    00000000
+STK08                   Label    00000000
+STK09                   Label    00000000
+STK10                   Label    00000000
+STK11                   Label    00000000
+STK12                   Label    00000000
+W                       Constant 00000000
+WSAVE                   Label    00000000
+
+
+SOURCE FILE TABLE
+001 Bsp\scankey.s
+002 ny8a054d.inc
+003 common.inc
+004 Bsp\scankey.c
+
+PROCESSOR    = NY8A054D (8 bits)
+PROGRAM ROM  = 0x00000000 - 0x000007FF
+DATA ROM     = 0x00000000 - 0x000007FF
+RESERVED MEM = 0x00000800 - 0x00000810
+SRAM / SFR   = 0x00000000 - 0x00000000

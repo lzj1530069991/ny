@@ -1,0 +1,142 @@
+00000000 c7fe                 LGOTO 0x1; crt0.o:initial_ram_cinit=0x1
+00000001                      crt0.o:initial_ram_cinit:
+00000001 d782                 LCALL 0x7d; ___cinit_load__=0x7d
+00000002 c797                 LGOTO 0x68; _main=0x68
+00000003                      crt0.o:startup_exit:
+00000003 ff65                 MOVAR 0x1a
+00000004 d7a0                 LCALL 0x5f; _SDA_OUT=0x5f
+00000005 e2f9                 BCR 0x6, 0x2
+00000006 fd64                 CLRR 0x1b
+00000007                      eeprom.o:_00192_DS_:
+00000007 f465                 BTRSS 0x1a, 0x7
+00000008 c7f4                 LGOTO 0xb; eeprom.o:_00189_DS_=0xb
+00000009 e7f9                 BSR 0x6, 0x0
+0000000a c7f3                 LGOTO 0xc; eeprom.o:_00190_DS_=0xc
+0000000b                      eeprom.o:_00189_DS_:
+0000000b e3f9                 BCR 0x6, 0x0
+0000000c                      eeprom.o:_00190_DS_:
+0000000c e3fc                 BCR 0x3, 0x0
+0000000d eb65                 RLR 0x1a, 0x1
+0000000e defd                 MOVIA 0x2
+0000000f ff6a                 MOVAR 0x15
+00000010 deff                 MOVIA 0x0
+00000011 d7b3                 LCALL 0x4c; _delay_us=0x4c
+00000012 e6f9                 BSR 0x6, 0x2
+00000013 defd                 MOVIA 0x2
+00000014 ff6a                 MOVAR 0x15
+00000015 deff                 MOVIA 0x0
+00000016 d7b3                 LCALL 0x4c; _delay_us=0x4c
+00000017 e2f9                 BCR 0x6, 0x2
+00000018 defd                 MOVIA 0x2
+00000019 ff6a                 MOVAR 0x15
+0000001a deff                 MOVIA 0x0
+0000001b d7b3                 LCALL 0x4c; _delay_us=0x4c
+0000001c fa64                 INCR 0x1b, 0x1
+0000001d def7                 MOVIA 0x8
+0000001e fbe4                 SUBAR 0x1b, 0x0
+0000001f f7fc                 BTRSS 0x3, 0x0
+00000020 c7f8                 LGOTO 0x7; eeprom.o:_00192_DS_=0x7
+00000021 ffef                 RET
+00000022                      _IIC_Ack:
+00000022 e2f9                 BCR 0x6, 0x2
+00000023 d7a0                 LCALL 0x5f; _SDA_OUT=0x5f
+00000024 e3f9                 BCR 0x6, 0x0
+00000025 defd                 MOVIA 0x2
+00000026 ff6a                 MOVAR 0x15
+00000027 deff                 MOVIA 0x0
+00000028 d7b3                 LCALL 0x4c; _delay_us=0x4c
+00000029 e6f9                 BSR 0x6, 0x2
+0000002a defa                 MOVIA 0x5
+0000002b ff6a                 MOVAR 0x15
+0000002c deff                 MOVIA 0x0
+0000002d d7b3                 LCALL 0x4c; _delay_us=0x4c
+0000002e e2f9                 BCR 0x6, 0x2
+0000002f ffef                 RET
+00000030                      _IIC_Stop:
+00000030 d7a0                 LCALL 0x5f; _SDA_OUT=0x5f
+00000031 e2f9                 BCR 0x6, 0x2
+00000032 e3f9                 BCR 0x6, 0x0
+00000033 e6f9                 BSR 0x6, 0x2
+00000034 def9                 MOVIA 0x6
+00000035 ff6a                 MOVAR 0x15
+00000036 deff                 MOVIA 0x0
+00000037 d7b3                 LCALL 0x4c; _delay_us=0x4c
+00000038 e7f9                 BSR 0x6, 0x0
+00000039 def9                 MOVIA 0x6
+0000003a ff6a                 MOVAR 0x15
+0000003b deff                 MOVIA 0x0
+0000003c d7b3                 LCALL 0x4c; _delay_us=0x4c
+0000003d ffef                 RET
+0000003e                      _IIC_Start:
+0000003e d7a0                 LCALL 0x5f; _SDA_OUT=0x5f
+0000003f e7f9                 BSR 0x6, 0x0
+00000040 e6f9                 BSR 0x6, 0x2
+00000041 defa                 MOVIA 0x5
+00000042 ff6a                 MOVAR 0x15
+00000043 deff                 MOVIA 0x0
+00000044 d7b3                 LCALL 0x4c; _delay_us=0x4c
+00000045 e3f9                 BCR 0x6, 0x0
+00000046 def9                 MOVIA 0x6
+00000047 ff6a                 MOVAR 0x15
+00000048 deff                 MOVIA 0x0
+00000049 d7b3                 LCALL 0x4c; _delay_us=0x4c
+0000004a e2f9                 BCR 0x6, 0x2
+0000004b ffef                 RET
+0000004c                      _delay_us:
+0000004c ff69                 MOVAR 0x16
+0000004d feea                 MOVR 0x15, 0x0
+0000004e ff68                 MOVAR 0x17
+0000004f fd67                 CLRR 0x18
+00000050 fd66                 CLRR 0x19
+00000051                      eeprom.o:_00137_DS_:
+00000051 fee9                 MOVR 0x16, 0x0
+00000052 fbe6                 SUBAR 0x19, 0x0
+00000053 f6fc                 BTRSS 0x3, 0x2
+00000054 c7a8                 LGOTO 0x57; eeprom.o:_00148_DS_=0x57
+00000055 fee8                 MOVR 0x17, 0x0
+00000056 fbe7                 SUBAR 0x18, 0x0
+00000057                      eeprom.o:_00148_DS_:
+00000057 f3fc                 BTRSC 0x3, 0x0
+00000058 c7a1                 LGOTO 0x5e; eeprom.o:_00139_DS_=0x5e
+00000059 ffff                 NOP
+0000005a fa67                 INCR 0x18, 0x1
+0000005b f2fc                 BTRSC 0x3, 0x2
+0000005c fa66                 INCR 0x19, 0x1
+0000005d c7ae                 LGOTO 0x51; eeprom.o:_00137_DS_=0x51
+0000005e                      eeprom.o:_00139_DS_:
+0000005e ffef                 RET
+0000005f                      _SDA_OUT:
+0000005f ffec                 DISI
+00000060 e6f3                 BSR 0xc, 0x2
+00000061 ffe9                 IOSTR 0x6
+00000062 ff69                 MOVAR 0x16
+00000063 e2e9                 BCR 0x16, 0x2
+00000064 fee9                 MOVR 0x16, 0x0
+00000065 fff9                 IOST 0x6
+00000066 fffb                 ENI
+00000067 ffef                 RET
+00000068                      _main:
+00000068 fdff                 CLRA
+00000069 fff9                 IOST 0x6
+0000006a                      main.o:_00107_DS_:
+0000006a d7c1                 LCALL 0x3e; _IIC_Start=0x3e
+0000006b e3fc                 BCR 0x3, 0x0
+0000006c ebe2                 RLR 0x1d, 0x0
+0000006d ff63                 MOVAR 0x1c
+0000006e d7fc                 LCALL 0x3; crt0.o:startup_exit=0x3
+0000006f d7dd                 LCALL 0x22; _IIC_Ack=0x22
+00000070 fd63                 CLRR 0x1c
+00000071                      main.o:_00109_DS_:
+00000071 deff                 MOVIA 0x0
+00000072 d7fc                 LCALL 0x3; crt0.o:startup_exit=0x3
+00000073 d7dd                 LCALL 0x22; _IIC_Ack=0x22
+00000074 fa63                 INCR 0x1c, 0x1
+00000075 de37                 MOVIA 0xc8
+00000076 fbe3                 SUBAR 0x1c, 0x0
+00000077 f7fc                 BTRSS 0x3, 0x0
+00000078 c78e                 LGOTO 0x71; main.o:_00109_DS_=0x71
+00000079 d7cf                 LCALL 0x30; _IIC_Stop=0x30
+0000007a fffd                 CLRWDT
+0000007b c795                 LGOTO 0x6a; main.o:_00107_DS_=0x6a
+0000007c ffef                 RET
+0000007d                      ___cinit_load__:

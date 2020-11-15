@@ -1216,19 +1216,19 @@ NYASM 2.26
      0057 210F                      1- 1180     	MOVIA	0x0f
      0058 10rr                      1- 1181     	ANDAR	(_hz + 1),F
                                     1- 1182     ;;swapping arguments (AOP_TYPEs 1/3)
-                                    1- 1183     ;;unsigned compare: left >= lit (0x91=145), size=2
-                                    1- 1184     	.line	378, "main.c"; 	if(hz > 0x090 && hz < 0xF70)
-     0059 2100                      1- 1185     	MOVIA	0x00
+                                    1- 1183     ;;unsigned compare: left >= lit (0x181=385), size=2
+                                    1- 1184     	.line	378, "main.c"; 	if(hz > 0x180 && hz < 0xE70)
+     0059 2101                      1- 1185     	MOVIA	0x01
      005A 04rr                      1- 1186     	SUBAR	(_hz + 1),W
      005B 0903                      1- 1187     	BTRSS	STATUS,2
      005C 3rrr                      1- 1188     	LGOTO	_00558_DS_
-     005D 2191                      1- 1189     	MOVIA	0x91
+     005D 2181                      1- 1189     	MOVIA	0x81
      005E 04rr                      1- 1190     	SUBAR	_hz,W
      005F                           1- 1191     _00558_DS_:
      005F 0803                      1- 1192     	BTRSS	STATUS,0
      0060 3rrr                      1- 1193     	LGOTO	_00514_DS_
-                                    1- 1194     ;;unsigned compare: left < lit (0xF70=3952), size=2
-     0061 210F                      1- 1195     	MOVIA	0x0f
+                                    1- 1194     ;;unsigned compare: left < lit (0xE70=3696), size=2
+     0061 210E                      1- 1195     	MOVIA	0x0e
                                     1- 1196     	BANKSEL	_hz
      0062 rrrr                      3-   71 m1      .banksel ram_address
      0063 04rr                      1- 1197     	SUBAR	(_hz + 1),W
@@ -2477,28 +2477,20 @@ NYASM 2.26
                                     1- 2300     	BANKSEL	_PORTA
      018B rrrr                      3-   71 m1      .banksel ram_address
      018C 1Drr                      1- 2301     	BCR	_PORTA,2
-                                    1- 2302     	.line	277, "main.c"; 	rockStep = 0;
-                                    1- 2303     	BANKSEL	_rockStep
+                                    1- 2302     	.line	279, "main.c"; 	workTime = 0;
+                                    1- 2303     	BANKSEL	_workTime
      018D rrrr                      3-   71 m1      .banksel ram_address
-     018E 02rr                      1- 2304     	CLRR	_rockStep
-                                    1- 2305     	.line	278, "main.c"; 	rockTime = 0;
-                                    1- 2306     	BANKSEL	_rockTime
-     018F rrrr                      3-   71 m1      .banksel ram_address
-     0190 02rr                      1- 2307     	CLRR	_rockTime
-                                    1- 2308     	.line	279, "main.c"; 	workTime = 0;
-                                    1- 2309     	BANKSEL	_workTime
-     0191 rrrr                      3-   71 m1      .banksel ram_address
-     0192 02rr                      1- 2310     	CLRR	_workTime
-     0193 02rr                      1- 2311     	CLRR	(_workTime + 1)
-     0194                           1- 2312     _00325_DS_:
-                                    1- 2313     	.line	282, "main.c"; 	}
-                                    1- 2314     	RETURN	
-     0194 0010                      3-   26 m1      ret
-                                    1- 2315     ; exit point of _workCtr
-                                    1- 2318     ;	code size estimation:
-                                    1- 2319     ;	  941+  259 =  1200 instructions ( 2918 byte)
-                                    1- 2321     	end
-                                    1- 2321     	end
+     018E 02rr                      1- 2304     	CLRR	_workTime
+     018F 02rr                      1- 2305     	CLRR	(_workTime + 1)
+     0190                           1- 2306     _00325_DS_:
+                                    1- 2307     	.line	282, "main.c"; 	}
+                                    1- 2308     	RETURN	
+     0190 0010                      3-   26 m1      ret
+                                    1- 2309     ; exit point of _workCtr
+                                    1- 2312     ;	code size estimation:
+                                    1- 2313     ;	  939+  257 =  1196 instructions ( 2906 byte)
+                                    1- 2315     	end
+                                    1- 2315     	end
 
 SYMBOL TABLE            TYPE     VALUE
 ___fs2schar             Label    00000000
@@ -2580,7 +2572,7 @@ _00312_DS_              Label    0000009B
 _00315_DS_              Label    0000008F
 _00318_DS_              Label    00000083
 _00323_DS_              Label    00000064
-_00325_DS_              Label    00000194
+_00325_DS_              Label    00000190
 _00426_DS_              Label    0000000F
 _00427_DS_              Label    0000001B
 _00428_DS_              Label    00000027

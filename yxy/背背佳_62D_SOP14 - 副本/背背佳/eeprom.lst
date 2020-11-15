@@ -1,0 +1,1072 @@
+
+                    Nyquest Technology Co., Ltd.
+
+NYASM 2.26
+
+    ADDR  OPCODE/VALUE              LINE   TAG  SOURCE                   STATEMENT    
+
+                                    1-    1     ;--------------------------------------------------------
+                                    1-    2     ; File Created by SDCC : free open source ANSI-C Compiler
+                                    1-    3     ; Version 3.7.1 #0 (MSVC)
+                                    1-    4     ;--------------------------------------------------------
+                                    1-    5     ; NY8A port
+                                    1-    6     ;--------------------------------------------------------
+                                    1-    7     	.file	"eeprom.c"
+                                    1-    8     	list	p=NY8B062D,c=on
+                                    1-    9     	#include "ny8b062d.inc"
+                                    1-   11     ;--------------------------------------------------------
+                                    1-   12     ; external declarations
+                                    1-   13     ;--------------------------------------------------------
+                                    1-   14     	extern	_PORTAbits
+                                    1-   15     	extern	_PORTBbits
+                                    1-   16     	extern	_PCONbits
+                                    1-   17     	extern	_BWUCONbits
+                                    1-   18     	extern	_ABPLCONbits
+                                    1-   19     	extern	_BPHCONbits
+                                    1-   20     	extern	_INTEbits
+                                    1-   21     	extern	_INTFbits
+                                    1-   22     	extern	_ADMDbits
+                                    1-   23     	extern	_ADRbits
+                                    1-   24     	extern	_ADVREFHbits
+                                    1-   25     	extern	_ADCRbits
+                                    1-   26     	extern	_AWUCONbits
+                                    1-   27     	extern	_PACONbits
+                                    1-   28     	extern	_INTEDGbits
+                                    1-   29     	extern	_ANAENbits
+                                    1-   30     	extern	_RFCbits
+                                    1-   31     	extern	_INTE2bits
+                                    1-   32     	extern	_INDF
+                                    1-   33     	extern	_TMR0
+                                    1-   34     	extern	_PCL
+                                    1-   35     	extern	_STATUS
+                                    1-   36     	extern	_FSR
+                                    1-   37     	extern	_PORTA
+                                    1-   38     	extern	_PORTB
+                                    1-   39     	extern	_PCON
+                                    1-   40     	extern	_BWUCON
+                                    1-   41     	extern	_PCHBUF
+                                    1-   42     	extern	_ABPLCON
+                                    1-   43     	extern	_BPHCON
+                                    1-   44     	extern	_INTE
+                                    1-   45     	extern	_INTF
+                                    1-   46     	extern	_ADMD
+                                    1-   47     	extern	_ADR
+                                    1-   48     	extern	_ADD
+                                    1-   49     	extern	_ADVREFH
+                                    1-   50     	extern	_ADCR
+                                    1-   51     	extern	_AWUCON
+                                    1-   52     	extern	_PACON
+                                    1-   53     	extern	_INTEDG
+                                    1-   54     	extern	_TMRH
+                                    1-   55     	extern	_ANAEN
+                                    1-   56     	extern	_RFC
+                                    1-   57     	extern	_TM3RH
+                                    1-   58     	extern	_INTE2
+                                    1-   59     	extern	_TMR1
+                                    1-   60     	extern	_T1CR1
+                                    1-   61     	extern	_T1CR2
+                                    1-   62     	extern	_PWM1DUTY
+                                    1-   63     	extern	_PS1CV
+                                    1-   64     	extern	_BZ1CR
+                                    1-   65     	extern	_IRCR
+                                    1-   66     	extern	_TBHP
+                                    1-   67     	extern	_TBHD
+                                    1-   68     	extern	_TMR2
+                                    1-   69     	extern	_T2CR1
+                                    1-   70     	extern	_T2CR2
+                                    1-   71     	extern	_PWM2DUTY
+                                    1-   72     	extern	_PS2CV
+                                    1-   73     	extern	_BZ2CR
+                                    1-   74     	extern	_OSCCR
+                                    1-   75     	extern	_TMR3
+                                    1-   76     	extern	_T3CR1
+                                    1-   77     	extern	_T3CR2
+                                    1-   78     	extern	_PWM3DUTY
+                                    1-   79     	extern	_PS3CV
+                                    1-   80     	extern	_BZ3CR
+                                    1-   81     	extern	_IOSTA
+                                    1-   82     	extern	_IOSTB
+                                    1-   83     	extern	_APHCON
+                                    1-   84     	extern	_PS0CV
+                                    1-   85     	extern	_BODCON
+                                    1-   86     	extern	_CMPCR
+                                    1-   87     	extern	_PCON1
+                                    1-   88     	extern	_T0MD
+                                    1-   90     	extern PSAVE
+                                    1-   91     	extern SSAVE
+                                    1-   92     	extern WSAVE
+                                    1-   93     	extern STK12
+                                    1-   94     	extern STK11
+                                    1-   95     	extern STK10
+                                    1-   96     	extern STK09
+                                    1-   97     	extern STK08
+                                    1-   98     	extern STK07
+                                    1-   99     	extern STK06
+                                    1-  100     	extern STK05
+                                    1-  101     	extern STK04
+                                    1-  102     	extern STK03
+                                    1-  103     	extern STK02
+                                    1-  104     	extern STK01
+                                    1-  105     	extern STK00
+                                    1-  106     ;--------------------------------------------------------
+                                    1-  107     ; global declarations
+                                    1-  108     ;--------------------------------------------------------
+                                    1-  109     	extern	_IIC_Read_Byte
+                                    1-  110     	extern	_IIC_Send_Byte
+                                    1-  111     	extern	_IIC_NAck
+                                    1-  112     	extern	_IIC_Ack
+                                    1-  113     	extern	_IIC_Wait_Ack
+                                    1-  114     	extern	_IIC_Stop
+                                    1-  115     	extern	_IIC_Start
+                                    1-  116     	extern	_delay_ms
+                                    1-  117     	extern	_delay_us
+                                    1-  118     	extern	_SDA_IN
+                                    1-  119     	extern	_SDA_OUT
+                                    1-  120     	extern	_Delay10Us
+                                    1-  121     	extern	_Delay1000Us
+                                    1-  123     ;--------------------------------------------------------
+                                    1-  124     ; global definitions
+                                    1-  125     ;--------------------------------------------------------
+                                    1-  126     ;--------------------------------------------------------
+                                    1-  127     ; absolute symbol definitions
+                                    1-  128     ;--------------------------------------------------------
+                                    1-  129     ;--------------------------------------------------------
+                                    1-  130     ; compiler-defined variables
+                                    1-  131     ;--------------------------------------------------------
+                                    1-  132     .segment "uninit"
+     0000                           1-  133     r0x100A:
+                                    1-  134     	.res	1
+                                    1-  135     .segment "uninit"
+     0000                           1-  136     r0x100B:
+                                    1-  137     	.res	1
+                                    1-  138     .segment "uninit"
+     0000                           1-  139     r0x1000:
+                                    1-  140     	.res	1
+                                    1-  141     .segment "uninit"
+     0000                           1-  142     r0x1001:
+                                    1-  143     	.res	1
+                                    1-  144     .segment "uninit"
+     0000                           1-  145     r0x1002:
+                                    1-  146     	.res	1
+                                    1-  147     .segment "uninit"
+     0000                           1-  148     r0x1003:
+                                    1-  149     	.res	1
+                                    1-  150     .segment "uninit"
+     0000                           1-  151     r0x100C:
+                                    1-  152     	.res	1
+                                    1-  153     .segment "uninit"
+     0000                           1-  154     r0x100D:
+                                    1-  155     	.res	1
+                                    1-  156     .segment "uninit"
+     0000                           1-  157     r0x1009:
+                                    1-  158     	.res	1
+                                    1-  159     .segment "uninit"
+     0000                           1-  160     r0x1007:
+                                    1-  161     	.res	1
+                                    1-  162     .segment "uninit"
+     0000                           1-  163     r0x1008:
+                                    1-  164     	.res	1
+                                    1-  165     .segment "uninit"
+     0000                           1-  166     r0x1004:
+                                    1-  167     	.res	1
+                                    1-  168     .segment "uninit"
+     0000                           1-  169     r0x1005:
+                                    1-  170     	.res	1
+                                    1-  171     .segment "uninit"
+     0000                           1-  172     r0x1006:
+                                    1-  173     	.res	1
+                                    1-  174     ;--------------------------------------------------------
+                                    1-  175     ; initialized data
+                                    1-  176     ;--------------------------------------------------------
+                                    1-  177     ;--------------------------------------------------------
+                                    1-  178     ; overlayable items in internal ram 
+                                    1-  179     ;--------------------------------------------------------
+                                    1-  180     ;	udata_ovr
+                                    1-  181     ;--------------------------------------------------------
+                                    1-  182     ; code
+                                    1-  183     ;--------------------------------------------------------
+                                    1-  184     ;***
+                                    1-  185     ;  pBlock Stats: dbName = C
+                                    1-  186     ;***
+                                    1-  187     ;has an exit
+                                    1-  188     ;functions called:
+                                    1-  189     ;   _SDA_IN
+                                    1-  190     ;   _delay_us
+                                    1-  191     ;   _delay_us
+                                    1-  192     ;   _IIC_NAck
+                                    1-  193     ;   _IIC_Ack
+                                    1-  194     ;   _SDA_IN
+                                    1-  195     ;   _delay_us
+                                    1-  196     ;   _delay_us
+                                    1-  197     ;   _IIC_NAck
+                                    1-  198     ;   _IIC_Ack
+                                    1-  199     ;4 compiler assigned registers:
+                                    1-  200     ;   r0x1004
+                                    1-  201     ;   r0x1005
+                                    1-  202     ;   r0x1006
+                                    1-  203     ;   STK00
+                                    1-  204     ;; Starting pCode block
+                                    1-  205     .segment "code"; module=eeprom, function=_IIC_Read_Byte
+                                    1-  207     ;local variable name mapping:
+     0000                           1-  211     _IIC_Read_Byte:
+                                    1-  212     ; 2 exit points
+                                    1-  213     	.line	190, "eeprom.c"; 	u8t IIC_Read_Byte(u8t ack)
+                                    1-  214     	BANKSEL	r0x1004
+     0000 rrrr                      3-   71 m1      .banksel ram_address
+     0001 00rr                      1-  215     	MOVAR	r0x1004
+                                    1-  216     	.line	192, "eeprom.c"; 	u8t i,receive=0;
+                                    1-  217     	BANKSEL	r0x1005
+     0002 rrrr                      3-   71 m1      .banksel ram_address
+     0003 02rr                      1-  218     	CLRR	r0x1005
+                                    1-  219     	.line	193, "eeprom.c"; 	SDA_IN();//SDAÉèÖÃÎªÊäÈë
+     0004 2rrr                      1-  220     	LCALL	_SDA_IN
+                                    1-  221     	.line	194, "eeprom.c"; 	for(i=0;i<8;i++ )
+                                    1-  222     	BANKSEL	r0x1006
+     0005 rrrr                      3-   71 m1      .banksel ram_address
+     0006 02rr                      1-  223     	CLRR	r0x1006
+     0007                           1-  224     _00203_DS_:
+                                    1-  225     	.line	196, "eeprom.c"; 	IIC_SCL=0; 
+                                    1-  226     	BANKSEL	_PORTB
+     0007 rrrr                      3-   71 m1      .banksel ram_address
+     0008 1Drr                      1-  227     	BCR	_PORTB,3
+                                    1-  228     	.line	197, "eeprom.c"; 	delay_us(2);
+     0009 2102                      1-  229     	MOVIA	0x02
+     000A 00rr                      1-  230     	MOVAR	STK00
+     000B 2100                      1-  231     	MOVIA	0x00
+     000C 2rrr                      1-  232     	LCALL	_delay_us
+                                    1-  233     	.line	198, "eeprom.c"; 	IIC_SCL=1;
+                                    1-  234     	BANKSEL	_PORTB
+     000D rrrr                      3-   71 m1      .banksel ram_address
+     000E 19rr                      1-  235     	BSR	_PORTB,3
+                                    1-  236     	.line	199, "eeprom.c"; 	receive<<=1;
+     000F 1C03                      1-  237     	BCR	STATUS,0
+                                    1-  238     	BANKSEL	r0x1005
+     0010 rrrr                      3-   71 m1      .banksel ram_address
+     0011 14rr                      1-  239     	RLR	r0x1005,F
+                                    1-  240     	.line	200, "eeprom.c"; 	if(IIC_SDA)receive++;   
+                                    1-  241     	BANKSEL	_PORTB
+     0012 rrrr                      3-   71 m1      .banksel ram_address
+     0013 09rr                      1-  242     	BTRSS	_PORTB,2
+     0014 3rrr                      1-  243     	LGOTO	_00001_DS_
+                                    1-  244     	BANKSEL	r0x1005
+     0015 rrrr                      3-   71 m1      .banksel ram_address
+     0016 05rr                      1-  245     	INCR	r0x1005,F
+     0017                           1-  246     _00001_DS_:
+                                    1-  247     	.line	201, "eeprom.c"; 	delay_us(1); 
+     0017 2101                      1-  248     	MOVIA	0x01
+     0018 00rr                      1-  249     	MOVAR	STK00
+     0019 2100                      1-  250     	MOVIA	0x00
+     001A 2rrr                      1-  251     	LCALL	_delay_us
+                                    1-  252     	.line	194, "eeprom.c"; 	for(i=0;i<8;i++ )
+                                    1-  253     	BANKSEL	r0x1006
+     001B rrrr                      3-   71 m1      .banksel ram_address
+     001C 05rr                      1-  254     	INCR	r0x1006,F
+                                    1-  255     ;;unsigned compare: left < lit (0x8=8), size=1
+     001D 2108                      1-  256     	MOVIA	0x08
+     001E 04rr                      1-  257     	SUBAR	r0x1006,W
+     001F 0803                      1-  258     	BTRSS	STATUS,0
+     0020 3rrr                      1-  259     	LGOTO	_00203_DS_
+                                    1-  260     	.line	203, "eeprom.c"; 	if (!ack)
+                                    1-  261     	BANKSEL	r0x1004
+     0021 rrrr                      3-   71 m1      .banksel ram_address
+     0022 01rr                      1-  262     	MOVR	r0x1004,W
+     0023 0903                      1-  263     	BTRSS	STATUS,2
+     0024 3rrr                      1-  264     	LGOTO	_00201_DS_
+                                    1-  265     	.line	204, "eeprom.c"; 	IIC_NAck();//·¢ËÍnACK
+     0025 2rrr                      1-  266     	LCALL	_IIC_NAck
+     0026 3rrr                      1-  267     	LGOTO	_00202_DS_
+     0027                           1-  268     _00201_DS_:
+                                    1-  269     	.line	206, "eeprom.c"; 	IIC_Ack(); //·¢ËÍACK   
+     0027 2rrr                      1-  270     	LCALL	_IIC_Ack
+     0028                           1-  271     _00202_DS_:
+                                    1-  272     	.line	207, "eeprom.c"; 	return receive;
+                                    1-  273     	BANKSEL	r0x1005
+     0028 rrrr                      3-   71 m1      .banksel ram_address
+     0029 01rr                      1-  274     	MOVR	r0x1005,W
+                                    1-  275     	.line	208, "eeprom.c"; 	}
+                                    1-  276     	RETURN	
+     002A 0010                      3-   26 m1      ret
+                                    1-  277     ; exit point of _IIC_Read_Byte
+                                    1-  279     ;***
+                                    1-  280     ;  pBlock Stats: dbName = C
+                                    1-  281     ;***
+                                    1-  282     ;has an exit
+                                    1-  283     ;functions called:
+                                    1-  284     ;   _SDA_OUT
+                                    1-  285     ;   _delay_us
+                                    1-  286     ;   _delay_us
+                                    1-  287     ;   _delay_us
+                                    1-  288     ;   _SDA_OUT
+                                    1-  289     ;   _delay_us
+                                    1-  290     ;   _delay_us
+                                    1-  291     ;   _delay_us
+                                    1-  292     ;3 compiler assigned registers:
+                                    1-  293     ;   r0x1007
+                                    1-  294     ;   r0x1008
+                                    1-  295     ;   STK00
+                                    1-  296     ;; Starting pCode block
+                                    1-  297     .segment "code"; module=eeprom, function=_IIC_Send_Byte
+                                    1-  299     ;local variable name mapping:
+     0000                           1-  302     _IIC_Send_Byte:
+                                    1-  303     ; 2 exit points
+                                    1-  304     	.line	164, "eeprom.c"; 	void IIC_Send_Byte(u8t txd)
+                                    1-  305     	BANKSEL	r0x1007
+     0000 rrrr                      3-   71 m1      .banksel ram_address
+     0001 00rr                      1-  306     	MOVAR	r0x1007
+                                    1-  307     	.line	167, "eeprom.c"; 	SDA_OUT(); 	    
+     0002 2rrr                      1-  308     	LCALL	_SDA_OUT
+                                    1-  309     	.line	168, "eeprom.c"; 	IIC_SCL=0;//À­µÍÊ±ÖÓ¿ªÊ¼Êý¾Ý´«Êä
+                                    1-  310     	BANKSEL	_PORTB
+     0003 rrrr                      3-   71 m1      .banksel ram_address
+     0004 1Drr                      1-  311     	BCR	_PORTB,3
+                                    1-  312     	.line	169, "eeprom.c"; 	for(t=0;t<8;t++)
+                                    1-  313     	BANKSEL	r0x1008
+     0005 rrrr                      3-   71 m1      .banksel ram_address
+     0006 02rr                      1-  314     	CLRR	r0x1008
+     0007                           1-  315     _00192_DS_:
+                                    1-  316     	.line	171, "eeprom.c"; 	if((txd&0x80)>0) //0x80  1000 0000
+                                    1-  317     	BANKSEL	r0x1007
+     0007 rrrr                      3-   71 m1      .banksel ram_address
+     0008 0Brr                      1-  318     	BTRSS	r0x1007,7
+     0009 3rrr                      1-  319     	LGOTO	_00189_DS_
+                                    1-  320     	.line	172, "eeprom.c"; 	IIC_SDA=1;
+                                    1-  321     	BANKSEL	_PORTB
+     000A rrrr                      3-   71 m1      .banksel ram_address
+     000B 19rr                      1-  322     	BSR	_PORTB,2
+     000C 3rrr                      1-  323     	LGOTO	_00190_DS_
+     000D                           1-  324     _00189_DS_:
+                                    1-  325     	.line	174, "eeprom.c"; 	IIC_SDA=0;
+                                    1-  326     	BANKSEL	_PORTB
+     000D rrrr                      3-   71 m1      .banksel ram_address
+     000E 1Drr                      1-  327     	BCR	_PORTB,2
+     000F                           1-  328     _00190_DS_:
+                                    1-  329     	.line	175, "eeprom.c"; 	txd<<=1; 	  
+     000F 1C03                      1-  330     	BCR	STATUS,0
+                                    1-  331     	BANKSEL	r0x1007
+     0010 rrrr                      3-   71 m1      .banksel ram_address
+     0011 14rr                      1-  332     	RLR	r0x1007,F
+                                    1-  333     	.line	176, "eeprom.c"; 	delay_us(2);   //¶ÔTEA5767ÕâÈý¸öÑÓÊ±¶¼ÊÇ±ØÐëµÄ
+     0012 2102                      1-  334     	MOVIA	0x02
+     0013 00rr                      1-  335     	MOVAR	STK00
+     0014 2100                      1-  336     	MOVIA	0x00
+     0015 2rrr                      1-  337     	LCALL	_delay_us
+                                    1-  338     	.line	177, "eeprom.c"; 	IIC_SCL=1;
+                                    1-  339     	BANKSEL	_PORTB
+     0016 rrrr                      3-   71 m1      .banksel ram_address
+     0017 19rr                      1-  340     	BSR	_PORTB,3
+                                    1-  341     	.line	178, "eeprom.c"; 	delay_us(2); 
+     0018 2102                      1-  342     	MOVIA	0x02
+     0019 00rr                      1-  343     	MOVAR	STK00
+     001A 2100                      1-  344     	MOVIA	0x00
+     001B 2rrr                      1-  345     	LCALL	_delay_us
+                                    1-  346     	.line	179, "eeprom.c"; 	IIC_SCL=0;	
+                                    1-  347     	BANKSEL	_PORTB
+     001C rrrr                      3-   71 m1      .banksel ram_address
+     001D 1Drr                      1-  348     	BCR	_PORTB,3
+                                    1-  349     	.line	180, "eeprom.c"; 	delay_us(2);
+     001E 2102                      1-  350     	MOVIA	0x02
+     001F 00rr                      1-  351     	MOVAR	STK00
+     0020 2100                      1-  352     	MOVIA	0x00
+     0021 2rrr                      1-  353     	LCALL	_delay_us
+                                    1-  354     	.line	169, "eeprom.c"; 	for(t=0;t<8;t++)
+                                    1-  355     	BANKSEL	r0x1008
+     0022 rrrr                      3-   71 m1      .banksel ram_address
+     0023 05rr                      1-  356     	INCR	r0x1008,F
+                                    1-  357     ;;unsigned compare: left < lit (0x8=8), size=1
+     0024 2108                      1-  358     	MOVIA	0x08
+     0025 04rr                      1-  359     	SUBAR	r0x1008,W
+     0026 0803                      1-  360     	BTRSS	STATUS,0
+     0027 3rrr                      1-  361     	LGOTO	_00192_DS_
+                                    1-  362     	.line	182, "eeprom.c"; 	} 
+                                    1-  363     	RETURN	
+     0028 0010                      3-   26 m1      ret
+                                    1-  364     ; exit point of _IIC_Send_Byte
+                                    1-  366     ;***
+                                    1-  367     ;  pBlock Stats: dbName = C
+                                    1-  368     ;***
+                                    1-  369     ;has an exit
+                                    1-  370     ;functions called:
+                                    1-  371     ;   _SDA_OUT
+                                    1-  372     ;   _delay_us
+                                    1-  373     ;   _delay_us
+                                    1-  374     ;   _SDA_OUT
+                                    1-  375     ;   _delay_us
+                                    1-  376     ;   _delay_us
+                                    1-  377     ;1 compiler assigned register :
+                                    1-  378     ;   STK00
+                                    1-  379     ;; Starting pCode block
+                                    1-  380     .segment "code"; module=eeprom, function=_IIC_NAck
+     0000                           1-  382     _IIC_NAck:
+                                    1-  383     ; 2 exit points
+                                    1-  384     	.line	149, "eeprom.c"; 	IIC_SCL=0;
+                                    1-  385     	BANKSEL	_PORTB
+     0000 rrrr                      3-   71 m1      .banksel ram_address
+     0001 1Drr                      1-  386     	BCR	_PORTB,3
+                                    1-  387     	.line	150, "eeprom.c"; 	SDA_OUT();
+     0002 2rrr                      1-  388     	LCALL	_SDA_OUT
+                                    1-  389     	.line	151, "eeprom.c"; 	IIC_SDA=1;
+                                    1-  390     	BANKSEL	_PORTB
+     0003 rrrr                      3-   71 m1      .banksel ram_address
+     0004 19rr                      1-  391     	BSR	_PORTB,2
+                                    1-  392     	.line	152, "eeprom.c"; 	delay_us(2);
+     0005 2102                      1-  393     	MOVIA	0x02
+     0006 00rr                      1-  394     	MOVAR	STK00
+     0007 2100                      1-  395     	MOVIA	0x00
+     0008 2rrr                      1-  396     	LCALL	_delay_us
+                                    1-  397     	.line	153, "eeprom.c"; 	IIC_SCL=1;
+                                    1-  398     	BANKSEL	_PORTB
+     0009 rrrr                      3-   71 m1      .banksel ram_address
+     000A 19rr                      1-  399     	BSR	_PORTB,3
+                                    1-  400     	.line	154, "eeprom.c"; 	delay_us(5);
+     000B 2105                      1-  401     	MOVIA	0x05
+     000C 00rr                      1-  402     	MOVAR	STK00
+     000D 2100                      1-  403     	MOVIA	0x00
+     000E 2rrr                      1-  404     	LCALL	_delay_us
+                                    1-  405     	.line	155, "eeprom.c"; 	IIC_SCL=0;
+                                    1-  406     	BANKSEL	_PORTB
+     000F rrrr                      3-   71 m1      .banksel ram_address
+     0010 1Drr                      1-  407     	BCR	_PORTB,3
+                                    1-  408     	.line	156, "eeprom.c"; 	}	
+                                    1-  409     	RETURN	
+     0011 0010                      3-   26 m1      ret
+                                    1-  410     ; exit point of _IIC_NAck
+                                    1-  412     ;***
+                                    1-  413     ;  pBlock Stats: dbName = C
+                                    1-  414     ;***
+                                    1-  415     ;has an exit
+                                    1-  416     ;functions called:
+                                    1-  417     ;   _SDA_OUT
+                                    1-  418     ;   _delay_us
+                                    1-  419     ;   _delay_us
+                                    1-  420     ;   _SDA_OUT
+                                    1-  421     ;   _delay_us
+                                    1-  422     ;   _delay_us
+                                    1-  423     ;1 compiler assigned register :
+                                    1-  424     ;   STK00
+                                    1-  425     ;; Starting pCode block
+                                    1-  426     .segment "code"; module=eeprom, function=_IIC_Ack
+     0000                           1-  428     _IIC_Ack:
+                                    1-  429     ; 2 exit points
+                                    1-  430     	.line	132, "eeprom.c"; 	IIC_SCL=0;
+                                    1-  431     	BANKSEL	_PORTB
+     0000 rrrr                      3-   71 m1      .banksel ram_address
+     0001 1Drr                      1-  432     	BCR	_PORTB,3
+                                    1-  433     	.line	133, "eeprom.c"; 	SDA_OUT();
+     0002 2rrr                      1-  434     	LCALL	_SDA_OUT
+                                    1-  435     	.line	134, "eeprom.c"; 	IIC_SDA=0;
+                                    1-  436     	BANKSEL	_PORTB
+     0003 rrrr                      3-   71 m1      .banksel ram_address
+     0004 1Drr                      1-  437     	BCR	_PORTB,2
+                                    1-  438     	.line	135, "eeprom.c"; 	delay_us(2);
+     0005 2102                      1-  439     	MOVIA	0x02
+     0006 00rr                      1-  440     	MOVAR	STK00
+     0007 2100                      1-  441     	MOVIA	0x00
+     0008 2rrr                      1-  442     	LCALL	_delay_us
+                                    1-  443     	.line	136, "eeprom.c"; 	IIC_SCL=1;
+                                    1-  444     	BANKSEL	_PORTB
+     0009 rrrr                      3-   71 m1      .banksel ram_address
+     000A 19rr                      1-  445     	BSR	_PORTB,3
+                                    1-  446     	.line	137, "eeprom.c"; 	delay_us(5);
+     000B 2105                      1-  447     	MOVIA	0x05
+     000C 00rr                      1-  448     	MOVAR	STK00
+     000D 2100                      1-  449     	MOVIA	0x00
+     000E 2rrr                      1-  450     	LCALL	_delay_us
+                                    1-  451     	.line	138, "eeprom.c"; 	IIC_SCL=0;
+                                    1-  452     	BANKSEL	_PORTB
+     000F rrrr                      3-   71 m1      .banksel ram_address
+     0010 1Drr                      1-  453     	BCR	_PORTB,3
+                                    1-  454     	.line	139, "eeprom.c"; 	}
+                                    1-  455     	RETURN	
+     0011 0010                      3-   26 m1      ret
+                                    1-  456     ; exit point of _IIC_Ack
+                                    1-  458     ;***
+                                    1-  459     ;  pBlock Stats: dbName = C
+                                    1-  460     ;***
+                                    1-  461     ;has an exit
+                                    1-  462     ;functions called:
+                                    1-  463     ;   _SDA_IN
+                                    1-  464     ;   _delay_us
+                                    1-  465     ;   _delay_us
+                                    1-  466     ;   _IIC_Stop
+                                    1-  467     ;   _SDA_IN
+                                    1-  468     ;   _delay_us
+                                    1-  469     ;   _delay_us
+                                    1-  470     ;   _IIC_Stop
+                                    1-  471     ;2 compiler assigned registers:
+                                    1-  472     ;   STK00
+                                    1-  473     ;   r0x1009
+                                    1-  474     ;; Starting pCode block
+                                    1-  475     .segment "code"; module=eeprom, function=_IIC_Wait_Ack
+                                    1-  477     ;local variable name mapping:
+     0000                           1-  479     _IIC_Wait_Ack:
+                                    1-  480     ; 2 exit points
+                                    1-  481     	.line	106, "eeprom.c"; 	SDA_IN();      //SDAÉèÖÃÎªÊäÈë  
+     0000 2rrr                      1-  482     	LCALL	_SDA_IN
+                                    1-  483     	.line	107, "eeprom.c"; 	IIC_SDA=1;
+                                    1-  484     	BANKSEL	_PORTB
+     0001 rrrr                      3-   71 m1      .banksel ram_address
+     0002 19rr                      1-  485     	BSR	_PORTB,2
+                                    1-  486     	.line	108, "eeprom.c"; 	delay_us(1);	   
+     0003 2101                      1-  487     	MOVIA	0x01
+     0004 00rr                      1-  488     	MOVAR	STK00
+     0005 2100                      1-  489     	MOVIA	0x00
+     0006 2rrr                      1-  490     	LCALL	_delay_us
+                                    1-  491     	.line	109, "eeprom.c"; 	IIC_SCL=1;
+                                    1-  492     	BANKSEL	_PORTB
+     0007 rrrr                      3-   71 m1      .banksel ram_address
+     0008 19rr                      1-  493     	BSR	_PORTB,3
+                                    1-  494     	.line	110, "eeprom.c"; 	delay_us(1);	 
+     0009 2101                      1-  495     	MOVIA	0x01
+     000A 00rr                      1-  496     	MOVAR	STK00
+     000B 2100                      1-  497     	MOVIA	0x00
+     000C 2rrr                      1-  498     	LCALL	_delay_us
+                                    1-  499     	.line	111, "eeprom.c"; 	while(IIC_SDA)
+                                    1-  500     	BANKSEL	r0x1009
+     000D rrrr                      3-   71 m1      .banksel ram_address
+     000E 02rr                      1-  501     	CLRR	r0x1009
+     000F                           1-  502     _00172_DS_:
+                                    1-  503     	BANKSEL	_PORTB
+     000F rrrr                      3-   71 m1      .banksel ram_address
+     0010 09rr                      1-  504     	BTRSS	_PORTB,2
+     0011 3rrr                      1-  505     	LGOTO	_00174_DS_
+                                    1-  506     	.line	113, "eeprom.c"; 	tempTime++;
+                                    1-  507     	BANKSEL	r0x1009
+     0012 rrrr                      3-   71 m1      .banksel ram_address
+     0013 05rr                      1-  508     	INCR	r0x1009,F
+                                    1-  509     ;;swapping arguments (AOP_TYPEs 1/2)
+                                    1-  510     ;;unsigned compare: left >= lit (0xFB=251), size=1
+                                    1-  511     	.line	114, "eeprom.c"; 	if(tempTime>250)
+     0014 21FB                      1-  512     	MOVIA	0xfb
+     0015 04rr                      1-  513     	SUBAR	r0x1009,W
+     0016 0803                      1-  514     	BTRSS	STATUS,0
+     0017 3rrr                      1-  515     	LGOTO	_00172_DS_
+                                    1-  516     	.line	116, "eeprom.c"; 	IIC_Stop();
+     0018 2rrr                      1-  517     	LCALL	_IIC_Stop
+                                    1-  518     	.line	117, "eeprom.c"; 	return 1;
+     0019 2101                      1-  519     	MOVIA	0x01
+     001A 3rrr                      1-  520     	LGOTO	_00175_DS_
+     001B                           1-  521     _00174_DS_:
+                                    1-  522     	.line	120, "eeprom.c"; 	IIC_SCL=0;//Ê±ÖÓÊä³ö0 	   
+                                    1-  523     	BANKSEL	_PORTB
+     001B rrrr                      3-   71 m1      .banksel ram_address
+     001C 1Drr                      1-  524     	BCR	_PORTB,3
+                                    1-  525     	.line	121, "eeprom.c"; 	return 0;  
+     001D 2100                      1-  526     	MOVIA	0x00
+     001E                           1-  527     _00175_DS_:
+                                    1-  528     	.line	122, "eeprom.c"; 	} 
+                                    1-  529     	RETURN	
+     001E 0010                      3-   26 m1      ret
+                                    1-  530     ; exit point of _IIC_Wait_Ack
+                                    1-  532     ;***
+                                    1-  533     ;  pBlock Stats: dbName = C
+                                    1-  534     ;***
+                                    1-  535     ;has an exit
+                                    1-  536     ;functions called:
+                                    1-  537     ;   _SDA_OUT
+                                    1-  538     ;   _delay_us
+                                    1-  539     ;   _delay_us
+                                    1-  540     ;   _SDA_OUT
+                                    1-  541     ;   _delay_us
+                                    1-  542     ;   _delay_us
+                                    1-  543     ;1 compiler assigned register :
+                                    1-  544     ;   STK00
+                                    1-  545     ;; Starting pCode block
+                                    1-  546     .segment "code"; module=eeprom, function=_IIC_Stop
+     0000                           1-  548     _IIC_Stop:
+                                    1-  549     ; 2 exit points
+                                    1-  550     	.line	87, "eeprom.c"; 	SDA_OUT();//sdaÏßÊä³ö
+     0000 2rrr                      1-  551     	LCALL	_SDA_OUT
+                                    1-  552     	.line	88, "eeprom.c"; 	IIC_SCL=0;
+                                    1-  553     	BANKSEL	_PORTB
+     0001 rrrr                      3-   71 m1      .banksel ram_address
+     0002 1Drr                      1-  554     	BCR	_PORTB,3
+                                    1-  555     	.line	89, "eeprom.c"; 	IIC_SDA=0;//STOP:when CLK is high DATA change form low to high
+     0003 1Drr                      1-  556     	BCR	_PORTB,2
+                                    1-  557     	.line	90, "eeprom.c"; 	IIC_SCL=1; 
+     0004 19rr                      1-  558     	BSR	_PORTB,3
+                                    1-  559     	.line	91, "eeprom.c"; 	delay_us(6); 
+     0005 2106                      1-  560     	MOVIA	0x06
+     0006 00rr                      1-  561     	MOVAR	STK00
+     0007 2100                      1-  562     	MOVIA	0x00
+     0008 2rrr                      1-  563     	LCALL	_delay_us
+                                    1-  564     	.line	92, "eeprom.c"; 	IIC_SDA=1;//·¢ËÍI2C×ÜÏß½áÊøÐÅºÅ
+                                    1-  565     	BANKSEL	_PORTB
+     0009 rrrr                      3-   71 m1      .banksel ram_address
+     000A 19rr                      1-  566     	BSR	_PORTB,2
+                                    1-  567     	.line	93, "eeprom.c"; 	delay_us(6);							   	
+     000B 2106                      1-  568     	MOVIA	0x06
+     000C 00rr                      1-  569     	MOVAR	STK00
+     000D 2100                      1-  570     	MOVIA	0x00
+     000E 2rrr                      1-  571     	LCALL	_delay_us
+                                    1-  572     	.line	94, "eeprom.c"; 	}
+                                    1-  573     	RETURN	
+     000F 0010                      3-   26 m1      ret
+                                    1-  574     ; exit point of _IIC_Stop
+                                    1-  576     ;***
+                                    1-  577     ;  pBlock Stats: dbName = C
+                                    1-  578     ;***
+                                    1-  579     ;has an exit
+                                    1-  580     ;functions called:
+                                    1-  581     ;   _SDA_OUT
+                                    1-  582     ;   _delay_us
+                                    1-  583     ;   _delay_us
+                                    1-  584     ;   _SDA_OUT
+                                    1-  585     ;   _delay_us
+                                    1-  586     ;   _delay_us
+                                    1-  587     ;1 compiler assigned register :
+                                    1-  588     ;   STK00
+                                    1-  589     ;; Starting pCode block
+                                    1-  590     .segment "code"; module=eeprom, function=_IIC_Start
+     0000                           1-  592     _IIC_Start:
+                                    1-  593     ; 2 exit points
+                                    1-  594     	.line	70, "eeprom.c"; 	SDA_OUT();     //sdaÏßÊä³ö
+     0000 2rrr                      1-  595     	LCALL	_SDA_OUT
+                                    1-  596     	.line	71, "eeprom.c"; 	IIC_SDA=1;	  	  
+                                    1-  597     	BANKSEL	_PORTB
+     0001 rrrr                      3-   71 m1      .banksel ram_address
+     0002 19rr                      1-  598     	BSR	_PORTB,2
+                                    1-  599     	.line	72, "eeprom.c"; 	IIC_SCL=1;
+     0003 19rr                      1-  600     	BSR	_PORTB,3
+                                    1-  601     	.line	73, "eeprom.c"; 	delay_us(5);
+     0004 2105                      1-  602     	MOVIA	0x05
+     0005 00rr                      1-  603     	MOVAR	STK00
+     0006 2100                      1-  604     	MOVIA	0x00
+     0007 2rrr                      1-  605     	LCALL	_delay_us
+                                    1-  606     	.line	74, "eeprom.c"; 	IIC_SDA=0;//START:when CLK is high,DATA change form high to low 
+                                    1-  607     	BANKSEL	_PORTB
+     0008 rrrr                      3-   71 m1      .banksel ram_address
+     0009 1Drr                      1-  608     	BCR	_PORTB,2
+                                    1-  609     	.line	75, "eeprom.c"; 	delay_us(6);
+     000A 2106                      1-  610     	MOVIA	0x06
+     000B 00rr                      1-  611     	MOVAR	STK00
+     000C 2100                      1-  612     	MOVIA	0x00
+     000D 2rrr                      1-  613     	LCALL	_delay_us
+                                    1-  614     	.line	76, "eeprom.c"; 	IIC_SCL=0;//Ç¯×¡I2C×ÜÏß£¬×¼±¸·¢ËÍ»ò½ÓÊÕÊý¾Ý 
+                                    1-  615     	BANKSEL	_PORTB
+     000E rrrr                      3-   71 m1      .banksel ram_address
+     000F 1Drr                      1-  616     	BCR	_PORTB,3
+                                    1-  617     	.line	77, "eeprom.c"; 	}	
+                                    1-  618     	RETURN	
+     0010 0010                      3-   26 m1      ret
+                                    1-  619     ; exit point of _IIC_Start
+                                    1-  621     ;***
+                                    1-  622     ;  pBlock Stats: dbName = C
+                                    1-  623     ;***
+                                    1-  624     ;has an exit
+                                    1-  625     ;functions called:
+                                    1-  626     ;   _Delay1000Us
+                                    1-  627     ;   _Delay1000Us
+                                    1-  628     ;2 compiler assigned registers:
+                                    1-  629     ;   r0x100C
+                                    1-  630     ;   r0x100D
+                                    1-  631     ;; Starting pCode block
+                                    1-  632     .segment "code"; module=eeprom, function=_delay_ms
+                                    1-  634     ;local variable name mapping:
+     0000                           1-  637     _delay_ms:
+                                    1-  638     ; 2 exit points
+                                    1-  639     	.line	53, "eeprom.c"; 	void delay_ms(u8t time)
+                                    1-  640     	BANKSEL	r0x100C
+     0000 rrrr                      3-   71 m1      .banksel ram_address
+     0001 00rr                      1-  641     	MOVAR	r0x100C
+                                    1-  642     	.line	55, "eeprom.c"; 	for(u8t i=0;i<time;i++)
+                                    1-  643     	BANKSEL	r0x100D
+     0002 rrrr                      3-   71 m1      .banksel ram_address
+     0003 02rr                      1-  644     	CLRR	r0x100D
+     0004                           1-  645     _00155_DS_:
+                                    1-  646     	BANKSEL	r0x100C
+     0004 rrrr                      3-   71 m1      .banksel ram_address
+     0005 01rr                      1-  647     	MOVR	r0x100C,W
+                                    1-  648     	BANKSEL	r0x100D
+     0006 rrrr                      3-   71 m1      .banksel ram_address
+     0007 04rr                      1-  649     	SUBAR	r0x100D,W
+     0008 0C03                      1-  650     	BTRSC	STATUS,0
+     0009 3rrr                      1-  651     	LGOTO	_00157_DS_
+                                    1-  652     	.line	57, "eeprom.c"; 	Delay1000Us();
+     000A 2rrr                      1-  653     	LCALL	_Delay1000Us
+                                    1-  654     	.line	55, "eeprom.c"; 	for(u8t i=0;i<time;i++)
+                                    1-  655     	BANKSEL	r0x100D
+     000B rrrr                      3-   71 m1      .banksel ram_address
+     000C 05rr                      1-  656     	INCR	r0x100D,F
+     000D 3rrr                      1-  657     	LGOTO	_00155_DS_
+     000E                           1-  658     _00157_DS_:
+                                    1-  659     	.line	59, "eeprom.c"; 	}
+                                    1-  660     	RETURN	
+     000E 0010                      3-   26 m1      ret
+                                    1-  661     ; exit point of _delay_ms
+                                    1-  663     ;***
+                                    1-  664     ;  pBlock Stats: dbName = C
+                                    1-  665     ;***
+                                    1-  666     ;has an exit
+                                    1-  667     ;5 compiler assigned registers:
+                                    1-  668     ;   r0x1000
+                                    1-  669     ;   STK00
+                                    1-  670     ;   r0x1001
+                                    1-  671     ;   r0x1002
+                                    1-  672     ;   r0x1003
+                                    1-  673     ;; Starting pCode block
+                                    1-  674     .segment "code"; module=eeprom, function=_delay_us
+                                    1-  676     ;local variable name mapping:
+     0000                           1-  681     _delay_us:
+                                    1-  682     ; 2 exit points
+                                    1-  683     	.line	45, "eeprom.c"; 	void delay_us(u16t time)
+                                    1-  684     	BANKSEL	r0x1000
+     0000 rrrr                      3-   71 m1      .banksel ram_address
+     0001 00rr                      1-  685     	MOVAR	r0x1000
+     0002 01rr                      1-  686     	MOVR	STK00,W
+                                    1-  687     	BANKSEL	r0x1001
+     0003 rrrr                      3-   71 m1      .banksel ram_address
+     0004 00rr                      1-  688     	MOVAR	r0x1001
+                                    1-  689     	.line	47, "eeprom.c"; 	for(u16t i=0;i<time;i++)
+                                    1-  690     	BANKSEL	r0x1002
+     0005 rrrr                      3-   71 m1      .banksel ram_address
+     0006 02rr                      1-  691     	CLRR	r0x1002
+                                    1-  692     	BANKSEL	r0x1003
+     0007 rrrr                      3-   71 m1      .banksel ram_address
+     0008 02rr                      1-  693     	CLRR	r0x1003
+     0009                           1-  694     _00137_DS_:
+                                    1-  695     	BANKSEL	r0x1000
+     0009 rrrr                      3-   71 m1      .banksel ram_address
+     000A 01rr                      1-  696     	MOVR	r0x1000,W
+                                    1-  697     	BANKSEL	r0x1003
+     000B rrrr                      3-   71 m1      .banksel ram_address
+     000C 04rr                      1-  698     	SUBAR	r0x1003,W
+     000D 0903                      1-  699     	BTRSS	STATUS,2
+     000E 3rrr                      1-  700     	LGOTO	_00148_DS_
+                                    1-  701     	BANKSEL	r0x1001
+     000F rrrr                      3-   71 m1      .banksel ram_address
+     0010 01rr                      1-  702     	MOVR	r0x1001,W
+                                    1-  703     	BANKSEL	r0x1002
+     0011 rrrr                      3-   71 m1      .banksel ram_address
+     0012 04rr                      1-  704     	SUBAR	r0x1002,W
+     0013                           1-  705     _00148_DS_:
+     0013 0C03                      1-  706     	BTRSC	STATUS,0
+     0014 3rrr                      1-  707     	LGOTO	_00139_DS_
+                                    1-  708     	.line	49, "eeprom.c"; 	NOP();
+     0015 0000                      1-  709     	nop
+                                    1-  710     	.line	47, "eeprom.c"; 	for(u16t i=0;i<time;i++)
+                                    1-  711     	BANKSEL	r0x1002
+     0016 rrrr                      3-   71 m1      .banksel ram_address
+     0017 05rr                      1-  712     	INCR	r0x1002,F
+     0018 0903                      1-  713     	BTRSS	STATUS,2
+     0019 3rrr                      1-  714     	LGOTO	_00002_DS_
+                                    1-  715     	BANKSEL	r0x1003
+     001A rrrr                      3-   71 m1      .banksel ram_address
+     001B 05rr                      1-  716     	INCR	r0x1003,F
+     001C                           1-  717     _00002_DS_:
+     001C 3rrr                      1-  718     	LGOTO	_00137_DS_
+     001D                           1-  719     _00139_DS_:
+                                    1-  720     	.line	51, "eeprom.c"; 	}
+                                    1-  721     	RETURN	
+     001D 0010                      3-   26 m1      ret
+                                    1-  722     ; exit point of _delay_us
+                                    1-  724     ;***
+                                    1-  725     ;  pBlock Stats: dbName = C
+                                    1-  726     ;***
+                                    1-  727     ;has an exit
+                                    1-  728     ;1 compiler assigned register :
+                                    1-  729     ;   r0x1000
+                                    1-  730     ;; Starting pCode block
+                                    1-  731     .segment "code"; module=eeprom, function=_SDA_IN
+     0000                           1-  733     _SDA_IN:
+                                    1-  734     ; 2 exit points
+                                    1-  735     	.line	37, "eeprom.c"; 	DISI();
+     0000 0013                      1-  736     	DISI
+                                    1-  737     	.line	38, "eeprom.c"; 	BPHCON &= 0xFB;
+     0001 1Drr                      1-  738     	BCR	_BPHCON,2
+                                    1-  739     	.line	39, "eeprom.c"; 	IOSTB |= 0X04;
+     0002 001r                      1-  740     	IOSTR	_IOSTB
+                                    1-  741     	BANKSEL	r0x1000
+     0003 rrrr                      3-   71 m1      .banksel ram_address
+     0004 00rr                      1-  742     	MOVAR	r0x1000
+     0005 19rr                      1-  743     	BSR	r0x1000,2
+     0006 01rr                      1-  744     	MOVR	r0x1000,W
+     0007 000r                      1-  745     	IOST	_IOSTB
+                                    1-  746     	.line	40, "eeprom.c"; 	ENI();
+     0008 0004                      1-  747     	ENI
+                                    1-  748     	.line	41, "eeprom.c"; 	}
+                                    1-  749     	RETURN	
+     0009 0010                      3-   26 m1      ret
+                                    1-  750     ; exit point of _SDA_IN
+                                    1-  752     ;***
+                                    1-  753     ;  pBlock Stats: dbName = C
+                                    1-  754     ;***
+                                    1-  755     ;has an exit
+                                    1-  756     ;1 compiler assigned register :
+                                    1-  757     ;   r0x1000
+                                    1-  758     ;; Starting pCode block
+                                    1-  759     .segment "code"; module=eeprom, function=_SDA_OUT
+     0000                           1-  761     _SDA_OUT:
+                                    1-  762     ; 2 exit points
+                                    1-  763     	.line	30, "eeprom.c"; 	DISI();
+     0000 0013                      1-  764     	DISI
+                                    1-  765     	.line	31, "eeprom.c"; 	BPHCON |= 0x04;
+     0001 19rr                      1-  766     	BSR	_BPHCON,2
+                                    1-  767     	.line	32, "eeprom.c"; 	IOSTB &= 0XFB;
+     0002 001r                      1-  768     	IOSTR	_IOSTB
+                                    1-  769     	BANKSEL	r0x1000
+     0003 rrrr                      3-   71 m1      .banksel ram_address
+     0004 00rr                      1-  770     	MOVAR	r0x1000
+     0005 1Drr                      1-  771     	BCR	r0x1000,2
+     0006 01rr                      1-  772     	MOVR	r0x1000,W
+     0007 000r                      1-  773     	IOST	_IOSTB
+                                    1-  774     	.line	33, "eeprom.c"; 	ENI();
+     0008 0004                      1-  775     	ENI
+                                    1-  776     	.line	34, "eeprom.c"; 	}
+                                    1-  777     	RETURN	
+     0009 0010                      3-   26 m1      ret
+                                    1-  778     ; exit point of _SDA_OUT
+                                    1-  780     ;***
+                                    1-  781     ;  pBlock Stats: dbName = C
+                                    1-  782     ;***
+                                    1-  783     ;has an exit
+                                    1-  784     ;; Starting pCode block
+                                    1-  785     .segment "code"; module=eeprom, function=_Delay10Us
+     0000                           1-  787     _Delay10Us:
+                                    1-  788     ; 2 exit points
+                                    1-  789     	.line	19, "eeprom.c"; 	NOP();
+     0000 0000                      1-  790     	nop
+                                    1-  791     	.line	20, "eeprom.c"; 	NOP();
+     0001 0000                      1-  792     	nop
+                                    1-  793     	.line	21, "eeprom.c"; 	NOP();
+     0002 0000                      1-  794     	nop
+                                    1-  795     	.line	22, "eeprom.c"; 	NOP();
+     0003 0000                      1-  796     	nop
+                                    1-  797     	.line	23, "eeprom.c"; 	NOP();
+     0004 0000                      1-  798     	nop
+                                    1-  799     	.line	24, "eeprom.c"; 	NOP();
+     0005 0000                      1-  800     	nop
+                                    1-  801     	.line	25, "eeprom.c"; 	}
+                                    1-  802     	RETURN	
+     0006 0010                      3-   26 m1      ret
+                                    1-  803     ; exit point of _Delay10Us
+                                    1-  805     ;***
+                                    1-  806     ;  pBlock Stats: dbName = C
+                                    1-  807     ;***
+                                    1-  808     ;has an exit
+                                    1-  809     ;2 compiler assigned registers:
+                                    1-  810     ;   r0x100A
+                                    1-  811     ;   r0x100B
+                                    1-  812     ;; Starting pCode block
+                                    1-  813     .segment "code"; module=eeprom, function=_Delay1000Us
+                                    1-  815     ;local variable name mapping:
+     0000                           1-  818     _Delay1000Us:
+                                    1-  819     ; 2 exit points
+                                    1-  820     	.line	6, "eeprom.c"; 	for(int i=0;i<100;i++)
+                                    1-  821     	BANKSEL	r0x100A
+     0000 rrrr                      3-   71 m1      .banksel ram_address
+     0001 02rr                      1-  822     	CLRR	r0x100A
+                                    1-  823     	BANKSEL	r0x100B
+     0002 rrrr                      3-   71 m1      .banksel ram_address
+     0003 02rr                      1-  824     	CLRR	r0x100B
+                                    1-  825     ;;signed compare: left < lit (0x64=100), size=2, mask=ffff
+     0004                           1-  826     _00107_DS_:
+                                    1-  827     	BANKSEL	r0x100B
+     0004 rrrr                      3-   71 m1      .banksel ram_address
+     0005 01rr                      1-  828     	MOVR	r0x100B,W
+     0006 2580                      1-  829     	ADDIA	0x80
+     0007 2580                      1-  830     	ADDIA	0x80
+     0008 0903                      1-  831     	BTRSS	STATUS,2
+     0009 3rrr                      1-  832     	LGOTO	_00118_DS_
+     000A 2164                      1-  833     	MOVIA	0x64
+                                    1-  834     	BANKSEL	r0x100A
+     000B rrrr                      3-   71 m1      .banksel ram_address
+     000C 04rr                      1-  835     	SUBAR	r0x100A,W
+     000D                           1-  836     _00118_DS_:
+     000D 0C03                      1-  837     	BTRSC	STATUS,0
+     000E 3rrr                      1-  838     	LGOTO	_00109_DS_
+                                    1-  839     	.line	8, "eeprom.c"; 	NOP();
+     000F 0000                      1-  840     	nop
+                                    1-  841     	.line	9, "eeprom.c"; 	NOP();
+     0010 0000                      1-  842     	nop
+                                    1-  843     	.line	10, "eeprom.c"; 	NOP();
+     0011 0000                      1-  844     	nop
+                                    1-  845     	.line	11, "eeprom.c"; 	NOP();
+     0012 0000                      1-  846     	nop
+                                    1-  847     	.line	12, "eeprom.c"; 	NOP();
+     0013 0000                      1-  848     	nop
+                                    1-  849     	.line	13, "eeprom.c"; 	NOP();
+     0014 0000                      1-  850     	nop
+                                    1-  851     	.line	6, "eeprom.c"; 	for(int i=0;i<100;i++)
+                                    1-  852     	BANKSEL	r0x100A
+     0015 rrrr                      3-   71 m1      .banksel ram_address
+     0016 05rr                      1-  853     	INCR	r0x100A,F
+     0017 0903                      1-  854     	BTRSS	STATUS,2
+     0018 3rrr                      1-  855     	LGOTO	_00003_DS_
+                                    1-  856     	BANKSEL	r0x100B
+     0019 rrrr                      3-   71 m1      .banksel ram_address
+     001A 05rr                      1-  857     	INCR	r0x100B,F
+     001B                           1-  858     _00003_DS_:
+     001B 3rrr                      1-  859     	LGOTO	_00107_DS_
+     001C                           1-  860     _00109_DS_:
+                                    1-  861     	.line	15, "eeprom.c"; 	}
+                                    1-  862     	RETURN	
+     001C 0010                      3-   26 m1      ret
+                                    1-  863     ; exit point of _Delay1000Us
+                                    1-  866     ;	code size estimation:
+                                    1-  867     ;	  205+   63 =   268 instructions (  662 byte)
+                                    1-  869     	end
+                                    1-  869     	end
+
+SYMBOL TABLE            TYPE     VALUE
+__CHECKSUM_ADDR__       Label    00000000
+__PIN_COUNT__           Constant 0000000E
+__PROCESSOR__           Constant 00810623
+_00001_DS_              Label    00000017
+_00002_DS_              Label    0000001C
+_00003_DS_              Label    0000001B
+_00107_DS_              Label    00000004
+_00109_DS_              Label    0000001C
+_00118_DS_              Label    0000000D
+_00137_DS_              Label    00000009
+_00139_DS_              Label    0000001D
+_00148_DS_              Label    00000013
+_00155_DS_              Label    00000004
+_00157_DS_              Label    0000000E
+_00172_DS_              Label    0000000F
+_00174_DS_              Label    0000001B
+_00175_DS_              Label    0000001E
+_00189_DS_              Label    0000000D
+_00190_DS_              Label    0000000F
+_00192_DS_              Label    00000007
+_00201_DS_              Label    00000027
+_00202_DS_              Label    00000028
+_00203_DS_              Label    00000007
+_ABPLCON                Label    00000000
+_ABPLCONbits            Label    00000000
+_ADCR                   Label    00000000
+_ADCRbits               Label    00000000
+_ADD                    Label    00000000
+_ADMD                   Label    00000000
+_ADMDbits               Label    00000000
+_ADR                    Label    00000000
+_ADRbits                Label    00000000
+_ADVREFH                Label    00000000
+_ADVREFHbits            Label    00000000
+_ANAEN                  Label    00000000
+_ANAENbits              Label    00000000
+_APHCON                 Label    00000000
+_AWUCON                 Label    00000000
+_AWUCONbits             Label    00000000
+_BODCON                 Label    00000000
+_BPHCON                 Label    00000000
+_BPHCONbits             Label    00000000
+_BWUCON                 Label    00000000
+_BWUCONbits             Label    00000000
+_BZ1CR                  Label    00000000
+_BZ2CR                  Label    00000000
+_BZ3CR                  Label    00000000
+_CMPCR                  Label    00000000
+_delay_ms               Label    00000000
+_delay_us               Label    00000000
+_Delay1000Us            Label    00000000
+_Delay10Us              Label    00000000
+_FSR                    Label    00000000
+_IIC_Ack                Label    00000000
+_IIC_NAck               Label    00000000
+_IIC_Read_Byte          Label    00000000
+_IIC_Send_Byte          Label    00000000
+_IIC_Start              Label    00000000
+_IIC_Stop               Label    00000000
+_IIC_Wait_Ack           Label    00000000
+_INDF                   Label    00000000
+_INTE                   Label    00000000
+_INTE2                  Label    00000000
+_INTE2bits              Label    00000000
+_INTEbits               Label    00000000
+_INTEDG                 Label    00000000
+_INTEDGbits             Label    00000000
+_INTF                   Label    00000000
+_INTFbits               Label    00000000
+_IOSTA                  Label    00000000
+_IOSTB                  Label    00000000
+_IRCR                   Label    00000000
+_OSCCR                  Label    00000000
+_PACON                  Label    00000000
+_PACONbits              Label    00000000
+_PCHBUF                 Label    00000000
+_PCL                    Label    00000000
+_PCON                   Label    00000000
+_PCON1                  Label    00000000
+_PCONbits               Label    00000000
+_PORTA                  Label    00000000
+_PORTAbits              Label    00000000
+_PORTB                  Label    00000000
+_PORTBbits              Label    00000000
+_PS0CV                  Label    00000000
+_PS1CV                  Label    00000000
+_PS2CV                  Label    00000000
+_PS3CV                  Label    00000000
+_PWM1DUTY               Label    00000000
+_PWM2DUTY               Label    00000000
+_PWM3DUTY               Label    00000000
+_RFC                    Label    00000000
+_RFCbits                Label    00000000
+_SDA_IN                 Label    00000000
+_SDA_OUT                Label    00000000
+_STATUS                 Label    00000000
+_T0MD                   Label    00000000
+_T1CR1                  Label    00000000
+_T1CR2                  Label    00000000
+_T2CR1                  Label    00000000
+_T2CR2                  Label    00000000
+_T3CR1                  Label    00000000
+_T3CR2                  Label    00000000
+_TBHD                   Label    00000000
+_TBHP                   Label    00000000
+_TM3RH                  Label    00000000
+_TMR0                   Label    00000000
+_TMR1                   Label    00000000
+_TMR2                   Label    00000000
+_TMR3                   Label    00000000
+_TMRH                   Label    00000000
+ENABLE_RAM_BANK         Constant 00000001
+F                       Constant 00000001
+FSR                     Constant 00000004
+INDF                    Constant 00000000
+PCHBUF                  Constant 0000000A
+PCL                     Constant 00000002
+PSAVE                   Label    00000000
+r0x1000                 Label    00000000
+r0x1001                 Label    00000000
+r0x1002                 Label    00000000
+r0x1003                 Label    00000000
+r0x1004                 Label    00000000
+r0x1005                 Label    00000000
+r0x1006                 Label    00000000
+r0x1007                 Label    00000000
+r0x1008                 Label    00000000
+r0x1009                 Label    00000000
+r0x100A                 Label    00000000
+r0x100B                 Label    00000000
+r0x100C                 Label    00000000
+r0x100D                 Label    00000000
+SSAVE                   Label    00000000
+STATUS                  Constant 00000003
+STK00                   Label    00000000
+STK01                   Label    00000000
+STK02                   Label    00000000
+STK03                   Label    00000000
+STK04                   Label    00000000
+STK05                   Label    00000000
+STK06                   Label    00000000
+STK07                   Label    00000000
+STK08                   Label    00000000
+STK09                   Label    00000000
+STK10                   Label    00000000
+STK11                   Label    00000000
+STK12                   Label    00000000
+W                       Constant 00000000
+WSAVE                   Label    00000000
+
+
+SOURCE FILE TABLE
+001 eeprom.s
+002 ny8b062d.inc
+003 common.inc
+004 eeprom.c
+
+PROCESSOR    = NY8B062D (8 bits)
+PROGRAM ROM  = 0x00000000 - 0x000007FF
+DATA ROM     = 0x00000000 - 0x000007FF
+RESERVED MEM = 0x00000800 - 0x00000810
+SRAM / SFR   = 0x00000000 - 0x00000000

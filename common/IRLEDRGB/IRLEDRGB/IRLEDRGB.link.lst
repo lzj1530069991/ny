@@ -1,9 +1,20 @@
 00000000 c7f6                 LGOTO 0x9; crt0.o:initial_ram_bss=0x9
 00000008 c7eb                 LGOTO 0x14; main.o:__sdcc_interrupt=0x14
 00000009                      crt0.o:initial_ram_bss:
+00000009 deef                 MOVIA 0x10
+0000000a ff7b                 MOVAR 0x4
+0000000b debf                 MOVIA 0x40
 0000000c                      crt0.o:.l0:
+0000000c fd7f                 CLRR 0x0
 0000000d                      ___cinit_size__:
+0000000d fa7b                 INCR 0x4, 0x1
+0000000e c97b                 CMPAR 0x4
+0000000f f6fc                 BTRSS 0x3, 0x2
+00000010 c7f3                 LGOTO 0xc; crt0.o:.l0=0xc
+00000011 fd7b                 CLRR 0x4
 00000012                      crt0.o:initial_ram_cinit:
+00000012 d646                 LCALL 0x1b9; ___cinit_load__=0x1b9
+00000013 c7ba                 LGOTO 0x45; _main=0x45
 00000014                      main.o:__sdcc_interrupt:
 00000014 ff6d                 MOVAR 0x12
 00000015 eafc                 SWAPR 0x3, 0x0

@@ -1,0 +1,1949 @@
+
+                    Nyquest Technology Co., Ltd.
+
+NYASM 2.26
+
+    ADDR  OPCODE/VALUE              LINE   TAG  SOURCE                   STATEMENT    
+
+                                    1-    1     list c=on
+                                    1-    3     #include "NY8A054D.h"
+                                    2-    1     ;=======================================================================================================================
+                                    2-    2     ;=======================================================================================================================
+                                    2-    3     ;File:			NY8A054D.h
+                                    2-    4     ;Description:	The Header File for NY8A054D
+                                    2-    5     ;Author:		JasonLee
+                                    2-    6     ;Date:			2019/01/31
+                                    2-    7     ;=======================================================================================================================
+                                    2-    8     ;=======================================================================================================================
+                                    2-    9     ;-----------------------------------------------------------------------------------------------------------------------
+                                    2-   10     ;MOVR and MOVAR instrutions for access R-page Register (General Purpose Register)
+                                    2-   11     ;-----------------------------------------------------------------------------------------------------------------------
+                                    2-   12     ;R-page sregisters				;	bit7	|	bit6	|	bit5	|	bit4	|	bit3	|	bit2	|	bit1	|	bit0
+                                    2-   13     ;-----------------------------------------------------------------------------------------------------------------------	
+                                    2-   14     ; 00H --------- Indirect Addressing Register
+                                    2-   15     INDF				EQU		00H
+                                    2-   15     ;INDF = 0
+                                    2-   16     Pr_Indir_Addr		EQU		00H
+                                    2-   16     ;Pr_Indir_Addr = 0
+                                    2-   17     ; 01H --------- Timer0 Data Register	
+                                    2-   18     TMR0				EQU		01H
+                                    2-   18     ;TMR0 = 1
+                                    2-   19     Pr_TMR0_Data		EQU		01H
+                                    2-   19     ;Pr_TMR0_Data = 1
+                                    2-   20     ; 02H --------- Low Byte of Program Counter
+                                    2-   21     PCL					EQU		02H
+                                    2-   21     ;PCL = 2
+                                    2-   22     Pr_PCLow_Data		EQU		02H
+                                    2-   22     ;Pr_PCLow_Data = 2
+                                    2-   23     ; 03H --------- Status Register
+                                    2-   24     STATUS				EQU		03H
+                                    2-   24     ;STATUS = 3
+                                    2-   25     Pr_Status			EQU		03H	;	BK[1]		BK[0]		-			/WDT_TO		/Sleep		Z			Half_C		C	
+                                    2-   25     ;Pr_Status = 3
+                                    2-   26     ; 04H --------- File Selection Register
+                                    2-   27     FSR					EQU		04H
+                                    2-   27     ;FSR = 4
+                                    2-   28     Pr_File_Sel			EQU		04H	;	-			FSR[6]		FSR[5]		FSR[4]		FSR[3]		FSR[2]		FSR[1]		FSR[0]	         
+                                    2-   28     ;Pr_File_Sel = 4
+                                    2-   29     ; 05H --------- PortA Data Register
+                                    2-   30     PORTA				EQU		05H
+                                    2-   30     ;PORTA = 5
+                                    2-   31     Pr_PA_Data			EQU		05H
+                                    2-   31     ;Pr_PA_Data = 5
+                                    2-   32     ; 06H --------- PortB Data Register
+                                    2-   33     PORTB				EQU		06H
+                                    2-   33     ;PORTB = 6
+                                    2-   34     Pr_PB_Data			EQU		06H
+                                    2-   34     ;Pr_PB_Data = 6
+                                    2-   35     ; 07H --------- Reserved
+                                    2-   36     ; 08H --------- Power Control Register (WatchDog,LVD and LVR Control)
+                                    2-   37     PCON				EQU		08H
+                                    2-   37     ;PCON = 8
+                                    2-   38     Pr_PWR_Ctrl			EQU		08H	;	WDTEn		-			LVDEn		-			LVREn		CMPEn			-	
+                                    2-   38     ;Pr_PWR_Ctrl = 8
+                                    2-   39     ; 09H --------- PortB Wakeup Control Register
+                                    2-   40     BWUCON				EQU		09H
+                                    2-   40     ;BWUCON = 9
+                                    2-   41     Pr_PB_WakeUp_Ctrl	EQU		09H	;	-			-			PB[5]		PB[4]		PB[3]		PB[2]		PB[1]		PB[0]
+                                    2-   41     ;Pr_PB_WakeUp_Ctrl = 9
+                                    2-   42     ; 0AH --------- High Byte of Program Counter (B'xxxxxDDD')
+                                    2-   43     PCHBUF				EQU		0AH
+                                    2-   43     ;PCHBUF = 10
+                                    2-   44     Pr_PCHigh_Data		EQU		0AH	;	-			XSPD_STP	-			-			-			PCHBUF[2]	PCHBUF[1]	PCHBUF[0]
+                                    2-   44     ;Pr_PCHigh_Data = 10
+                                    2-   45     ; 0BH --------- PortA/B Pull-Low Control Register
+                                    2-   46     ; ABPLCON				EQU		0BH
+                                    2-   47     ABPLCON				EQU		0x0B
+                                    2-   47     ;ABPLCON = 11
+                                    2-   48     ; Pr_PAB_PL_Ctrl		EQU		0BH	;	/PB[3]		/PB[2]		/PB[1]		/PB[0]		/PA[3]		/PA[2]		/PA[1]		/PA[0]		
+                                    2-   49     Pr_PAB_PL_Ctrl		EQU		0x0B	;	/PB[3]		/PB[2]		/PB[1]		/PB[0]		/PA[3]		/PA[2]		/PA[1]		/PA[0]		
+                                    2-   49     ;Pr_PAB_PL_Ctrl = 11
+                                    2-   50     ; 0CH --------- PortB Pull-High Control Register
+                                    2-   51     BPHCON				EQU		0CH
+                                    2-   51     ;BPHCON = 12
+                                    2-   52     Pr_PB_PH_Ctrl		EQU		0CH	;	-			-			/PB[5]		/PB[4]		/PB[3]	    /PB[2]		/PB[1]		/PB[0]	
+                                    2-   52     ;Pr_PB_PH_Ctrl = 12
+                                    2-   53     ; 0DH --------- Reserved
+                                    2-   54     ; 0EH --------- Interrupt Enable Register
+                                    2-   55     INTE				EQU		0EH
+                                    2-   55     ;INTE = 14
+                                    2-   56     Pr_INT_Ctrl			EQU		0EH	;	ExtINT1		WDT			-			LVDIE		TMR1		ExtINT0		PABKey		TMR0	
+                                    2-   56     ;Pr_INT_Ctrl = 14
+                                    2-   57     ; 0FH --------- Interrupt Flag	(Write '0' to Clear Flag)
+                                    2-   58     INTF				EQU		0FH
+                                    2-   58     ;INTF = 15
+                                    2-   59     Pr_INT_Flag			EQU		0FH	;	ExtINT1		WDT			-			LVDIF		TMR1		ExtINT0		PABKey		TMR0	
+                                    2-   59     ;Pr_INT_Flag = 15
+                                    2-   60     ; 10H --------- Reserved	
+                                    2-   61     ; 11H --------- Reserved
+                                    2-   62     ; 12H --------- Reserved
+                                    2-   63     ; 13H --------- Reserved
+                                    2-   64     ; 14H --------- Reserved
+                                    2-   65     ; 15H --------- PortA Wakeup Control Register
+                                    2-   66     AWUCON				EQU		15H
+                                    2-   66     ;AWUCON = 21
+                                    2-   67     Pr_PA_WakeUp_Ctrl	EQU		15H	;	PA[7]		PA[6]		PA[5]		PA[3]		PA[3]		PA[2]		PA[1]		PA[0]
+                                    2-   67     ;Pr_PA_WakeUp_Ctrl = 21
+                                    2-   68     ; 16H --------- Reserved
+                                    2-   69     ; 17H --------- Reserved
+                                    2-   70     ; 18H --------- External Interrupt Contorl Register
+                                    2-   71     INTEDG 				EQU		18H
+                                    2-   71     ;INTEDG = 24
+                                    2-   72     Pr_EXINT_Ctrl		EQU		18H	;	-			-			ExINT1En	ExINT0En	INT1_Edg[1]	INT1_Edg[0]	INT0_Edg[1]	INT0_Edg[0]	
+                                    2-   72     ;Pr_EXINT_Ctrl = 24
+                                    2-   73     ; 19H --------- TIMER1/2 Data and PWMDUTY1/2 msb 2 bits Register
+                                    2-   74     TMRH  				EQU		19H
+                                    2-   74     ;TMRH = 25
+                                    2-   75     Pr_TMR_Data_PWM  	EQU		19H	;	-			-			TMR1_DATA9	TMR1_DATA8	PWM2_DUTY9	PWM2_DUTY8	PWM1_DUTY9	PWM1_DUTY8	
+                                    2-   75     ;Pr_TMR_Data_PWM = 25
+                                    2-   76     ; 1AH --------- Reserved
+                                    2-   77     ; 1BH --------- Resistor to Frequency Converter Control Register
+                                    2-   78     RFC 				EQU		1BH	;		
+                                    2-   78     ;RFC = 27
+                                    2-   79     Pr_RFC_Ctrl			EQU		1BH	;	RFCEN		-			-			-			PADSel[3]	PADSel[2]	PADSel[1]	PADSel[0]
+                                    2-   79     ;Pr_RFC_Ctrl = 27
+                                    2-   80     ; 1CH --------- TIMER3/4 Data and PWMDUTY3/4 msb 2 bits Register
+                                    2-   81     TM34RH  			EQU		1CH	
+                                    2-   81     ;TM34RH = 28
+                                    2-   82     Pr_TMR34_Data_PWM  	EQU		1CH	;	-			-			TMR3_DATA9	TMR3_DATA8	PWM4_DUTY9	PWM4_DUTY8	PWM3_DUTY9	PWM3_DUTY8	
+                                    2-   82     ;Pr_TMR34_Data_PWM = 28
+                                    2-   83     ; 1DH --------- Reserved
+                                    2-   84     ; 1EH --------- Reserved
+                                    2-   85     ; 1FH --------- Interrupt2 Enable Register
+                                    2-   86     INTE2 				EQU		1FH			
+                                    2-   86     ;INTE2 = 31
+                                    2-   87     Pr_INT2_Ctrl		EQU		1FH	;	-			-			-			T3IF		-			-			-			T3IE			
+                                    2-   87     ;Pr_INT2_Ctrl = 31
+                                    2-   88     ;-----------------------------------------------------------------------------------------------------------------------
+                                    2-   89     ;T0MD and T0MDR instrutions for access T0MD Register
+                                    2-   90     ;-----------------------------------------------------------------------------------------------------------------------
+                                    2-   91     ; xxH --------- Timer0 Control Register (Only Accessed by Instruction T0MD / T0MDR)
+                                    2-   92     ;T0MD				EQU		xxH	;	LClkSrc		-			ClkSel		EdgeSel		PS0WDT		PS0Div[2]	PS0Div[1]	PS0Div[0]	
+                                    2-   93     ;P_TMR0_Ctrl
+                                    2-   95     ;-----------------------------------------------------------------------------------------------------------------------
+                                    2-   96     ;IOST and IOSTR instrution for access F-page Register (IO Configuration Register)
+                                    2-   97     ;-----------------------------------------------------------------------------------------------------------------------
+                                    2-   98     ;F-page registers				;	bit7	|	bit6	|	bit5	|	bit4	|	bit3	|	bit2	|	bit1	|	bit0
+                                    2-   99     ;-----------------------------------------------------------------------------------------------------------------------	
+                                    2-  100     ; 05H --------- PortA Direction(1:Input/0:Output) Control Register
+                                    2-  101     IOSTA				EQU		05H
+                                    2-  101     ;IOSTA = 5
+                                    2-  102     Pf_PA_Dir_Ctrl		EQU		05H
+                                    2-  102     ;Pf_PA_Dir_Ctrl = 5
+                                    2-  103     ; 06H --------- PortB Direction(1:Input/0:Output) Control Register
+                                    2-  104     IOSTB				EQU		06H
+                                    2-  104     ;IOSTB = 6
+                                    2-  105     Pf_PB_Dir_Ctrl		EQU		06H
+                                    2-  105     ;Pf_PB_Dir_Ctrl = 6
+                                    2-  106     ; 09H --------- PortA Pull-High Control Register (/PA[5]: Pull-Low)
+                                    2-  107     APHCON				EQU		09H
+                                    2-  107     ;APHCON = 9
+                                    2-  108     Pr_PA_PH_Ctrl		EQU		09H ;	/PA[7]		/PA[6]		/PA[5]		/PA[4]		/PA[3]		/PA[2]		/PA[1]		/PA[0]	
+                                    2-  108     ;Pr_PA_PH_Ctrl = 9
+                                    2-  109     ; 0AH --------- Prescaler0 Counter Value Register
+                                    2-  110     PS0CV				EQU		0AH
+                                    2-  110     ;PS0CV = 10
+                                    2-  111     Pf_PS0_Cnt			EQU		0AH
+                                    2-  111     ;Pf_PS0_Cnt = 10
+                                    2-  112     ; 0CH --------- PortB Open-Drain Control Register
+                                    2-  113     BODCON				EQU		0CH
+                                    2-  113     ;BODCON = 12
+                                    2-  114     Pf_PB_OD_Ctrl		EQU		0CH	;	-			-			PB[5]		PB[4]		PB[3]  		PB[2]		PB[1]		PB[0]		
+                                    2-  114     ;Pf_PB_OD_Ctrl = 12
+                                    2-  115     ; 0EH --------- Comparator voltage select Control Register
+                                    2-  116     CMPCR				EQU		0EH
+                                    2-  116     ;CMPCR = 14
+                                    2-  117     Pf_CMP_Ctrl			EQU		0EH	;	PS3  		PS2	 		PS1			PS0			VS3			VS2			VS1			VS0	
+                                    2-  117     ;Pf_CMP_Ctrl = 14
+                                    2-  118     ; 0FH --------- Power Control Register 1
+                                    2-  119     PCON1				EQU		0FH
+                                    2-  119     ;PCON1 = 15
+                                    2-  120     Pf_PWR_Ctrl1		EQU		0FH	;	GIE			LVDOUT		-			LVDS2		LVDS1		LVDS0		-			TMR0En	
+                                    2-  120     ;Pf_PWR_Ctrl1 = 15
+                                    2-  122     ;-----------------------------------------------------------------------------------------------------------------------
+                                    2-  123     ;SFUN and SFUNR instrution for access S-page Register (Special Function Register)
+                                    2-  124     ;-----------------------------------------------------------------------------------------------------------------------
+                                    2-  125     ;S-page registers				;	bit7	|	bit6	|	bit5	|	bit4	|	bit3	|	bit2	|	bit1	|	bit0
+                                    2-  126     ;-----------------------------------------------------------------------------------------------------------------------											
+                                    2-  127     ; 00H --------- Timer1 Data Register	
+                                    2-  128     TMR1				EQU		00H
+                                    2-  128     ;TMR1 = 0
+                                    2-  129     Ps_TMR1_Data		EQU		00H
+                                    2-  129     ;Ps_TMR1_Data = 0
+                                    2-  130     ; 01H --------- Timer1 Control Register	1
+                                    2-  131     T1CR1				EQU		01H
+                                    2-  131     ;T1CR1 = 1
+                                    2-  132     Ps_TMR1_Ctrl1		EQU		01H	;	PWM1En		PWM1ActB	-			-			-			OneShot		Reload		TMR1En	
+                                    2-  132     ;Ps_TMR1_Ctrl1 = 1
+                                    2-  133     ; 02H --------- Timer1 Control Register	2
+                                    2-  134     T1CR2				EQU		02H
+                                    2-  134     ;T1CR2 = 2
+                                    2-  135     Ps_TMR1_Ctrl2		EQU		02H	;	-			-			ClkSel		EdgeSel		/PS1En		PS1Div[2]	PS1Div[1]	PS1Div[0]	
+                                    2-  135     ;Ps_TMR1_Ctrl2 = 2
+                                    2-  136     ; 03H --------- PWM1 Duty Register
+                                    2-  137     PWM1DUTY			EQU		03H
+                                    2-  137     ;PWM1DUTY = 3
+                                    2-  138     Ps_PWM1_Duty		EQU		03H
+                                    2-  138     ;Ps_PWM1_Duty = 3
+                                    2-  139     ; 04H --------- Prescaler1 Counter Value Register
+                                    2-  140     PS1CV				EQU		04H
+                                    2-  140     ;PS1CV = 4
+                                    2-  141     Ps_PS1_Cnt			EQU		04H
+                                    2-  141     ;Ps_PS1_Cnt = 4
+                                    2-  142     ; 05H --------- Buzzer1 Control Register
+                                    2-  143     BZ1CR				EQU		05H
+                                    2-  143     ;BZ1CR = 5
+                                    2-  144     Ps_BZ1_Ctrl			EQU		05H	;	BZ1En		-			-			-			FSel[3]		FSel[2]		FSel[1]		FSel[0]	
+                                    2-  144     ;Ps_BZ1_Ctrl = 5
+                                    2-  145     ; 06H --------- IR Control Register
+                                    2-  146     IRCR				EQU		06H
+                                    2-  146     ;IRCR = 6
+                                    2-  147     Ps_IR_Ctrl			EQU		06H	;	IROSC358M   -			-			-			-			PolSel  	IRF57K		IREn	
+                                    2-  147     ;Ps_IR_Ctrl = 6
+                                    2-  148     ; 07H --------- Table Access High Byte Address Pointer Register
+                                    2-  149     TBHP				EQU		07H
+                                    2-  149     ;TBHP = 7
+                                    2-  150     Ps_TbHigh_Addr		EQU		07H	;	-			-			-			-			-			HPoint[2]	HPoint[1]	HPoint[0]	
+                                    2-  150     ;Ps_TbHigh_Addr = 7
+                                    2-  151     ; 08H --------- Table Access High Byte Data Register
+                                    2-  152     TBHD				EQU		08H
+                                    2-  152     ;TBHD = 8
+                                    2-  153     Ps_TbHigh_Data		EQU		08H	;	-			-			HData[5]	HData[4]	HData[3]	HData[2]	HData[1]	HData[0]	
+                                    2-  153     ;Ps_TbHigh_Data = 8
+                                    2-  154     ; 09H --------- Reserved	
+                                    2-  155     ; 0AH --------- Timer2 Control Register	1
+                                    2-  156     P2CR1				EQU		0AH
+                                    2-  156     ;P2CR1 = 10
+                                    2-  157     Ps_PWM2_Ctrl1		EQU		0AH	;	PWM2En		PWM2ActB	-			-			-			OneShot		Reload		TMR1En
+                                    2-  157     ;Ps_PWM2_Ctrl1 = 10
+                                    2-  158     ; 0BH --------- Reserved
+                                    2-  159     ; 0CH --------- PWM2 Duty Register
+                                    2-  160     PWM2DUTY			EQU		0CH
+                                    2-  160     ;PWM2DUTY = 12
+                                    2-  161     Ps_PWM2_Duty		EQU		0CH
+                                    2-  161     ;Ps_PWM2_Duty = 12
+                                    2-  162     ; 0DH --------- Reserved
+                                    2-  163     ; 0EH --------- Reserved
+                                    2-  164     ; 0FH --------- Oscillation Control Register (Include Switch Working Mode)
+                                    2-  165     OSCCR				EQU		0FH
+                                    2-  165     ;OSCCR = 15
+                                    2-  166     Ps_SYS_Ctrl			EQU		0FH	;	CMPOUT		CMPOE		CMPIF		CMPIE		Mode[1]		Mode[0]		HOSC_Stop	HOSC_Sel
+                                    2-  166     ;Ps_SYS_Ctrl = 15
+                                    2-  167     ; 10H --------- Timer3 Data Register	
+                                    2-  168     TMR3				EQU		10H
+                                    2-  168     ;TMR3 = 16
+                                    2-  169     Ps_TMR3_Data		EQU		10H
+                                    2-  169     ;Ps_TMR3_Data = 16
+                                    2-  170     ; 11H --------- Timer3 Control Register	1
+                                    2-  171     T3CR1				EQU		11H
+                                    2-  171     ;T3CR1 = 17
+                                    2-  172     Ps_TMR3_Ctrl1		EQU		11H	;	PWM3En		PWM3ActB	-			-			-			OneShot		Reload		TMR3En	
+                                    2-  172     ;Ps_TMR3_Ctrl1 = 17
+                                    2-  173     ; 12H --------- Timer3 Control Register	2
+                                    2-  174     T3CR2				EQU		12H
+                                    2-  174     ;T3CR2 = 18
+                                    2-  175     Ps_TMR3_Ctrl2		EQU		12H	;	-			-			ClkSel		EdgeSel		/PS3En		PS3Div[2]	PS3Div[1]	PS3Div[0]	
+                                    2-  175     ;Ps_TMR3_Ctrl2 = 18
+                                    2-  176     ; 13H --------- PWM3 Duty Register
+                                    2-  177     PWM3DUTY			EQU		13H
+                                    2-  177     ;PWM3DUTY = 19
+                                    2-  178     Ps_PWM3_Duty		EQU		13H
+                                    2-  178     ;Ps_PWM3_Duty = 19
+                                    2-  179     ; 14H --------- Prescaler3 Counter Value Register
+                                    2-  180     PS3CV				EQU		14H
+                                    2-  180     ;PS3CV = 20
+                                    2-  181     Ps_PS3_Cnt			EQU		14H
+                                    2-  181     ;Ps_PS3_Cnt = 20
+                                    2-  182     ; 15H --------- Reserved	
+                                    2-  183     ; 16H --------- Timer4 Control Register	1
+                                    2-  184     P4CR1				EQU		16H
+                                    2-  184     ;P4CR1 = 22
+                                    2-  185     Ps_PWM4_Ctrl1		EQU		16H	;	PWM4En		PWM4ActB	-			-			-			OneShot		Reload		TMR3En
+                                    2-  185     ;Ps_PWM4_Ctrl1 = 22
+                                    2-  186     ; 17H --------- Reserved	
+                                    2-  187     ; 18H --------- PWM4 Duty Register
+                                    2-  188     PWM4DUTY			EQU		18H
+                                    2-  188     ;PWM4DUTY = 24
+                                    2-  189     Ps_PWM4_Duty		EQU		18H
+                                    2-  189     ;Ps_PWM4_Duty = 24
+                                    2-  190     ; 19H --------- Reserved
+                                    2-  191     ; 1AH --------- Reserved	
+                                    2-  192     ; 1BH --------- Timer5 Control Register	1
+                                    2-  193     P5CR1				EQU		1BH
+                                    2-  193     ;P5CR1 = 27
+                                    2-  194     Ps_PWM5_Ctrl1		EQU		1BH	;	PWM5En		PWM5ActB	-			-			-			OneShot		Reload		TMR3En
+                                    2-  194     ;Ps_PWM5_Ctrl1 = 27
+                                    2-  195     ; 1CH ---------	Reserved
+                                    2-  196     ; 1DH --------- PWM5 Duty Register
+                                    2-  197     PWM5DUTY			EQU		1DH
+                                    2-  197     ;PWM5DUTY = 29
+                                    2-  198     Ps_PWM5_Duty		EQU		1DH
+                                    2-  198     ;Ps_PWM5_Duty = 29
+                                    2-  199     ; 1EH --------- Reserved
+                                    2-  200     ; 1FH --------- PWMDUTY5 msb 2 bits Register
+                                    2-  201     PWM5RH  				EQU		1FH	
+                                    2-  201     ;PWM5RH = 31
+                                    2-  202     Ps_PWM5_Data_PWM  	EQU		1FH	;	-			-			-			-			-			-			PWM5_DUTY9	PWM5_DUTY8	
+                                    2-  202     ;Ps_PWM5_Data_PWM = 31
+                                    2-  204     ;=======================================================================================================================
+                                    2-  205     ;=======================================================================================================================
+                                    2-  206     ;-----------------------------------------------------------------------------------------------------------------------
+                                    2-  207     ; R-page Special Function Register (General Purpose Register)
+                                    2-  208     ;-----------------------------------------------------------------------------------------------------------------------
+                                    2-  209     ;------------------------------------------------------------
+                                    2-  210     ; Pr_Indir_Addr (00H)	--------- Indirect Addressing Register
+                                    2-  211     ;------------------------------------------------------------
+                                    2-  212     ;Bit[7:0] : Indirect Address
+                                    2-  213     	C_Indir_Addr		EQU		0xFF
+                                    2-  213     ;C_Indir_Addr = 255
+                                    2-  215     ;------------------------------------------------------------
+                                    2-  216     ; Pr_TMR0_Data (01H)	--------- Timer0 Data Register	
+                                    2-  217     ;------------------------------------------------------------
+                                    2-  218     ;Bit[7:0] : Timer0 Data
+                                    2-  219     	C_TMR0_Data			EQU		0xFF
+                                    2-  219     ;C_TMR0_Data = 255
+                                    2-  221     ;------------------------------------------------------------
+                                    2-  222     ; Pr_PCLow_Data (02H)	--------- Low Byte of Program Counter
+                                    2-  223     ;------------------------------------------------------------
+                                    2-  224     ;Bit[7:0] : Low Byte of Program Counter
+                                    2-  225     	C_PCLow_Data		EQU		0xFF
+                                    2-  225     ;C_PCLow_Data = 255
+                                    2-  227     ;------------------------------------------------------------
+                                    2-  228     ; Pr_Status (03H)		--------- Status Register (Include RAM Bank Select)
+                                    2-  229     ;------------------------------------------------------------
+                                    2-  230     ;Bit[7:6] : RAM Bank Selection
+                                    2-  231     	; C_RAM_Bank			EQU		C0H			; Select Ram Bank
+                                    2-  232     	C_RAM_Bank			EQU		0xC0			; Select Ram Bank
+                                    2-  232     ;C_RAM_Bank = 192
+                                    2-  233     	C_RAM_Bank0			EQU		00H			; Select Ram Bank0
+                                    2-  233     ;C_RAM_Bank0 = 0
+                                    2-  234     	C_RAM_Bank1			EQU		40H			; Select Ram Bank1
+                                    2-  234     ;C_RAM_Bank1 = 64
+                                    2-  235     	C_RAM_Bank2			EQU		80H			; Select Ram Bank2
+                                    2-  235     ;C_RAM_Bank2 = 128
+                                    2-  236     	; C_RAM_Bank3			EQU		C0H			; Select Ram Bank3	
+                                    2-  237     	C_RAM_Bank3			EQU		0xC0			; Select Ram Bank3	
+                                    2-  237     ;C_RAM_Bank3 = 192
+                                    2-  238     ;Bit[4:0] : System Status
+                                    2-  239     	C_Status_WDT		EQU		10H			; WatchDog Overflow Flag
+                                    2-  239     ;C_Status_WDT = 16
+                                    2-  240     	C_Status_Slp		EQU		08H			; Sleep (Power Down) Flag
+                                    2-  240     ;C_Status_Slp = 8
+                                    2-  241     	C_Status_Z			EQU		04H			; Zero Flag
+                                    2-  241     ;C_Status_Z = 4
+                                    2-  242     	C_Status_HalfC		EQU		02H			; Half Carry/Half Borrow Flag
+                                    2-  242     ;C_Status_HalfC = 2
+                                    2-  243     	C_Status_C			EQU		01H			; Carry/Borrow Flag
+                                    2-  243     ;C_Status_C = 1
+                                    2-  245     	C_Status_WDT_Bit	EQU		4
+                                    2-  245     ;C_Status_WDT_Bit = 4
+                                    2-  246     	C_Status_Slp_Bit	EQU		3
+                                    2-  246     ;C_Status_Slp_Bit = 3
+                                    2-  247     	C_Status_Z_Bit		EQU		2
+                                    2-  247     ;C_Status_Z_Bit = 2
+                                    2-  248     	C_Status_HalfC_Bit	EQU		1
+                                    2-  248     ;C_Status_HalfC_Bit = 1
+                                    2-  249     	C_Status_C_Bit		EQU		0
+                                    2-  249     ;C_Status_C_Bit = 0
+                                    2-  251     ;------------------------------------------------------------ 
+                                    2-  252     ; Pr_File_Sel (04H)		--------- File Selection Register       
+                                    2-  253     ;------------------------------------------------------------
+                                    2-  254     ;Bit[7] : Reserved	
+                                    2-  255     ;Bit[6:0] : Select one Register out of 128 registers of specific Bank.
+                                    2-  256     	C_SFR_RAM_Addr		EQU		7FH			; RAM Address Bit[6:0] 
+                                    2-  256     ;C_SFR_RAM_Addr = 127
+                                    2-  258     ;------------------------------------------------------------	 
+                                    2-  259     ; Pr_PA_Data (05H)		--------- PortA Data Register
+                                    2-  260     ;------------------------------------------------------------ 
+                                    2-  261     ;Bit[7:0] : PORTA Data Bit Define	
+                                    2-  262     	C_PA_Data			EQU		0xFF			; PA  Data
+                                    2-  262     ;C_PA_Data = 255
+                                    2-  263     	C_PA7_Data			EQU		80H			; PA7 Data
+                                    2-  263     ;C_PA7_Data = 128
+                                    2-  264     	C_PA6_Data			EQU		40H			; PA6 Data
+                                    2-  264     ;C_PA6_Data = 64
+                                    2-  265     	C_PA5_Data			EQU		20H			; PA5 Data
+                                    2-  265     ;C_PA5_Data = 32
+                                    2-  266     	C_PA4_Data			EQU		10H			; PA4 Data	
+                                    2-  266     ;C_PA4_Data = 16
+                                    2-  267     	C_PA3_Data			EQU		08H			; PA3 Data
+                                    2-  267     ;C_PA3_Data = 8
+                                    2-  268     	C_PA2_Data			EQU		04H			; PA2 Data
+                                    2-  268     ;C_PA2_Data = 4
+                                    2-  269     	C_PA1_Data			EQU		02H			; PA1 Data
+                                    2-  269     ;C_PA1_Data = 2
+                                    2-  270     	C_PA0_Data			EQU		01H			; PA0 Data
+                                    2-  270     ;C_PA0_Data = 1
+                                    2-  272     ;------------------------------------------------------------
+                                    2-  273     ; Pr_PB_Data (06H)		--------- PortB Data Register
+                                    2-  274     ;------------------------------------------------------------
+                                    2-  275     ;Bit[7:6] : Reserved	
+                                    2-  276     ;Bit[5:0] : PORTB Data Bit Define	
+                                    2-  277     	C_PB_Data			EQU		3FH			; PB  Data
+                                    2-  277     ;C_PB_Data = 63
+                                    2-  278     	C_PB5_Data			EQU		20H			; PB5 Data
+                                    2-  278     ;C_PB5_Data = 32
+                                    2-  279     	C_PB4_Data			EQU		10H			; PB4 Data	
+                                    2-  279     ;C_PB4_Data = 16
+                                    2-  280     	C_PB3_Data			EQU		08H			; PB3 Data
+                                    2-  280     ;C_PB3_Data = 8
+                                    2-  281     	C_PB2_Data			EQU		04H			; PB2 Data
+                                    2-  281     ;C_PB2_Data = 4
+                                    2-  282     	C_PB1_Data			EQU		02H			; PB1 Data
+                                    2-  282     ;C_PB1_Data = 2
+                                    2-  283     	C_PB0_Data			EQU		01H			; PB0 Data
+                                    2-  283     ;C_PB0_Data = 1
+                                    2-  285     ;------------------------------------------------------------	
+                                    2-  286     ; Pr_PWR_Ctrl (08H)		--------- Power Control Register (WatchDog,LVD ,LVR and Comparator Control) 
+                                    2-  287     ;------------------------------------------------------------
+                                    2-  288     ;Bit[7] : WatchDog Eanble
+                                    2-  289     	C_WDT_En			EQU		80H			; WatchDog Enable
+                                    2-  289     ;C_WDT_En = 128
+                                    2-  290     ;Bit[6] : Reserved
+                                    2-  291     ;Bit[5] : LVD Eanble
+                                    2-  292     	C_LVD_En			EQU		20H			; LVD Enable	
+                                    2-  292     ;C_LVD_En = 32
+                                    2-  293     ;Bit[4] : Reserved
+                                    2-  294     ;Bit[3] : LVR Enable
+                                    2-  295     	C_LVR_En			EQU		08H			; LVR Enable
+                                    2-  295     ;C_LVR_En = 8
+                                    2-  296     ;Bit[2] : Comparator Enable
+                                    2-  297     	C_CMP_En			EQU		04H			; Comparator Enable	
+                                    2-  297     ;C_CMP_En = 4
+                                    2-  298     ;Bit[1:0] : Reserved
+                                    2-  300     	C_WDT_En_Bit		EQU		7	
+                                    2-  300     ;C_WDT_En_Bit = 7
+                                    2-  301     	C_LVD_En_Bit		EQU		5	
+                                    2-  301     ;C_LVD_En_Bit = 5
+                                    2-  302     	C_LVR_En_Bit		EQU		3
+                                    2-  302     ;C_LVR_En_Bit = 3
+                                    2-  303     	C_CMP_En_Bit		EQU		2
+                                    2-  303     ;C_CMP_En_Bit = 2
+                                    2-  305     ;------------------------------------------------------------	
+                                    2-  306     ; Pr_PB_WakeUp_Ctrl (09H)	--------- PortB Wakeup Control Register
+                                    2-  307     ;------------------------------------------------------------
+                                    2-  308     ;Bit[7:6] : Reserved
+                                    2-  309     ;Bit[5:0] : BWUCON Bit Define
+                                    2-  310     	C_PB_Wakeup			EQU		3FH			; PortB Wakeup Enable	
+                                    2-  310     ;C_PB_Wakeup = 63
+                                    2-  311     	C_PB5_Wakeup		EQU		20H			; PB5 Wakeup Enable
+                                    2-  311     ;C_PB5_Wakeup = 32
+                                    2-  312     	C_PB4_Wakeup		EQU		10H			; PB4 Wakeup Enable 	
+                                    2-  312     ;C_PB4_Wakeup = 16
+                                    2-  313     	C_PB3_Wakeup		EQU		08H			; PB3 Wakeup Enable
+                                    2-  313     ;C_PB3_Wakeup = 8
+                                    2-  314     	C_PB2_Wakeup		EQU		04H			; PB2 Wakeup Enable 
+                                    2-  314     ;C_PB2_Wakeup = 4
+                                    2-  315     	C_PB1_Wakeup		EQU		02H			; PB1 Wakeup Enable
+                                    2-  315     ;C_PB1_Wakeup = 2
+                                    2-  316     	C_PB0_Wakeup		EQU		01H			; PB0 Wakeup Enable
+                                    2-  316     ;C_PB0_Wakeup = 1
+                                    2-  318     ;------------------------------------------------------------	
+                                    2-  319     ; Pr_PCHigh_Data (0AH) --------- High Byte of Program Counter
+                                    2-  320     ;------------------------------------------------------------
+                                    2-  321     ;Bit[7] : Reserved
+                                    2-  322     ;Bit[6] : E_LXT Buckup Contorl Bit	(1:Disable, 0:Enable)
+                                    2-  323     	C_ELXT_Backup_Dis		EQU		40H	
+                                    2-  323     ;C_ELXT_Backup_Dis = 64
+                                    2-  324     ;Bit[5:3] : Reserved
+                                    2-  325     ;Bit[2:0] : High Byte of Program Counter
+                                    2-  326     	C_PCHigh_Data			EQU		07H
+                                    2-  326     ;C_PCHigh_Data = 7
+                                    2-  328     	C_ELXT_Backup_Dis_Bit	EQU		6
+                                    2-  328     ;C_ELXT_Backup_Dis_Bit = 6
+                                    2-  330     ;------------------------------------------------------------		
+                                    2-  331     ; Pr_PAB_PL_Ctrl (0BH)	--------- PortA/B Pull-Low Control Register
+                                    2-  332     ;------------------------------------------------------------
+                                    2-  333     ;Bit[7:4] : PortB Pull-Low Control Register (1:Disable, 0:Pull-High)
+                                    2-  334         ; C_PB_PLB			EQU		F0H			; PortB Pull-Low Control bit
+                                    2-  335         C_PB_PLB			EQU		0xF0			; PortB Pull-Low Control bit
+                                    2-  335     ;C_PB_PLB = 240
+                                    2-  336         C_PB3_PLB			EQU		80H			; PB3 Pull-Low Control bit
+                                    2-  336     ;C_PB3_PLB = 128
+                                    2-  337         C_PB2_PLB			EQU		40H			; PB2 Pull-Low Control bit	
+                                    2-  337     ;C_PB2_PLB = 64
+                                    2-  338         C_PB1_PLB			EQU		20H			; PB1 Pull-Low Control bit 	
+                                    2-  338     ;C_PB1_PLB = 32
+                                    2-  339         C_PB0_PLB			EQU		10H			; PB0 Pull-Low Control bit
+                                    2-  339     ;C_PB0_PLB = 16
+                                    2-  340     ;Bit[3:0] : PortA Pull-Low Control Register
+                                    2-  341         C_PA_PLB			EQU		0FH			; PortA Pull-Low Control bit
+                                    2-  341     ;C_PA_PLB = 15
+                                    2-  342         C_PA3_PLB			EQU		08H			; PA3 Pull-Low Control bit
+                                    2-  342     ;C_PA3_PLB = 8
+                                    2-  343         C_PA2_PLB			EQU		04H			; PA2 Pull-Low Control bit	
+                                    2-  343     ;C_PA2_PLB = 4
+                                    2-  344         C_PA1_PLB			EQU		02H			; PA1 Pull-Low Control bit	
+                                    2-  344     ;C_PA1_PLB = 2
+                                    2-  345         C_PA0_PLB			EQU		01H			; PA0 Pull-Low Control bit
+                                    2-  345     ;C_PA0_PLB = 1
+                                    2-  347     ;------------------------------------------------------------	
+                                    2-  348     ; Pr_PB_PH_Ctrl (0CH)	--------- PortB Pull-High Control Register
+                                    2-  349     ;------------------------------------------------------------
+                                    2-  350     ;Bit[7:6] : Reserved
+                                    2-  351     ;Bit[5:0] : PortB Pull-High Control Register (1:Disable, 0:Pull-High)
+                                    2-  352     	C_PB_PHB			EQU		3FH			; PortB Pull-High Control bit 
+                                    2-  352     ;C_PB_PHB = 63
+                                    2-  353     	C_PB5_PHB			EQU		20H			; PB5 Pull-High Control bit	
+                                    2-  353     ;C_PB5_PHB = 32
+                                    2-  354     	C_PB4_PHB			EQU		10H			; PB4 Pull-High Control bit	
+                                    2-  354     ;C_PB4_PHB = 16
+                                    2-  355     	C_PB3_PHB			EQU		08H			; PB3 Pull-High Control bit	
+                                    2-  355     ;C_PB3_PHB = 8
+                                    2-  356     	C_PB2_PHB			EQU		04H			; PB2 Pull-High Control bit
+                                    2-  356     ;C_PB2_PHB = 4
+                                    2-  357     	C_PB1_PHB			EQU		02H			; PB1 Pull-High Control bit
+                                    2-  357     ;C_PB1_PHB = 2
+                                    2-  358     	C_PB0_PHB			EQU		01H			; PB0 Pull-High Control bit
+                                    2-  358     ;C_PB0_PHB = 1
+                                    2-  360     ;------------------------------------------------------------	
+                                    2-  361     ; Pr_INT_Ctrl (0EH)		--------- Interrupt Enable Register
+                                    2-  362     ; Pr_INT_Flag (0FH)		--------- Interrupt Flag
+                                    2-  363     ;------------------------------------------------------------
+                                    2-  364     ;Bit[7:0] : Interrupt Source
+                                    2-  365     	C_INT_EXT1			EQU		80H			; EX_INT1 interrupt enable bit
+                                    2-  365     ;C_INT_EXT1 = 128
+                                    2-  366     	C_INT_WDT			EQU		40H			; WDT timeout interrupt enable bit
+                                    2-  366     ;C_INT_WDT = 64
+                                    2-  367     	C_INT_LVD			EQU		10H			; LVD interrupt enable bit	
+                                    2-  367     ;C_INT_LVD = 16
+                                    2-  368     	C_INT_TMR1			EQU		08H			; Timer1 underflow interrupt enable bit
+                                    2-  368     ;C_INT_TMR1 = 8
+                                    2-  369     	C_INT_EXT0			EQU		04H			; EX_INT0 interrupt enable bit
+                                    2-  369     ;C_INT_EXT0 = 4
+                                    2-  370     	C_INT_PABKey		EQU		02H			; PortA/B input change interrupt enable bit
+                                    2-  370     ;C_INT_PABKey = 2
+                                    2-  371     	C_INT_TMR0			EQU		01H			; Timer0 overflow interrupt enable bit 
+                                    2-  371     ;C_INT_TMR0 = 1
+                                    2-  373     	C_INT_EXT1_Bit		EQU		7
+                                    2-  373     ;C_INT_EXT1_Bit = 7
+                                    2-  374     	C_INT_WDT_Bit		EQU		6	
+                                    2-  374     ;C_INT_WDT_Bit = 6
+                                    2-  375     	C_INT_LVD_Bit		EQU		4	
+                                    2-  375     ;C_INT_LVD_Bit = 4
+                                    2-  376     	C_INT_TMR1_Bit		EQU		3
+                                    2-  376     ;C_INT_TMR1_Bit = 3
+                                    2-  377     	C_INT_EXT0_Bit		EQU		2
+                                    2-  377     ;C_INT_EXT0_Bit = 2
+                                    2-  378     	C_INT_PABKey_Bit	EQU		1
+                                    2-  378     ;C_INT_PABKey_Bit = 1
+                                    2-  379     	C_INT_TMR0_Bit		EQU		0
+                                    2-  379     ;C_INT_TMR0_Bit = 0
+                                    2-  381     ;------------------------------------------------------------	
+                                    2-  382     ; Pr_PA_WakeUp_Ctrl (15H) 	--------- PortA Wakeup Control Register
+                                    2-  383     ;------------------------------------------------------------	
+                                    2-  384     ;Bit[7:0] : AWUCON Bit Define
+                                    2-  385     	C_PA_Wakeup			EQU		0xFF			; Port A Wakeup Enable		
+                                    2-  385     ;C_PA_Wakeup = 255
+                                    2-  386     	C_PA7_Wakeup		EQU		80H			; PA7 Wakeup Enable
+                                    2-  386     ;C_PA7_Wakeup = 128
+                                    2-  387     	C_PA6_Wakeup		EQU		40H			; PA6 Wakeup Enable 
+                                    2-  387     ;C_PA6_Wakeup = 64
+                                    2-  388     	C_PA5_Wakeup		EQU		20H			; PA5 Wakeup Enable
+                                    2-  388     ;C_PA5_Wakeup = 32
+                                    2-  389     	C_PA4_Wakeup		EQU		10H			; PA4 Wakeup Enable	
+                                    2-  389     ;C_PA4_Wakeup = 16
+                                    2-  390     	C_PA3_Wakeup		EQU		08H			; PA3 Wakeup Enable
+                                    2-  390     ;C_PA3_Wakeup = 8
+                                    2-  391     	C_PA2_Wakeup		EQU		04H			; PA2 Wakeup Enable 
+                                    2-  391     ;C_PA2_Wakeup = 4
+                                    2-  392     	C_PA1_Wakeup		EQU		02H			; PA1 Wakeup Enable
+                                    2-  392     ;C_PA1_Wakeup = 2
+                                    2-  393     	C_PA0_Wakeup		EQU		01H			; PA0 Wakeup Enable
+                                    2-  393     ;C_PA0_Wakeup = 1
+                                    2-  395     ;------------------------------------------------------------	
+                                    2-  396     ; Pr_EXINT_Ctrl (18H) 	--------- External Interrupt Contorl Register
+                                    2-  397     ;------------------------------------------------------------	
+                                    2-  398     ;Bit[7:6] : Reserved	
+                                    2-  399     ;Bit[5] : External INT1 Eanble
+                                    2-  400     	C_INT1_En			EQU		20H			; PB1 set as INT1 input
+                                    2-  400     ;C_INT1_En = 32
+                                    2-  401     ;Bit[4] : External INT0 Eanble	
+                                    2-  402     	C_INT0_En			EQU		10H			; PB0 set as INT0 input
+                                    2-  402     ;C_INT0_En = 16
+                                    2-  403     ;Bit[3:2] : INT1 edge trigger select 
+                                    2-  404         C_INT1_Edge			EQU		0CH			; INT1 trigger edge  --- 11b: Rising & Falling Edge, 10b:Falling Edge, 01b:Rising Edge    
+                                    2-  404     ;C_INT1_Edge = 12
+                                    2-  405     	C_INT1_TwoEdge		EQU		0CH			; Rising & Falling edge trigger
+                                    2-  405     ;C_INT1_TwoEdge = 12
+                                    2-  406     	C_INT1_FallingEdge	EQU		08H			; Falling edge trigger	
+                                    2-  406     ;C_INT1_FallingEdge = 8
+                                    2-  407     	C_INT1_RisingEdge	EQU		04H			; Rising edge trigger			
+                                    2-  407     ;C_INT1_RisingEdge = 4
+                                    2-  408     ;Bit[1:0] : INT0 edge trigger select 
+                                    2-  409         C_INT0_Edge			EQU		03H			; INT0 trigger edge  --- 11b: Rising & Falling Edge, 10b:Falling Edge, 01b:Rising Edge  
+                                    2-  409     ;C_INT0_Edge = 3
+                                    2-  410     	C_INT0_TwoEdge		EQU		03H			; Rising & Falling edge trigger
+                                    2-  410     ;C_INT0_TwoEdge = 3
+                                    2-  411     	C_INT0_FallingEdge	EQU		02H			; Falling edge trigger	
+                                    2-  411     ;C_INT0_FallingEdge = 2
+                                    2-  412     	C_INT0_RisingEdge	EQU		01H			; Rising edge trigger	
+                                    2-  412     ;C_INT0_RisingEdge = 1
+                                    2-  414     	C_INT1_En_Bit		EQU		5
+                                    2-  414     ;C_INT1_En_Bit = 5
+                                    2-  415     	C_INT0_En_Bit		EQU		4
+                                    2-  415     ;C_INT0_En_Bit = 4
+                                    2-  417     ;------------------------------------------------------------	
+                                    2-  418     ; Pr_TMR_Data_PWM (19H) 	--------- TIMER1/2 Data and PWMDUTY1/2 msb 2 bits Register
+                                    2-  419     ;------------------------------------------------------------	
+                                    2-  420     ;Bit[7:6] : Reserved
+                                    2-  421     ;Bit[5] : Timer1 Data Bit9	
+                                    2-  422     	C_TMR1_Data_b9		EQU		20H			; Timer1 data bit9 
+                                    2-  422     ;C_TMR1_Data_b9 = 32
+                                    2-  423     ;Bit[4] : Timer1 Data Bit8	
+                                    2-  424     	C_TMR1_Data_b8		EQU		10H			; Timer1 data bit8		
+                                    2-  424     ;C_TMR1_Data_b8 = 16
+                                    2-  425     ;Bit[3] : Timer2 PWM Duty Bit9	
+                                    2-  426     	C_PWM2_Duty_b9		EQU		08H			; PWM2 Duty bit9 
+                                    2-  426     ;C_PWM2_Duty_b9 = 8
+                                    2-  427     ;Bit[2] : Timer2 PWM Duty Bit8	
+                                    2-  428     	C_PWM2_Duty_b8		EQU		04H			; PWM2 Duty bit8
+                                    2-  428     ;C_PWM2_Duty_b8 = 4
+                                    2-  429     ;Bit[1] : Timer1 PWM Duty Bit9	
+                                    2-  430     	C_PWM1_Duty_b9		EQU		02H			; PWM1 Duty bit9 
+                                    2-  430     ;C_PWM1_Duty_b9 = 2
+                                    2-  431     ;Bit[0] : Timer1 PWM Duty Bit8	
+                                    2-  432     	C_PWM1_Duty_b8		EQU		01H			; PWM1 Duty bit8	
+                                    2-  432     ;C_PWM1_Duty_b8 = 1
+                                    2-  434     	C_TMR1_Data_b9_Bit	EQU		5
+                                    2-  434     ;C_TMR1_Data_b9_Bit = 5
+                                    2-  435     	C_TMR1_Data_b8_Bit	EQU		4
+                                    2-  435     ;C_TMR1_Data_b8_Bit = 4
+                                    2-  436     	C_PWM2_Duty_b9_Bit	EQU		3
+                                    2-  436     ;C_PWM2_Duty_b9_Bit = 3
+                                    2-  437     	C_PWM2_Duty_b8_Bit	EQU		2	
+                                    2-  437     ;C_PWM2_Duty_b8_Bit = 2
+                                    2-  438     	C_PWM1_Duty_b9_Bit	EQU		1
+                                    2-  438     ;C_PWM1_Duty_b9_Bit = 1
+                                    2-  439     	C_PWM1_Duty_b8_Bit	EQU		0	
+                                    2-  439     ;C_PWM1_Duty_b8_Bit = 0
+                                    2-  441     ;------------------------------------------------------------	
+                                    2-  442     ; Pr_RFC_Ctrl (1BH) 	--------- Resistor to Frequency Converter Control Register
+                                    2-  443     ;------------------------------------------------------------		
+                                    2-  444     ;Bit[7] : Enable/disable RFC function
+                                    2-  445     	C_RFC_En			EQU		80H			; Enable RFC function
+                                    2-  445     ;C_RFC_En = 128
+                                    2-  446     	C_RFC_Dis			EQU		00H			; Disable RFC function	
+                                    2-  446     ;C_RFC_Dis = 0
+                                    2-  447     ;Bit[6:4] : Reserved	
+                                    2-  448     ;Bit[3:0] : Select one of the RFC pad
+                                    2-  449     	C_RFC_PB5			EQU		0DH			; Select PB5 as RFC pad
+                                    2-  449     ;C_RFC_PB5 = 13
+                                    2-  450     	C_RFC_PB4			EQU		0CH			; Select PB4 as RFC pad	
+                                    2-  450     ;C_RFC_PB4 = 12
+                                    2-  451     	; C_RFC_PB3			EQU		0BH			; Select PB3 as RFC pad
+                                    2-  452     	C_RFC_PB3			EQU		0x0B			; Select PB3 as RFC pad
+                                    2-  452     ;C_RFC_PB3 = 11
+                                    2-  453     	C_RFC_PB2			EQU		0AH			; Select PB2 as RFC pad	
+                                    2-  453     ;C_RFC_PB2 = 10
+                                    2-  454     	C_RFC_PB1			EQU		09H			; Select PB1 as RFC pad	
+                                    2-  454     ;C_RFC_PB1 = 9
+                                    2-  455     	C_RFC_PB0			EQU		08H			; Select PB0 as RFC pad	
+                                    2-  455     ;C_RFC_PB0 = 8
+                                    2-  456     	C_RFC_PA7			EQU		07H			; Select PA7 as RFC pad
+                                    2-  456     ;C_RFC_PA7 = 7
+                                    2-  457     	C_RFC_PA6			EQU		06H			; Select PA6 as RFC pad
+                                    2-  457     ;C_RFC_PA6 = 6
+                                    2-  458     	C_RFC_PA5			EQU		05H			; Select PA5 as RFC pad
+                                    2-  458     ;C_RFC_PA5 = 5
+                                    2-  459     	C_RFC_PA4			EQU		04H			; Select PA4 as RFC pad
+                                    2-  459     ;C_RFC_PA4 = 4
+                                    2-  460     	C_RFC_PA3			EQU		03H			; Select PA3 as RFC pad
+                                    2-  460     ;C_RFC_PA3 = 3
+                                    2-  461     	C_RFC_PA2			EQU		02H			; Select PA2 as RFC pad	
+                                    2-  461     ;C_RFC_PA2 = 2
+                                    2-  462     	C_RFC_PA1			EQU		01H			; Select PA1 as RFC pad
+                                    2-  462     ;C_RFC_PA1 = 1
+                                    2-  463     	C_RFC_PA0			EQU		00H			; Select PA0 as RFC pad	
+                                    2-  463     ;C_RFC_PA0 = 0
+                                    2-  465     	C_RFC_En_Bit		EQU		7
+                                    2-  465     ;C_RFC_En_Bit = 7
+                                    2-  466     	C_PSEL3_Bit			EQU		3
+                                    2-  466     ;C_PSEL3_Bit = 3
+                                    2-  467     	C_PSEL2_Bit			EQU		2
+                                    2-  467     ;C_PSEL2_Bit = 2
+                                    2-  468     	C_PSEL1_Bit			EQU		1
+                                    2-  468     ;C_PSEL1_Bit = 1
+                                    2-  469     	C_PSEL0_Bit			EQU		0	
+                                    2-  469     ;C_PSEL0_Bit = 0
+                                    2-  471     ;------------------------------------------------------------	
+                                    2-  472     ; Pr_TMR34_Data_PWM (1CH) 	--------- TIMER3/4 Data and PWMDUTY3/4 msb 2 bits Register
+                                    2-  473     ;------------------------------------------------------------	
+                                    2-  474     ;Bit[7:6] : Reserved	
+                                    2-  475     ;Bit[5] : Timer3 Data Bit9	
+                                    2-  476     	C_TMR3_Data_b9		EQU		20H			; Timer3 data bit9 
+                                    2-  476     ;C_TMR3_Data_b9 = 32
+                                    2-  477     ;Bit[4] : Timer3 Data Bit8	
+                                    2-  478     	C_TMR3_Data_b8		EQU		10H			; Timer3 data bit8		
+                                    2-  478     ;C_TMR3_Data_b8 = 16
+                                    2-  479     ;Bit[3] : Timer4 PWM Duty Bit9	
+                                    2-  480     	C_PWM4_Duty_b9		EQU		08H			; PWM4 Duty bit9 
+                                    2-  480     ;C_PWM4_Duty_b9 = 8
+                                    2-  481     ;Bit[2] : Timer4 PWM Duty Bit8	
+                                    2-  482     	C_PWM4_Duty_b8		EQU		04H			; PWM4 Duty bit8		
+                                    2-  482     ;C_PWM4_Duty_b8 = 4
+                                    2-  483     ;Bit[1] : Timer3 PWM Duty Bit9	
+                                    2-  484     	C_PWM3_Duty_b9		EQU		02H			; PWM3 Duty bit9 
+                                    2-  484     ;C_PWM3_Duty_b9 = 2
+                                    2-  485     ;Bit[0] : Timer3 PWM Duty Bit8	
+                                    2-  486     	C_PWM3_Duty_b8		EQU		01H			; PWM3 Duty bit8	
+                                    2-  486     ;C_PWM3_Duty_b8 = 1
+                                    2-  488     	C_TMR3_Data_b9_Bit	EQU		5
+                                    2-  488     ;C_TMR3_Data_b9_Bit = 5
+                                    2-  489     	C_TMR3_Data_b8_Bit	EQU		4
+                                    2-  489     ;C_TMR3_Data_b8_Bit = 4
+                                    2-  490     	C_PWM4_Duty_b9_Bit	EQU		3
+                                    2-  490     ;C_PWM4_Duty_b9_Bit = 3
+                                    2-  491     	C_PWM4_Duty_b8_Bit	EQU		2	
+                                    2-  491     ;C_PWM4_Duty_b8_Bit = 2
+                                    2-  492     	C_PWM3_Duty_b9_Bit	EQU		1
+                                    2-  492     ;C_PWM3_Duty_b9_Bit = 1
+                                    2-  493     	C_PWM3_Duty_b8_Bit	EQU		0					
+                                    2-  493     ;C_PWM3_Duty_b8_Bit = 0
+                                    2-  495     ;------------------------------------------------------------	
+                                    2-  496     ; Pr_INT2_Ctrl (1FH)		--------- Interrupt2 Enable Register
+                                    2-  497     ;------------------------------------------------------------
+                                    2-  498     ;Bit[7:5] : Reserved	
+                                    2-  499     ;Bit[4] : Timer3 underfolw Interrupt flag bit
+                                    2-  500     	C_INF_TMR3			EQU		10H			; Timer3 underfolw interrupt flag bit
+                                    2-  500     ;C_INF_TMR3 = 16
+                                    2-  501     ;Bit[3:1] : Reserved
+                                    2-  502     ;Bit[0] : Timer3 underfolw Interrupt enable bit
+                                    2-  503     	C_INE_TMR3			EQU		01H			; Timer3 underfolw interrupt enable bit 
+                                    2-  503     ;C_INE_TMR3 = 1
+                                    2-  505     	C_INF_TMR3_Bit		EQU		4	
+                                    2-  505     ;C_INF_TMR3_Bit = 4
+                                    2-  506     	C_INE_TMR3_Bit		EQU		0				
+                                    2-  506     ;C_INE_TMR3_Bit = 0
+                                    2-  508     ;------------------------------------------------------------	
+                                    2-  509     ; P_TMR0_Ctrl (xxH)		--------- T0MD Register
+                                    2-  510     ;------------------------------------------------------------
+                                    2-  511     ;		C_TMR0_Clk		C_TMR0_LowClk	|	Timer 0 Clock Source
+                                    2-  512     ;------------------------------------------------------------
+                                    2-  513     ;		0				x				|	From Instruction Clock
+                                    2-  514     ;		1				0				|	From External Pin
+                                    2-  515     ;		1				1				|	From Low Oscillator Frequency (I_LRC or E_LXT)
+                                    2-  516     ;------------------------------------------------------------
+                                    2-  517     ;Bit[7,5:4] : Timer0 Clock Source Selection
+                                    2-  518     	C_TMR0_LowClk		EQU		80H			; Same as LCKTM0	
+                                    2-  518     ;C_TMR0_LowClk = 128
+                                    2-  519     	C_TMR0_Clk			EQU		20H			; Same as T0CS
+                                    2-  519     ;C_TMR0_Clk = 32
+                                    2-  520     	C_TMR0_ExtClk_Edge	EQU		10H			; Timer0 External Clock Edge Select --- 1:Falling Edge, 0:Rising Edge
+                                    2-  520     ;C_TMR0_ExtClk_Edge = 16
+                                    2-  521     ;Bit[6] : Reserved
+                                    2-  522     ;Bit[3] : Watchdog Interrupt Source Selection / Timer0 Prescaler0 Selection
+                                    2-  523     	C_PS0_WDT			EQU		08H			; Prescaler0 is assigned to WDT
+                                    2-  523     ;C_PS0_WDT = 8
+                                    2-  524     	C_PS0_TMR0			EQU		00H			; Prescaler0 is assigned to TMR0
+                                    2-  524     ;C_PS0_TMR0 = 0
+                                    2-  525     ;Bit[2:0] : Prescaler0 Dividing Rate Selection
+                                    2-  526     	C_PS0_Div			EQU		07H			; Prescaler0 Dividing Rate Selection
+                                    2-  526     ;C_PS0_Div = 7
+                                    2-  527     	C_PS0_Div2			EQU		00H
+                                    2-  527     ;C_PS0_Div2 = 0
+                                    2-  528     	C_PS0_Div4			EQU		01H
+                                    2-  528     ;C_PS0_Div4 = 1
+                                    2-  529     	C_PS0_Div8			EQU		02H
+                                    2-  529     ;C_PS0_Div8 = 2
+                                    2-  530     	C_PS0_Div16			EQU		03H
+                                    2-  530     ;C_PS0_Div16 = 3
+                                    2-  531     	C_PS0_Div32			EQU		04H
+                                    2-  531     ;C_PS0_Div32 = 4
+                                    2-  532     	C_PS0_Div64			EQU		05H
+                                    2-  532     ;C_PS0_Div64 = 5
+                                    2-  533     	C_PS0_Div128		EQU		06H
+                                    2-  533     ;C_PS0_Div128 = 6
+                                    2-  534     	C_PS0_Div256		EQU		07H
+                                    2-  534     ;C_PS0_Div256 = 7
+                                    2-  536     ;=======================================================================================================================
+                                    2-  537     ;=======================================================================================================================
+                                    2-  538     ;-----------------------------------------------------------------------------------------------------------------------
+                                    2-  539     ; F-page Special Function Register (IO Configuration Register)
+                                    2-  540     ;-----------------------------------------------------------------------------------------------------------------------	
+                                    2-  541     ;------------------------------------------------------------
+                                    2-  542     ; Pf_PA_Dir_Ctrl (05H)	--------- PortA Direction(Input/Output) Control Register
+                                    2-  543     ;------------------------------------------------------------
+                                    2-  544     ;Bit[7:0] : Port A Input/Output Mode Selection (1:Input, 0:Output)
+                                    2-  545     	C_PA_Input			EQU		0xFF			; Port A Input Mode Control
+                                    2-  545     ;C_PA_Input = 255
+                                    2-  546     	C_PA_Output			EQU		00H			; Port A Output Mode Control
+                                    2-  546     ;C_PA_Output = 0
+                                    2-  548     	C_PA7_Input			EQU		80H			; PA7 I/O mode Control bit
+                                    2-  548     ;C_PA7_Input = 128
+                                    2-  549     	C_PA6_Input			EQU		40H			; PA6 I/O mode Control bit
+                                    2-  549     ;C_PA6_Input = 64
+                                    2-  550     	C_PA5_Input			EQU		20H			; PA5 I/O mode Control bit
+                                    2-  550     ;C_PA5_Input = 32
+                                    2-  551     	C_PA4_Input			EQU		10H			; PA4 I/O mode Control bit 
+                                    2-  551     ;C_PA4_Input = 16
+                                    2-  552     	C_PA3_Input			EQU		08H			; PA3 I/O mode Control bit
+                                    2-  552     ;C_PA3_Input = 8
+                                    2-  553     	C_PA2_Input			EQU		04H			; PA2 I/O mode Control bit
+                                    2-  553     ;C_PA2_Input = 4
+                                    2-  554     	C_PA1_Input			EQU		02H			; PA1 I/O mode Control bit
+                                    2-  554     ;C_PA1_Input = 2
+                                    2-  555     	C_PA0_Input			EQU		01H			; PA0 I/O mode Control bit 
+                                    2-  555     ;C_PA0_Input = 1
+                                    2-  556     	C_PA7_Output		EQU		00H			; PA7 I/O mode Control bit
+                                    2-  556     ;C_PA7_Output = 0
+                                    2-  557     	C_PA6_Output		EQU		00H			; PA6 I/O mode Control bit
+                                    2-  557     ;C_PA6_Output = 0
+                                    2-  558     	C_PA5_Output		EQU		00H			; PA5 I/O mode Control bit
+                                    2-  558     ;C_PA5_Output = 0
+                                    2-  559     	C_PA4_Output		EQU		00H			; PA4 I/O mode Control bit 	
+                                    2-  559     ;C_PA4_Output = 0
+                                    2-  560     	C_PA3_Output		EQU		00H			; PA3 I/O mode Control bit
+                                    2-  560     ;C_PA3_Output = 0
+                                    2-  561     	C_PA2_Output		EQU		00H			; PA2 I/O mode Control bit
+                                    2-  561     ;C_PA2_Output = 0
+                                    2-  562     	C_PA1_Output		EQU		00H			; PA1 I/O mode Control bit
+                                    2-  562     ;C_PA1_Output = 0
+                                    2-  563     	C_PA0_Output		EQU		00H			; PA0 I/O mode Control bit 
+                                    2-  563     ;C_PA0_Output = 0
+                                    2-  565     ;------------------------------------------------------------	
+                                    2-  566     ; Pf_PB_Dir_Ctrl (06H)	--------- PortB Direction(Input/Output) Control Register
+                                    2-  567     ;------------------------------------------------------------
+                                    2-  568     ;Bit[7:6] : Reserved
+                                    2-  569     ;Bit[5:0] : Port B Input/Output Mode Selection (1:Input, 0:Output)
+                                    2-  570     	C_PB_Input			EQU		3FH			; Port B Input Mode Control
+                                    2-  570     ;C_PB_Input = 63
+                                    2-  571     	C_PB_Output			EQU		00H			; Port B Output Mode Control
+                                    2-  571     ;C_PB_Output = 0
+                                    2-  572     	C_PB5_Input			EQU		20H			; PB5 I/O mode Control bit
+                                    2-  572     ;C_PB5_Input = 32
+                                    2-  573     	C_PB4_Input			EQU		10H			; PB4 I/O mode Control bit
+                                    2-  573     ;C_PB4_Input = 16
+                                    2-  574     	C_PB3_Input			EQU		08H			; PB3 I/O mode Control bit
+                                    2-  574     ;C_PB3_Input = 8
+                                    2-  575     	C_PB2_Input			EQU		04H			; PB2 I/O mode Control bit
+                                    2-  575     ;C_PB2_Input = 4
+                                    2-  576     	C_PB1_Input			EQU		02H			; PB1 I/O mode Control bit
+                                    2-  576     ;C_PB1_Input = 2
+                                    2-  577     	C_PB0_Input			EQU		01H			; PB0 I/O mode Control bit
+                                    2-  577     ;C_PB0_Input = 1
+                                    2-  578     	C_PB5_Output		EQU		00H			; PB5 I/O mode Control bit
+                                    2-  578     ;C_PB5_Output = 0
+                                    2-  579     	C_PB4_Output		EQU		00H			; PB4 I/O mode Control bit	
+                                    2-  579     ;C_PB4_Output = 0
+                                    2-  580     	C_PB3_Output		EQU		00H			; PB3 I/O mode Control bit
+                                    2-  580     ;C_PB3_Output = 0
+                                    2-  581     	C_PB2_Output		EQU		00H			; PB2 I/O mode Control bit
+                                    2-  581     ;C_PB2_Output = 0
+                                    2-  582     	C_PB1_Output		EQU		00H			; PB1 I/O mode Control bit
+                                    2-  582     ;C_PB1_Output = 0
+                                    2-  583     	C_PB0_Output		EQU		00H			; PB0 I/O mode Control bit
+                                    2-  583     ;C_PB0_Output = 0
+                                    2-  585     ;------------------------------------------------------------	
+                                    2-  586     ; Pr_PA_PH_Ctrl (09H)	--------- PortA Pull-High Control Register
+                                    2-  587     ;------------------------------------------------------------
+                                    2-  588     ;Bit[7:0] : PortA Pull-High Control Register (1:Disable, 0:Pull-High)
+                                    2-  589     	C_PA_PHB			EQU		0xFF			; PortA Pull-High Control bit 
+                                    2-  589     ;C_PA_PHB = 255
+                                    2-  590     	C_PA7_PHB			EQU		80H			; PA7 Pull-High Control bit 
+                                    2-  590     ;C_PA7_PHB = 128
+                                    2-  591     	C_PA6_PHB			EQU		40H			; PA6 Pull-High Control bit   
+                                    2-  591     ;C_PA6_PHB = 64
+                                    2-  592     	C_PA5_PLB			EQU		20H			; PA5 Pull-Low  Control bit
+                                    2-  592     ;C_PA5_PLB = 32
+                                    2-  593     	C_PA4_PHB			EQU		10H			; PA4 Pull-High Control bit
+                                    2-  593     ;C_PA4_PHB = 16
+                                    2-  594     	C_PA3_PHB			EQU		08H			; PA3 Pull-High Control bit	
+                                    2-  594     ;C_PA3_PHB = 8
+                                    2-  595     	C_PA2_PHB			EQU		04H			; PA2 Pull-High Control bit
+                                    2-  595     ;C_PA2_PHB = 4
+                                    2-  596     	C_PA1_PHB			EQU		02H			; PA1 Pull-High Control bit
+                                    2-  596     ;C_PA1_PHB = 2
+                                    2-  597     	C_PA0_PHB			EQU		01H			; PA0 Pull-High Control bit
+                                    2-  597     ;C_PA0_PHB = 1
+                                    2-  599     ;------------------------------------------------------------	
+                                    2-  600     ; Pf_PS0_Cnt (0AH)		--------- Prescaler0 Counter Value Register
+                                    2-  601     ;------------------------------------------------------------
+                                    2-  602     ;Bit[7:0] : Prescaler0 Counter Value
+                                    2-  603     	C_PS0_Cnt			EQU		0xFF			; Read-only	
+                                    2-  603     ;C_PS0_Cnt = 255
+                                    2-  605     ;------------------------------------------------------------	
+                                    2-  606     ; Pf_PB_OD_Ctrl (0CH)	--------- PortB Open-Drain Control Register
+                                    2-  607     ;------------------------------------------------------------
+                                    2-  608     ;Bit[7:6] : Reserved
+                                    2-  609     ;Bit[5:0] : PortB Open-Drain Control (1:Open-Drain, 0:Disable)
+                                    2-  610     	C_PB_OD				EQU		3FH			; Port B Open-Drain Control
+                                    2-  610     ;C_PB_OD = 63
+                                    2-  611     	C_PB5_OD			EQU		20H			; PB5 Open-Drain Control bit	
+                                    2-  611     ;C_PB5_OD = 32
+                                    2-  612     	C_PB4_OD			EQU		10H			; PB4 Open-Drain Control bit	
+                                    2-  612     ;C_PB4_OD = 16
+                                    2-  613     	C_PB3_OD			EQU		08H			; PB3 Open-Drain Control bit	
+                                    2-  613     ;C_PB3_OD = 8
+                                    2-  614     	C_PB2_OD			EQU		04H			; PB2 Open-Drain Control bit
+                                    2-  614     ;C_PB2_OD = 4
+                                    2-  615     	C_PB1_OD			EQU		02H			; PB1 Open-Drain Control bit 
+                                    2-  615     ;C_PB1_OD = 2
+                                    2-  616     	C_PB0_OD			EQU		01H			; PB0 Open-Drain Control bit
+                                    2-  616     ;C_PB0_OD = 1
+                                    2-  618     ;------------------------------------------------------------	
+                                    2-  619     ; Pf_CMP_Ctrl (0EH)	--------- Comparator voltage select Control Register
+                                    2-  620     ;------------------------------------------------------------
+                                    2-  621     ;Bit[7:4] : PS[3:0]
+                                    2-  622     	; C_CMP_PinSelect		EQU		F0H
+                                    2-  623     	C_CMP_PinSelect		EQU		0xF0
+                                    2-  623     ;C_CMP_PinSelect = 240
+                                    2-  624     ;Bit[3:0] : VS[3:0]
+                                    2-  625     	C_CMP_VolSelect		EQU		0FH
+                                    2-  625     ;C_CMP_VolSelect = 15
+                                    2-  626     ;P2V MODE
+                                    2-  627     ;VS[3:0]	V- of Comparator	PS[3:0]		Selected pad
+                                    2-  628     ;--------------------------------------------------------
+                                    2-  629     ;0000		P2P mode			0000		PA0
+                                    2-  630     ;0001		1 / 16 VDD			0001		PA1
+                                    2-  631     ;0010		2 / 16 VDD			0010		PA2
+                                    2-  632     ;0011		3 / 16 VDD			0011		PA3
+                                    2-  633     ;0100		4 / 16 VDD			0100		NA
+                                    2-  634     ;0101		5 / 16 VDD			0101		NA
+                                    2-  635     ;0110		6 / 16 VDD			0110		NA
+                                    2-  636     ;0111		7 / 16 VDD			0111		NA
+                                    2-  637     ;1000		8 / 16 VDD			1000		NA
+                                    2-  638     ;1001		9 / 16 VDD			1001		NA
+                                    2-  639     ;1010		10 / 16 VDD			1010		NA
+                                    2-  640     ;1011		11 / 16 VDD			1011		NA
+                                    2-  641     ;1100		12 / 16 VDD			1100		NA
+                                    2-  642     ;1101		13 / 16 VDD			1101		NA
+                                    2-  643     ;1110		14 / 16 VDD			1110		NA
+                                    2-  644     ;1111		15 / 16 VDD			1111		NA
+                                    2-  645     ;P2P MODE
+                                    2-  646     ;PS[3:0]	Non-inverting input		Inverting input
+                                    2-  647     ;-------------------------------------------
+                                    2-  648     ;0000		PA0						PA1
+                                    2-  649     ;0001		PA1						PA0
+                                    2-  650     ;0010		PA2						PA3
+                                    2-  651     ;0011		PA3						PA2
+                                    2-  652     ;0100		NA						NA
+                                    2-  653     ;0101		NA						NA
+                                    2-  654     ;0110		NA						NA
+                                    2-  655     ;0111		NA						NA
+                                    2-  656     ;1000		NA						NA
+                                    2-  657     ;1001		NA						NA
+                                    2-  658     ;1010		NA						NA
+                                    2-  659     ;1011		NA						NA
+                                    2-  660     ;1100		NA						NA
+                                    2-  661     ;1101		NA						NA
+                                    2-  662     ;1110		NA						NA
+                                    2-  663     ;1111		NA						NA
+                                    2-  665     ;------------------------------------------------------------	
+                                    2-  666     ; Pf_PWR_Ctrl1 (0FH)	--------- Power Control Register 1
+                                    2-  667     ;------------------------------------------------------------
+                                    2-  668     ;Bit[7] : All Interrupt Enable (Set by instruction ENI, clear by instruction DISI)
+                                    2-  669     	C_All_INT_En		EQU		80H			; Enable all unmasked interrupts
+                                    2-  669     ;C_All_INT_En = 128
+                                    2-  670     ;Bit[6] : Low voltage detector output 
+                                    2-  671     	C_LVDOUT			EQU		40H			; read-only
+                                    2-  671     ;C_LVDOUT = 64
+                                    2-  672     ;Bit[5] : Reserved
+                                    2-  673     ;Bit[4:2] : Select one of the 8 LVD voltage
+                                    2-  674     	C_LVD_4P3V			EQU		1CH			; LVD Voltage=4.3V
+                                    2-  674     ;C_LVD_4P3V = 28
+                                    2-  675     	C_LVD_3P6V			EQU		18H			; LVD Voltage=3.6V	
+                                    2-  675     ;C_LVD_3P6V = 24
+                                    2-  676     	C_LVD_3P3V			EQU		14H			; LVD Voltage=3.3V	
+                                    2-  676     ;C_LVD_3P3V = 20
+                                    2-  677     	C_LVD_3P0V			EQU		10H			; LVD Voltage=3.0V	
+                                    2-  677     ;C_LVD_3P0V = 16
+                                    2-  678     	C_LVD_2P7V			EQU		0CH			; LVD Voltage=2.7V	
+                                    2-  678     ;C_LVD_2P7V = 12
+                                    2-  679     	C_LVD_2P4V			EQU		08H			; LVD Voltage=2.4V	
+                                    2-  679     ;C_LVD_2P4V = 8
+                                    2-  680     	C_LVD_2P2V			EQU		04H			; LVD Voltage=2.2V	
+                                    2-  680     ;C_LVD_2P2V = 4
+                                    2-  681     	C_LVD_2P0V			EQU		00H			; LVD Voltage=2.0V		
+                                    2-  681     ;C_LVD_2P0V = 0
+                                    2-  682     ;Bit[0] : Timer0 Enable
+                                    2-  683     	C_TMR0_En			EQU		01H			; Enable Timer0
+                                    2-  683     ;C_TMR0_En = 1
+                                    2-  684     	C_TMR0_Dis			EQU		00H			; Disable Timer0
+                                    2-  684     ;C_TMR0_Dis = 0
+                                    2-  686     	C_LVDS2_bit			EQU		4
+                                    2-  686     ;C_LVDS2_bit = 4
+                                    2-  687     	C_LVDS1_bit			EQU		3
+                                    2-  687     ;C_LVDS1_bit = 3
+                                    2-  688     	C_LVDS0_bit			EQU		2
+                                    2-  688     ;C_LVDS0_bit = 2
+                                    2-  689     	C_TMR0_En_bit		EQU		0
+                                    2-  689     ;C_TMR0_En_bit = 0
+                                    2-  690     ;=======================================================================================================================
+                                    2-  691     ;=======================================================================================================================
+                                    2-  692     ;-----------------------------------------------------------------------------------------------------------------------
+                                    2-  693     ; S-page Special Function Register (Special Function Register)
+                                    2-  694     ;-----------------------------------------------------------------------------------------------------------------------		
+                                    2-  695     ;------------------------------------------------------------
+                                    2-  696     ; Ps_TMR1_Data (00H)	--------- Timer1 Data Register
+                                    2-  697     ;------------------------------------------------------------
+                                    2-  698     ;Bit[7:0] : Timer1 Data
+                                    2-  699     	C_TMR1_Data			EQU		0xFF	
+                                    2-  699     ;C_TMR1_Data = 255
+                                    2-  701     ;------------------------------------------------------------	
+                                    2-  702     ; Ps_TMR1_Ctrl1 (01H)	--------- Timer1 Control Register 1
+                                    2-  703     ;------------------------------------------------------------
+                                    2-  704     ;Bit[7:6] : PWM1 Control
+                                    2-  705     	C_PWM1_En			EQU		80H 		; PWM1 output will be present on PB3 or PA4
+                                    2-  705     ;C_PWM1_En = 128
+                                    2-  706     	C_PWM1_Active		EQU		40H 		; PWM1 output is active
+                                    2-  706     ;C_PWM1_Active = 64
+                                    2-  707     	C_PWM1_Active_Lo	EQU		40H 		; PWM1 output is active low 
+                                    2-  707     ;C_PWM1_Active_Lo = 64
+                                    2-  708     	C_PWM1_Active_Hi	EQU		00H 		; PWM1 output is active high 
+                                    2-  708     ;C_PWM1_Active_Hi = 0
+                                    2-  709     ;Bit[5:3] : Reserved
+                                    2-  710     ;Bit[2:0] : Timer1 Control
+                                    2-  711     	C_TMR1_OneShot		EQU		04H 		; One-Shot mode. Timer1 will count once from the initial value to 0x00
+                                    2-  711     ;C_TMR1_OneShot = 4
+                                    2-  712     	C_TMR1_Reload		EQU		02H 		; Initial value is reloaded from reload register TMR1(T1OS=0)
+                                    2-  712     ;C_TMR1_Reload = 2
+                                    2-  714     	C_TMR1_En			EQU		01H 		; Enable Timer1
+                                    2-  714     ;C_TMR1_En = 1
+                                    2-  715     	C_TMR1_Dis			EQU		00H 		; Disable Timer1
+                                    2-  715     ;C_TMR1_Dis = 0
+                                    2-  717     ;------------------------------------------------------------	
+                                    2-  718     ; Ps_TMR1_Ctrl2 (02H)	--------- Timer1 Control Register 2
+                                    2-  719     ;------------------------------------------------------------
+                                    2-  720     ;Bit[7:6] : Reserved
+                                    2-  721     ;Bit[5] : Timer1 Clock Source Select
+                                    2-  722     	C_TMR1_ClkSrc_Ext	EQU		20H			; Timer1 clock source from External Clock Input(EX_CKI0)
+                                    2-  722     ;C_TMR1_ClkSrc_Ext = 32
+                                    2-  723     	C_TMR1_ClkSrc_Inst	EQU		00H			; Timer1 clock source from Internal Instruction Clock	
+                                    2-  723     ;C_TMR1_ClkSrc_Inst = 0
+                                    2-  724     ;Bit[4] : Timer1 external clock edge selection
+                                    2-  725         C_TMR1_ExtClk_Edge	EQU		10H			; Timer1 External Clock Edge Select --- 1:Falling Edge, 0:Rising Edge  
+                                    2-  725     ;C_TMR1_ExtClk_Edge = 16
+                                    2-  726     	C_TMR1_ExtFalling	EQU		10H			; Timer1 will decrease one while EX_CKI0 Falling Edge.
+                                    2-  726     ;C_TMR1_ExtFalling = 16
+                                    2-  727     	C_TMR1_ExtRising	EQU		00H			; Timer1 will decrease one while EX_CKI0 Rising Edge.
+                                    2-  727     ;C_TMR1_ExtRising = 0
+                                    2-  728     ;Bit[3] :  Disable/enable Prescaler1
+                                    2-  729         C_PS1_Dis           EQU		08H			; Disable Prescaler1
+                                    2-  729     ;C_PS1_Dis = 8
+                                    2-  730     	C_PS1_EN			EQU		00H			; Enable Prescaler1
+                                    2-  730     ;C_PS1_EN = 0
+                                    2-  731     ;Bit[2:0] : Prescaler 1 Dividing Rate Selection
+                                    2-  732     	C_PS1_Div			EQU		07H			; Prescaler1 Dividing Rate Selection
+                                    2-  732     ;C_PS1_Div = 7
+                                    2-  733     	C_PS1_Div2			EQU		00H
+                                    2-  733     ;C_PS1_Div2 = 0
+                                    2-  734     	C_PS1_Div4			EQU		01H
+                                    2-  734     ;C_PS1_Div4 = 1
+                                    2-  735     	C_PS1_Div8			EQU		02H
+                                    2-  735     ;C_PS1_Div8 = 2
+                                    2-  736     	C_PS1_Div16			EQU		03H
+                                    2-  736     ;C_PS1_Div16 = 3
+                                    2-  737     	C_PS1_Div32			EQU		04H
+                                    2-  737     ;C_PS1_Div32 = 4
+                                    2-  738     	C_PS1_Div64			EQU		05H
+                                    2-  738     ;C_PS1_Div64 = 5
+                                    2-  739     	C_PS1_Div128		EQU		06H
+                                    2-  739     ;C_PS1_Div128 = 6
+                                    2-  740     	C_PS1_Div256		EQU		07H
+                                    2-  740     ;C_PS1_Div256 = 7
+                                    2-  742     ;------------------------------------------------------------	
+                                    2-  743     ; Ps_PWM1_Duty (03H)	--------- PWM1 Duty Register
+                                    2-  744     ;------------------------------------------------------------
+                                    2-  745     ;Bit[7:0] : PWM1 Duty Value
+                                    2-  746     	C_PWM1_Duty			EQU		0xFF
+                                    2-  746     ;C_PWM1_Duty = 255
+                                    2-  748     ;------------------------------------------------------------	
+                                    2-  749     ; Ps_PS1_Cnt (04H)		--------- Prescaler1 Counter Value Register
+                                    2-  750     ;------------------------------------------------------------
+                                    2-  751     ;Bit[7:0] : Prescaler1 Counter Value
+                                    2-  752     	C_PS1_Cnt			EQU		0xFF			; Read-only
+                                    2-  752     ;C_PS1_Cnt = 255
+                                    2-  754     ;------------------------------------------------------------	
+                                    2-  755     ; Ps_BZ1_Ctrl (05H)		--------- Buzzer1 Control Register
+                                    2-  756     ;------------------------------------------------------------
+                                    2-  757     ;Bit[7] : BZ1 Enable
+                                    2-  758     	C_BZ1_En			EQU		80H			; Enable BZ1 output
+                                    2-  758     ;C_BZ1_En = 128
+                                    2-  759     ;Bit[6:4] : Reserved
+                                    2-  760     ;Bit[3:0] : BZ1 Frequency Selection
+                                    2-  761     	C_BZ1_FSel			EQU		0FH			; BZ1 frequency selection
+                                    2-  761     ;C_BZ1_FSel = 15
+                                    2-  763     	C_BZ1_PS1Div2		EQU		00H			; Clock Soruce from Prescaler 1
+                                    2-  763     ;C_BZ1_PS1Div2 = 0
+                                    2-  764     	C_BZ1_PS1Div4		EQU		01H
+                                    2-  764     ;C_BZ1_PS1Div4 = 1
+                                    2-  765     	C_BZ1_PS1Div8		EQU		02H
+                                    2-  765     ;C_BZ1_PS1Div8 = 2
+                                    2-  766     	C_BZ1_PS1Div16		EQU		03H
+                                    2-  766     ;C_BZ1_PS1Div16 = 3
+                                    2-  767     	C_BZ1_PS1Div32		EQU		04H
+                                    2-  767     ;C_BZ1_PS1Div32 = 4
+                                    2-  768     	C_BZ1_PS1Div64		EQU		05H
+                                    2-  768     ;C_BZ1_PS1Div64 = 5
+                                    2-  769     	C_BZ1_PS1Div128		EQU		06H
+                                    2-  769     ;C_BZ1_PS1Div128 = 6
+                                    2-  770     	C_BZ1_PS1Div256		EQU		07H
+                                    2-  770     ;C_BZ1_PS1Div256 = 7
+                                    2-  772     	C_BZ1_TMR1B0		EQU		08H			; Clock Source from Timer 1
+                                    2-  772     ;C_BZ1_TMR1B0 = 8
+                                    2-  773     	C_BZ1_TMR1B1		EQU		09H
+                                    2-  773     ;C_BZ1_TMR1B1 = 9
+                                    2-  774     	C_BZ1_TMR1B2		EQU		0AH
+                                    2-  774     ;C_BZ1_TMR1B2 = 10
+                                    2-  775     	; C_BZ1_TMR1B3		EQU		0BH
+                                    2-  776     	C_BZ1_TMR1B3		EQU		0x0B
+                                    2-  776     ;C_BZ1_TMR1B3 = 11
+                                    2-  777     	C_BZ1_TMR1B4		EQU		0CH
+                                    2-  777     ;C_BZ1_TMR1B4 = 12
+                                    2-  778     	C_BZ1_TMR1B5		EQU		0DH
+                                    2-  778     ;C_BZ1_TMR1B5 = 13
+                                    2-  779     	C_BZ1_TMR1B6		EQU		0EH
+                                    2-  779     ;C_BZ1_TMR1B6 = 14
+                                    2-  780     	C_BZ1_TMR1B7		EQU		0FH
+                                    2-  780     ;C_BZ1_TMR1B7 = 15
+                                    2-  782     ;------------------------------------------------------------	
+                                    2-  783     ; Ps_IR_Ctrl (06H)		--------- IR Control Register
+                                    2-  784     ;------------------------------------------------------------
+                                    2-  785     ;Bit[7] : IR Clock Source Selection (1:3.58MHz, 0:455KHz)
+                                    2-  786     	C_IR_ClkSrc_358M	EQU		80H			; IRCR[7]=1 , external crystal is 3.58MHz (This bit is ignored if internal high frequency oscillation is used)
+                                    2-  786     ;C_IR_ClkSrc_358M = 128
+                                    2-  787     	C_IR_ClkSrc_455K	EQU		00H			; IRCR[7]=0 , external crystal is 455KHz
+                                    2-  787     ;C_IR_ClkSrc_455K = 0
+                                    2-  788     ;Bit[6:3] : Reserved
+                                    2-  789     ;Bit[2] : IR Polarity Selection
+                                    2-  790     	C_IR_Pol_Sel		EQU		04H
+                                    2-  790     ;C_IR_Pol_Sel = 4
+                                    2-  791     ;Bit[1] : IR Carrier Frequency Selection (1:57KHz, 0:38KHz)
+                                    2-  792     	C_IR_57K			EQU		02H			; IRCR[1]=1 , IR carrier frequency is 57KHz
+                                    2-  792     ;C_IR_57K = 2
+                                    2-  793     	C_IR_38K			EQU		00H			; IRCR[1]=0 , IR carrier frequency is 38KHz
+                                    2-  793     ;C_IR_38K = 0
+                                    2-  794     ;Bit[0] : IR Enable
+                                    2-  795     	C_IR_En				EQU		01H			; Enable IR carrier output
+                                    2-  795     ;C_IR_En = 1
+                                    2-  797     ;------------------------------------------------------------	
+                                    2-  798     ; Ps_TbHigh_Addr (07H)	--------- Table Access High Byte Address Pointer Register
+                                    2-  799     ;------------------------------------------------------------
+                                    2-  800     ;Bit[7:3] : Reserved
+                                    2-  801     ;Bit[2:0] : Table Access High Byte Address Pointer
+                                    2-  802     	C_TbHigh_Addr		EQU		07H			; When instruction CALLA, GOTOA or TABLEA is executed TBHP[2:0] is PC[10:8] (NY8A054D)
+                                    2-  802     ;C_TbHigh_Addr = 7
+                                    2-  804     ;------------------------------------------------------------	
+                                    2-  805     ; Ps_TbHigh_Data (08H)	--------- Table Access High Byte Data Register
+                                    2-  806     ;------------------------------------------------------------
+                                    2-  807     ;Bit[7:6] : Reserved
+                                    2-  808     ;Bit[5:0] : Table Access High Byte Data
+                                    2-  809     	C_TbHigh_Data		EQU		3FH
+                                    2-  809     ;C_TbHigh_Data = 63
+                                    2-  811     ;------------------------------------------------------------	
+                                    2-  812     ; Ps_PWM2_Ctrl1 (0AH)	--------- PWM2 Control Register 1
+                                    2-  813     ;------------------------------------------------------------
+                                    2-  814     ;Bit[7:6] : PWM2 Control
+                                    2-  815     	C_PWM2_En			EQU		80H 		; PWM2 output will be present on PB2 or PA0
+                                    2-  815     ;C_PWM2_En = 128
+                                    2-  816     	C_PWM2_Active		EQU		40H 		; PWM2 output is active
+                                    2-  816     ;C_PWM2_Active = 64
+                                    2-  817     	C_PWM2_Active_Lo	EQU		40H 		; PWM2 output is active low 
+                                    2-  817     ;C_PWM2_Active_Lo = 64
+                                    2-  818     	C_PWM2_Active_Hi	EQU		00H 		; PWM2 output is active high 
+                                    2-  818     ;C_PWM2_Active_Hi = 0
+                                    2-  819     ;Bit[5:3] : Reserved
+                                    2-  820     ;Bit[2:0] : Timer1 Control (only for PWM2 output)
+                                    2-  821     	C_TMR1_OneShot_PWM2	EQU		04H 		; One-Shot mode. Timer1 will count once from the initial value to 0x00
+                                    2-  821     ;C_TMR1_OneShot_PWM2 = 4
+                                    2-  822     	C_TMR1_Reload_PWM2	EQU		02H 		; Initial value is reloaded from reload register TMR1(T1OS=0)
+                                    2-  822     ;C_TMR1_Reload_PWM2 = 2
+                                    2-  824     	C_TMR1_En_PWM2		EQU		01H 		; Enable Timer1
+                                    2-  824     ;C_TMR1_En_PWM2 = 1
+                                    2-  825     	C_TMR1_Dis_PWM2		EQU		00H 		; Disable Timer1
+                                    2-  825     ;C_TMR1_Dis_PWM2 = 0
+                                    2-  826     ;------------------------------------------------------------	
+                                    2-  827     ; Ps_PWM2_Duty (0CH)	--------- PWM2 Duty Register
+                                    2-  828     ;------------------------------------------------------------
+                                    2-  829     ;Bit[7:0] : PWM2 Duty Value
+                                    2-  830     	C_PWM2_Duty			EQU		0xFF
+                                    2-  830     ;C_PWM2_Duty = 255
+                                    2-  832     ;------------------------------------------------------------   
+                                    2-  833     ; Ps_SYS_Ctrl (0FH)	--------- Oscillation Control Register (Include Switch Working Mode)
+                                    2-  834     ;------------------------------------------------------------
+                                    2-  835     ;Bit[7] : Comparator output status
+                                    2-  836     	C_CMPOUT			EQU		80H			; Read-only
+                                    2-  836     ;C_CMPOUT = 128
+                                    2-  837     ;Bit[6] : Disable/enable comparator output to pad PB3
+                                    2-  838     	C_CMPOPB3_Dis		EQU		00H			; Disable comparator output to pad PB3
+                                    2-  838     ;C_CMPOPB3_Dis = 0
+                                    2-  839     	C_CMPOPB3_En		EQU		40H			; Enable comparator output to pad PB3
+                                    2-  839     ;C_CMPOPB3_En = 64
+                                    2-  840     ;Bit[5] : Comparator output change state interrupt flag
+                                    2-  841     	C_INF_CMP			EQU		00H			; clear comparator interrupt flag
+                                    2-  841     ;C_INF_CMP = 0
+                                    2-  842     ;Bit[4] : Enable/Disable of comparator interrupt
+                                    2-  843     	C_INT_CMP			EQU		10H			; Enable comparator interrupt
+                                    2-  843     ;C_INT_CMP = 16
+                                    2-  844     ;Bit[3:2] : System Mode Select
+                                    2-  845     	C_Mode				EQU		0CH			; System Operating Mode Selection
+                                    2-  845     ;C_Mode = 12
+                                    2-  846     	C_Normal_Mode		EQU		00H			; Enter Normal mode
+                                    2-  846     ;C_Normal_Mode = 0
+                                    2-  847     	C_Halt_Mode			EQU		04H			; Enter Halt mode
+                                    2-  847     ;C_Halt_Mode = 4
+                                    2-  848     	C_Standby_Mode		EQU		08H			; Enter Standby mode
+                                    2-  848     ;C_Standby_Mode = 8
+                                    2-  849     ;Bit[1] : Stop FHOSC
+                                    2-  850     	C_FHOSC_Stop		EQU		02H			; Disable high-frequency oscillation (FHOSC)
+                                    2-  850     ;C_FHOSC_Stop = 2
+                                    2-  851     ;Bit[0] : FOSC Seletction
+                                    2-  852     	C_FHOSC_Sel			EQU		01H			; OSCCR[0]=1 , FOSC is high-frequency oscillation (FHOSC)
+                                    2-  852     ;C_FHOSC_Sel = 1
+                                    2-  853     	C_FLOSC_Sel			EQU		00H			; OSCCR[0]=0 , FOSC is Low-frequency oscillation (FLOSC)	
+                                    2-  853     ;C_FLOSC_Sel = 0
+                                    2-  855         C_CMPOUT_bit		EQU		7
+                                    2-  855     ;C_CMPOUT_bit = 7
+                                    2-  856     	C_CMPOPB3_En_bit	EQU		6
+                                    2-  856     ;C_CMPOPB3_En_bit = 6
+                                    2-  857     	C_INF_CMP_bit		EQU		5
+                                    2-  857     ;C_INF_CMP_bit = 5
+                                    2-  858     	C_INT_CMP_bit		EQU		4
+                                    2-  858     ;C_INT_CMP_bit = 4
+                                    2-  859     	C_FHOSC_Stop_bit	EQU		1
+                                    2-  859     ;C_FHOSC_Stop_bit = 1
+                                    2-  860     	C_FHOSC_Sel_bit		EQU		0
+                                    2-  860     ;C_FHOSC_Sel_bit = 0
+                                    2-  862     ;------------------------------------------------------------
+                                    2-  863     ; Ps_TMR3_Data (10H)	--------- Timer3 Data Register
+                                    2-  864     ;------------------------------------------------------------
+                                    2-  865     ;Bit[7:0] : Timer3 Data
+                                    2-  866     	C_TMR3_Data			EQU		0xFF	
+                                    2-  866     ;C_TMR3_Data = 255
+                                    2-  868     ;------------------------------------------------------------	
+                                    2-  869     ; Ps_TMR3_Ctrl1 (11H)	--------- Timer3 Control Register 1
+                                    2-  870     ;------------------------------------------------------------
+                                    2-  871     ;Bit[7:6] : PWM3 Control
+                                    2-  872     	C_PWM3_En			EQU		80H 		; PWM3 output will be present on PA3 or PB4
+                                    2-  872     ;C_PWM3_En = 128
+                                    2-  873     	C_PWM3_Active		EQU		40H 		; PWM3 output is active
+                                    2-  873     ;C_PWM3_Active = 64
+                                    2-  874     	C_PWM3_Active_Lo	EQU		40H 		; PWM3 output is active low 
+                                    2-  874     ;C_PWM3_Active_Lo = 64
+                                    2-  875     	C_PWM3_Active_Hi	EQU		00H 		; PWM3 output is active high 
+                                    2-  875     ;C_PWM3_Active_Hi = 0
+                                    2-  876     ;Bit[5:3] : Reserved
+                                    2-  877     ;Bit[2:0] : Timer3 Control
+                                    2-  878     	C_TMR3_OneShot		EQU		04H 		; One-Shot mode. Timer3 will count once from the initial value to 0x00
+                                    2-  878     ;C_TMR3_OneShot = 4
+                                    2-  879     	C_TMR3_Reload		EQU		02H 		; Initial value is reloaded from reload register TMR3(T3OS=0)
+                                    2-  879     ;C_TMR3_Reload = 2
+                                    2-  881     	C_TMR3_En			EQU		01H 		; Enable Timer3
+                                    2-  881     ;C_TMR3_En = 1
+                                    2-  882     	C_TMR3_Dis			EQU		00H 		; Disable Timer3
+                                    2-  882     ;C_TMR3_Dis = 0
+                                    2-  884     ;------------------------------------------------------------	
+                                    2-  885     ; Ps_TMR3_Ctrl2 (12H)	--------- Timer3 Control Register 2
+                                    2-  886     ;------------------------------------------------------------
+                                    2-  887     ;Bit[7:6] : Reserved
+                                    2-  888     ;Bit[5] : Timer3 Clock Source Select
+                                    2-  889     	C_TMR3_ClkSrc_Ext	EQU		20H			; Timer3 clock source from External Clock Input(EX_CKI1)
+                                    2-  889     ;C_TMR3_ClkSrc_Ext = 32
+                                    2-  890     	C_TMR3_ClkSrc_Inst	EQU		00H			; Timer3 clock source from Internal Instruction Clock	
+                                    2-  890     ;C_TMR3_ClkSrc_Inst = 0
+                                    2-  891     ;Bit[4] : Timer3 external clock edge selection
+                                    2-  892         C_TMR3_ExtClk_Edge	EQU		10H			; Timer3 External Clock Edge Select --- 1:Falling Edge, 0:Rising Edge  
+                                    2-  892     ;C_TMR3_ExtClk_Edge = 16
+                                    2-  893     	C_TMR3_ExtFalling	EQU		10H			; Timer3 will decrease one while EX_CKI1 Falling Edge.
+                                    2-  893     ;C_TMR3_ExtFalling = 16
+                                    2-  894     	C_TMR3_ExtRising	EQU		00H			; Timer3 will decrease one while EX_CKI1 Rising Edge.
+                                    2-  894     ;C_TMR3_ExtRising = 0
+                                    2-  895     ;Bit[3] : Disable/enable Prescaler3
+                                    2-  896         C_PS3_Dis           EQU		08H			; Disable Prescaler3
+                                    2-  896     ;C_PS3_Dis = 8
+                                    2-  897     	C_PS3_EN			EQU		00H			; Enable Prescaler3
+                                    2-  897     ;C_PS3_EN = 0
+                                    2-  898     ;Bit[2:0] : Prescaler 3 Dividing Rate Selection
+                                    2-  899     	C_PS3_Div			EQU		07H			; Prescaler3 Dividing Rate Selection
+                                    2-  899     ;C_PS3_Div = 7
+                                    2-  900     	C_PS3_Div2			EQU		00H
+                                    2-  900     ;C_PS3_Div2 = 0
+                                    2-  901     	C_PS3_Div4			EQU		01H
+                                    2-  901     ;C_PS3_Div4 = 1
+                                    2-  902     	C_PS3_Div8			EQU		02H
+                                    2-  902     ;C_PS3_Div8 = 2
+                                    2-  903     	C_PS3_Div16			EQU		03H
+                                    2-  903     ;C_PS3_Div16 = 3
+                                    2-  904     	C_PS3_Div32			EQU		04H
+                                    2-  904     ;C_PS3_Div32 = 4
+                                    2-  905     	C_PS3_Div64			EQU		05H
+                                    2-  905     ;C_PS3_Div64 = 5
+                                    2-  906     	C_PS3_Div128		EQU		06H
+                                    2-  906     ;C_PS3_Div128 = 6
+                                    2-  907     	C_PS3_Div256		EQU		07H
+                                    2-  907     ;C_PS3_Div256 = 7
+                                    2-  909     ;------------------------------------------------------------	
+                                    2-  910     ; Ps_PWM3_Duty (13H)	--------- PWM3 Duty Register
+                                    2-  911     ;------------------------------------------------------------
+                                    2-  912     ;Bit[7:0] : PWM3 Duty Value
+                                    2-  913     	C_PWM3_Duty			EQU		0xFF
+                                    2-  913     ;C_PWM3_Duty = 255
+                                    2-  915     ;------------------------------------------------------------	
+                                    2-  916     ; Ps_PS3_Cnt (14H)		--------- Prescaler3 Counter Value Register
+                                    2-  917     ;------------------------------------------------------------
+                                    2-  918     ;Bit[7:0] : Prescaler3 Counter Value
+                                    2-  919     	C_PS3_Cnt			EQU		0xFF			; Read-only	
+                                    2-  919     ;C_PS3_Cnt = 255
+                                    2-  921     ;------------------------------------------------------------	
+                                    2-  922     ; Ps_PWM4_Ctrl1 (16H)	--------- PWM4 Control Register 1
+                                    2-  923     ;------------------------------------------------------------
+                                    2-  924     ;Bit[7:6] : PWM4 Control
+                                    2-  925     	C_PWM4_En			EQU		80H 		; PWM4 output will be present on PA2 or PB5
+                                    2-  925     ;C_PWM4_En = 128
+                                    2-  926     	C_PWM4_Active		EQU		40H 		; PWM4 output is active
+                                    2-  926     ;C_PWM4_Active = 64
+                                    2-  927     	C_PWM4_Active_Lo	EQU		40H 		; PWM4 output is active low 
+                                    2-  927     ;C_PWM4_Active_Lo = 64
+                                    2-  928     	C_PWM4_Active_Hi	EQU		00H 		; PWM4 output is active high 
+                                    2-  928     ;C_PWM4_Active_Hi = 0
+                                    2-  929     ;Bit[5:3] : Reserved
+                                    2-  930     ;Bit[2:0] : Timer3 Control(only for PWM4 output)
+                                    2-  931     	C_TMR3_OneShot_PWM4	EQU		04H 		; One-Shot mode. Timer3 will count once from the initial value to 0x00
+                                    2-  931     ;C_TMR3_OneShot_PWM4 = 4
+                                    2-  932     	C_TMR3_Reload_PWM4	EQU		02H 		; Initial value is reloaded from reload register TMR3(T3OS=0)
+                                    2-  932     ;C_TMR3_Reload_PWM4 = 2
+                                    2-  934     	C_TMR3_En_PWM4		EQU		01H 		; Enable Timer3
+                                    2-  934     ;C_TMR3_En_PWM4 = 1
+                                    2-  935     	C_TMR3_Dis_PWM4		EQU		00H 		; Disable Timer3
+                                    2-  935     ;C_TMR3_Dis_PWM4 = 0
+                                    2-  937     ;------------------------------------------------------------	
+                                    2-  938     ; Ps_PWM4_Duty (18H)	--------- PWM4 Duty Register
+                                    2-  939     ;------------------------------------------------------------
+                                    2-  940     ;Bit[7:0] : PWM4 Duty Value
+                                    2-  941     	C_PWM4_Duty			EQU		0xFF
+                                    2-  941     ;C_PWM4_Duty = 255
+                                    2-  943     ;------------------------------------------------------------	
+                                    2-  944     ; Ps_PWM5_Ctrl1 (1BH)	--------- PWM5 Control Register 1
+                                    2-  945     ;------------------------------------------------------------
+                                    2-  946     ;Bit[7:6] : PWM5 Control
+                                    2-  947     	C_PWM5_En			EQU		80H 		; PWM5 output will be present on PA1 or PB0
+                                    2-  947     ;C_PWM5_En = 128
+                                    2-  948     	C_PWM5_Active		EQU		40H 		; PWM5 output is active
+                                    2-  948     ;C_PWM5_Active = 64
+                                    2-  949     	C_PWM5_Active_Lo	EQU		40H 		; PWM5 output is active low 
+                                    2-  949     ;C_PWM5_Active_Lo = 64
+                                    2-  950     	C_PWM5_Active_Hi	EQU		00H 		; PWM5 output is active high 
+                                    2-  950     ;C_PWM5_Active_Hi = 0
+                                    2-  951     ;Bit[5:3] : Reserved
+                                    2-  952     ;Bit[2:0] : Timer3 Control(only for PWM5 output)
+                                    2-  953     	C_TMR3_OneShot_PWM5	EQU		04H 		; One-Shot mode. Timer3 will count once from the initial value to 0x00
+                                    2-  953     ;C_TMR3_OneShot_PWM5 = 4
+                                    2-  954     	C_TMR3_Reload_PWM5	EQU		02H 		; Initial value is reloaded from reload register TMR3(T3OS=0)
+                                    2-  954     ;C_TMR3_Reload_PWM5 = 2
+                                    2-  956     	C_TMR3_En_PWM5		EQU		01H 		; Enable Timer3
+                                    2-  956     ;C_TMR3_En_PWM5 = 1
+                                    2-  957     	C_TMR3_Dis_PWM5		EQU		00H 		; Disable Timer3
+                                    2-  957     ;C_TMR3_Dis_PWM5 = 0
+                                    2-  959     ;------------------------------------------------------------	
+                                    2-  960     ; Ps_PWM5_Duty (1DH)	--------- PWM5 Duty Register
+                                    2-  961     ;------------------------------------------------------------
+                                    2-  962     ;Bit[7:0] : PWM5 Duty Value
+                                    2-  963     	C_PWM5_Duty			EQU		0xFF
+                                    2-  963     ;C_PWM5_Duty = 255
+                                    2-  965     ;------------------------------------------------------------	
+                                    2-  966     ; Ps_PWM5_Data_PWM (1FH) 	--------- PWMDUTY5 msb 2 bits Register
+                                    2-  967     ;------------------------------------------------------------	
+                                    2-  968     ;Bit[7:2] : Reserved			
+                                    2-  969     ;Bit[1] : PWM5 PWM Duty Bit9	
+                                    2-  970     	C_PWM5_Duty_b9		EQU		02H			; PWM5 Duty bit9 
+                                    2-  970     ;C_PWM5_Duty_b9 = 2
+                                    2-  971     ;Bit[0] : PWM5 PWM Duty Bit8	
+                                    2-  972     	C_PWM5_Duty_b8		EQU		01H			; PWM5 Duty bit8	
+                                    2-  972     ;C_PWM5_Duty_b8 = 1
+                                    2-  974     	C_PWM5_Duty_b9_Bit	EQU		1
+                                    2-  974     ;C_PWM5_Duty_b9_Bit = 1
+                                    2-  975     	C_PWM5_Duty_b8_Bit	EQU		0			
+                                    2-  975     ;C_PWM5_Duty_b8_Bit = 0
+                                    2-  976     ;=======================================================================================================================
+                                    2-  977     ;=======================================================================================================================
+                                    2-  978     ;-----------------------------------------------------------------------------------------------------------------------
+                                    2-  979     ;General Constant Define
+                                    2-  980     ;-----------------------------------------------------------------------------------------------------------------------
+                                    2-  981     	C_SaveToAcc			EQU		00H	
+                                    2-  981     ;C_SaveToAcc = 0
+                                    2-  982     	C_SaveToReg			EQU		01H	
+                                    2-  982     ;C_SaveToReg = 1
+                                    2-  984     	C_Bit0				EQU		01H
+                                    2-  984     ;C_Bit0 = 1
+                                    2-  985     	C_Bit1				EQU		02H
+                                    2-  985     ;C_Bit1 = 2
+                                    2-  986     	C_Bit2				EQU		04H
+                                    2-  986     ;C_Bit2 = 4
+                                    2-  987     	C_Bit3				EQU		08H
+                                    2-  987     ;C_Bit3 = 8
+                                    2-  988     	C_Bit4				EQU		10H
+                                    2-  988     ;C_Bit4 = 16
+                                    2-  989     	C_Bit5				EQU		20H
+                                    2-  989     ;C_Bit5 = 32
+                                    2-  990     	C_Bit6				EQU		40H
+                                    2-  990     ;C_Bit6 = 64
+                                    2-  991     	C_Bit7				EQU		80H
+                                    2-  991     ;C_Bit7 = 128
+                                    2-  993     	C_Num0				EQU		0
+                                    2-  993     ;C_Num0 = 0
+                                    2-  994     	C_Num1				EQU		1
+                                    2-  994     ;C_Num1 = 1
+                                    2-  995     	C_Num2				EQU		2
+                                    2-  995     ;C_Num2 = 2
+                                    2-  996     	C_Num3				EQU		3
+                                    2-  996     ;C_Num3 = 3
+                                    2-  997     	C_Num4				EQU		4
+                                    2-  997     ;C_Num4 = 4
+                                    2-  998     	C_Num5				EQU		5
+                                    2-  998     ;C_Num5 = 5
+                                    2-  999     	C_Num6				EQU		6
+                                    2-  999     ;C_Num6 = 6
+                                    2- 1000     	C_Num7				EQU		7
+                                    2- 1000     ;C_Num7 = 7
+                                    1-    5     R_TWINKLE_COUNT		EQU		0x40
+                                    1-    5     ;R_TWINKLE_COUNT = 64
+                                    1-    6     DAT					EQU		0x41
+                                    1-    6     ;DAT = 65
+                                    1-    8     extern _WS281x_Drive_Write_Byte
+                                    1-   10     .segment "code"
+     0000                           1-   12     _WS281x_Drive_Write_Byte:
+     0000                           1-   14     LED_TWINKLE_Q:
+     0000 00C1                      1-   15     		movar	DAT				; 形参
+     0001 2108                      1-   16     		movia	8
+     0002 00C0                      1-   17     		movar	R_TWINKLE_COUNT
+     0003                           1-   18     LED_TWINKLE_Q_LOOP:
+     0003 1A85                      1-   19     		bsr     Pr_PA_Data,5		; Set PA5 outputs High
+     0004 1A85                      1-   20     		bsr     Pr_PA_Data,5		; Set PA5 outputs High
+     0005 1A85                      1-   21     		bsr     Pr_PA_Data,5		; Set PA5 outputs High
+                                    1-   22     		; nop
+                                    1-   23     		; nop
+     0006 0BC1                      1-   24     		btrss	DAT,7
+     0007 1E85                      1-   25     		bcr     Pr_PA_Data,5		; Set PA5 outputs High
+     0008 0FC1                      1-   26     		btrsc	DAT,7
+     0009 1A85                      1-   27     		bsr     Pr_PA_Data,5		; Set PA5 outputs LOW
+                                    1-   28     		; nop
+     000A 0000                      1-   29     		nop
+     000B 1E85                      1-   30     		bcr     Pr_PA_Data,5		; Set PA5 outputs LOW
+     000C 14C1                      1-   31     		RLR 	DAT,C_SaveToReg
+     000D 17C0                      1-   32     		decrsz	R_TWINKLE_COUNT,C_SaveToReg
+     000E 3rrr                      1-   33     		lgoto	LED_TWINKLE_Q_LOOP
+     000F 0010                      1-   34     		ret
+                                    1-   35     END
+                                    1-   35     END
+
+SYMBOL TABLE            TYPE     VALUE
+__CHECKSUM_ADDR__       Label    00000000
+__PIN_COUNT__           Constant 0000000E
+__PROCESSOR__           Constant 00800543
+_WS281x_Drive_Write_Byte Label    00000000
+ABPLCON                 Constant 0000000B
+APHCON                  Constant 00000009
+AWUCON                  Constant 00000015
+BODCON                  Constant 0000000C
+BPHCON                  Constant 0000000C
+BWUCON                  Constant 00000009
+BZ1CR                   Constant 00000005
+C_All_INT_En            Constant 00000080
+C_Bit0                  Constant 00000001
+C_Bit1                  Constant 00000002
+C_Bit2                  Constant 00000004
+C_Bit3                  Constant 00000008
+C_Bit4                  Constant 00000010
+C_Bit5                  Constant 00000020
+C_Bit6                  Constant 00000040
+C_Bit7                  Constant 00000080
+C_BZ1_En                Constant 00000080
+C_BZ1_FSel              Constant 0000000F
+C_BZ1_PS1Div128         Constant 00000006
+C_BZ1_PS1Div16          Constant 00000003
+C_BZ1_PS1Div2           Constant 00000000
+C_BZ1_PS1Div256         Constant 00000007
+C_BZ1_PS1Div32          Constant 00000004
+C_BZ1_PS1Div4           Constant 00000001
+C_BZ1_PS1Div64          Constant 00000005
+C_BZ1_PS1Div8           Constant 00000002
+C_BZ1_TMR1B0            Constant 00000008
+C_BZ1_TMR1B1            Constant 00000009
+C_BZ1_TMR1B2            Constant 0000000A
+C_BZ1_TMR1B3            Constant 0000000B
+C_BZ1_TMR1B4            Constant 0000000C
+C_BZ1_TMR1B5            Constant 0000000D
+C_BZ1_TMR1B6            Constant 0000000E
+C_BZ1_TMR1B7            Constant 0000000F
+C_CMP_En                Constant 00000004
+C_CMP_En_Bit            Constant 00000002
+C_CMP_PinSelect         Constant 000000F0
+C_CMP_VolSelect         Constant 0000000F
+C_CMPOPB3_Dis           Constant 00000000
+C_CMPOPB3_En            Constant 00000040
+C_CMPOPB3_En_bit        Constant 00000006
+C_CMPOUT                Constant 00000080
+C_CMPOUT_bit            Constant 00000007
+C_ELXT_Backup_Dis       Constant 00000040
+C_ELXT_Backup_Dis_Bit   Constant 00000006
+C_FHOSC_Sel             Constant 00000001
+C_FHOSC_Sel_bit         Constant 00000000
+C_FHOSC_Stop            Constant 00000002
+C_FHOSC_Stop_bit        Constant 00000001
+C_FLOSC_Sel             Constant 00000000
+C_Halt_Mode             Constant 00000004
+C_Indir_Addr            Constant 000000FF
+C_INE_TMR3              Constant 00000001
+C_INE_TMR3_Bit          Constant 00000000
+C_INF_CMP               Constant 00000000
+C_INF_CMP_bit           Constant 00000005
+C_INF_TMR3              Constant 00000010
+C_INF_TMR3_Bit          Constant 00000004
+C_INT_CMP               Constant 00000010
+C_INT_CMP_bit           Constant 00000004
+C_INT_EXT0              Constant 00000004
+C_INT_EXT0_Bit          Constant 00000002
+C_INT_EXT1              Constant 00000080
+C_INT_EXT1_Bit          Constant 00000007
+C_INT_LVD               Constant 00000010
+C_INT_LVD_Bit           Constant 00000004
+C_INT_PABKey            Constant 00000002
+C_INT_PABKey_Bit        Constant 00000001
+C_INT_TMR0              Constant 00000001
+C_INT_TMR0_Bit          Constant 00000000
+C_INT_TMR1              Constant 00000008
+C_INT_TMR1_Bit          Constant 00000003
+C_INT_WDT               Constant 00000040
+C_INT_WDT_Bit           Constant 00000006
+C_INT0_Edge             Constant 00000003
+C_INT0_En               Constant 00000010
+C_INT0_En_Bit           Constant 00000004
+C_INT0_FallingEdge      Constant 00000002
+C_INT0_RisingEdge       Constant 00000001
+C_INT0_TwoEdge          Constant 00000003
+C_INT1_Edge             Constant 0000000C
+C_INT1_En               Constant 00000020
+C_INT1_En_Bit           Constant 00000005
+C_INT1_FallingEdge      Constant 00000008
+C_INT1_RisingEdge       Constant 00000004
+C_INT1_TwoEdge          Constant 0000000C
+C_IR_38K                Constant 00000000
+C_IR_57K                Constant 00000002
+C_IR_ClkSrc_358M        Constant 00000080
+C_IR_ClkSrc_455K        Constant 00000000
+C_IR_En                 Constant 00000001
+C_IR_Pol_Sel            Constant 00000004
+C_LVD_2P0V              Constant 00000000
+C_LVD_2P2V              Constant 00000004
+C_LVD_2P4V              Constant 00000008
+C_LVD_2P7V              Constant 0000000C
+C_LVD_3P0V              Constant 00000010
+C_LVD_3P3V              Constant 00000014
+C_LVD_3P6V              Constant 00000018
+C_LVD_4P3V              Constant 0000001C
+C_LVD_En                Constant 00000020
+C_LVD_En_Bit            Constant 00000005
+C_LVDOUT                Constant 00000040
+C_LVDS0_bit             Constant 00000002
+C_LVDS1_bit             Constant 00000003
+C_LVDS2_bit             Constant 00000004
+C_LVR_En                Constant 00000008
+C_LVR_En_Bit            Constant 00000003
+C_Mode                  Constant 0000000C
+C_Normal_Mode           Constant 00000000
+C_Num0                  Constant 00000000
+C_Num1                  Constant 00000001
+C_Num2                  Constant 00000002
+C_Num3                  Constant 00000003
+C_Num4                  Constant 00000004
+C_Num5                  Constant 00000005
+C_Num6                  Constant 00000006
+C_Num7                  Constant 00000007
+C_PA_Data               Constant 000000FF
+C_PA_Input              Constant 000000FF
+C_PA_Output             Constant 00000000
+C_PA_PHB                Constant 000000FF
+C_PA_PLB                Constant 0000000F
+C_PA_Wakeup             Constant 000000FF
+C_PA0_Data              Constant 00000001
+C_PA0_Input             Constant 00000001
+C_PA0_Output            Constant 00000000
+C_PA0_PHB               Constant 00000001
+C_PA0_PLB               Constant 00000001
+C_PA0_Wakeup            Constant 00000001
+C_PA1_Data              Constant 00000002
+C_PA1_Input             Constant 00000002
+C_PA1_Output            Constant 00000000
+C_PA1_PHB               Constant 00000002
+C_PA1_PLB               Constant 00000002
+C_PA1_Wakeup            Constant 00000002
+C_PA2_Data              Constant 00000004
+C_PA2_Input             Constant 00000004
+C_PA2_Output            Constant 00000000
+C_PA2_PHB               Constant 00000004
+C_PA2_PLB               Constant 00000004
+C_PA2_Wakeup            Constant 00000004
+C_PA3_Data              Constant 00000008
+C_PA3_Input             Constant 00000008
+C_PA3_Output            Constant 00000000
+C_PA3_PHB               Constant 00000008
+C_PA3_PLB               Constant 00000008
+C_PA3_Wakeup            Constant 00000008
+C_PA4_Data              Constant 00000010
+C_PA4_Input             Constant 00000010
+C_PA4_Output            Constant 00000000
+C_PA4_PHB               Constant 00000010
+C_PA4_Wakeup            Constant 00000010
+C_PA5_Data              Constant 00000020
+C_PA5_Input             Constant 00000020
+C_PA5_Output            Constant 00000000
+C_PA5_PLB               Constant 00000020
+C_PA5_Wakeup            Constant 00000020
+C_PA6_Data              Constant 00000040
+C_PA6_Input             Constant 00000040
+C_PA6_Output            Constant 00000000
+C_PA6_PHB               Constant 00000040
+C_PA6_Wakeup            Constant 00000040
+C_PA7_Data              Constant 00000080
+C_PA7_Input             Constant 00000080
+C_PA7_Output            Constant 00000000
+C_PA7_PHB               Constant 00000080
+C_PA7_Wakeup            Constant 00000080
+C_PB_Data               Constant 0000003F
+C_PB_Input              Constant 0000003F
+C_PB_OD                 Constant 0000003F
+C_PB_Output             Constant 00000000
+C_PB_PHB                Constant 0000003F
+C_PB_PLB                Constant 000000F0
+C_PB_Wakeup             Constant 0000003F
+C_PB0_Data              Constant 00000001
+C_PB0_Input             Constant 00000001
+C_PB0_OD                Constant 00000001
+C_PB0_Output            Constant 00000000
+C_PB0_PHB               Constant 00000001
+C_PB0_PLB               Constant 00000010
+C_PB0_Wakeup            Constant 00000001
+C_PB1_Data              Constant 00000002
+C_PB1_Input             Constant 00000002
+C_PB1_OD                Constant 00000002
+C_PB1_Output            Constant 00000000
+C_PB1_PHB               Constant 00000002
+C_PB1_PLB               Constant 00000020
+C_PB1_Wakeup            Constant 00000002
+C_PB2_Data              Constant 00000004
+C_PB2_Input             Constant 00000004
+C_PB2_OD                Constant 00000004
+C_PB2_Output            Constant 00000000
+C_PB2_PHB               Constant 00000004
+C_PB2_PLB               Constant 00000040
+C_PB2_Wakeup            Constant 00000004
+C_PB3_Data              Constant 00000008
+C_PB3_Input             Constant 00000008
+C_PB3_OD                Constant 00000008
+C_PB3_Output            Constant 00000000
+C_PB3_PHB               Constant 00000008
+C_PB3_PLB               Constant 00000080
+C_PB3_Wakeup            Constant 00000008
+C_PB4_Data              Constant 00000010
+C_PB4_Input             Constant 00000010
+C_PB4_OD                Constant 00000010
+C_PB4_Output            Constant 00000000
+C_PB4_PHB               Constant 00000010
+C_PB4_Wakeup            Constant 00000010
+C_PB5_Data              Constant 00000020
+C_PB5_Input             Constant 00000020
+C_PB5_OD                Constant 00000020
+C_PB5_Output            Constant 00000000
+C_PB5_PHB               Constant 00000020
+C_PB5_Wakeup            Constant 00000020
+C_PCHigh_Data           Constant 00000007
+C_PCLow_Data            Constant 000000FF
+C_PS0_Cnt               Constant 000000FF
+C_PS0_Div               Constant 00000007
+C_PS0_Div128            Constant 00000006
+C_PS0_Div16             Constant 00000003
+C_PS0_Div2              Constant 00000000
+C_PS0_Div256            Constant 00000007
+C_PS0_Div32             Constant 00000004
+C_PS0_Div4              Constant 00000001
+C_PS0_Div64             Constant 00000005
+C_PS0_Div8              Constant 00000002
+C_PS0_TMR0              Constant 00000000
+C_PS0_WDT               Constant 00000008
+C_PS1_Cnt               Constant 000000FF
+C_PS1_Dis               Constant 00000008
+C_PS1_Div               Constant 00000007
+C_PS1_Div128            Constant 00000006
+C_PS1_Div16             Constant 00000003
+C_PS1_Div2              Constant 00000000
+C_PS1_Div256            Constant 00000007
+C_PS1_Div32             Constant 00000004
+C_PS1_Div4              Constant 00000001
+C_PS1_Div64             Constant 00000005
+C_PS1_Div8              Constant 00000002
+C_PS1_EN                Constant 00000000
+C_PS3_Cnt               Constant 000000FF
+C_PS3_Dis               Constant 00000008
+C_PS3_Div               Constant 00000007
+C_PS3_Div128            Constant 00000006
+C_PS3_Div16             Constant 00000003
+C_PS3_Div2              Constant 00000000
+C_PS3_Div256            Constant 00000007
+C_PS3_Div32             Constant 00000004
+C_PS3_Div4              Constant 00000001
+C_PS3_Div64             Constant 00000005
+C_PS3_Div8              Constant 00000002
+C_PS3_EN                Constant 00000000
+C_PSEL0_Bit             Constant 00000000
+C_PSEL1_Bit             Constant 00000001
+C_PSEL2_Bit             Constant 00000002
+C_PSEL3_Bit             Constant 00000003
+C_PWM1_Active           Constant 00000040
+C_PWM1_Active_Hi        Constant 00000000
+C_PWM1_Active_Lo        Constant 00000040
+C_PWM1_Duty             Constant 000000FF
+C_PWM1_Duty_b8          Constant 00000001
+C_PWM1_Duty_b8_Bit      Constant 00000000
+C_PWM1_Duty_b9          Constant 00000002
+C_PWM1_Duty_b9_Bit      Constant 00000001
+C_PWM1_En               Constant 00000080
+C_PWM2_Active           Constant 00000040
+C_PWM2_Active_Hi        Constant 00000000
+C_PWM2_Active_Lo        Constant 00000040
+C_PWM2_Duty             Constant 000000FF
+C_PWM2_Duty_b8          Constant 00000004
+C_PWM2_Duty_b8_Bit      Constant 00000002
+C_PWM2_Duty_b9          Constant 00000008
+C_PWM2_Duty_b9_Bit      Constant 00000003
+C_PWM2_En               Constant 00000080
+C_PWM3_Active           Constant 00000040
+C_PWM3_Active_Hi        Constant 00000000
+C_PWM3_Active_Lo        Constant 00000040
+C_PWM3_Duty             Constant 000000FF
+C_PWM3_Duty_b8          Constant 00000001
+C_PWM3_Duty_b8_Bit      Constant 00000000
+C_PWM3_Duty_b9          Constant 00000002
+C_PWM3_Duty_b9_Bit      Constant 00000001
+C_PWM3_En               Constant 00000080
+C_PWM4_Active           Constant 00000040
+C_PWM4_Active_Hi        Constant 00000000
+C_PWM4_Active_Lo        Constant 00000040
+C_PWM4_Duty             Constant 000000FF
+C_PWM4_Duty_b8          Constant 00000004
+C_PWM4_Duty_b8_Bit      Constant 00000002
+C_PWM4_Duty_b9          Constant 00000008
+C_PWM4_Duty_b9_Bit      Constant 00000003
+C_PWM4_En               Constant 00000080
+C_PWM5_Active           Constant 00000040
+C_PWM5_Active_Hi        Constant 00000000
+C_PWM5_Active_Lo        Constant 00000040
+C_PWM5_Duty             Constant 000000FF
+C_PWM5_Duty_b8          Constant 00000001
+C_PWM5_Duty_b8_Bit      Constant 00000000
+C_PWM5_Duty_b9          Constant 00000002
+C_PWM5_Duty_b9_Bit      Constant 00000001
+C_PWM5_En               Constant 00000080
+C_RAM_Bank              Constant 000000C0
+C_RAM_Bank0             Constant 00000000
+C_RAM_Bank1             Constant 00000040
+C_RAM_Bank2             Constant 00000080
+C_RAM_Bank3             Constant 000000C0
+C_RFC_Dis               Constant 00000000
+C_RFC_En                Constant 00000080
+C_RFC_En_Bit            Constant 00000007
+C_RFC_PA0               Constant 00000000
+C_RFC_PA1               Constant 00000001
+C_RFC_PA2               Constant 00000002
+C_RFC_PA3               Constant 00000003
+C_RFC_PA4               Constant 00000004
+C_RFC_PA5               Constant 00000005
+C_RFC_PA6               Constant 00000006
+C_RFC_PA7               Constant 00000007
+C_RFC_PB0               Constant 00000008
+C_RFC_PB1               Constant 00000009
+C_RFC_PB2               Constant 0000000A
+C_RFC_PB3               Constant 0000000B
+C_RFC_PB4               Constant 0000000C
+C_RFC_PB5               Constant 0000000D
+C_SaveToAcc             Constant 00000000
+C_SaveToReg             Constant 00000001
+C_SFR_RAM_Addr          Constant 0000007F
+C_Standby_Mode          Constant 00000008
+C_Status_C              Constant 00000001
+C_Status_C_Bit          Constant 00000000
+C_Status_HalfC          Constant 00000002
+C_Status_HalfC_Bit      Constant 00000001
+C_Status_Slp            Constant 00000008
+C_Status_Slp_Bit        Constant 00000003
+C_Status_WDT            Constant 00000010
+C_Status_WDT_Bit        Constant 00000004
+C_Status_Z              Constant 00000004
+C_Status_Z_Bit          Constant 00000002
+C_TbHigh_Addr           Constant 00000007
+C_TbHigh_Data           Constant 0000003F
+C_TMR0_Clk              Constant 00000020
+C_TMR0_Data             Constant 000000FF
+C_TMR0_Dis              Constant 00000000
+C_TMR0_En               Constant 00000001
+C_TMR0_En_bit           Constant 00000000
+C_TMR0_ExtClk_Edge      Constant 00000010
+C_TMR0_LowClk           Constant 00000080
+C_TMR1_ClkSrc_Ext       Constant 00000020
+C_TMR1_ClkSrc_Inst      Constant 00000000
+C_TMR1_Data             Constant 000000FF
+C_TMR1_Data_b8          Constant 00000010
+C_TMR1_Data_b8_Bit      Constant 00000004
+C_TMR1_Data_b9          Constant 00000020
+C_TMR1_Data_b9_Bit      Constant 00000005
+C_TMR1_Dis              Constant 00000000
+C_TMR1_Dis_PWM2         Constant 00000000
+C_TMR1_En               Constant 00000001
+C_TMR1_En_PWM2          Constant 00000001
+C_TMR1_ExtClk_Edge      Constant 00000010
+C_TMR1_ExtFalling       Constant 00000010
+C_TMR1_ExtRising        Constant 00000000
+C_TMR1_OneShot          Constant 00000004
+C_TMR1_OneShot_PWM2     Constant 00000004
+C_TMR1_Reload           Constant 00000002
+C_TMR1_Reload_PWM2      Constant 00000002
+C_TMR3_ClkSrc_Ext       Constant 00000020
+C_TMR3_ClkSrc_Inst      Constant 00000000
+C_TMR3_Data             Constant 000000FF
+C_TMR3_Data_b8          Constant 00000010
+C_TMR3_Data_b8_Bit      Constant 00000004
+C_TMR3_Data_b9          Constant 00000020
+C_TMR3_Data_b9_Bit      Constant 00000005
+C_TMR3_Dis              Constant 00000000
+C_TMR3_Dis_PWM4         Constant 00000000
+C_TMR3_Dis_PWM5         Constant 00000000
+C_TMR3_En               Constant 00000001
+C_TMR3_En_PWM4          Constant 00000001
+C_TMR3_En_PWM5          Constant 00000001
+C_TMR3_ExtClk_Edge      Constant 00000010
+C_TMR3_ExtFalling       Constant 00000010
+C_TMR3_ExtRising        Constant 00000000
+C_TMR3_OneShot          Constant 00000004
+C_TMR3_OneShot_PWM4     Constant 00000004
+C_TMR3_OneShot_PWM5     Constant 00000004
+C_TMR3_Reload           Constant 00000002
+C_TMR3_Reload_PWM4      Constant 00000002
+C_TMR3_Reload_PWM5      Constant 00000002
+C_WDT_En                Constant 00000080
+C_WDT_En_Bit            Constant 00000007
+CMPCR                   Constant 0000000E
+DAT                     Constant 00000041
+FSR                     Constant 00000004
+INDF                    Constant 00000000
+INTE                    Constant 0000000E
+INTE2                   Constant 0000001F
+INTEDG                  Constant 00000018
+INTF                    Constant 0000000F
+IOSTA                   Constant 00000005
+IOSTB                   Constant 00000006
+IRCR                    Constant 00000006
+LED_TWINKLE_Q           Label    00000000
+LED_TWINKLE_Q_LOOP      Label    00000003
+OSCCR                   Constant 0000000F
+P2CR1                   Constant 0000000A
+P4CR1                   Constant 00000016
+P5CR1                   Constant 0000001B
+PCHBUF                  Constant 0000000A
+PCL                     Constant 00000002
+PCON                    Constant 00000008
+PCON1                   Constant 0000000F
+Pf_CMP_Ctrl             Constant 0000000E
+Pf_PA_Dir_Ctrl          Constant 00000005
+Pf_PB_Dir_Ctrl          Constant 00000006
+Pf_PB_OD_Ctrl           Constant 0000000C
+Pf_PS0_Cnt              Constant 0000000A
+Pf_PWR_Ctrl1            Constant 0000000F
+PORTA                   Constant 00000005
+PORTB                   Constant 00000006
+Pr_EXINT_Ctrl           Constant 00000018
+Pr_File_Sel             Constant 00000004
+Pr_Indir_Addr           Constant 00000000
+Pr_INT_Ctrl             Constant 0000000E
+Pr_INT_Flag             Constant 0000000F
+Pr_INT2_Ctrl            Constant 0000001F
+Pr_PA_Data              Constant 00000005
+Pr_PA_PH_Ctrl           Constant 00000009
+Pr_PA_WakeUp_Ctrl       Constant 00000015
+Pr_PAB_PL_Ctrl          Constant 0000000B
+Pr_PB_Data              Constant 00000006
+Pr_PB_PH_Ctrl           Constant 0000000C
+Pr_PB_WakeUp_Ctrl       Constant 00000009
+Pr_PCHigh_Data          Constant 0000000A
+Pr_PCLow_Data           Constant 00000002
+Pr_PWR_Ctrl             Constant 00000008
+Pr_RFC_Ctrl             Constant 0000001B
+Pr_Status               Constant 00000003
+Pr_TMR_Data_PWM         Constant 00000019
+Pr_TMR0_Data            Constant 00000001
+Pr_TMR34_Data_PWM       Constant 0000001C
+Ps_BZ1_Ctrl             Constant 00000005
+Ps_IR_Ctrl              Constant 00000006
+Ps_PS1_Cnt              Constant 00000004
+Ps_PS3_Cnt              Constant 00000014
+Ps_PWM1_Duty            Constant 00000003
+Ps_PWM2_Ctrl1           Constant 0000000A
+Ps_PWM2_Duty            Constant 0000000C
+Ps_PWM3_Duty            Constant 00000013
+Ps_PWM4_Ctrl1           Constant 00000016
+Ps_PWM4_Duty            Constant 00000018
+Ps_PWM5_Ctrl1           Constant 0000001B
+Ps_PWM5_Data_PWM        Constant 0000001F
+Ps_PWM5_Duty            Constant 0000001D
+Ps_SYS_Ctrl             Constant 0000000F
+Ps_TbHigh_Addr          Constant 00000007
+Ps_TbHigh_Data          Constant 00000008
+Ps_TMR1_Ctrl1           Constant 00000001
+Ps_TMR1_Ctrl2           Constant 00000002
+Ps_TMR1_Data            Constant 00000000
+Ps_TMR3_Ctrl1           Constant 00000011
+Ps_TMR3_Ctrl2           Constant 00000012
+Ps_TMR3_Data            Constant 00000010
+PS0CV                   Constant 0000000A
+PS1CV                   Constant 00000004
+PS3CV                   Constant 00000014
+PWM1DUTY                Constant 00000003
+PWM2DUTY                Constant 0000000C
+PWM3DUTY                Constant 00000013
+PWM4DUTY                Constant 00000018
+PWM5DUTY                Constant 0000001D
+PWM5RH                  Constant 0000001F
+R_TWINKLE_COUNT         Constant 00000040
+RFC                     Constant 0000001B
+STATUS                  Constant 00000003
+T1CR1                   Constant 00000001
+T1CR2                   Constant 00000002
+T3CR1                   Constant 00000011
+T3CR2                   Constant 00000012
+TBHD                    Constant 00000008
+TBHP                    Constant 00000007
+TM34RH                  Constant 0000001C
+TMR0                    Constant 00000001
+TMR1                    Constant 00000000
+TMR3                    Constant 00000010
+TMRH                    Constant 00000019
+
+
+SOURCE FILE TABLE
+001 Bsp\WS281x_Drive.s
+002 NY8A054D.h
+
+PROCESSOR    = NY8A054D (8 bits)
+PROGRAM ROM  = 0x00000000 - 0x000007FF
+DATA ROM     = 0x00000000 - 0x000007FF
+RESERVED MEM = 0x00000800 - 0x00000810
+SRAM / SFR   = 0x00000000 - 0x00000000

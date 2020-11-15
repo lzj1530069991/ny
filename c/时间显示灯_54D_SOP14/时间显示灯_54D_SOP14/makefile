@@ -1,7 +1,7 @@
 ICBODY       := NY8A054D
 CLIENT_NAME  := 张友航_李总
 CB_FILE      := 时间显示灯_54D_SOP14.cb
-HOST_TOOL    := NYIDE 3.92
+HOST_TOOL    := NYIDE 4.00
 USER_C       := main.c vk1s68c_driver.c 
 LIBS         :=  
 USER_ASM     := 

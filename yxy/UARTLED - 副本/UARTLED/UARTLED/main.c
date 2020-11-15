@@ -48,7 +48,7 @@ void rankNub(char nub);
 __sbit PA3 = PORTA:3;
 #define	NUB1() do{			\
 	PORTAbits.PA3 = 0;		\
-	NOP();					\
+	PORTAbits.PA3 = 0;				\
 	PORTAbits.PA3 = 1;		\
 }							\
 while(0)			
@@ -56,7 +56,7 @@ while(0)
 #define	NUB0() do{			\
 	PORTAbits.PA3 = 0;		\
 	PORTAbits.PA3 = 1;		\
-	NOP();					\
+	PORTAbits.PA3 = 1;		\
 	NOP();					\
 	PORTAbits.PA3 = 0;		\
 }							\
@@ -409,7 +409,8 @@ void setColor(u8t cindex)
 	switch(cindex)
 	{
 		case 0:
-		sendtoLast(COLOR0);
+		if(Rdata1 != 0 || Gdata1 != 0 || Bdata1 != 0)
+			sendtoLast(COLOR0);
 		break;
 			case 1:
 		sendtoLast(COLOR1);

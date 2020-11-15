@@ -1,0 +1,480 @@
+
+                    Nyquest Technology Co., Ltd.
+
+NYASM 2.26
+
+    ADDR  OPCODE/VALUE              LINE   TAG  SOURCE                   STATEMENT    
+
+                                    1-    1     ;--------------------------------------------------------
+                                    1-    2     ; File Created by SDCC : free open source ANSI-C Compiler
+                                    1-    3     ; Version 3.7.1 #0 (MSVC)
+                                    1-    4     ;--------------------------------------------------------
+                                    1-    5     ; NY8A port
+                                    1-    6     ;--------------------------------------------------------
+                                    1-    7     	.file	"user\System_config.c"
+                                    1-    8     	list	p=NY8A054D,c=on
+                                    1-    9     	#include "ny8a054d.inc"
+                                    1-   11     ;--------------------------------------------------------
+                                    1-   12     ; external declarations
+                                    1-   13     ;--------------------------------------------------------
+                                    1-   14     	extern	_KEY_Proess
+                                    1-   15     	extern	_ScanKey_Config
+                                    1-   16     	extern	_ScanKey
+                                    1-   17     	extern	_WS281x_Style_Process
+                                    1-   18     	extern	_WS281x_Style_1
+                                    1-   19     	extern	_WS281x_Style_2
+                                    1-   20     	extern	_WS281x_Style_3
+                                    1-   21     	extern	_WS281x_Style_All
+                                    1-   22     	extern	_WS281x_RGB
+                                    1-   23     	extern	_IR_Decode_Time_Process
+                                    1-   24     	extern	_IR_Decode
+                                    1-   25     	extern	_IR_KEY_Proess
+                                    1-   26     	extern	_User_Style_Breath_Start
+                                    1-   27     	extern	_User_Style_Breath_Process
+                                    1-   28     	extern	_User_Style_Sweep_Start
+                                    1-   29     	extern	_User_Style_Sweep_Process
+                                    1-   30     	extern	_User_Style_Collision_Start
+                                    1-   31     	extern	_User_Style_Collision_Process
+                                    1-   32     	extern	_WS281x_Drive_Write_Byte
+                                    1-   33     	extern	_KEY_GPIO_Init
+                                    1-   34     	extern	_PORTAbits
+                                    1-   35     	extern	_PORTBbits
+                                    1-   36     	extern	_PCONbits
+                                    1-   37     	extern	_BWUCONbits
+                                    1-   38     	extern	_ABPLCONbits
+                                    1-   39     	extern	_BPHCONbits
+                                    1-   40     	extern	_INTEbits
+                                    1-   41     	extern	_INTFbits
+                                    1-   42     	extern	_AWUCONbits
+                                    1-   43     	extern	_INTEDGbits
+                                    1-   44     	extern	_RFCbits
+                                    1-   45     	extern	_INTE2bits
+                                    1-   46     	extern	_K1_struct
+                                    1-   47     	extern	_stylePhase
+                                    1-   48     	extern	_styleIndex
+                                    1-   49     	extern	_styleIndexMax
+                                    1-   50     	extern	_currentStream
+                                    1-   51     	extern	_styleNum
+                                    1-   52     	extern	_styleTime
+                                    1-   53     	extern	_userPhase
+                                    1-   54     	extern	_accColor
+                                    1-   55     	extern	_backdropColor
+                                    1-   56     	extern	_irDeCodeTimeOverFlow
+                                    1-   57     	extern	_irDeCodeDat
+                                    1-   58     	extern	_irDeCodeBitTime
+                                    1-   59     	extern	_irDeCodeBitIndex
+                                    1-   60     	extern	_User_Style_Time_SET
+                                    1-   61     	extern	_INDF
+                                    1-   62     	extern	_TMR0
+                                    1-   63     	extern	_PCL
+                                    1-   64     	extern	_STATUS
+                                    1-   65     	extern	_FSR
+                                    1-   66     	extern	_PORTA
+                                    1-   67     	extern	_PORTB
+                                    1-   68     	extern	_PCON
+                                    1-   69     	extern	_BWUCON
+                                    1-   70     	extern	_PCHBUF
+                                    1-   71     	extern	_ABPLCON
+                                    1-   72     	extern	_BPHCON
+                                    1-   73     	extern	_INTE
+                                    1-   74     	extern	_INTF
+                                    1-   75     	extern	_AWUCON
+                                    1-   76     	extern	_INTEDG
+                                    1-   77     	extern	_TMRH
+                                    1-   78     	extern	_RFC
+                                    1-   79     	extern	_TM34RH
+                                    1-   80     	extern	_INTE2
+                                    1-   81     	extern	_TMR1
+                                    1-   82     	extern	_T1CR1
+                                    1-   83     	extern	_T1CR2
+                                    1-   84     	extern	_PWM1DUTY
+                                    1-   85     	extern	_PS1CV
+                                    1-   86     	extern	_BZ1CR
+                                    1-   87     	extern	_IRCR
+                                    1-   88     	extern	_TBHP
+                                    1-   89     	extern	_TBHD
+                                    1-   90     	extern	_P2CR1
+                                    1-   91     	extern	_PWM2DUTY
+                                    1-   92     	extern	_OSCCR
+                                    1-   93     	extern	_TMR3
+                                    1-   94     	extern	_T3CR1
+                                    1-   95     	extern	_T3CR2
+                                    1-   96     	extern	_PWM3DUTY
+                                    1-   97     	extern	_PS3CV
+                                    1-   98     	extern	_P4CR1
+                                    1-   99     	extern	_PWM4DUTY
+                                    1-  100     	extern	_P5CR1
+                                    1-  101     	extern	_PWM5DUTY
+                                    1-  102     	extern	_PWM5RH
+                                    1-  103     	extern	_IOSTA
+                                    1-  104     	extern	_IOSTB
+                                    1-  105     	extern	_APHCON
+                                    1-  106     	extern	_PS0CV
+                                    1-  107     	extern	_BODCON
+                                    1-  108     	extern	_CMPCR
+                                    1-  109     	extern	_PCON1
+                                    1-  110     	extern	_T0MD
+                                    1-  112     	extern PSAVE
+                                    1-  113     	extern SSAVE
+                                    1-  114     	extern WSAVE
+                                    1-  115     	extern STK12
+                                    1-  116     	extern STK11
+                                    1-  117     	extern STK10
+                                    1-  118     	extern STK09
+                                    1-  119     	extern STK08
+                                    1-  120     	extern STK07
+                                    1-  121     	extern STK06
+                                    1-  122     	extern STK05
+                                    1-  123     	extern STK04
+                                    1-  124     	extern STK03
+                                    1-  125     	extern STK02
+                                    1-  126     	extern STK01
+                                    1-  127     	extern STK00
+                                    1-  128     ;--------------------------------------------------------
+                                    1-  129     ; global declarations
+                                    1-  130     ;--------------------------------------------------------
+                                    1-  131     	extern	_delay
+                                    1-  132     	extern	_INT1_Init
+                                    1-  133     	extern	_Timer3_Init
+                                    1-  134     	extern	_Timer1_Init
+                                    1-  135     	extern	_GPIO_Init
+                                    1-  137     ;--------------------------------------------------------
+                                    1-  138     ; global definitions
+                                    1-  139     ;--------------------------------------------------------
+                                    1-  140     ;--------------------------------------------------------
+                                    1-  141     ; absolute symbol definitions
+                                    1-  142     ;--------------------------------------------------------
+                                    1-  143     ;--------------------------------------------------------
+                                    1-  144     ; compiler-defined variables
+                                    1-  145     ;--------------------------------------------------------
+                                    1-  146     .segment "uninit"
+     0000                           1-  147     r0x1001:
+                                    1-  148     	.res	1
+                                    1-  149     .segment "uninit"
+     0000                           1-  150     r0x1000:
+                                    1-  151     	.res	1
+                                    1-  152     .segment "uninit"
+     0000                           1-  153     r0x1002:
+                                    1-  154     	.res	1
+                                    1-  155     .segment "uninit"
+     0000                           1-  156     r0x1003:
+                                    1-  157     	.res	1
+                                    1-  158     .segment "uninit"
+     0000                           1-  159     r0x1004:
+                                    1-  160     	.res	1
+                                    1-  161     ;--------------------------------------------------------
+                                    1-  162     ; initialized data
+                                    1-  163     ;--------------------------------------------------------
+                                    1-  164     ;--------------------------------------------------------
+                                    1-  165     ; overlayable items in internal ram 
+                                    1-  166     ;--------------------------------------------------------
+                                    1-  167     ;	udata_ovr
+                                    1-  168     ;--------------------------------------------------------
+                                    1-  169     ; code
+                                    1-  170     ;--------------------------------------------------------
+                                    1-  171     ;***
+                                    1-  172     ;  pBlock Stats: dbName = C
+                                    1-  173     ;***
+                                    1-  174     ;has an exit
+                                    1-  175     ;6 compiler assigned registers:
+                                    1-  176     ;   r0x1000
+                                    1-  177     ;   STK00
+                                    1-  178     ;   r0x1001
+                                    1-  179     ;   r0x1002
+                                    1-  180     ;   r0x1003
+                                    1-  181     ;   r0x1004
+                                    1-  182     ;; Starting pCode block
+                                    1-  183     .segment "code"; module=System_config, function=_delay
+                                    1-  185     ;local variable name mapping:
+     0000                           1-  190     _delay:
+                                    1-  191     ; 2 exit points
+                                    1-  192     	.line	57, "user\System_config.c"; 	void delay(int count)
+                                    1-  193     	BANKSEL	r0x1000
+     0000 00rr                      1-  194     	MOVAR	r0x1000
+     0001 01rr                      1-  195     	MOVR	STK00,W
+                                    1-  196     	BANKSEL	r0x1001
+     0002 00rr                      1-  197     	MOVAR	r0x1001
+                                    1-  198     	.line	60, "user\System_config.c"; 	for(i=1;i<=count;i++)
+     0003 2101                      1-  199     	MOVIA	0x01
+                                    1-  200     	BANKSEL	r0x1002
+     0004 00rr                      1-  201     	MOVAR	r0x1002
+                                    1-  202     	BANKSEL	r0x1003
+     0005 02rr                      1-  203     	CLRR	r0x1003
+     0006                           1-  204     _00123_DS_:
+                                    1-  205     	BANKSEL	r0x1000
+     0006 01rr                      1-  206     	MOVR	r0x1000,W
+     0007 2580                      1-  207     	ADDIA	0x80
+                                    1-  208     	BANKSEL	r0x1004
+     0008 00rr                      1-  209     	MOVAR	r0x1004
+                                    1-  210     	BANKSEL	r0x1003
+     0009 01rr                      1-  211     	MOVR	r0x1003,W
+     000A 2580                      1-  212     	ADDIA	0x80
+                                    1-  213     	BANKSEL	r0x1004
+     000B 04rr                      1-  214     	SUBAR	r0x1004,W
+     000C 0903                      1-  215     	BTRSS	STATUS,2
+     000D 3rrr                      1-  216     	LGOTO	_00134_DS_
+                                    1-  217     	BANKSEL	r0x1002
+     000E 01rr                      1-  218     	MOVR	r0x1002,W
+                                    1-  219     	BANKSEL	r0x1001
+     000F 04rr                      1-  220     	SUBAR	r0x1001,W
+     0010                           1-  221     _00134_DS_:
+     0010 0803                      1-  222     	BTRSS	STATUS,0
+     0011 3rrr                      1-  223     	LGOTO	_00125_DS_
+                                    1-  224     	BANKSEL	r0x1002
+     0012 05rr                      1-  225     	INCR	r0x1002,F
+     0013 0903                      1-  226     	BTRSS	STATUS,2
+     0014 3rrr                      1-  227     	LGOTO	_00001_DS_
+                                    1-  228     	BANKSEL	r0x1003
+     0015 05rr                      1-  229     	INCR	r0x1003,F
+     0016                           1-  230     _00001_DS_:
+     0016 3rrr                      1-  231     	LGOTO	_00123_DS_
+     0017                           1-  232     _00125_DS_:
+                                    1-  233     	.line	62, "user\System_config.c"; 	}
+                                    1-  234     	RETURN	
+     0017 0010                      3-   26 m1      ret
+                                    1-  235     ; exit point of _delay
+                                    1-  237     ;***
+                                    1-  238     ;  pBlock Stats: dbName = C
+                                    1-  239     ;***
+                                    1-  240     ;has an exit
+                                    1-  241     ;; Starting pCode block
+                                    1-  242     .segment "code"; module=System_config, function=_INT1_Init
+     0000                           1-  244     _INT1_Init:
+                                    1-  245     ; 2 exit points
+                                    1-  246     	.line	50, "user\System_config.c"; 	INTEDG = 0x28;
+     0000 2128                      1-  247     	MOVIA	0x28
+     0001 00rr                      1-  248     	MOVAR	_INTEDG
+                                    1-  249     	.line	51, "user\System_config.c"; 	INTE |= (1 << 7);
+     0002 1Brr                      1-  250     	BSR	_INTE,7
+                                    1-  251     	.line	55, "user\System_config.c"; 	}
+                                    1-  252     	RETURN	
+     0003 0010                      3-   26 m1      ret
+                                    1-  253     ; exit point of _INT1_Init
+                                    1-  255     ;***
+                                    1-  256     ;  pBlock Stats: dbName = C
+                                    1-  257     ;***
+                                    1-  258     ;has an exit
+                                    1-  259     ;; Starting pCode block
+                                    1-  260     .segment "code"; module=System_config, function=_Timer3_Init
+     0000                           1-  262     _Timer3_Init:
+                                    1-  263     ; 2 exit points
+                                    1-  264     	.line	35, "user\System_config.c"; 	TM34RH = ((1024-899)/256) << 4;
+     0000 02rr                      1-  265     	CLRR	_TM34RH
+                                    1-  266     	.line	36, "user\System_config.c"; 	TMR3 = (1024-899)%256;
+     0001 217D                      1-  267     	MOVIA	0x7d
+     0002 00rr                      1-  268     	SFUN	_TMR3
+                                    1-  269     	.line	37, "user\System_config.c"; 	T3CR1 = C_TMR3_Reload | C_TMR3_En;
+     0003 2103                      1-  270     	MOVIA	0x03
+     0004 00rr                      1-  271     	SFUN	_T3CR1
+                                    1-  272     	.line	38, "user\System_config.c"; 	T3CR2 = C_TMR3_ClkSrc_Inst | C_PS1_Div8;
+     0005 2102                      1-  273     	MOVIA	0x02
+     0006 00rr                      1-  274     	SFUN	_T3CR2
+                                    1-  275     	.line	40, "user\System_config.c"; 	INTE2 = C_INE_TMR3;							// 使能定时器3中断
+     0007 2101                      1-  276     	MOVIA	0x01
+     0008 00rr                      1-  277     	MOVAR	_INTE2
+                                    1-  278     	.line	41, "user\System_config.c"; 	}
+                                    1-  279     	RETURN	
+     0009 0010                      3-   26 m1      ret
+                                    1-  280     ; exit point of _Timer3_Init
+                                    1-  282     ;***
+                                    1-  283     ;  pBlock Stats: dbName = C
+                                    1-  284     ;***
+                                    1-  285     ;has an exit
+                                    1-  286     ;; Starting pCode block
+                                    1-  287     .segment "code"; module=System_config, function=_Timer1_Init
+     0000                           1-  289     _Timer1_Init:
+                                    1-  290     ; 2 exit points
+                                    1-  291     	.line	19, "user\System_config.c"; 	TMRH = ((1024-399)/256) << 4;
+     0000 2120                      1-  292     	MOVIA	0x20
+     0001 00rr                      1-  293     	MOVAR	_TMRH
+                                    1-  294     	.line	20, "user\System_config.c"; 	TMR1 = (1024-399)%256;
+     0002 2171                      1-  295     	MOVIA	0x71
+     0003 00rr                      1-  296     	SFUN	_TMR1
+                                    1-  297     	.line	21, "user\System_config.c"; 	T1CR1 = C_TMR1_Reload | C_TMR1_En;			// 使能定时器1 使能自动重载
+     0004 2103                      1-  298     	MOVIA	0x03
+     0005 00rr                      1-  299     	SFUN	_T1CR1
+                                    1-  300     	.line	22, "user\System_config.c"; 	T1CR2 = C_TMR1_ClkSrc_Inst | C_PS1_Div16;	// 使能定时器1预分频系数16，时钟源：指令时钟
+     0006 00rr                      1-  301     	SFUN	_T1CR2
+                                    1-  302     	.line	25, "user\System_config.c"; 	INTE |= (1 << 3);
+     0007 19rr                      1-  303     	BSR	_INTE,3
+                                    1-  304     	.line	28, "user\System_config.c"; 	}
+                                    1-  305     	RETURN	
+     0008 0010                      3-   26 m1      ret
+                                    1-  306     ; exit point of _Timer1_Init
+                                    1-  308     ;***
+                                    1-  309     ;  pBlock Stats: dbName = C
+                                    1-  310     ;***
+                                    1-  311     ;has an exit
+                                    1-  312     ;; Starting pCode block
+                                    1-  313     .segment "code"; module=System_config, function=_GPIO_Init
+     0000                           1-  315     _GPIO_Init:
+                                    1-  316     ; 2 exit points
+                                    1-  317     	.line	9, "user\System_config.c"; 	IOSTA = C_PA5_Output | C_PA2_Input | C_PA7_Input;	// PA3 Input Mode PA2 PA5 Output Mode
+     0000 2184                      1-  318     	MOVIA	0x84
+     0001 000r                      1-  319     	IOST	_IOSTA
+                                    1-  320     	.line	10, "user\System_config.c"; 	APHCON = (uint8_t)~(C_PA7_PHB | C_PA2_PHB);
+     0002 217B                      1-  321     	MOVIA	0x7b
+     0003 000r                      1-  322     	IOST	_APHCON
+                                    1-  323     	.line	12, "user\System_config.c"; 	PORTAbits.PA5 = 0;
+     0004 1Err                      1-  324     	BCR	_PORTAbits,5
+                                    1-  325     	.line	13, "user\System_config.c"; 	}
+                                    1-  326     	RETURN	
+     0005 0010                      3-   26 m1      ret
+                                    1-  327     ; exit point of _GPIO_Init
+                                    1-  330     ;	code size estimation:
+                                    1-  331     ;	   53+   12 =    65 instructions (  154 byte)
+                                    1-  333     	end
+                                    1-  333     	end
+
+SYMBOL TABLE            TYPE     VALUE
+__CHECKSUM_ADDR__       Label    00000000
+__PIN_COUNT__           Constant 0000000E
+__PROCESSOR__           Constant 00800543
+_00001_DS_              Label    00000016
+_00123_DS_              Label    00000006
+_00125_DS_              Label    00000017
+_00134_DS_              Label    00000010
+_ABPLCON                Label    00000000
+_ABPLCONbits            Label    00000000
+_accColor               Label    00000000
+_APHCON                 Label    00000000
+_AWUCON                 Label    00000000
+_AWUCONbits             Label    00000000
+_backdropColor          Label    00000000
+_BODCON                 Label    00000000
+_BPHCON                 Label    00000000
+_BPHCONbits             Label    00000000
+_BWUCON                 Label    00000000
+_BWUCONbits             Label    00000000
+_BZ1CR                  Label    00000000
+_CMPCR                  Label    00000000
+_currentStream          Label    00000000
+_delay                  Label    00000000
+_FSR                    Label    00000000
+_GPIO_Init              Label    00000000
+_INDF                   Label    00000000
+_INT1_Init              Label    00000000
+_INTE                   Label    00000000
+_INTE2                  Label    00000000
+_INTE2bits              Label    00000000
+_INTEbits               Label    00000000
+_INTEDG                 Label    00000000
+_INTEDGbits             Label    00000000
+_INTF                   Label    00000000
+_INTFbits               Label    00000000
+_IOSTA                  Label    00000000
+_IOSTB                  Label    00000000
+_IR_Decode              Label    00000000
+_IR_Decode_Time_Process Label    00000000
+_IR_KEY_Proess          Label    00000000
+_IRCR                   Label    00000000
+_irDeCodeBitIndex       Label    00000000
+_irDeCodeBitTime        Label    00000000
+_irDeCodeDat            Label    00000000
+_irDeCodeTimeOverFlow   Label    00000000
+_K1_struct              Label    00000000
+_KEY_GPIO_Init          Label    00000000
+_KEY_Proess             Label    00000000
+_OSCCR                  Label    00000000
+_P2CR1                  Label    00000000
+_P4CR1                  Label    00000000
+_P5CR1                  Label    00000000
+_PCHBUF                 Label    00000000
+_PCL                    Label    00000000
+_PCON                   Label    00000000
+_PCON1                  Label    00000000
+_PCONbits               Label    00000000
+_PORTA                  Label    00000000
+_PORTAbits              Label    00000000
+_PORTB                  Label    00000000
+_PORTBbits              Label    00000000
+_PS0CV                  Label    00000000
+_PS1CV                  Label    00000000
+_PS3CV                  Label    00000000
+_PWM1DUTY               Label    00000000
+_PWM2DUTY               Label    00000000
+_PWM3DUTY               Label    00000000
+_PWM4DUTY               Label    00000000
+_PWM5DUTY               Label    00000000
+_PWM5RH                 Label    00000000
+_RFC                    Label    00000000
+_RFCbits                Label    00000000
+_ScanKey                Label    00000000
+_ScanKey_Config         Label    00000000
+_STATUS                 Label    00000000
+_styleIndex             Label    00000000
+_styleIndexMax          Label    00000000
+_styleNum               Label    00000000
+_stylePhase             Label    00000000
+_styleTime              Label    00000000
+_T0MD                   Label    00000000
+_T1CR1                  Label    00000000
+_T1CR2                  Label    00000000
+_T3CR1                  Label    00000000
+_T3CR2                  Label    00000000
+_TBHD                   Label    00000000
+_TBHP                   Label    00000000
+_Timer1_Init            Label    00000000
+_Timer3_Init            Label    00000000
+_TM34RH                 Label    00000000
+_TMR0                   Label    00000000
+_TMR1                   Label    00000000
+_TMR3                   Label    00000000
+_TMRH                   Label    00000000
+_User_Style_Breath_Process Label    00000000
+_User_Style_Breath_Start Label    00000000
+_User_Style_Collision_Process Label    00000000
+_User_Style_Collision_Start Label    00000000
+_User_Style_Sweep_Process Label    00000000
+_User_Style_Sweep_Start Label    00000000
+_User_Style_Time_SET    Label    00000000
+_userPhase              Label    00000000
+_WS281x_Drive_Write_Byte Label    00000000
+_WS281x_RGB             Label    00000000
+_WS281x_Style_1         Label    00000000
+_WS281x_Style_2         Label    00000000
+_WS281x_Style_3         Label    00000000
+_WS281x_Style_All       Label    00000000
+_WS281x_Style_Process   Label    00000000
+ENABLE_RAM_BANK         Variable 00000000
+F                       Constant 00000001
+FSR                     Constant 00000004
+INDF                    Constant 00000000
+PCHBUF                  Constant 0000000A
+PCL                     Constant 00000002
+PSAVE                   Label    00000000
+r0x1000                 Label    00000000
+r0x1001                 Label    00000000
+r0x1002                 Label    00000000
+r0x1003                 Label    00000000
+r0x1004                 Label    00000000
+SSAVE                   Label    00000000
+STATUS                  Constant 00000003
+STK00                   Label    00000000
+STK01                   Label    00000000
+STK02                   Label    00000000
+STK03                   Label    00000000
+STK04                   Label    00000000
+STK05                   Label    00000000
+STK06                   Label    00000000
+STK07                   Label    00000000
+STK08                   Label    00000000
+STK09                   Label    00000000
+STK10                   Label    00000000
+STK11                   Label    00000000
+STK12                   Label    00000000
+W                       Constant 00000000
+WSAVE                   Label    00000000
+
+
+SOURCE FILE TABLE
+001 user\System_config.s
+002 ny8a054d.inc
+003 common.inc
+004 user\System_config.c
+
+PROCESSOR    = NY8A054D (8 bits)
+PROGRAM ROM  = 0x00000000 - 0x000007FF
+DATA ROM     = 0x00000000 - 0x000007FF
+RESERVED MEM = 0x00000800 - 0x00000810
+SRAM / SFR   = 0x00000000 - 0x00000000

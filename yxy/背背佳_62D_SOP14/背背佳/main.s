@@ -1180,19 +1180,19 @@ _00002_DS_:
 	MOVIA	0x0f
 	ANDAR	(_hz + 1),F
 ;;swapping arguments (AOP_TYPEs 1/3)
-;;unsigned compare: left >= lit (0x91=145), size=2
-	.line	378, "main.c"; 	if(hz > 0x090 && hz < 0xF70)
-	MOVIA	0x00
+;;unsigned compare: left >= lit (0x181=385), size=2
+	.line	378, "main.c"; 	if(hz > 0x180 && hz < 0xE70)
+	MOVIA	0x01
 	SUBAR	(_hz + 1),W
 	BTRSS	STATUS,2
 	LGOTO	_00558_DS_
-	MOVIA	0x91
+	MOVIA	0x81
 	SUBAR	_hz,W
 _00558_DS_:
 	BTRSS	STATUS,0
 	LGOTO	_00514_DS_
-;;unsigned compare: left < lit (0xF70=3952), size=2
-	MOVIA	0x0f
+;;unsigned compare: left < lit (0xE70=3696), size=2
+	MOVIA	0x0e
 	BANKSEL	_hz
 	SUBAR	(_hz + 1),W
 	BTRSS	STATUS,2
@@ -2299,12 +2299,6 @@ _00252_DS_:
 	.line	276, "main.c"; 	MOTOR = 0;
 	BANKSEL	_PORTA
 	BCR	_PORTA,2
-	.line	277, "main.c"; 	rockStep = 0;
-	BANKSEL	_rockStep
-	CLRR	_rockStep
-	.line	278, "main.c"; 	rockTime = 0;
-	BANKSEL	_rockTime
-	CLRR	_rockTime
 	.line	279, "main.c"; 	workTime = 0;
 	BANKSEL	_workTime
 	CLRR	_workTime
@@ -2316,6 +2310,6 @@ _00325_DS_:
 
 
 ;	code size estimation:
-;	  941+  259 =  1200 instructions ( 2918 byte)
+;	  939+  257 =  1196 instructions ( 2906 byte)
 
 	end

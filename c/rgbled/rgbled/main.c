@@ -81,7 +81,6 @@ u8t	Bdata1 = 0x00;
 #define DUTYMAX  20	
 u8t duty = 20;
 
-
 __sbit R7 = Rdata:7;
 __sbit R6 = Rdata:6;
 __sbit R5 = Rdata:5;

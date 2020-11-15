@@ -1,0 +1,684 @@
+
+                    Nyquest Technology Co., Ltd.
+
+NYASM 2.26
+
+    ADDR  OPCODE/VALUE              LINE   TAG  SOURCE                   STATEMENT    
+
+                                    1-    1     ;--------------------------------------------------------
+                                    1-    2     ; File Created by SDCC : free open source ANSI-C Compiler
+                                    1-    3     ; Version 3.7.1 #0 (MSVC)
+                                    1-    4     ;--------------------------------------------------------
+                                    1-    5     ; NY8A port
+                                    1-    6     ;--------------------------------------------------------
+                                    1-    7     	.file	"Hardware\IR_Decode.c"
+                                    1-    8     	list	p=NY8A054D,c=on
+                                    1-    9     	#include "ny8a054d.inc"
+                                    1-   11     ;--------------------------------------------------------
+                                    1-   12     ; external declarations
+                                    1-   13     ;--------------------------------------------------------
+                                    1-   14     	extern	_KEY_Proess
+                                    1-   15     	extern	_ScanKey_Config
+                                    1-   16     	extern	_ScanKey
+                                    1-   17     	extern	_WS281x_Style_Process
+                                    1-   18     	extern	_WS281x_Style_1
+                                    1-   19     	extern	_WS281x_Style_2
+                                    1-   20     	extern	_WS281x_Style_3
+                                    1-   21     	extern	_WS281x_Style_All
+                                    1-   22     	extern	_WS281x_RGB
+                                    1-   23     	extern	_User_Style_Breath_Start
+                                    1-   24     	extern	_User_Style_Breath_Process
+                                    1-   25     	extern	_User_Style_Sweep_Start
+                                    1-   26     	extern	_User_Style_Sweep_Process
+                                    1-   27     	extern	_User_Style_Collision_Start
+                                    1-   28     	extern	_User_Style_Collision_Process
+                                    1-   29     	extern	_WS281x_Drive_Write_Byte
+                                    1-   30     	extern	_GPIO_Init
+                                    1-   31     	extern	_KEY_GPIO_Init
+                                    1-   32     	extern	_Timer1_Init
+                                    1-   33     	extern	_Timer3_Init
+                                    1-   34     	extern	_INT1_Init
+                                    1-   35     	extern	_delay
+                                    1-   36     	extern	_PORTAbits
+                                    1-   37     	extern	_PORTBbits
+                                    1-   38     	extern	_PCONbits
+                                    1-   39     	extern	_BWUCONbits
+                                    1-   40     	extern	_ABPLCONbits
+                                    1-   41     	extern	_BPHCONbits
+                                    1-   42     	extern	_INTEbits
+                                    1-   43     	extern	_INTFbits
+                                    1-   44     	extern	_AWUCONbits
+                                    1-   45     	extern	_INTEDGbits
+                                    1-   46     	extern	_RFCbits
+                                    1-   47     	extern	_INTE2bits
+                                    1-   48     	extern	_K1_struct
+                                    1-   49     	extern	_stylePhase
+                                    1-   50     	extern	_styleIndex
+                                    1-   51     	extern	_styleIndexMax
+                                    1-   52     	extern	_currentStream
+                                    1-   53     	extern	_styleNum
+                                    1-   54     	extern	_styleTime
+                                    1-   55     	extern	_userPhase
+                                    1-   56     	extern	_accColor
+                                    1-   57     	extern	_backdropColor
+                                    1-   58     	extern	_User_Style_Time_SET
+                                    1-   59     	extern	_INDF
+                                    1-   60     	extern	_TMR0
+                                    1-   61     	extern	_PCL
+                                    1-   62     	extern	_STATUS
+                                    1-   63     	extern	_FSR
+                                    1-   64     	extern	_PORTA
+                                    1-   65     	extern	_PORTB
+                                    1-   66     	extern	_PCON
+                                    1-   67     	extern	_BWUCON
+                                    1-   68     	extern	_PCHBUF
+                                    1-   69     	extern	_ABPLCON
+                                    1-   70     	extern	_BPHCON
+                                    1-   71     	extern	_INTE
+                                    1-   72     	extern	_INTF
+                                    1-   73     	extern	_AWUCON
+                                    1-   74     	extern	_INTEDG
+                                    1-   75     	extern	_TMRH
+                                    1-   76     	extern	_RFC
+                                    1-   77     	extern	_TM34RH
+                                    1-   78     	extern	_INTE2
+                                    1-   79     	extern	_TMR1
+                                    1-   80     	extern	_T1CR1
+                                    1-   81     	extern	_T1CR2
+                                    1-   82     	extern	_PWM1DUTY
+                                    1-   83     	extern	_PS1CV
+                                    1-   84     	extern	_BZ1CR
+                                    1-   85     	extern	_IRCR
+                                    1-   86     	extern	_TBHP
+                                    1-   87     	extern	_TBHD
+                                    1-   88     	extern	_P2CR1
+                                    1-   89     	extern	_PWM2DUTY
+                                    1-   90     	extern	_OSCCR
+                                    1-   91     	extern	_TMR3
+                                    1-   92     	extern	_T3CR1
+                                    1-   93     	extern	_T3CR2
+                                    1-   94     	extern	_PWM3DUTY
+                                    1-   95     	extern	_PS3CV
+                                    1-   96     	extern	_P4CR1
+                                    1-   97     	extern	_PWM4DUTY
+                                    1-   98     	extern	_P5CR1
+                                    1-   99     	extern	_PWM5DUTY
+                                    1-  100     	extern	_PWM5RH
+                                    1-  101     	extern	_IOSTA
+                                    1-  102     	extern	_IOSTB
+                                    1-  103     	extern	_APHCON
+                                    1-  104     	extern	_PS0CV
+                                    1-  105     	extern	_BODCON
+                                    1-  106     	extern	_CMPCR
+                                    1-  107     	extern	_PCON1
+                                    1-  108     	extern	_T0MD
+                                    1-  110     	extern PSAVE
+                                    1-  111     	extern SSAVE
+                                    1-  112     	extern WSAVE
+                                    1-  113     	extern STK12
+                                    1-  114     	extern STK11
+                                    1-  115     	extern STK10
+                                    1-  116     	extern STK09
+                                    1-  117     	extern STK08
+                                    1-  118     	extern STK07
+                                    1-  119     	extern STK06
+                                    1-  120     	extern STK05
+                                    1-  121     	extern STK04
+                                    1-  122     	extern STK03
+                                    1-  123     	extern STK02
+                                    1-  124     	extern STK01
+                                    1-  125     	extern STK00
+                                    1-  126     ;--------------------------------------------------------
+                                    1-  127     ; global declarations
+                                    1-  128     ;--------------------------------------------------------
+                                    1-  129     	extern	_IR_Decode
+                                    1-  130     	extern	_IR_KEY_Proess
+                                    1-  131     	extern	_IR_Decode_Time_Process
+                                    1-  132     	extern	_irDeCodeTimeOverFlow
+                                    1-  133     	extern	_irDeCodeDat
+                                    1-  134     	extern	_irDeCodeBitTime
+                                    1-  135     	extern	_irDeCodeBitIndex
+                                    1-  137     ;--------------------------------------------------------
+                                    1-  138     ; global definitions
+                                    1-  139     ;--------------------------------------------------------
+                                    1-  140     ;--------------------------------------------------------
+                                    1-  141     ; absolute symbol definitions
+                                    1-  142     ;--------------------------------------------------------
+                                    1-  143     ;--------------------------------------------------------
+                                    1-  144     ; compiler-defined variables
+                                    1-  145     ;--------------------------------------------------------
+                                    1-  146     .segment "uninit"
+     0000                           1-  147     r0x1007:
+                                    1-  148     	.res	1
+                                    1-  149     .segment "uninit"
+     0000                           1-  150     r0x1006:
+                                    1-  151     	.res	1
+                                    1-  152     ;--------------------------------------------------------
+                                    1-  153     ; initialized data
+                                    1-  154     ;--------------------------------------------------------
+                                    1-  156     .segment "idata"
+     0000                           1-  157     _irDeCodeTimeOverFlow:
+     0000 0000                      1-  158     	dw	0x00
+                                    1-  162     .segment "idata"
+     0000                           1-  163     _irDeCodeDat:
+     0000 0000 0000                 1-  164     	dw	0x00, 0x00
+                                    1-  168     .segment "idata"
+     0000                           1-  169     _irDeCodeBitTime:
+     0000 0000                      1-  170     	dw	0x00
+                                    1-  174     .segment "idata"
+     0000                           1-  175     _irDeCodeBitIndex:
+     0000 0000                      1-  176     	dw	0x00
+                                    1-  179     ;--------------------------------------------------------
+                                    1-  180     ; overlayable items in internal ram 
+                                    1-  181     ;--------------------------------------------------------
+                                    1-  182     ;	udata_ovr
+                                    1-  183     ;--------------------------------------------------------
+                                    1-  184     ; code
+                                    1-  185     ;--------------------------------------------------------
+                                    1-  186     ;***
+                                    1-  187     ;  pBlock Stats: dbName = C
+                                    1-  188     ;***
+                                    1-  189     ;has an exit
+                                    1-  190     ;functions called:
+                                    1-  191     ;   _IR_KEY_Proess
+                                    1-  192     ;   _IR_KEY_Proess
+                                    1-  193     ;1 compiler assigned register :
+                                    1-  194     ;   STK00
+                                    1-  195     ;; Starting pCode block
+                                    1-  196     .segment "code"; module=IR_Decode, function=_IR_Decode
+     0000                           1-  198     _IR_Decode:
+                                    1-  199     ; 2 exit points
+                                    1-  200     	.line	58, "Hardware\IR_Decode.c"; 	if(irDeCodeBitIndex == 0) {
+                                    1-  201     	BANKSEL	_irDeCodeBitIndex
+     0000 01rr                      1-  202     	MOVR	_irDeCodeBitIndex,W
+     0001 0903                      1-  203     	BTRSS	STATUS,2
+     0002 3rrr                      1-  204     	LGOTO	_00153_DS_
+                                    1-  205     	.line	59, "Hardware\IR_Decode.c"; 	irDeCodeBitIndex++;
+     0003 05rr                      1-  206     	INCR	_irDeCodeBitIndex,F
+                                    1-  207     	.line	60, "Hardware\IR_Decode.c"; 	irDeCodeBitTime = 0;
+                                    1-  208     	BANKSEL	_irDeCodeBitTime
+     0004 02rr                      1-  209     	CLRR	_irDeCodeBitTime
+                                    1-  210     	.line	61, "Hardware\IR_Decode.c"; 	irDeCodeTimeOverFlow = _SET_irDecodeTimeOverFlow_;		// 开始计时红外解码时间
+     0005 2196                      1-  211     	MOVIA	0x96
+                                    1-  212     	BANKSEL	_irDeCodeTimeOverFlow
+     0006 00rr                      1-  213     	MOVAR	_irDeCodeTimeOverFlow
+                                    1-  214     	.line	62, "Hardware\IR_Decode.c"; 	INTE2bits.T3IE = 1;										// 打开定时器3中断
+     0007 01rr                      1-  215     	MOVR	(_INTE2bits + 0),W
+     0008 23F1                      1-  216     	IORIA	0xf1
+     0009 00rr                      1-  217     	MOVAR	(_INTE2bits + 0)
+                                    1-  218     	.line	63, "Hardware\IR_Decode.c"; 	return;
+     000A 3rrr                      1-  219     	LGOTO	_00173_DS_
+     000B                           1-  220     _00153_DS_:
+                                    1-  221     	.line	67, "Hardware\IR_Decode.c"; 	if(irDeCodeBitIndex == 1) {
+                                    1-  222     	BANKSEL	_irDeCodeBitIndex
+     000B 01rr                      1-  223     	MOVR	_irDeCodeBitIndex,W
+     000C 2401                      1-  224     	XORIA	0x01
+     000D 0903                      1-  225     	BTRSS	STATUS,2
+     000E 3rrr                      1-  226     	LGOTO	_00159_DS_
+                                    1-  227     ;;unsigned compare: left < lit (0x5A=90), size=1
+                                    1-  228     	.line	68, "Hardware\IR_Decode.c"; 	if((irDeCodeBitTime >= 90) && (irDeCodeBitTime <= 150)) {
+     000F 215A                      1-  229     	MOVIA	0x5a
+                                    1-  230     	BANKSEL	_irDeCodeBitTime
+     0010 04rr                      1-  231     	SUBAR	_irDeCodeBitTime,W
+     0011 0803                      1-  232     	BTRSS	STATUS,0
+     0012 3rrr                      1-  233     	LGOTO	_00155_DS_
+                                    1-  234     ;;swapping arguments (AOP_TYPEs 1/3)
+                                    1-  235     ;;unsigned compare: left >= lit (0x97=151), size=1
+     0013 2197                      1-  236     	MOVIA	0x97
+     0014 04rr                      1-  237     	SUBAR	_irDeCodeBitTime,W
+     0015 0C03                      1-  238     	BTRSC	STATUS,0
+     0016 3rrr                      1-  239     	LGOTO	_00155_DS_
+                                    1-  240     	.line	69, "Hardware\IR_Decode.c"; 	irDeCodeBitTime = 0;
+     0017 02rr                      1-  241     	CLRR	_irDeCodeBitTime
+                                    1-  242     	.line	70, "Hardware\IR_Decode.c"; 	irDeCodeBitIndex++;
+                                    1-  243     	BANKSEL	_irDeCodeBitIndex
+     0018 05rr                      1-  244     	INCR	_irDeCodeBitIndex,F
+                                    1-  245     	.line	71, "Hardware\IR_Decode.c"; 	INTEbits.T1IE = 0;			// 关闭定时器1中断
+     0019 1Drr                      1-  246     	BCR	_INTEbits,3
+                                    1-  247     	.line	72, "Hardware\IR_Decode.c"; 	return;
+     001A 3rrr                      1-  248     	LGOTO	_00173_DS_
+     001B                           1-  249     _00155_DS_:
+                                    1-  250     	.line	74, "Hardware\IR_Decode.c"; 	irDeCodeBitIndex = 0;
+                                    1-  251     	BANKSEL	_irDeCodeBitIndex
+     001B 02rr                      1-  252     	CLRR	_irDeCodeBitIndex
+                                    1-  253     	.line	75, "Hardware\IR_Decode.c"; 	irDeCodeBitTime = 0;
+                                    1-  254     	BANKSEL	_irDeCodeBitTime
+     001C 02rr                      1-  255     	CLRR	_irDeCodeBitTime
+                                    1-  256     ;;unsigned compare: left < lit (0x2=2), size=1
+     001D                           1-  257     _00159_DS_:
+                                    1-  258     	.line	80, "Hardware\IR_Decode.c"; 	if((irDeCodeBitIndex >= 2) && (irDeCodeBitIndex <= 33)) {
+     001D 2102                      1-  259     	MOVIA	0x02
+                                    1-  260     	BANKSEL	_irDeCodeBitIndex
+     001E 04rr                      1-  261     	SUBAR	_irDeCodeBitIndex,W
+     001F 0803                      1-  262     	BTRSS	STATUS,0
+     0020 3rrr                      1-  263     	LGOTO	_00173_DS_
+                                    1-  264     ;;swapping arguments (AOP_TYPEs 1/3)
+                                    1-  265     ;;unsigned compare: left >= lit (0x22=34), size=1
+     0021 2122                      1-  266     	MOVIA	0x22
+     0022 04rr                      1-  267     	SUBAR	_irDeCodeBitIndex,W
+     0023 0C03                      1-  268     	BTRSC	STATUS,0
+     0024 3rrr                      1-  269     	LGOTO	_00173_DS_
+                                    1-  270     ;;unsigned compare: left < lit (0x5=5), size=1
+                                    1-  271     	.line	82, "Hardware\IR_Decode.c"; 	if((irDeCodeBitTime >= 5) && (irDeCodeBitTime <= 20))  {
+     0025 2105                      1-  272     	MOVIA	0x05
+                                    1-  273     	BANKSEL	_irDeCodeBitTime
+     0026 04rr                      1-  274     	SUBAR	_irDeCodeBitTime,W
+     0027 0803                      1-  275     	BTRSS	STATUS,0
+     0028 3rrr                      1-  276     	LGOTO	_00164_DS_
+                                    1-  277     ;;swapping arguments (AOP_TYPEs 1/3)
+                                    1-  278     ;;unsigned compare: left >= lit (0x15=21), size=1
+     0029 2115                      1-  279     	MOVIA	0x15
+     002A 04rr                      1-  280     	SUBAR	_irDeCodeBitTime,W
+     002B 0C03                      1-  281     	BTRSC	STATUS,0
+     002C 3rrr                      1-  282     	LGOTO	_00164_DS_
+                                    1-  283     	.line	83, "Hardware\IR_Decode.c"; 	irDeCodeDat &= ~(1 << 15);
+                                    1-  284     	BANKSEL	(_irDeCodeDat + 1)
+     002D 1Frr                      1-  285     	BCR	(_irDeCodeDat + 1),7
+     002E 3rrr                      1-  286     	LGOTO	_00001_DS_
+                                    1-  287     ;;unsigned compare: left < lit (0x15=21), size=1
+     002F                           1-  288     _00164_DS_:
+                                    1-  289     	.line	85, "Hardware\IR_Decode.c"; 	}else if((irDeCodeBitTime >= 21) && (irDeCodeBitTime <= 30)){
+     002F 2115                      1-  290     	MOVIA	0x15
+                                    1-  291     	BANKSEL	_irDeCodeBitTime
+     0030 04rr                      1-  292     	SUBAR	_irDeCodeBitTime,W
+     0031 0803                      1-  293     	BTRSS	STATUS,0
+     0032 3rrr                      1-  294     	LGOTO	_00001_DS_
+                                    1-  295     ;;swapping arguments (AOP_TYPEs 1/3)
+                                    1-  296     ;;unsigned compare: left >= lit (0x1F=31), size=1
+     0033 211F                      1-  297     	MOVIA	0x1f
+     0034 04rr                      1-  298     	SUBAR	_irDeCodeBitTime,W
+     0035 0C03                      1-  299     	BTRSC	STATUS,0
+     0036 3rrr                      1-  300     	LGOTO	_00001_DS_
+                                    1-  301     	.line	86, "Hardware\IR_Decode.c"; 	irDeCodeDat |= (1 << 15);
+                                    1-  302     	BANKSEL	(_irDeCodeDat + 1)
+     0037 1Brr                      1-  303     	BSR	(_irDeCodeDat + 1),7
+     0038                           1-  304     _00001_DS_:
+                                    1-  305     	.line	88, "Hardware\IR_Decode.c"; 	if(irDeCodeBitIndex == 33) {
+                                    1-  306     	BANKSEL	_irDeCodeBitIndex
+     0038 01rr                      1-  307     	MOVR	_irDeCodeBitIndex,W
+     0039 2421                      1-  308     	XORIA	0x21
+     003A 0903                      1-  309     	BTRSS	STATUS,2
+     003B 3rrr                      1-  310     	LGOTO	_00168_DS_
+                                    1-  311     	.line	89, "Hardware\IR_Decode.c"; 	irDeCodeBitTime = 0;
+                                    1-  312     	BANKSEL	_irDeCodeBitTime
+     003C 02rr                      1-  313     	CLRR	_irDeCodeBitTime
+                                    1-  314     	.line	90, "Hardware\IR_Decode.c"; 	irDeCodeBitIndex = 0;
+                                    1-  315     	BANKSEL	_irDeCodeBitIndex
+     003D 02rr                      1-  316     	CLRR	_irDeCodeBitIndex
+                                    1-  317     	.line	91, "Hardware\IR_Decode.c"; 	IR_KEY_Proess(irDeCodeDat);
+                                    1-  318     	BANKSEL	_irDeCodeDat
+     003E 01rr                      1-  319     	MOVR	_irDeCodeDat,W
+     003F 00rr                      1-  320     	MOVAR	STK00
+     0040 01rr                      1-  321     	MOVR	(_irDeCodeDat + 1),W
+     0041 2rrr                      1-  322     	LCALL	_IR_KEY_Proess
+                                    1-  323     	.line	92, "Hardware\IR_Decode.c"; 	irDeCodeDat = 0;			// 红外解码数据清零
+                                    1-  324     	BANKSEL	_irDeCodeDat
+     0042 02rr                      1-  325     	CLRR	_irDeCodeDat
+     0043 02rr                      1-  326     	CLRR	(_irDeCodeDat + 1)
+                                    1-  327     	.line	93, "Hardware\IR_Decode.c"; 	INTEbits.T1IE = 1;			// 解码成功，打开定时器1中断
+     0044 19rr                      1-  328     	BSR	_INTEbits,3
+                                    1-  329     	.line	94, "Hardware\IR_Decode.c"; 	INTE2bits.T3IE = 0;			// 关闭定时器3中断
+     0045 01rr                      1-  330     	MOVR	(_INTE2bits + 0),W
+     0046 22FE                      1-  331     	ANDIA	0xfe
+     0047 23F0                      1-  332     	IORIA	0xf0
+     0048 00rr                      1-  333     	MOVAR	(_INTE2bits + 0)
+     0049 3rrr                      1-  334     	LGOTO	_00173_DS_
+     004A                           1-  335     _00168_DS_:
+                                    1-  336     	.line	96, "Hardware\IR_Decode.c"; 	irDeCodeBitTime = 0;
+                                    1-  337     	BANKSEL	_irDeCodeBitTime
+     004A 02rr                      1-  338     	CLRR	_irDeCodeBitTime
+                                    1-  339     	.line	97, "Hardware\IR_Decode.c"; 	irDeCodeBitIndex++;
+                                    1-  340     	BANKSEL	_irDeCodeBitIndex
+     004B 05rr                      1-  341     	INCR	_irDeCodeBitIndex,F
+                                    1-  342     ;;shiftRight_Left2ResultLit:5589: shCount=1, size=2, sign=0, same=1, offr=0
+                                    1-  343     	.line	98, "Hardware\IR_Decode.c"; 	irDeCodeDat >>= 1;
+     004C 1C03                      1-  344     	BCR	STATUS,0
+                                    1-  345     	BANKSEL	_irDeCodeDat
+     004D 13rr                      1-  346     	RRR	(_irDeCodeDat + 1),F
+     004E 13rr                      1-  347     	RRR	_irDeCodeDat,F
+     004F                           1-  348     _00173_DS_:
+                                    1-  349     	.line	102, "Hardware\IR_Decode.c"; 	}
+                                    1-  350     	RETURN	
+     004F 0010                      3-   26 m1      ret
+                                    1-  351     ; exit point of _IR_Decode
+                                    1-  353     ;***
+                                    1-  354     ;  pBlock Stats: dbName = C
+                                    1-  355     ;***
+                                    1-  356     ;has an exit
+                                    1-  357     ;functions called:
+                                    1-  358     ;   _User_Style_Collision_Start
+                                    1-  359     ;   _User_Style_Sweep_Start
+                                    1-  360     ;   _User_Style_Breath_Start
+                                    1-  361     ;   _User_Style_Collision_Start
+                                    1-  362     ;   _User_Style_Sweep_Start
+                                    1-  363     ;   _User_Style_Breath_Start
+                                    1-  364     ;3 compiler assigned registers:
+                                    1-  365     ;   r0x1006
+                                    1-  366     ;   STK00
+                                    1-  367     ;   r0x1007
+                                    1-  368     ;; Starting pCode block
+                                    1-  369     .segment "code"; module=IR_Decode, function=_IR_KEY_Proess
+                                    1-  371     ;local variable name mapping:
+     0000                           1-  374     _IR_KEY_Proess:
+                                    1-  375     ; 2 exit points
+                                    1-  376     	.line	23, "Hardware\IR_Decode.c"; 	void IR_KEY_Proess(uint16_t irdat) {
+                                    1-  377     	BANKSEL	r0x1006
+     0000 00rr                      1-  378     	MOVAR	r0x1006
+     0001 01rr                      1-  379     	MOVR	STK00,W
+                                    1-  380     	BANKSEL	r0x1007
+     0002 00rr                      1-  381     	MOVAR	r0x1007
+                                    1-  382     	.line	25, "Hardware\IR_Decode.c"; 	switch(irdat) {
+     0003 2447                      1-  383     	XORIA	0x47
+     0004 0903                      1-  384     	BTRSS	STATUS,2
+     0005 3rrr                      1-  385     	LGOTO	_00142_DS_
+                                    1-  386     	BANKSEL	r0x1006
+     0006 01rr                      1-  387     	MOVR	r0x1006,W
+     0007 24B8                      1-  388     	XORIA	0xb8
+     0008 0D03                      1-  389     	BTRSC	STATUS,2
+     0009 3rrr                      1-  390     	LGOTO	_00116_DS_
+     000A                           1-  391     _00142_DS_:
+                                    1-  392     	BANKSEL	r0x1007
+     000A 01rr                      1-  393     	MOVR	r0x1007,W
+     000B 2446                      1-  394     	XORIA	0x46
+     000C 0903                      1-  395     	BTRSS	STATUS,2
+     000D 3rrr                      1-  396     	LGOTO	_00143_DS_
+                                    1-  397     	BANKSEL	r0x1006
+     000E 01rr                      1-  398     	MOVR	r0x1006,W
+     000F 24B9                      1-  399     	XORIA	0xb9
+     0010 0D03                      1-  400     	BTRSC	STATUS,2
+     0011 3rrr                      1-  401     	LGOTO	_00115_DS_
+     0012                           1-  402     _00143_DS_:
+                                    1-  403     	BANKSEL	r0x1007
+     0012 01rr                      1-  404     	MOVR	r0x1007,W
+     0013 2445                      1-  405     	XORIA	0x45
+     0014 0903                      1-  406     	BTRSS	STATUS,2
+     0015 3rrr                      1-  407     	LGOTO	_00144_DS_
+                                    1-  408     	BANKSEL	r0x1006
+     0016 01rr                      1-  409     	MOVR	r0x1006,W
+     0017 24BA                      1-  410     	XORIA	0xba
+     0018 0D03                      1-  411     	BTRSC	STATUS,2
+     0019 3rrr                      1-  412     	LGOTO	_00114_DS_
+     001A                           1-  413     _00144_DS_:
+                                    1-  414     	BANKSEL	r0x1007
+     001A 01rr                      1-  415     	MOVR	r0x1007,W
+     001B 2444                      1-  416     	XORIA	0x44
+     001C 0903                      1-  417     	BTRSS	STATUS,2
+     001D 3rrr                      1-  418     	LGOTO	_00145_DS_
+                                    1-  419     	BANKSEL	r0x1006
+     001E 01rr                      1-  420     	MOVR	r0x1006,W
+     001F 24BB                      1-  421     	XORIA	0xbb
+     0020 0D03                      1-  422     	BTRSC	STATUS,2
+     0021 3rrr                      1-  423     	LGOTO	_00117_DS_
+     0022                           1-  424     _00145_DS_:
+                                    1-  425     	BANKSEL	r0x1007
+     0022 01rr                      1-  426     	MOVR	r0x1007,W
+     0023 2443                      1-  427     	XORIA	0x43
+     0024 0903                      1-  428     	BTRSS	STATUS,2
+     0025 3rrr                      1-  429     	LGOTO	_00146_DS_
+                                    1-  430     	BANKSEL	r0x1006
+     0026 01rr                      1-  431     	MOVR	r0x1006,W
+     0027 24BC                      1-  432     	XORIA	0xbc
+     0028 0D03                      1-  433     	BTRSC	STATUS,2
+     0029 3rrr                      1-  434     	LGOTO	_00119_DS_
+     002A                           1-  435     _00146_DS_:
+                                    1-  436     	BANKSEL	r0x1007
+     002A 01rr                      1-  437     	MOVR	r0x1007,W
+     002B 2440                      1-  438     	XORIA	0x40
+     002C 0903                      1-  439     	BTRSS	STATUS,2
+     002D 3rrr                      1-  440     	LGOTO	_00147_DS_
+                                    1-  441     	BANKSEL	r0x1006
+     002E 01rr                      1-  442     	MOVR	r0x1006,W
+     002F 24BF                      1-  443     	XORIA	0xbf
+     0030 0D03                      1-  444     	BTRSC	STATUS,2
+     0031 3rrr                      1-  445     	LGOTO	_00118_DS_
+     0032                           1-  446     _00147_DS_:
+     0032 3rrr                      1-  447     	LGOTO	_00122_DS_
+     0033                           1-  448     _00114_DS_:
+                                    1-  449     	.line	28, "Hardware\IR_Decode.c"; 	styleNum |= (1 << 7);
+     0033 2180                      1-  450     	MOVIA	0x80
+                                    1-  451     	BANKSEL	_styleNum
+     0034 00rr                      1-  452     	MOVAR	_styleNum
+                                    1-  453     	.line	29, "Hardware\IR_Decode.c"; 	} break;
+     0035 3rrr                      1-  454     	LGOTO	_00122_DS_
+     0036                           1-  455     _00115_DS_:
+                                    1-  456     	.line	32, "Hardware\IR_Decode.c"; 	styleNum |= (1 << 7);
+     0036 2181                      1-  457     	MOVIA	0x81
+                                    1-  458     	BANKSEL	_styleNum
+     0037 00rr                      1-  459     	MOVAR	_styleNum
+                                    1-  460     	.line	33, "Hardware\IR_Decode.c"; 	} break;
+     0038 3rrr                      1-  461     	LGOTO	_00122_DS_
+     0039                           1-  462     _00116_DS_:
+                                    1-  463     	.line	37, "Hardware\IR_Decode.c"; 	User_Style_Collision_Start();
+     0039 2rrr                      1-  464     	LCALL	_User_Style_Collision_Start
+                                    1-  465     	.line	38, "Hardware\IR_Decode.c"; 	} break;
+     003A 3rrr                      1-  466     	LGOTO	_00122_DS_
+     003B                           1-  467     _00117_DS_:
+                                    1-  468     	.line	41, "Hardware\IR_Decode.c"; 	styleNum |= (1 << 7);
+     003B 2183                      1-  469     	MOVIA	0x83
+                                    1-  470     	BANKSEL	_styleNum
+     003C 00rr                      1-  471     	MOVAR	_styleNum
+                                    1-  472     	.line	42, "Hardware\IR_Decode.c"; 	} break;
+     003D 3rrr                      1-  473     	LGOTO	_00122_DS_
+     003E                           1-  474     _00118_DS_:
+                                    1-  475     	.line	44, "Hardware\IR_Decode.c"; 	User_Style_Sweep_Start();
+     003E 2rrr                      1-  476     	LCALL	_User_Style_Sweep_Start
+                                    1-  477     	.line	45, "Hardware\IR_Decode.c"; 	} break;
+     003F 3rrr                      1-  478     	LGOTO	_00122_DS_
+     0040                           1-  479     _00119_DS_:
+                                    1-  480     	.line	47, "Hardware\IR_Decode.c"; 	User_Style_Breath_Start();
+     0040 2rrr                      1-  481     	LCALL	_User_Style_Breath_Start
+     0041                           1-  482     _00122_DS_:
+                                    1-  483     	.line	52, "Hardware\IR_Decode.c"; 	}
+                                    1-  484     	RETURN	
+     0041 0010                      3-   26 m1      ret
+                                    1-  485     ; exit point of _IR_KEY_Proess
+                                    1-  487     ;***
+                                    1-  488     ;  pBlock Stats: dbName = C
+                                    1-  489     ;***
+                                    1-  490     ;has an exit
+                                    1-  491     ;; Starting pCode block
+                                    1-  492     .segment "code"; module=IR_Decode, function=_IR_Decode_Time_Process
+     0000                           1-  494     _IR_Decode_Time_Process:
+                                    1-  495     ; 2 exit points
+                                    1-  496     	.line	10, "Hardware\IR_Decode.c"; 	if(irDeCodeTimeOverFlow > 0) {
+                                    1-  497     	BANKSEL	_irDeCodeTimeOverFlow
+     0000 01rr                      1-  498     	MOVR	_irDeCodeTimeOverFlow,W
+     0001 0D03                      1-  499     	BTRSC	STATUS,2
+     0002 3rrr                      1-  500     	LGOTO	_00109_DS_
+                                    1-  501     	.line	11, "Hardware\IR_Decode.c"; 	irDeCodeTimeOverFlow--;
+     0003 17rr                      1-  502     	DECRSZ	_irDeCodeTimeOverFlow,F
+                                    1-  503     	.line	13, "Hardware\IR_Decode.c"; 	if(irDeCodeTimeOverFlow == 0) {
+     0004 3rrr                      1-  504     	LGOTO	_00109_DS_
+                                    1-  505     	.line	14, "Hardware\IR_Decode.c"; 	irDeCodeBitIndex = 0;
+                                    1-  506     	BANKSEL	_irDeCodeBitIndex
+     0005 02rr                      1-  507     	CLRR	_irDeCodeBitIndex
+                                    1-  508     	.line	15, "Hardware\IR_Decode.c"; 	irDeCodeBitTime = 0;
+                                    1-  509     	BANKSEL	_irDeCodeBitTime
+     0006 02rr                      1-  510     	CLRR	_irDeCodeBitTime
+                                    1-  511     	.line	16, "Hardware\IR_Decode.c"; 	irDeCodeDat = 0;
+                                    1-  512     	BANKSEL	_irDeCodeDat
+     0007 02rr                      1-  513     	CLRR	_irDeCodeDat
+     0008 02rr                      1-  514     	CLRR	(_irDeCodeDat + 1)
+                                    1-  515     	.line	17, "Hardware\IR_Decode.c"; 	INTEbits.T1IE = 1;		// 解码超时，打开定时器1中断
+     0009 19rr                      1-  516     	BSR	_INTEbits,3
+                                    1-  517     	.line	18, "Hardware\IR_Decode.c"; 	INTE2bits.T3IE = 0;		// 解码超时，关闭定时器3中断
+     000A 01rr                      1-  518     	MOVR	(_INTE2bits + 0),W
+     000B 22FE                      1-  519     	ANDIA	0xfe
+     000C 23F0                      1-  520     	IORIA	0xf0
+     000D 00rr                      1-  521     	MOVAR	(_INTE2bits + 0)
+     000E                           1-  522     _00109_DS_:
+                                    1-  523     	.line	21, "Hardware\IR_Decode.c"; 	}
+                                    1-  524     	RETURN	
+     000E 0010                      3-   26 m1      ret
+                                    1-  525     ; exit point of _IR_Decode_Time_Process
+                                    1-  528     ;	code size estimation:
+                                    1-  529     ;	  161+   41 =   202 instructions (  486 byte)
+                                    1-  531     	end
+                                    1-  531     	end
+
+SYMBOL TABLE            TYPE     VALUE
+__CHECKSUM_ADDR__       Label    00000000
+__PIN_COUNT__           Constant 0000000E
+__PROCESSOR__           Constant 00800543
+_00001_DS_              Label    00000038
+_00109_DS_              Label    0000000E
+_00114_DS_              Label    00000033
+_00115_DS_              Label    00000036
+_00116_DS_              Label    00000039
+_00117_DS_              Label    0000003B
+_00118_DS_              Label    0000003E
+_00119_DS_              Label    00000040
+_00122_DS_              Label    00000041
+_00142_DS_              Label    0000000A
+_00143_DS_              Label    00000012
+_00144_DS_              Label    0000001A
+_00145_DS_              Label    00000022
+_00146_DS_              Label    0000002A
+_00147_DS_              Label    00000032
+_00153_DS_              Label    0000000B
+_00155_DS_              Label    0000001B
+_00159_DS_              Label    0000001D
+_00164_DS_              Label    0000002F
+_00168_DS_              Label    0000004A
+_00173_DS_              Label    0000004F
+_ABPLCON                Label    00000000
+_ABPLCONbits            Label    00000000
+_accColor               Label    00000000
+_APHCON                 Label    00000000
+_AWUCON                 Label    00000000
+_AWUCONbits             Label    00000000
+_backdropColor          Label    00000000
+_BODCON                 Label    00000000
+_BPHCON                 Label    00000000
+_BPHCONbits             Label    00000000
+_BWUCON                 Label    00000000
+_BWUCONbits             Label    00000000
+_BZ1CR                  Label    00000000
+_CMPCR                  Label    00000000
+_currentStream          Label    00000000
+_delay                  Label    00000000
+_FSR                    Label    00000000
+_GPIO_Init              Label    00000000
+_INDF                   Label    00000000
+_INT1_Init              Label    00000000
+_INTE                   Label    00000000
+_INTE2                  Label    00000000
+_INTE2bits              Label    00000000
+_INTEbits               Label    00000000
+_INTEDG                 Label    00000000
+_INTEDGbits             Label    00000000
+_INTF                   Label    00000000
+_INTFbits               Label    00000000
+_IOSTA                  Label    00000000
+_IOSTB                  Label    00000000
+_IR_Decode              Label    00000000
+_IR_Decode_Time_Process Label    00000000
+_IR_KEY_Proess          Label    00000000
+_IRCR                   Label    00000000
+_irDeCodeBitIndex       Label    00000000
+_irDeCodeBitTime        Label    00000000
+_irDeCodeDat            Label    00000000
+_irDeCodeTimeOverFlow   Label    00000000
+_K1_struct              Label    00000000
+_KEY_GPIO_Init          Label    00000000
+_KEY_Proess             Label    00000000
+_OSCCR                  Label    00000000
+_P2CR1                  Label    00000000
+_P4CR1                  Label    00000000
+_P5CR1                  Label    00000000
+_PCHBUF                 Label    00000000
+_PCL                    Label    00000000
+_PCON                   Label    00000000
+_PCON1                  Label    00000000
+_PCONbits               Label    00000000
+_PORTA                  Label    00000000
+_PORTAbits              Label    00000000
+_PORTB                  Label    00000000
+_PORTBbits              Label    00000000
+_PS0CV                  Label    00000000
+_PS1CV                  Label    00000000
+_PS3CV                  Label    00000000
+_PWM1DUTY               Label    00000000
+_PWM2DUTY               Label    00000000
+_PWM3DUTY               Label    00000000
+_PWM4DUTY               Label    00000000
+_PWM5DUTY               Label    00000000
+_PWM5RH                 Label    00000000
+_RFC                    Label    00000000
+_RFCbits                Label    00000000
+_ScanKey                Label    00000000
+_ScanKey_Config         Label    00000000
+_STATUS                 Label    00000000
+_styleIndex             Label    00000000
+_styleIndexMax          Label    00000000
+_styleNum               Label    00000000
+_stylePhase             Label    00000000
+_styleTime              Label    00000000
+_T0MD                   Label    00000000
+_T1CR1                  Label    00000000
+_T1CR2                  Label    00000000
+_T3CR1                  Label    00000000
+_T3CR2                  Label    00000000
+_TBHD                   Label    00000000
+_TBHP                   Label    00000000
+_Timer1_Init            Label    00000000
+_Timer3_Init            Label    00000000
+_TM34RH                 Label    00000000
+_TMR0                   Label    00000000
+_TMR1                   Label    00000000
+_TMR3                   Label    00000000
+_TMRH                   Label    00000000
+_User_Style_Breath_Process Label    00000000
+_User_Style_Breath_Start Label    00000000
+_User_Style_Collision_Process Label    00000000
+_User_Style_Collision_Start Label    00000000
+_User_Style_Sweep_Process Label    00000000
+_User_Style_Sweep_Start Label    00000000
+_User_Style_Time_SET    Label    00000000
+_userPhase              Label    00000000
+_WS281x_Drive_Write_Byte Label    00000000
+_WS281x_RGB             Label    00000000
+_WS281x_Style_1         Label    00000000
+_WS281x_Style_2         Label    00000000
+_WS281x_Style_3         Label    00000000
+_WS281x_Style_All       Label    00000000
+_WS281x_Style_Process   Label    00000000
+ENABLE_RAM_BANK         Variable 00000000
+F                       Constant 00000001
+FSR                     Constant 00000004
+INDF                    Constant 00000000
+PCHBUF                  Constant 0000000A
+PCL                     Constant 00000002
+PSAVE                   Label    00000000
+r0x1006                 Label    00000000
+r0x1007                 Label    00000000
+SSAVE                   Label    00000000
+STATUS                  Constant 00000003
+STK00                   Label    00000000
+STK01                   Label    00000000
+STK02                   Label    00000000
+STK03                   Label    00000000
+STK04                   Label    00000000
+STK05                   Label    00000000
+STK06                   Label    00000000
+STK07                   Label    00000000
+STK08                   Label    00000000
+STK09                   Label    00000000
+STK10                   Label    00000000
+STK11                   Label    00000000
+STK12                   Label    00000000
+W                       Constant 00000000
+WSAVE                   Label    00000000
+
+
+SOURCE FILE TABLE
+001 Hardware\IR_Decode.s
+002 ny8a054d.inc
+003 common.inc
+004 Hardware\IR_Decode.c
+
+PROCESSOR    = NY8A054D (8 bits)
+PROGRAM ROM  = 0x00000000 - 0x000007FF
+DATA ROM     = 0x00000000 - 0x000007FF
+RESERVED MEM = 0x00000800 - 0x00000810
+SRAM / SFR   = 0x00000000 - 0x00000000

@@ -1285,7 +1285,7 @@ _00137_DS_:
 	MOVAR	STK00
 	MOVIA	0x00
 	LCALL	_vk1S68C_nopdelay
-;;shiftRight_Left2ResultLit:5586: shCount=1, size=1, sign=0, same=1, offr=0
+;;shiftRight_Left2ResultLit:5589: shCount=1, size=1, sign=0, same=1, offr=0
 	.line	116, "vk1s68c_driver.c"; 	k=k>>1;
 	BCR	STATUS,0
 	BANKSEL	r0x1034
@@ -1362,7 +1362,7 @@ _00125_DS_:
 _00126_DS_:
 	.line	92, "vk1s68c_driver.c"; 	VK1S68C_SLK_HIGH;	//送时钟的上升沿
 	BSR	_PORTBbits,5
-;;shiftRight_Left2ResultLit:5586: shCount=1, size=1, sign=0, same=1, offr=0
+;;shiftRight_Left2ResultLit:5589: shCount=1, size=1, sign=0, same=1, offr=0
 	.line	94, "vk1s68c_driver.c"; 	data8=data8>>1;		//准备送下一个BIT
 	BCR	STATUS,0
 	BANKSEL	r0x1021

@@ -274,8 +274,8 @@ void workCtr()
 		else
 		{
 			MOTOR = 0;
-			rockStep = 0;
-			rockTime = 0;
+//			rockStep = 0;
+//			rockTime = 0;
 			workTime = 0;
 		}
 	}
@@ -375,7 +375,7 @@ uint8_t getData()
 	hz = (int16_t)(hzH);
 	hz = ((short)(hzH << 8 | hzL))>> 4;
 	hz &= 0x0FFF;
-	if(hz > 0x090 && hz < 0xF70)
+	if(hz > 0x180 && hz < 0xE70)
 	{
 		rightTime = 0;
 		if(++rockTime >= 7 && rockFlag == 0)

@@ -1,7 +1,7 @@
 ICBODY       := NY8A051F
 CLIENT_NAME  := hmm
 CB_FILE      := IRLEDRGB.cb
-HOST_TOOL    := NYIDE 3.92
+HOST_TOOL    := NYIDE 4.00
 USER_C       := main.c 
 LIBS         :=  
 USER_ASM     := 

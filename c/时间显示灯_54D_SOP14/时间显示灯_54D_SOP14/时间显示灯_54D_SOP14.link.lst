@@ -7,8 +7,28 @@
 00000005 ffef                 RET
 00000008 c7e2                 LGOTO 0x1d; main.o:__sdcc_interrupt=0x1d
 00000009                      crt0.o:initial_ram_bss:
+00000009 e0fc                 BCR 0x3, 0x6
+0000000a e07c                 BCR 0x3, 0x7
+0000000b dedf                 MOVIA 0x20
+0000000c ff7b                 MOVAR 0x4
+0000000d de7f                 MOVIA 0x80
+0000000e d7e8                 LCALL 0x17; crt0.o:startup_exit=0x17
+0000000f e4fc                 BSR 0x3, 0x6
+00000010 e07c                 BCR 0x3, 0x7
+00000011 dedf                 MOVIA 0x20
+00000012 ff7b                 MOVAR 0x4
+00000013 de7f                 MOVIA 0x80
+00000014 d7e8                 LCALL 0x17; crt0.o:startup_exit=0x17
 00000015                      crt0.o:initial_ram_cinit:
+00000015 d21b                 LCALL 0x5e4; ___cinit_load__=0x5e4
+00000016 c782                 LGOTO 0x7d; _main=0x7d
 00000017                      crt0.o:startup_exit:
+00000017 fd7f                 CLRR 0x0
+00000018 fa7b                 INCR 0x4, 0x1
+00000019 c97b                 CMPAR 0x4
+0000001a f6fc                 BTRSS 0x3, 0x2
+0000001b c7e8                 LGOTO 0x17; crt0.o:startup_exit=0x17
+0000001c ffef                 RET
 0000001d                      main.o:__sdcc_interrupt:
 0000001d ff3d                 MOVAR 0x42
 0000001e eafc                 SWAPR 0x3, 0x0
@@ -1535,21 +1555,129 @@
 00000577                      vk1s68c_driver.o:_00119_DS_:
 00000577 ffef                 RET
 00000578                      __divuchar:
+00000578 e0fc                 BCR 0x3, 0x6
+00000579 ff1c                 MOVAR 0x63
+0000057a feb0                 MOVR 0x4f, 0x0
+0000057b ff1b                 MOVAR 0x64
+0000057c fd1a                 CLRR 0x65
+0000057d defe                 MOVIA 0x1
+0000057e ff19                 MOVAR 0x66
+0000057f fe9b                 MOVR 0x64, 0x0
+00000580 f6fc                 BTRSS 0x3, 0x2
+00000581 c27b                 LGOTO 0x584; _divuchar.o:_00107_DS_=0x584
+00000582 de00                 MOVIA 0xff
+00000583 c25f                 LGOTO 0x5a0; _divuchar.o:_00115_DS_=0x5a0
 00000584                      _divuchar.o:_00107_DS_:
+00000584 e0fc                 BCR 0x3, 0x6
+00000585 f01b                 BTRSC 0x64, 0x7
+00000586 c273                 LGOTO 0x58c; _divuchar.o:_00112_DS_=0x58c
+00000587 e3fc                 BCR 0x3, 0x0
+00000588 eb1b                 RLR 0x64, 0x1
+00000589 e3fc                 BCR 0x3, 0x0
+0000058a eb19                 RLR 0x66, 0x1
+0000058b c27b                 LGOTO 0x584; _divuchar.o:_00107_DS_=0x584
 0000058c                      _divuchar.o:_00112_DS_:
+0000058c e0fc                 BCR 0x3, 0x6
+0000058d fe99                 MOVR 0x66, 0x0
+0000058e f2fc                 BTRSC 0x3, 0x2
+0000058f c261                 LGOTO 0x59e; _divuchar.o:_00114_DS_=0x59e
+00000590 fe9b                 MOVR 0x64, 0x0
+00000591 fb9c                 SUBAR 0x63, 0x0
+00000592 f7fc                 BTRSS 0x3, 0x0
+00000593 c267                 LGOTO 0x598; _divuchar.o:_00111_DS_=0x598
+00000594 fe99                 MOVR 0x66, 0x0
+00000595 fc1a                 ADDAR 0x65, 0x1
+00000596 fe9b                 MOVR 0x64, 0x0
+00000597 fb1c                 SUBAR 0x63, 0x1
 00000598                      _divuchar.o:_00111_DS_:
+00000598 e3fc                 BCR 0x3, 0x0
+00000599 e0fc                 BCR 0x3, 0x6
+0000059a ec1b                 RRR 0x64, 0x1
+0000059b e3fc                 BCR 0x3, 0x0
+0000059c ec19                 RRR 0x66, 0x1
+0000059d c273                 LGOTO 0x58c; _divuchar.o:_00112_DS_=0x58c
 0000059e                      _divuchar.o:_00114_DS_:
+0000059e e0fc                 BCR 0x3, 0x6
+0000059f fe9a                 MOVR 0x65, 0x0
 000005a0                      _divuchar.o:_00115_DS_:
+000005a0 ffef                 RET
 000005a1                      __moduchar:
+000005a1 e0fc                 BCR 0x3, 0x6
+000005a2 ff18                 MOVAR 0x67
+000005a3 feb0                 MOVR 0x4f, 0x0
+000005a4 ff17                 MOVAR 0x68
+000005a5 f6fc                 BTRSS 0x3, 0x2
+000005a6 c256                 LGOTO 0x5a9; _moduchar.o:_00119_DS_=0x5a9
+000005a7 de00                 MOVIA 0xff
+000005a8 c23b                 LGOTO 0x5c4; _moduchar.o:_00115_DS_=0x5c4
 000005a9                      _moduchar.o:_00119_DS_:
+000005a9 defe                 MOVIA 0x1
+000005aa e0fc                 BCR 0x3, 0x6
+000005ab ff16                 MOVAR 0x69
 000005ac                      _moduchar.o:_00107_DS_:
+000005ac e0fc                 BCR 0x3, 0x6
+000005ad f017                 BTRSC 0x68, 0x7
+000005ae c24c                 LGOTO 0x5b3; _moduchar.o:_00112_DS_=0x5b3
+000005af e3fc                 BCR 0x3, 0x0
+000005b0 eb17                 RLR 0x68, 0x1
+000005b1 fa16                 INCR 0x69, 0x1
+000005b2 c253                 LGOTO 0x5ac; _moduchar.o:_00107_DS_=0x5ac
 000005b3                      _moduchar.o:_00112_DS_:
+000005b3 e0fc                 BCR 0x3, 0x6
+000005b4 fe96                 MOVR 0x69, 0x0
+000005b5 f2fc                 BTRSC 0x3, 0x2
+000005b6 c23d                 LGOTO 0x5c2; _moduchar.o:_00114_DS_=0x5c2
+000005b7 fe97                 MOVR 0x68, 0x0
+000005b8 fb98                 SUBAR 0x67, 0x0
+000005b9 f7fc                 BTRSS 0x3, 0x0
+000005ba c242                 LGOTO 0x5bd; _moduchar.o:_00111_DS_=0x5bd
+000005bb fe97                 MOVR 0x68, 0x0
+000005bc fb18                 SUBAR 0x67, 0x1
 000005bd                      _moduchar.o:_00111_DS_:
+000005bd e3fc                 BCR 0x3, 0x0
+000005be e0fc                 BCR 0x3, 0x6
+000005bf ec17                 RRR 0x68, 0x1
+000005c0 f916                 DECR 0x69, 0x1
+000005c1 c24c                 LGOTO 0x5b3; _moduchar.o:_00112_DS_=0x5b3
 000005c2                      _moduchar.o:_00114_DS_:
+000005c2 e0fc                 BCR 0x3, 0x6
+000005c3 fe98                 MOVR 0x67, 0x0
 000005c4                      _moduchar.o:_00115_DS_:
+000005c4 ffef                 RET
 000005c5                      __gptrget:
+000005c5 dbff                 XORIA 0x0
+000005c6 f2fc                 BTRSC 0x3, 0x2
+000005c7 c233                 LGOTO 0x5cc; _gptrget1.o:__dataptrget1=0x5cc
+000005c8 db7f                 XORIA 0x80
+000005c9 f2fc                 BTRSC 0x3, 0x2
+000005ca c22c                 LGOTO 0x5d3; __codeptrget1=0x5d3
+000005cb dfff                 RETIA 0x0
 000005cc                      _gptrget1.o:__dataptrget1:
+000005cc feb1                 MOVR 0x4e, 0x0
+000005cd ff7b                 MOVAR 0x4
+000005ce e0fc                 BCR 0x3, 0x6
+000005cf f031                 BTRSC 0x4e, 0x7
+000005d0 e4fc                 BSR 0x3, 0x6
+000005d1 feff                 MOVR 0x0, 0x0
+000005d2 ffef                 RET
 000005d3                      __codeptrget1:
+000005d3 feb0                 MOVR 0x4f, 0x0
+000005d4 ffb8                 SFUN 0x7
+000005d5 feb1                 MOVR 0x4e, 0x0
+000005d6 fdee                 TABLEA
+000005d7 ffef                 RET
 000005d8                      __gptrput:
+000005d8 dbff                 XORIA 0x0
+000005d9 f2fc                 BTRSC 0x3, 0x2
+000005da c223                 LGOTO 0x5dc; _gptrput1.o:__dataptrput1=0x5dc
+000005db ffef                 RET
 000005dc                      _gptrput1.o:__dataptrput1:
+000005dc feb1                 MOVR 0x4e, 0x0
+000005dd ff7b                 MOVAR 0x4
+000005de e0fc                 BCR 0x3, 0x6
+000005df f031                 BTRSC 0x4e, 0x7
+000005e0 e4fc                 BSR 0x3, 0x6
+000005e1 feb2                 MOVR 0x4d, 0x0
+000005e2 ff7f                 MOVAR 0x0
+000005e3 ffef                 RET
 000005e4                      ___cinit_load__:

@@ -22,8 +22,8 @@
 #define CHRGON()	PORTB |= 0x04
 #define CHRGOFF()	PORTB &= 0xFB
 
-#define 	INV		3164
-#define 	BAT		2600
+#define 	INV		3211
+#define 	BAT		3091
 #define		OUTA	76
 
 u8t debug = 0;		//1打开debug
@@ -50,6 +50,7 @@ u8t shandeng = 0;
 u8t count500ms = 0;
 u8t firstLow = 0;
 u8t firstLowTime = 0;
+u8t batLowTime = 0;		//电池低电次数
 
 void initAD();
 void gotoSleep();
@@ -87,6 +88,12 @@ void isr(void) __interrupt(0)
 					else
 						LED4OFF();
 					shandeng--;
+					if(shandeng == 0)
+					{
+						workStatus = 0;
+						closeStatus();
+						gotoSleep();
+					}
 				}
 				else if(batStatus != 1)
 				{
@@ -113,7 +120,7 @@ void main(void)
 	IOSTB = C_PB0_Input;
 	PORTB = 0x00;
 	PORTA = 0x00;
-	APHCON = 0xDF;
+	APHCON = 0xFF;
 	BPHCON = 0xFE;
 	ABPLCON = 0xFF;
 //;Setting Interrupt Enable Register	
@@ -281,7 +288,10 @@ void workCtr()
 			POWEROFF();			//缺电状态关闭负载
 			LED2OFF();
 			if(firstLow == 0)
-				shandeng = 6;
+			{
+				shandeng = 6;		//闪灯3次
+				
+			}
 			firstLow = 1;
 		}
 	}
@@ -298,8 +308,8 @@ void keyCtr()
 	{
 		//强制开机
 		workStatus = 1;
-		POWERON();
-		LED3ON();
+		//POWERON();
+		//LED3ON();
 	}
 	if(chrgStatus == 0 || chrgStatus == 2)
 	{
@@ -309,7 +319,7 @@ void keyCtr()
 			if(workStatus == 0 )
 			{
 				workStatus = 1;
-				POWERON();
+				//POWERON();
 			}
 			else
 			{
@@ -360,19 +370,20 @@ void checkInV()
         {
         	R_AIN1_DATA = INV;
         }
-        if(R_AIN1_DATA < 3165)
+        if(R_AIN1_DATA < 3210)
         {
         	inLowTime++;
         }
         else
         {
         	inLowTime = 0;
-        	chrgStatus = 1;
+        	 if(R_AIN1_DATA > 3220)
+        		chrgStatus = 1;
         }
         
-        if(inLowTime >= 10)
+        if(inLowTime >= 100)
         {
-        	inLowTime = 10;
+        	inLowTime = 100;
         	chrgStatus = 2;
         }
         
@@ -393,24 +404,45 @@ void checkBat()
         
         if(R_AIN2_DATA < 2348)
         {
-        	batStatus = 3;//缺电状态
+        	if(++batLowTime > 50)
+        	{
+        		batStatus = 3;//缺电状态
+        	}
         }
         else if(R_AIN2_DATA < 2607)
         {
+        	batLowTime = 0;
         	if(shandeng == 0)
         		batStatus = 1;//低电状态
         	if(R_AIN2_DATA > 2400)
         		firstLow = 0;	//重置低电压
         }
-        else if(R_AIN2_DATA < 3091)
+        else if(R_AIN2_DATA < 3080)		//16.55
         {
-        	batStatus = 0;//正常状态
-        	firstLow = 0;	//重置低电压
+        	if(batStatus == 2)
+        	{
+        		if(R_AIN2_DATA < 3070)
+        		{
+        			batStatus = 0;//正常状态
+        			firstLow = 0;	//重置低电压
+        		}
+        	}
+        	else if(batStatus > 0 && (++batLowTime > 50))
+        	{
+        		batStatus = 0;//正常状态
+        		firstLow = 0;	//重置低电压
+        	}
+        	
         }
         else
         {
-        	batStatus = 2;//满电状态
+        	batLowTime = 0;
         	firstLow = 0;	//重置低电压
+        	if(R_AIN2_DATA > 3085)
+        	{
+        		batStatus = 2;//满电状态
+        	}
+        	
         }
         
 }
@@ -467,7 +499,7 @@ void F_AIN4_Convert(char count)
 void gotoSleep()
 {
 	workStatus = 0;
-	batStatus = 0;
+	//batStatus = 0;
 	chrgStatus = 0;
 	firstLow = 0;
 	sleepDelay = 0;
@@ -475,7 +507,7 @@ void gotoSleep()
 	AWUCON = 0x28;
 	BWUCON = 0x01;
 	INTE =  C_INT_TMR0 | C_INT_TMR1 | C_INT_PABKey;
-	PCON =  C_LVR_En;	
+	PCON =  C_LVR_En | 0x10;	
 	INTF = 0;								// Clear all interrupt flags
 	CLRWDT();
 	ENI();
@@ -485,7 +517,7 @@ void gotoSleep()
 	INTE =  C_INT_TMR0 ;	// Enable Timer0、Timer1、WDT overflow interrupt
 	INTF = 0;
 	//;Initial Power control register
-	PCON = C_WDT_En | C_LVR_En | C_LVD_En;				// Enable WDT ,  Enable LVR
+	PCON = C_WDT_En | C_LVR_En | C_LVD_En | 0x10;				// Enable WDT ,  Enable LVR
 	
 }
 

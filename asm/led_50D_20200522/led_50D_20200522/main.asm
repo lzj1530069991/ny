@@ -45,7 +45,7 @@ V_Main:
 	    
 	    movia   0x00
 		movar   Pr_PB_Data				; 
-								 
+		；					 
 		movia   C_PB_Output
 		iost    Pf_PB_Dir_Ctrl			; PB口设置输出                                     
 		movia   0x01

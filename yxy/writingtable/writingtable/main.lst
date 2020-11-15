@@ -1,0 +1,348 @@
+
+                    Nyquest Technology Co., Ltd.
+
+NYASM 2.26
+
+    ADDR  OPCODE/VALUE              LINE   TAG  SOURCE                   STATEMENT    
+
+                                    1-    1     ;--------------------------------------------------------
+                                    1-    2     ; File Created by SDCC : free open source ANSI-C Compiler
+                                    1-    3     ; Version 3.7.1 #0 (MSVC)
+                                    1-    4     ;--------------------------------------------------------
+                                    1-    5     ; NY8A port
+                                    1-    6     ;--------------------------------------------------------
+                                    1-    7     	.file	"main.c"
+                                    1-    8     	list	p=NY8A051F,c=on
+                                    1-    9     	#include "ny8a051f.inc"
+                                    1-   11     ;--------------------------------------------------------
+                                    1-   12     ; external declarations
+                                    1-   13     ;--------------------------------------------------------
+                                    1-   14     	extern	_Delay1000Us
+                                    1-   15     	extern	_Delay10Us
+                                    1-   16     	extern	_IIC_Start
+                                    1-   17     	extern	_IIC_Send_Byte
+                                    1-   18     	extern	_IIC_Read_Byte
+                                    1-   19     	extern	_SDA_OUT
+                                    1-   20     	extern	_SDA_IN
+                                    1-   21     	extern	_IIC_Ack
+                                    1-   22     	extern	_IIC_NAck
+                                    1-   23     	extern	_delay_us
+                                    1-   24     	extern	_delay_ms
+                                    1-   25     	extern	_IIC_Stop
+                                    1-   26     	extern	_IIC_Wait_Ack
+                                    1-   27     	extern	_PORTBbits
+                                    1-   28     	extern	_PCONbits
+                                    1-   29     	extern	_BWUCONbits
+                                    1-   30     	extern	_BPLCONbits
+                                    1-   31     	extern	_BPHCONbits
+                                    1-   32     	extern	_INTEbits
+                                    1-   33     	extern	_INTFbits
+                                    1-   34     	extern	_INDF
+                                    1-   35     	extern	_TMR0
+                                    1-   36     	extern	_PCL
+                                    1-   37     	extern	_STATUS
+                                    1-   38     	extern	_FSR
+                                    1-   39     	extern	_PORTB
+                                    1-   40     	extern	_PCON
+                                    1-   41     	extern	_BWUCON
+                                    1-   42     	extern	_PCHBUF
+                                    1-   43     	extern	_BPLCON
+                                    1-   44     	extern	_BPHCON
+                                    1-   45     	extern	_INTE
+                                    1-   46     	extern	_INTF
+                                    1-   47     	extern	_TMR1
+                                    1-   48     	extern	_T1CR1
+                                    1-   49     	extern	_T1CR2
+                                    1-   50     	extern	_PWM1DUTY
+                                    1-   51     	extern	_PS1CV
+                                    1-   52     	extern	_BZ1CR
+                                    1-   53     	extern	_IRCR
+                                    1-   54     	extern	_TBHP
+                                    1-   55     	extern	_TBHD
+                                    1-   56     	extern	_OSCCR
+                                    1-   57     	extern	_IOSTB
+                                    1-   58     	extern	_PS0CV
+                                    1-   59     	extern	_BODCON
+                                    1-   60     	extern	_PCON1
+                                    1-   61     	extern	_T0MD
+                                    1-   62     	extern	__nyc_ny8_startup
+                                    1-   63     ;--------------------------------------------------------
+                                    1-   64     ; global declarations
+                                    1-   65     ;--------------------------------------------------------
+                                    1-   66     	extern	_msa_WriteBytes
+                                    1-   67     	extern	_main
+                                    1-   68     	extern	_i2c_addr
+                                    1-   70     	extern PSAVE
+                                    1-   71     	extern SSAVE
+                                    1-   72     	extern WSAVE
+                                    1-   73     	extern STK02
+                                    1-   74     	extern STK01
+                                    1-   75     	extern STK00
+                                    1-   77     .segment "uninit", 0x20000010
+ 20000010                           1-   78     PSAVE:
+                                    1-   79     	.res 1
+ 20000011                           1-   80     SSAVE:
+                                    1-   81     	.res 1
+ 20000012                           1-   82     WSAVE:
+                                    1-   83     	.res 1
+ 20000013                           1-   84     STK02:
+                                    1-   85     	.res 1
+ 20000014                           1-   86     STK01:
+                                    1-   87     	.res 1
+ 20000015                           1-   88     STK00:
+                                    1-   89     	.res 1
+                                    1-   91     ;--------------------------------------------------------
+                                    1-   92     ; global definitions
+                                    1-   93     ;--------------------------------------------------------
+                                    1-   94     ;--------------------------------------------------------
+                                    1-   95     ; absolute symbol definitions
+                                    1-   96     ;--------------------------------------------------------
+                                    1-   97     ;--------------------------------------------------------
+                                    1-   98     ; compiler-defined variables
+                                    1-   99     ;--------------------------------------------------------
+                                    1-  100     .segment "uninit"
+     0000                           1-  101     r0x1004:
+                                    1-  102     	.res	1
+                                    1-  103     .segment "uninit"
+     0000                           1-  104     r0x1001:
+                                    1-  105     	.res	1
+                                    1-  106     .segment "uninit"
+     0000                           1-  107     r0x1002:
+                                    1-  108     	.res	1
+                                    1-  109     ;--------------------------------------------------------
+                                    1-  110     ; initialized data
+                                    1-  111     ;--------------------------------------------------------
+                                    1-  113     .segment "idata"
+     0000                           1-  114     _i2c_addr:
+     0000 0000                      1-  115     	dw	0x00
+                                    1-  118     ;--------------------------------------------------------
+                                    1-  119     ; overlayable items in internal ram 
+                                    1-  120     ;--------------------------------------------------------
+                                    1-  121     ;	udata_ovr
+                                    1-  122     ;--------------------------------------------------------
+                                    1-  123     ; reset vector 
+                                    1-  124     ;--------------------------------------------------------
+                                    1-  125     ORG	0x0000
+     0000 3rrr                      1-  126     	LGOTO	__nyc_ny8_startup
+                                    1-  127     ;--------------------------------------------------------
+                                    1-  128     ; code
+                                    1-  129     ;--------------------------------------------------------
+                                    1-  130     ;***
+                                    1-  131     ;  pBlock Stats: dbName = M
+                                    1-  132     ;***
+                                    1-  133     ;has an exit
+                                    1-  134     ;functions called:
+                                    1-  135     ;   _IIC_Start
+                                    1-  136     ;   _IIC_Send_Byte
+                                    1-  137     ;   _IIC_Ack
+                                    1-  138     ;   _IIC_Send_Byte
+                                    1-  139     ;   _IIC_Ack
+                                    1-  140     ;   _IIC_Stop
+                                    1-  141     ;   _IIC_Start
+                                    1-  142     ;   _IIC_Send_Byte
+                                    1-  143     ;   _IIC_Ack
+                                    1-  144     ;   _IIC_Send_Byte
+                                    1-  145     ;   _IIC_Ack
+                                    1-  146     ;   _IIC_Stop
+                                    1-  147     ;1 compiler assigned register :
+                                    1-  148     ;   r0x1004
+                                    1-  149     ;; Starting pCode block
+                                    1-  150     .segment "code"; module=main, function=_main
+                                    1-  152     ;local variable name mapping:
+     0000                           1-  154     _main:
+                                    1-  155     ; 2 exit points
+                                    1-  156     	.line	16, "main.c"; 	IOSTB = 0;				//set PortB as output mode
+     0000 0200                      1-  157     	CLRA	
+     0001 000r                      1-  158     	IOST	_IOSTB
+     0002                           1-  159     _00107_DS_:
+                                    1-  160     	.line	20, "main.c"; 	IIC_Start();
+     0002 2rrr                      1-  161     	LCALL	_IIC_Start
+                                    1-  162     	.line	21, "main.c"; 	IIC_Send_Byte(i2c_addr<<1 | WRITE);	    //·¢ËÍÐ´ÃüÁî
+     0003 1C03                      1-  163     	BCR	STATUS,0
+     0004 14rr                      1-  164     	RLR	_i2c_addr,W
+     0005 00rr                      1-  165     	MOVAR	r0x1004
+     0006 2rrr                      1-  166     	LCALL	_IIC_Send_Byte
+                                    1-  167     	.line	22, "main.c"; 	IIC_Ack();
+     0007 2rrr                      1-  168     	LCALL	_IIC_Ack
+                                    1-  169     	.line	23, "main.c"; 	for(i=0;i<200;i++)
+     0008 02rr                      1-  170     	CLRR	r0x1004
+     0009                           1-  171     _00109_DS_:
+                                    1-  172     	.line	25, "main.c"; 	IIC_Send_Byte(0x00);
+     0009 2100                      1-  173     	MOVIA	0x00
+     000A 2rrr                      1-  174     	LCALL	_IIC_Send_Byte
+                                    1-  175     	.line	26, "main.c"; 	IIC_Ack();
+     000B 2rrr                      1-  176     	LCALL	_IIC_Ack
+                                    1-  177     	.line	23, "main.c"; 	for(i=0;i<200;i++)
+     000C 05rr                      1-  178     	INCR	r0x1004,F
+                                    1-  179     ;;unsigned compare: left < lit (0xC8=200), size=1
+     000D 21C8                      1-  180     	MOVIA	0xc8
+     000E 04rr                      1-  181     	SUBAR	r0x1004,W
+     000F 0803                      1-  182     	BTRSS	STATUS,0
+     0010 3rrr                      1-  183     	LGOTO	_00109_DS_
+                                    1-  184     	.line	28, "main.c"; 	IIC_Stop();
+     0011 2rrr                      1-  185     	LCALL	_IIC_Stop
+                                    1-  186     	.line	29, "main.c"; 	CLRWDT();			//Clear WDT, this function is defined in ny8command.h
+     0012 0002                      1-  187     	clrwdt
+     0013 3rrr                      1-  188     	LGOTO	_00107_DS_
+                                    1-  189     	.line	31, "main.c"; 	}
+                                    1-  190     	RETURN	
+     0014 0010                      3-   26 m1      ret
+                                    1-  191     ; exit point of _main
+                                    1-  193     ;***
+                                    1-  194     ;  pBlock Stats: dbName = C
+                                    1-  195     ;***
+                                    1-  196     ;has an exit
+                                    1-  197     ;functions called:
+                                    1-  198     ;   _IIC_Start
+                                    1-  199     ;   _IIC_Send_Byte
+                                    1-  200     ;   _IIC_Ack
+                                    1-  201     ;   _IIC_Send_Byte
+                                    1-  202     ;   _IIC_Wait_Ack
+                                    1-  203     ;   _IIC_Send_Byte
+                                    1-  204     ;   _IIC_Wait_Ack
+                                    1-  205     ;   _IIC_Stop
+                                    1-  206     ;   _delay_ms
+                                    1-  207     ;   _IIC_Start
+                                    1-  208     ;   _IIC_Send_Byte
+                                    1-  209     ;   _IIC_Ack
+                                    1-  210     ;   _IIC_Send_Byte
+                                    1-  211     ;   _IIC_Wait_Ack
+                                    1-  212     ;   _IIC_Send_Byte
+                                    1-  213     ;   _IIC_Wait_Ack
+                                    1-  214     ;   _IIC_Stop
+                                    1-  215     ;   _delay_ms
+                                    1-  216     ;4 compiler assigned registers:
+                                    1-  217     ;   r0x1001
+                                    1-  218     ;   STK00
+                                    1-  219     ;   r0x1002
+                                    1-  220     ;   r0x1003
+                                    1-  221     ;; Starting pCode block
+                                    1-  222     .segment "code"; module=main, function=_msa_WriteBytes
+                                    1-  224     ;local variable name mapping:
+     0000                           1-  227     _msa_WriteBytes:
+                                    1-  228     ; 2 exit points
+                                    1-  229     	.line	34, "main.c"; 	void msa_WriteBytes(uint8_t RegAddr, uint8_t Data)
+     0000 00rr                      1-  230     	MOVAR	r0x1001
+     0001 01rr                      1-  231     	MOVR	STK00,W
+     0002 00rr                      1-  232     	MOVAR	r0x1002
+                                    1-  233     	.line	36, "main.c"; 	IIC_Start();  
+     0003 2rrr                      1-  234     	LCALL	_IIC_Start
+                                    1-  235     	.line	38, "main.c"; 	IIC_Send_Byte(i2c_addr<<1 | WRITE);	    //·¢ËÍÐ´ÃüÁî
+     0004 1C03                      1-  236     	BCR	STATUS,0
+     0005 14rr                      1-  237     	RLR	_i2c_addr,W
+                                    1-  238     ;;1	MOVAR	r0x1003
+     0006 2rrr                      1-  239     	LCALL	_IIC_Send_Byte
+                                    1-  240     	.line	39, "main.c"; 	IIC_Ack();
+     0007 2rrr                      1-  241     	LCALL	_IIC_Ack
+                                    1-  242     	.line	40, "main.c"; 	IIC_Send_Byte(RegAddr);//·¢ËÍ¸ßµØÖ·	  
+     0008 01rr                      1-  243     	MOVR	r0x1001,W
+     0009 2rrr                      1-  244     	LCALL	_IIC_Send_Byte
+                                    1-  245     	.line	43, "main.c"; 	IIC_Wait_Ack();	    	 										  		   
+     000A 2rrr                      1-  246     	LCALL	_IIC_Wait_Ack
+                                    1-  247     	.line	44, "main.c"; 	IIC_Send_Byte(Data);     //·¢ËÍ×Ö½Ú							   
+     000B 01rr                      1-  248     	MOVR	r0x1002,W
+     000C 2rrr                      1-  249     	LCALL	_IIC_Send_Byte
+                                    1-  250     	.line	45, "main.c"; 	IIC_Wait_Ack();  		    	   
+     000D 2rrr                      1-  251     	LCALL	_IIC_Wait_Ack
+                                    1-  252     	.line	46, "main.c"; 	IIC_Stop();//²úÉúÒ»¸öÍ£Ö¹Ìõ¼þ 
+     000E 2rrr                      1-  253     	LCALL	_IIC_Stop
+                                    1-  254     	.line	47, "main.c"; 	delay_ms(1);
+     000F 2101                      1-  255     	MOVIA	0x01
+     0010 2rrr                      1-  256     	LCALL	_delay_ms
+                                    1-  257     	.line	49, "main.c"; 	}
+                                    1-  258     	RETURN	
+     0011 0010                      3-   26 m1      ret
+                                    1-  259     ; exit point of _msa_WriteBytes
+                                    1-  262     ;	code size estimation:
+                                    1-  263     ;	   38+    0 =    38 instructions (   76 byte)
+                                    1-  265     	end
+                                    1-  265     	end
+
+SYMBOL TABLE            TYPE     VALUE
+__CHECKSUM_ADDR__       Label    00000000
+__nyc_ny8_startup       Label    00000000
+__PIN_COUNT__           Constant 00000006
+__PROCESSOR__           Constant 00800515
+_00107_DS_              Label    00000002
+_00109_DS_              Label    00000009
+_BODCON                 Label    00000000
+_BPHCON                 Label    00000000
+_BPHCONbits             Label    00000000
+_BPLCON                 Label    00000000
+_BPLCONbits             Label    00000000
+_BWUCON                 Label    00000000
+_BWUCONbits             Label    00000000
+_BZ1CR                  Label    00000000
+_delay_ms               Label    00000000
+_delay_us               Label    00000000
+_Delay1000Us            Label    00000000
+_Delay10Us              Label    00000000
+_FSR                    Label    00000000
+_i2c_addr               Label    00000000
+_IIC_Ack                Label    00000000
+_IIC_NAck               Label    00000000
+_IIC_Read_Byte          Label    00000000
+_IIC_Send_Byte          Label    00000000
+_IIC_Start              Label    00000000
+_IIC_Stop               Label    00000000
+_IIC_Wait_Ack           Label    00000000
+_INDF                   Label    00000000
+_INTE                   Label    00000000
+_INTEbits               Label    00000000
+_INTF                   Label    00000000
+_INTFbits               Label    00000000
+_IOSTB                  Label    00000000
+_IRCR                   Label    00000000
+_main                   Label    00000000
+_msa_WriteBytes         Label    00000000
+_OSCCR                  Label    00000000
+_PCHBUF                 Label    00000000
+_PCL                    Label    00000000
+_PCON                   Label    00000000
+_PCON1                  Label    00000000
+_PCONbits               Label    00000000
+_PORTB                  Label    00000000
+_PORTBbits              Label    00000000
+_PS0CV                  Label    00000000
+_PS1CV                  Label    00000000
+_PWM1DUTY               Label    00000000
+_SDA_IN                 Label    00000000
+_SDA_OUT                Label    00000000
+_STATUS                 Label    00000000
+_T0MD                   Label    00000000
+_T1CR1                  Label    00000000
+_T1CR2                  Label    00000000
+_TBHD                   Label    00000000
+_TBHP                   Label    00000000
+_TMR0                   Label    00000000
+_TMR1                   Label    00000000
+ENABLE_RAM_BANK         Variable 00000000
+F                       Constant 00000001
+FSR                     Constant 00000004
+INDF                    Constant 00000000
+PCHBUF                  Constant 0000000A
+PCL                     Constant 00000002
+PSAVE                   Label    00000000
+r0x1001                 Label    00000000
+r0x1002                 Label    00000000
+r0x1004                 Label    00000000
+SSAVE                   Label    00000001
+STATUS                  Constant 00000003
+STK00                   Label    00000005
+STK01                   Label    00000004
+STK02                   Label    00000003
+W                       Constant 00000000
+WSAVE                   Label    00000002
+
+
+SOURCE FILE TABLE
+001 main.s
+002 ny8a051f.inc
+003 common.inc
+004 main.c
+
+PROCESSOR    = NY8A051F (8 bits)
+PROGRAM ROM  = 0x00000000 - 0x000003FF
+DATA ROM     = 0x00000000 - 0x000003FF
+RESERVED MEM = 0x00000400 - 0x00000410
+SRAM / SFR   = 0x00000000 - 0x00000000

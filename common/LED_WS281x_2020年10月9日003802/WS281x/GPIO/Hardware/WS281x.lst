@@ -1,0 +1,1547 @@
+
+                    Nyquest Technology Co., Ltd.
+
+NYASM 2.26
+
+    ADDR  OPCODE/VALUE              LINE   TAG  SOURCE                   STATEMENT    
+
+                                    1-    1     ;--------------------------------------------------------
+                                    1-    2     ; File Created by SDCC : free open source ANSI-C Compiler
+                                    1-    3     ; Version 3.7.1 #0 (MSVC)
+                                    1-    4     ;--------------------------------------------------------
+                                    1-    5     ; NY8A port
+                                    1-    6     ;--------------------------------------------------------
+                                    1-    7     	.file	"Hardware\WS281x.c"
+                                    1-    8     	list	p=NY8A054D,c=on
+                                    1-    9     	#include "ny8a054d.inc"
+                                    1-   11     ;--------------------------------------------------------
+                                    1-   12     ; external declarations
+                                    1-   13     ;--------------------------------------------------------
+                                    1-   14     	extern	_KEY_Proess
+                                    1-   15     	extern	_ScanKey_Config
+                                    1-   16     	extern	_ScanKey
+                                    1-   17     	extern	_IR_Decode_Time_Process
+                                    1-   18     	extern	_IR_Decode
+                                    1-   19     	extern	_IR_KEY_Proess
+                                    1-   20     	extern	_User_Style_Breath_Start
+                                    1-   21     	extern	_User_Style_Breath_Process
+                                    1-   22     	extern	_User_Style_Sweep_Start
+                                    1-   23     	extern	_User_Style_Sweep_Process
+                                    1-   24     	extern	_User_Style_Collision_Start
+                                    1-   25     	extern	_User_Style_Collision_Process
+                                    1-   26     	extern	_WS281x_Drive_Write_Byte
+                                    1-   27     	extern	_GPIO_Init
+                                    1-   28     	extern	_KEY_GPIO_Init
+                                    1-   29     	extern	_Timer1_Init
+                                    1-   30     	extern	_Timer3_Init
+                                    1-   31     	extern	_INT1_Init
+                                    1-   32     	extern	_delay
+                                    1-   33     	extern	_PORTAbits
+                                    1-   34     	extern	_PORTBbits
+                                    1-   35     	extern	_PCONbits
+                                    1-   36     	extern	_BWUCONbits
+                                    1-   37     	extern	_ABPLCONbits
+                                    1-   38     	extern	_BPHCONbits
+                                    1-   39     	extern	_INTEbits
+                                    1-   40     	extern	_INTFbits
+                                    1-   41     	extern	_AWUCONbits
+                                    1-   42     	extern	_INTEDGbits
+                                    1-   43     	extern	_RFCbits
+                                    1-   44     	extern	_INTE2bits
+                                    1-   45     	extern	_K1_struct
+                                    1-   46     	extern	_irDeCodeTimeOverFlow
+                                    1-   47     	extern	_irDeCodeDat
+                                    1-   48     	extern	_irDeCodeBitTime
+                                    1-   49     	extern	_irDeCodeBitIndex
+                                    1-   50     	extern	_User_Style_Time_SET
+                                    1-   51     	extern	_INDF
+                                    1-   52     	extern	_TMR0
+                                    1-   53     	extern	_PCL
+                                    1-   54     	extern	_STATUS
+                                    1-   55     	extern	_FSR
+                                    1-   56     	extern	_PORTA
+                                    1-   57     	extern	_PORTB
+                                    1-   58     	extern	_PCON
+                                    1-   59     	extern	_BWUCON
+                                    1-   60     	extern	_PCHBUF
+                                    1-   61     	extern	_ABPLCON
+                                    1-   62     	extern	_BPHCON
+                                    1-   63     	extern	_INTE
+                                    1-   64     	extern	_INTF
+                                    1-   65     	extern	_AWUCON
+                                    1-   66     	extern	_INTEDG
+                                    1-   67     	extern	_TMRH
+                                    1-   68     	extern	_RFC
+                                    1-   69     	extern	_TM34RH
+                                    1-   70     	extern	_INTE2
+                                    1-   71     	extern	_TMR1
+                                    1-   72     	extern	_T1CR1
+                                    1-   73     	extern	_T1CR2
+                                    1-   74     	extern	_PWM1DUTY
+                                    1-   75     	extern	_PS1CV
+                                    1-   76     	extern	_BZ1CR
+                                    1-   77     	extern	_IRCR
+                                    1-   78     	extern	_TBHP
+                                    1-   79     	extern	_TBHD
+                                    1-   80     	extern	_P2CR1
+                                    1-   81     	extern	_PWM2DUTY
+                                    1-   82     	extern	_OSCCR
+                                    1-   83     	extern	_TMR3
+                                    1-   84     	extern	_T3CR1
+                                    1-   85     	extern	_T3CR2
+                                    1-   86     	extern	_PWM3DUTY
+                                    1-   87     	extern	_PS3CV
+                                    1-   88     	extern	_P4CR1
+                                    1-   89     	extern	_PWM4DUTY
+                                    1-   90     	extern	_P5CR1
+                                    1-   91     	extern	_PWM5DUTY
+                                    1-   92     	extern	_PWM5RH
+                                    1-   93     	extern	_IOSTA
+                                    1-   94     	extern	_IOSTB
+                                    1-   95     	extern	_APHCON
+                                    1-   96     	extern	_PS0CV
+                                    1-   97     	extern	_BODCON
+                                    1-   98     	extern	_CMPCR
+                                    1-   99     	extern	_PCON1
+                                    1-  100     	extern	_T0MD
+                                    1-  102     	extern PSAVE
+                                    1-  103     	extern SSAVE
+                                    1-  104     	extern WSAVE
+                                    1-  105     	extern STK12
+                                    1-  106     	extern STK11
+                                    1-  107     	extern STK10
+                                    1-  108     	extern STK09
+                                    1-  109     	extern STK08
+                                    1-  110     	extern STK07
+                                    1-  111     	extern STK06
+                                    1-  112     	extern STK05
+                                    1-  113     	extern STK04
+                                    1-  114     	extern STK03
+                                    1-  115     	extern STK02
+                                    1-  116     	extern STK01
+                                    1-  117     	extern STK00
+                                    1-  118     ;--------------------------------------------------------
+                                    1-  119     ; global declarations
+                                    1-  120     ;--------------------------------------------------------
+                                    1-  121     	extern	_WS281x_RGB
+                                    1-  122     	extern	_WS281x_Style_All
+                                    1-  123     	extern	_WS281x_Style_3
+                                    1-  124     	extern	_WS281x_Style_2
+                                    1-  125     	extern	_WS281x_Style_1
+                                    1-  126     	extern	_WS281x_Style_Process
+                                    1-  127     	extern	_stylePhase
+                                    1-  128     	extern	_styleIndex
+                                    1-  129     	extern	_styleTime
+                                    1-  130     	extern	_currentStream
+                                    1-  131     	extern	_styleNum
+                                    1-  132     	extern	_styleIndexMax
+                                    1-  133     	extern	_accColor
+                                    1-  134     	extern	_backdropColor
+                                    1-  135     	extern	_userPhase
+                                    1-  137     ;--------------------------------------------------------
+                                    1-  138     ; global definitions
+                                    1-  139     ;--------------------------------------------------------
+                                    1-  140     .segment "uninit"
+     0000                           1-  141     _accColor:
+                                    1-  142     	.res	3
+                                    1-  145     .segment "uninit"
+     0000                           1-  146     _backdropColor:
+                                    1-  147     	.res	3
+                                    1-  150     .segment "uninit"
+     0000                           1-  151     _userPhase:
+                                    1-  152     	.res	1
+                                    1-  155     ;--------------------------------------------------------
+                                    1-  156     ; absolute symbol definitions
+                                    1-  157     ;--------------------------------------------------------
+                                    1-  158     ;--------------------------------------------------------
+                                    1-  159     ; compiler-defined variables
+                                    1-  160     ;--------------------------------------------------------
+                                    1-  161     .segment "uninit"
+     0000                           1-  162     r0x101B:
+                                    1-  163     	.res	1
+                                    1-  164     .segment "uninit"
+     0000                           1-  165     r0x101C:
+                                    1-  166     	.res	1
+                                    1-  167     .segment "uninit"
+     0000                           1-  168     r0x101D:
+                                    1-  169     	.res	1
+                                    1-  170     .segment "uninit"
+     0000                           1-  171     r0x101E:
+                                    1-  172     	.res	1
+                                    1-  173     .segment "uninit"
+     0000                           1-  174     r0x101F:
+                                    1-  175     	.res	1
+                                    1-  176     .segment "uninit"
+     0000                           1-  177     r0x1016:
+                                    1-  178     	.res	1
+                                    1-  179     .segment "uninit"
+     0000                           1-  180     r0x1017:
+                                    1-  181     	.res	1
+                                    1-  182     .segment "uninit"
+     0000                           1-  183     r0x1018:
+                                    1-  184     	.res	1
+                                    1-  185     .segment "uninit"
+     0000                           1-  186     r0x1019:
+                                    1-  187     	.res	1
+                                    1-  188     .segment "uninit"
+     0000                           1-  189     r0x101A:
+                                    1-  190     	.res	1
+                                    1-  191     .segment "uninit"
+     0000                           1-  192     r0x1013:
+                                    1-  193     	.res	1
+                                    1-  194     .segment "uninit"
+     0000                           1-  195     r0x1014:
+                                    1-  196     	.res	1
+                                    1-  197     .segment "uninit"
+     0000                           1-  198     r0x1015:
+                                    1-  199     	.res	1
+                                    1-  200     .segment "uninit"
+     0000                           1-  201     r0x1010:
+                                    1-  202     	.res	1
+                                    1-  203     .segment "uninit"
+     0000                           1-  204     r0x1011:
+                                    1-  205     	.res	1
+                                    1-  206     .segment "uninit"
+     0000                           1-  207     r0x1012:
+                                    1-  208     	.res	1
+                                    1-  209     .segment "uninit"
+     0000                           1-  210     _WS281x_Style_3_currentColor_65536_60:
+                                    1-  211     	.res	3
+                                    1-  213     ;--------------------------------------------------------
+                                    1-  214     ; initialized data
+                                    1-  215     ;--------------------------------------------------------
+                                    1-  217     .segment "idata"
+     0000                           1-  218     _stylePhase:
+     0000 0000                      1-  219     	dw	0x00
+                                    1-  223     .segment "idata"
+     0000                           1-  224     _styleIndex:
+     0000 0000                      1-  225     	dw	0x00
+                                    1-  229     .segment "idata"
+     0000                           1-  230     _styleTime:
+     0000 0000 0000                 1-  231     	dw	0x00, 0x00
+                                    1-  235     .segment "idata"
+     0000                           1-  236     _currentStream:
+     0000 0000                      1-  237     	dw	0x00
+                                    1-  241     .segment "idata"
+     0000                           1-  242     _styleNum:
+     0000 0000                      1-  243     	dw	0x00
+                                    1-  247     .segment "idata"
+     0000                           1-  248     _styleIndexMax:
+     0000 0000                      1-  249     	dw	0x00
+                                    1-  252     ;--------------------------------------------------------
+                                    1-  253     ; overlayable items in internal ram 
+                                    1-  254     ;--------------------------------------------------------
+                                    1-  255     ;	udata_ovr
+                                    1-  256     ;--------------------------------------------------------
+                                    1-  257     ; code
+                                    1-  258     ;--------------------------------------------------------
+                                    1-  259     ;***
+                                    1-  260     ;  pBlock Stats: dbName = C
+                                    1-  261     ;***
+                                    1-  262     ;has an exit
+                                    1-  263     ;functions called:
+                                    1-  264     ;   _WS281x_Drive_Write_Byte
+                                    1-  265     ;   _WS281x_Drive_Write_Byte
+                                    1-  266     ;   _WS281x_Drive_Write_Byte
+                                    1-  267     ;   _WS281x_Drive_Write_Byte
+                                    1-  268     ;   _WS281x_Drive_Write_Byte
+                                    1-  269     ;   _WS281x_Drive_Write_Byte
+                                    1-  270     ;5 compiler assigned registers:
+                                    1-  271     ;   r0x1010
+                                    1-  272     ;   STK00
+                                    1-  273     ;   r0x1011
+                                    1-  274     ;   STK01
+                                    1-  275     ;   r0x1012
+                                    1-  276     ;; Starting pCode block
+                                    1-  277     .segment "code"; module=WS281x, function=_WS281x_RGB
+                                    1-  279     ;local variable name mapping:
+     0000                           1-  283     _WS281x_RGB:
+                                    1-  284     ; 2 exit points
+                                    1-  285     	.line	230, "Hardware\WS281x.c"; 	void WS281x_RGB(uint8_t R,uint8_t G,uint8_t B) {
+                                    1-  286     	BANKSEL	r0x1010
+     0000 00rr                      1-  287     	MOVAR	r0x1010
+     0001 01rr                      1-  288     	MOVR	STK00,W
+                                    1-  289     	BANKSEL	r0x1011
+     0002 00rr                      1-  290     	MOVAR	r0x1011
+     0003 01rr                      1-  291     	MOVR	STK01,W
+                                    1-  292     	BANKSEL	r0x1012
+     0004 00rr                      1-  293     	MOVAR	r0x1012
+                                    1-  294     	.line	231, "Hardware\WS281x.c"; 	WS281x_Drive_Write_Byte(G);
+                                    1-  295     	BANKSEL	r0x1011
+     0005 01rr                      1-  296     	MOVR	r0x1011,W
+     0006 2rrr                      1-  297     	LCALL	_WS281x_Drive_Write_Byte
+                                    1-  298     	.line	232, "Hardware\WS281x.c"; 	WS281x_Drive_Write_Byte(R);
+                                    1-  299     	BANKSEL	r0x1010
+     0007 01rr                      1-  300     	MOVR	r0x1010,W
+     0008 2rrr                      1-  301     	LCALL	_WS281x_Drive_Write_Byte
+                                    1-  302     	.line	233, "Hardware\WS281x.c"; 	WS281x_Drive_Write_Byte(B);
+                                    1-  303     	BANKSEL	r0x1012
+     0009 01rr                      1-  304     	MOVR	r0x1012,W
+     000A 2rrr                      1-  305     	LCALL	_WS281x_Drive_Write_Byte
+                                    1-  306     	.line	234, "Hardware\WS281x.c"; 	}
+                                    1-  307     	RETURN	
+     000B 0010                      3-   26 m1      ret
+                                    1-  308     ; exit point of _WS281x_RGB
+                                    1-  310     ;***
+                                    1-  311     ;  pBlock Stats: dbName = C
+                                    1-  312     ;***
+                                    1-  313     ;has an exit
+                                    1-  314     ;functions called:
+                                    1-  315     ;   _WS281x_RGB
+                                    1-  316     ;   _WS281x_RGB
+                                    1-  317     ;5 compiler assigned registers:
+                                    1-  318     ;   r0x1013
+                                    1-  319     ;   STK00
+                                    1-  320     ;   r0x1014
+                                    1-  321     ;   STK01
+                                    1-  322     ;   r0x1015
+                                    1-  323     ;; Starting pCode block
+                                    1-  324     .segment "code"; module=WS281x, function=_WS281x_Style_All
+                                    1-  326     ;local variable name mapping:
+     0000                           1-  330     _WS281x_Style_All:
+                                    1-  331     ; 2 exit points
+                                    1-  332     	.line	209, "Hardware\WS281x.c"; 	void WS281x_Style_All(uint8_t R, uint8_t G, uint8_t B) {
+                                    1-  333     	BANKSEL	r0x1013
+     0000 00rr                      1-  334     	MOVAR	r0x1013
+     0001 01rr                      1-  335     	MOVR	STK00,W
+                                    1-  336     	BANKSEL	r0x1014
+     0002 00rr                      1-  337     	MOVAR	r0x1014
+     0003 01rr                      1-  338     	MOVR	STK01,W
+                                    1-  339     	BANKSEL	r0x1015
+     0004 00rr                      1-  340     	MOVAR	r0x1015
+                                    1-  341     ;;swapping arguments (AOP_TYPEs 1/3)
+                                    1-  342     ;;unsigned compare: left >= lit (0x3=3), size=1
+                                    1-  343     	.line	210, "Hardware\WS281x.c"; 	switch(stylePhase) {
+     0005 2103                      1-  344     	MOVIA	0x03
+                                    1-  345     	BANKSEL	_stylePhase
+     0006 04rr                      1-  346     	SUBAR	_stylePhase,W
+     0007 0C03                      1-  347     	BTRSC	STATUS,0
+     0008 3rrr                      1-  348     	LGOTO	_00372_DS_
+     0009 21rr                      1-  349     	MOVIA	((_00387_DS_ >> 8) & 0xff)
+     000A 008A                      1-  350     	MOVAR	PCHBUF
+     000B 01rr                      1-  351     	MOVR	_stylePhase,W
+     000C 25rr                      1-  352     	ADDIA	_00387_DS_
+     000D 0C03                      1-  353     	BTRSC	STATUS,0
+     000E 058A                      1-  354     	INCR	PCHBUF,F
+     000F 0082                      1-  355     	MOVAR	PCL
+     0010                           1-  356     _00387_DS_:
+     0010 3rrr                      1-  357     	LGOTO	_00363_DS_
+     0011 3rrr                      1-  358     	LGOTO	_00366_DS_
+     0012 3rrr                      1-  359     	LGOTO	_00372_DS_
+     0013                           1-  360     _00363_DS_:
+                                    1-  361     	.line	213, "Hardware\WS281x.c"; 	if(styleTime == 0) {
+                                    1-  362     	BANKSEL	_styleTime
+     0013 01rr                      1-  363     	MOVR	_styleTime,W
+     0014 11rr                      1-  364     	IORAR	(_styleTime + 1),W
+     0015 0903                      1-  365     	BTRSS	STATUS,2
+     0016 3rrr                      1-  366     	LGOTO	_00372_DS_
+                                    1-  367     	.line	214, "Hardware\WS281x.c"; 	styleIndex = 0;
+                                    1-  368     	BANKSEL	_styleIndex
+     0017 02rr                      1-  369     	CLRR	_styleIndex
+                                    1-  370     	.line	215, "Hardware\WS281x.c"; 	stylePhase++;
+                                    1-  371     	BANKSEL	_stylePhase
+     0018 05rr                      1-  372     	INCR	_stylePhase,F
+                                    1-  373     	.line	217, "Hardware\WS281x.c"; 	} break;
+     0019 3rrr                      1-  374     	LGOTO	_00372_DS_
+     001A                           1-  375     _00366_DS_:
+                                    1-  376     	.line	219, "Hardware\WS281x.c"; 	for(styleIndex = 0; styleIndex < _SET_LED_NUM_; styleIndex++) {
+                                    1-  377     	BANKSEL	_styleIndex
+     001A 02rr                      1-  378     	CLRR	_styleIndex
+     001B                           1-  379     _00370_DS_:
+                                    1-  380     	.line	220, "Hardware\WS281x.c"; 	WS281x_RGB(R, G, B);
+                                    1-  381     	BANKSEL	r0x1015
+     001B 01rr                      1-  382     	MOVR	r0x1015,W
+     001C 00rr                      1-  383     	MOVAR	STK01
+                                    1-  384     	BANKSEL	r0x1014
+     001D 01rr                      1-  385     	MOVR	r0x1014,W
+     001E 00rr                      1-  386     	MOVAR	STK00
+                                    1-  387     	BANKSEL	r0x1013
+     001F 01rr                      1-  388     	MOVR	r0x1013,W
+     0020 2rrr                      1-  389     	LCALL	_WS281x_RGB
+                                    1-  390     	.line	219, "Hardware\WS281x.c"; 	for(styleIndex = 0; styleIndex < _SET_LED_NUM_; styleIndex++) {
+                                    1-  391     	BANKSEL	_styleIndex
+     0021 05rr                      1-  392     	INCR	_styleIndex,F
+                                    1-  393     ;;unsigned compare: left < lit (0x14=20), size=1
+     0022 2114                      1-  394     	MOVIA	0x14
+     0023 04rr                      1-  395     	SUBAR	_styleIndex,W
+     0024 0803                      1-  396     	BTRSS	STATUS,0
+     0025 3rrr                      1-  397     	LGOTO	_00370_DS_
+                                    1-  398     	.line	222, "Hardware\WS281x.c"; 	stylePhase = _Style_Idle_Phase_;
+     0026 2163                      1-  399     	MOVIA	0x63
+                                    1-  400     	BANKSEL	_stylePhase
+     0027 00rr                      1-  401     	MOVAR	_stylePhase
+     0028                           1-  402     _00372_DS_:
+                                    1-  403     	.line	228, "Hardware\WS281x.c"; 	}
+                                    1-  404     	RETURN	
+     0028 0010                      3-   26 m1      ret
+                                    1-  405     ; exit point of _WS281x_Style_All
+                                    1-  407     ;***
+                                    1-  408     ;  pBlock Stats: dbName = C
+                                    1-  409     ;***
+                                    1-  410     ;has an exit
+                                    1-  411     ;functions called:
+                                    1-  412     ;   _WS281x_RGB
+                                    1-  413     ;   _WS281x_RGB
+                                    1-  414     ;   _WS281x_RGB
+                                    1-  415     ;   _WS281x_RGB
+                                    1-  416     ;7 compiler assigned registers:
+                                    1-  417     ;   r0x1016
+                                    1-  418     ;   r0x1017
+                                    1-  419     ;   r0x1018
+                                    1-  420     ;   STK01
+                                    1-  421     ;   STK00
+                                    1-  422     ;   r0x1019
+                                    1-  423     ;   r0x101A
+                                    1-  424     ;; Starting pCode block
+                                    1-  425     .segment "code"; module=WS281x, function=_WS281x_Style_3
+     0000                           1-  427     _WS281x_Style_3:
+                                    1-  428     ; 2 exit points
+                                    1-  429     ;;swapping arguments (AOP_TYPEs 1/3)
+                                    1-  430     ;;unsigned compare: left >= lit (0x3=3), size=1
+                                    1-  431     	.line	159, "Hardware\WS281x.c"; 	switch(stylePhase) {
+     0000 2103                      1-  432     	MOVIA	0x03
+                                    1-  433     	BANKSEL	_stylePhase
+     0001 04rr                      1-  434     	SUBAR	_stylePhase,W
+     0002 0C03                      1-  435     	BTRSC	STATUS,0
+     0003 3rrr                      1-  436     	LGOTO	_00301_DS_
+     0004 21rr                      1-  437     	MOVIA	((_00358_DS_ >> 8) & 0xff)
+     0005 008A                      1-  438     	MOVAR	PCHBUF
+     0006 01rr                      1-  439     	MOVR	_stylePhase,W
+     0007 25rr                      1-  440     	ADDIA	_00358_DS_
+     0008 0C03                      1-  441     	BTRSC	STATUS,0
+     0009 058A                      1-  442     	INCR	PCHBUF,F
+     000A 0082                      1-  443     	MOVAR	PCL
+     000B                           1-  444     _00358_DS_:
+     000B 3rrr                      1-  445     	LGOTO	_00267_DS_
+     000C 3rrr                      1-  446     	LGOTO	_00270_DS_
+     000D 3rrr                      1-  447     	LGOTO	_00284_DS_
+     000E                           1-  448     _00267_DS_:
+                                    1-  449     	.line	162, "Hardware\WS281x.c"; 	if(styleTime == 0) {
+                                    1-  450     	BANKSEL	_styleTime
+     000E 01rr                      1-  451     	MOVR	_styleTime,W
+     000F 11rr                      1-  452     	IORAR	(_styleTime + 1),W
+     0010 0903                      1-  453     	BTRSS	STATUS,2
+     0011 3rrr                      1-  454     	LGOTO	_00301_DS_
+                                    1-  455     ;;gen.c:6903: size=0, offset=0, AOP_TYPE (res)=8
+                                    1-  456     	.line	163, "Hardware\WS281x.c"; 	currentColor[_R_] = 0x00;
+                                    1-  457     	BANKSEL	_WS281x_Style_3_currentColor_65536_60
+     0012 02rr                      1-  458     	CLRR	(_WS281x_Style_3_currentColor_65536_60 + 0)
+                                    1-  459     ;;gen.c:6903: size=0, offset=0, AOP_TYPE (res)=8
+                                    1-  460     	.line	164, "Hardware\WS281x.c"; 	currentColor[_G_] = 0x00;
+     0013 02rr                      1-  461     	CLRR	(_WS281x_Style_3_currentColor_65536_60 + 1)
+                                    1-  462     ;;gen.c:6903: size=0, offset=0, AOP_TYPE (res)=8
+                                    1-  463     	.line	165, "Hardware\WS281x.c"; 	currentColor[_B_] = 0x00;
+     0014 02rr                      1-  464     	CLRR	(_WS281x_Style_3_currentColor_65536_60 + 2)
+                                    1-  465     	.line	166, "Hardware\WS281x.c"; 	stylePhase++;
+                                    1-  466     	BANKSEL	_stylePhase
+     0015 05rr                      1-  467     	INCR	_stylePhase,F
+                                    1-  468     	.line	168, "Hardware\WS281x.c"; 	} break;
+     0016 3rrr                      1-  469     	LGOTO	_00301_DS_
+     0017                           1-  470     _00270_DS_:
+                                    1-  471     	.line	170, "Hardware\WS281x.c"; 	if(styleTime == 0) {
+                                    1-  472     	BANKSEL	_styleTime
+     0017 01rr                      1-  473     	MOVR	_styleTime,W
+     0018 11rr                      1-  474     	IORAR	(_styleTime + 1),W
+     0019 0903                      1-  475     	BTRSS	STATUS,2
+     001A 3rrr                      1-  476     	LGOTO	_00301_DS_
+                                    1-  477     	.line	171, "Hardware\WS281x.c"; 	for(styleIndex = 0; styleIndex < _SET_LED_NUM_; styleIndex++) {
+                                    1-  478     	BANKSEL	_styleIndex
+     001B 02rr                      1-  479     	CLRR	_styleIndex
+     001C                           1-  480     _00297_DS_:
+                                    1-  481     	.line	172, "Hardware\WS281x.c"; 	WS281x_RGB(currentColor[0], currentColor[1], currentColor[2]);
+                                    1-  482     	BANKSEL	_WS281x_Style_3_currentColor_65536_60
+     001C 01rr                      1-  483     	MOVR	(_WS281x_Style_3_currentColor_65536_60 + 0),W
+                                    1-  484     	BANKSEL	r0x1016
+     001D 00rr                      1-  485     	MOVAR	r0x1016
+                                    1-  486     	BANKSEL	_WS281x_Style_3_currentColor_65536_60
+     001E 01rr                      1-  487     	MOVR	(_WS281x_Style_3_currentColor_65536_60 + 1),W
+                                    1-  488     	BANKSEL	r0x1017
+     001F 00rr                      1-  489     	MOVAR	r0x1017
+                                    1-  490     	BANKSEL	_WS281x_Style_3_currentColor_65536_60
+     0020 01rr                      1-  491     	MOVR	(_WS281x_Style_3_currentColor_65536_60 + 2),W
+                                    1-  492     	BANKSEL	r0x1018
+     0021 00rr                      1-  493     	MOVAR	r0x1018
+     0022 00rr                      1-  494     	MOVAR	STK01
+                                    1-  495     	BANKSEL	r0x1017
+     0023 01rr                      1-  496     	MOVR	r0x1017,W
+     0024 00rr                      1-  497     	MOVAR	STK00
+                                    1-  498     	BANKSEL	r0x1016
+     0025 01rr                      1-  499     	MOVR	r0x1016,W
+     0026 2rrr                      1-  500     	LCALL	_WS281x_RGB
+                                    1-  501     	.line	171, "Hardware\WS281x.c"; 	for(styleIndex = 0; styleIndex < _SET_LED_NUM_; styleIndex++) {
+                                    1-  502     	BANKSEL	_styleIndex
+     0027 05rr                      1-  503     	INCR	_styleIndex,F
+                                    1-  504     ;;unsigned compare: left < lit (0x14=20), size=1
+     0028 2114                      1-  505     	MOVIA	0x14
+     0029 04rr                      1-  506     	SUBAR	_styleIndex,W
+     002A 0803                      1-  507     	BTRSS	STATUS,0
+     002B 3rrr                      1-  508     	LGOTO	_00297_DS_
+                                    1-  509     	.line	174, "Hardware\WS281x.c"; 	if(currentColor[_R_] < accColor[_R_])
+                                    1-  510     	BANKSEL	_WS281x_Style_3_currentColor_65536_60
+     002C 01rr                      1-  511     	MOVR	(_WS281x_Style_3_currentColor_65536_60 + 0),W
+                                    1-  512     	BANKSEL	r0x1016
+     002D 00rr                      1-  513     	MOVAR	r0x1016
+                                    1-  514     	BANKSEL	_accColor
+     002E 01rr                      1-  515     	MOVR	(_accColor + 0),W
+                                    1-  516     	BANKSEL	r0x1017
+     002F 00rr                      1-  517     	MOVAR	r0x1017
+                                    1-  518     	BANKSEL	r0x1016
+     0030 04rr                      1-  519     	SUBAR	r0x1016,W
+     0031 0C03                      1-  520     	BTRSC	STATUS,0
+     0032 3rrr                      1-  521     	LGOTO	_00273_DS_
+                                    1-  522     	.line	175, "Hardware\WS281x.c"; 	currentColor[_R_]++;
+     0033 05rr                      1-  523     	INCR	r0x1016,F
+                                    1-  524     ;;gen.c:6903: size=0, offset=0, AOP_TYPE (res)=8
+     0034 01rr                      1-  525     	MOVR	r0x1016,W
+                                    1-  526     	BANKSEL	_WS281x_Style_3_currentColor_65536_60
+     0035 00rr                      1-  527     	MOVAR	(_WS281x_Style_3_currentColor_65536_60 + 0)
+     0036                           1-  528     _00273_DS_:
+                                    1-  529     	.line	176, "Hardware\WS281x.c"; 	if(currentColor[_G_] < accColor[_G_])
+                                    1-  530     	BANKSEL	_WS281x_Style_3_currentColor_65536_60
+     0036 01rr                      1-  531     	MOVR	(_WS281x_Style_3_currentColor_65536_60 + 1),W
+                                    1-  532     	BANKSEL	r0x1016
+     0037 00rr                      1-  533     	MOVAR	r0x1016
+                                    1-  534     	BANKSEL	_accColor
+     0038 01rr                      1-  535     	MOVR	(_accColor + 1),W
+                                    1-  536     	BANKSEL	r0x1017
+     0039 00rr                      1-  537     	MOVAR	r0x1017
+                                    1-  538     	BANKSEL	r0x1016
+     003A 04rr                      1-  539     	SUBAR	r0x1016,W
+     003B 0C03                      1-  540     	BTRSC	STATUS,0
+     003C 3rrr                      1-  541     	LGOTO	_00275_DS_
+                                    1-  542     	.line	177, "Hardware\WS281x.c"; 	currentColor[_G_]++;
+     003D 05rr                      1-  543     	INCR	r0x1016,F
+                                    1-  544     ;;gen.c:6903: size=0, offset=0, AOP_TYPE (res)=8
+     003E 01rr                      1-  545     	MOVR	r0x1016,W
+                                    1-  546     	BANKSEL	_WS281x_Style_3_currentColor_65536_60
+     003F 00rr                      1-  547     	MOVAR	(_WS281x_Style_3_currentColor_65536_60 + 1)
+     0040                           1-  548     _00275_DS_:
+                                    1-  549     	.line	178, "Hardware\WS281x.c"; 	if(currentColor[_B_] < accColor[_B_])
+                                    1-  550     	BANKSEL	_WS281x_Style_3_currentColor_65536_60
+     0040 01rr                      1-  551     	MOVR	(_WS281x_Style_3_currentColor_65536_60 + 2),W
+                                    1-  552     	BANKSEL	r0x1016
+     0041 00rr                      1-  553     	MOVAR	r0x1016
+                                    1-  554     	BANKSEL	_accColor
+     0042 01rr                      1-  555     	MOVR	(_accColor + 2),W
+                                    1-  556     	BANKSEL	r0x1017
+     0043 00rr                      1-  557     	MOVAR	r0x1017
+                                    1-  558     	BANKSEL	r0x1016
+     0044 04rr                      1-  559     	SUBAR	r0x1016,W
+     0045 0C03                      1-  560     	BTRSC	STATUS,0
+     0046 3rrr                      1-  561     	LGOTO	_00277_DS_
+                                    1-  562     	.line	179, "Hardware\WS281x.c"; 	currentColor[_B_]++;
+     0047 05rr                      1-  563     	INCR	r0x1016,F
+                                    1-  564     ;;gen.c:6903: size=0, offset=0, AOP_TYPE (res)=8
+     0048 01rr                      1-  565     	MOVR	r0x1016,W
+                                    1-  566     	BANKSEL	_WS281x_Style_3_currentColor_65536_60
+     0049 00rr                      1-  567     	MOVAR	(_WS281x_Style_3_currentColor_65536_60 + 2)
+     004A                           1-  568     _00277_DS_:
+                                    1-  569     	.line	181, "Hardware\WS281x.c"; 	if((currentColor[_R_] == accColor[_R_]) && 
+                                    1-  570     	BANKSEL	_WS281x_Style_3_currentColor_65536_60
+     004A 01rr                      1-  571     	MOVR	(_WS281x_Style_3_currentColor_65536_60 + 0),W
+                                    1-  572     	BANKSEL	r0x1016
+     004B 00rr                      1-  573     	MOVAR	r0x1016
+                                    1-  574     	BANKSEL	_accColor
+     004C 01rr                      1-  575     	MOVR	(_accColor + 0),W
+                                    1-  576     	BANKSEL	r0x1017
+     004D 00rr                      1-  577     	MOVAR	r0x1017
+                                    1-  578     	BANKSEL	r0x1016
+     004E 12rr                      1-  579     	XORAR	r0x1016,W
+     004F 0903                      1-  580     	BTRSS	STATUS,2
+     0050 3rrr                      1-  581     	LGOTO	_00279_DS_
+                                    1-  582     	.line	182, "Hardware\WS281x.c"; 	(currentColor[_G_] == accColor[_G_]) && 
+                                    1-  583     	BANKSEL	_WS281x_Style_3_currentColor_65536_60
+     0051 01rr                      1-  584     	MOVR	(_WS281x_Style_3_currentColor_65536_60 + 1),W
+                                    1-  585     	BANKSEL	r0x1016
+     0052 00rr                      1-  586     	MOVAR	r0x1016
+                                    1-  587     	BANKSEL	_accColor
+     0053 01rr                      1-  588     	MOVR	(_accColor + 1),W
+                                    1-  589     	BANKSEL	r0x1017
+     0054 00rr                      1-  590     	MOVAR	r0x1017
+                                    1-  591     	BANKSEL	r0x1016
+     0055 12rr                      1-  592     	XORAR	r0x1016,W
+     0056 0903                      1-  593     	BTRSS	STATUS,2
+     0057 3rrr                      1-  594     	LGOTO	_00279_DS_
+                                    1-  595     	.line	183, "Hardware\WS281x.c"; 	(currentColor[_B_] == accColor[_B_])){
+                                    1-  596     	BANKSEL	_WS281x_Style_3_currentColor_65536_60
+     0058 01rr                      1-  597     	MOVR	(_WS281x_Style_3_currentColor_65536_60 + 2),W
+                                    1-  598     	BANKSEL	r0x1016
+     0059 00rr                      1-  599     	MOVAR	r0x1016
+                                    1-  600     	BANKSEL	_accColor
+     005A 01rr                      1-  601     	MOVR	(_accColor + 2),W
+                                    1-  602     	BANKSEL	r0x1017
+     005B 00rr                      1-  603     	MOVAR	r0x1017
+                                    1-  604     	BANKSEL	r0x1016
+     005C 12rr                      1-  605     	XORAR	r0x1016,W
+     005D 0903                      1-  606     	BTRSS	STATUS,2
+     005E 3rrr                      1-  607     	LGOTO	_00279_DS_
+                                    1-  608     	.line	184, "Hardware\WS281x.c"; 	stylePhase = 2;
+     005F 2102                      1-  609     	MOVIA	0x02
+                                    1-  610     	BANKSEL	_stylePhase
+     0060 00rr                      1-  611     	MOVAR	_stylePhase
+     0061                           1-  612     _00279_DS_:
+                                    1-  613     	.line	186, "Hardware\WS281x.c"; 	styleTime = 2;
+     0061 2102                      1-  614     	MOVIA	0x02
+                                    1-  615     	BANKSEL	_styleTime
+     0062 00rr                      1-  616     	MOVAR	_styleTime
+     0063 02rr                      1-  617     	CLRR	(_styleTime + 1)
+                                    1-  618     	.line	188, "Hardware\WS281x.c"; 	} break;
+     0064 3rrr                      1-  619     	LGOTO	_00301_DS_
+     0065                           1-  620     _00284_DS_:
+                                    1-  621     	.line	190, "Hardware\WS281x.c"; 	if(styleTime == 0) {
+                                    1-  622     	BANKSEL	_styleTime
+     0065 01rr                      1-  623     	MOVR	_styleTime,W
+     0066 11rr                      1-  624     	IORAR	(_styleTime + 1),W
+     0067 0903                      1-  625     	BTRSS	STATUS,2
+     0068 3rrr                      1-  626     	LGOTO	_00301_DS_
+                                    1-  627     	.line	191, "Hardware\WS281x.c"; 	if(currentColor[_R_] > 0x00)
+                                    1-  628     	BANKSEL	_WS281x_Style_3_currentColor_65536_60
+     0069 01rr                      1-  629     	MOVR	(_WS281x_Style_3_currentColor_65536_60 + 0),W
+                                    1-  630     	BANKSEL	r0x1016
+     006A 00rr                      1-  631     	MOVAR	r0x1016
+     006B 0D03                      1-  632     	BTRSC	STATUS,2
+     006C 3rrr                      1-  633     	LGOTO	_00286_DS_
+                                    1-  634     	.line	192, "Hardware\WS281x.c"; 	currentColor[_R_]--;
+     006D 06rr                      1-  635     	DECR	r0x1016,F
+                                    1-  636     ;;gen.c:6903: size=0, offset=0, AOP_TYPE (res)=8
+     006E 01rr                      1-  637     	MOVR	r0x1016,W
+                                    1-  638     	BANKSEL	_WS281x_Style_3_currentColor_65536_60
+     006F 00rr                      1-  639     	MOVAR	(_WS281x_Style_3_currentColor_65536_60 + 0)
+     0070                           1-  640     _00286_DS_:
+                                    1-  641     	.line	193, "Hardware\WS281x.c"; 	if(currentColor[_G_] > 0x00)
+                                    1-  642     	BANKSEL	_WS281x_Style_3_currentColor_65536_60
+     0070 01rr                      1-  643     	MOVR	(_WS281x_Style_3_currentColor_65536_60 + 1),W
+                                    1-  644     	BANKSEL	r0x1016
+     0071 00rr                      1-  645     	MOVAR	r0x1016
+     0072 0D03                      1-  646     	BTRSC	STATUS,2
+     0073 3rrr                      1-  647     	LGOTO	_00288_DS_
+                                    1-  648     	.line	194, "Hardware\WS281x.c"; 	currentColor[_G_]--;
+     0074 06rr                      1-  649     	DECR	r0x1016,F
+                                    1-  650     ;;gen.c:6903: size=0, offset=0, AOP_TYPE (res)=8
+     0075 01rr                      1-  651     	MOVR	r0x1016,W
+                                    1-  652     	BANKSEL	_WS281x_Style_3_currentColor_65536_60
+     0076 00rr                      1-  653     	MOVAR	(_WS281x_Style_3_currentColor_65536_60 + 1)
+     0077                           1-  654     _00288_DS_:
+                                    1-  655     	.line	195, "Hardware\WS281x.c"; 	if(currentColor[_B_] > 0x00)
+                                    1-  656     	BANKSEL	_WS281x_Style_3_currentColor_65536_60
+     0077 01rr                      1-  657     	MOVR	(_WS281x_Style_3_currentColor_65536_60 + 2),W
+                                    1-  658     	BANKSEL	r0x1016
+     0078 00rr                      1-  659     	MOVAR	r0x1016
+     0079 0D03                      1-  660     	BTRSC	STATUS,2
+     007A 3rrr                      1-  661     	LGOTO	_00290_DS_
+                                    1-  662     	.line	196, "Hardware\WS281x.c"; 	currentColor[_B_]--;
+     007B 06rr                      1-  663     	DECR	r0x1016,F
+                                    1-  664     ;;gen.c:6903: size=0, offset=0, AOP_TYPE (res)=8
+     007C 01rr                      1-  665     	MOVR	r0x1016,W
+                                    1-  666     	BANKSEL	_WS281x_Style_3_currentColor_65536_60
+     007D 00rr                      1-  667     	MOVAR	(_WS281x_Style_3_currentColor_65536_60 + 2)
+     007E                           1-  668     _00290_DS_:
+                                    1-  669     	.line	197, "Hardware\WS281x.c"; 	for(styleIndex = 0; styleIndex < _SET_LED_NUM_; styleIndex++) {
+                                    1-  670     	BANKSEL	_styleIndex
+     007E 02rr                      1-  671     	CLRR	_styleIndex
+     007F                           1-  672     _00299_DS_:
+                                    1-  673     	.line	198, "Hardware\WS281x.c"; 	WS281x_RGB(currentColor[0], currentColor[1], currentColor[2]);
+                                    1-  674     	BANKSEL	_WS281x_Style_3_currentColor_65536_60
+     007F 01rr                      1-  675     	MOVR	(_WS281x_Style_3_currentColor_65536_60 + 0),W
+                                    1-  676     	BANKSEL	r0x1016
+     0080 00rr                      1-  677     	MOVAR	r0x1016
+                                    1-  678     	BANKSEL	_WS281x_Style_3_currentColor_65536_60
+     0081 01rr                      1-  679     	MOVR	(_WS281x_Style_3_currentColor_65536_60 + 1),W
+                                    1-  680     	BANKSEL	r0x1017
+     0082 00rr                      1-  681     	MOVAR	r0x1017
+                                    1-  682     	BANKSEL	_WS281x_Style_3_currentColor_65536_60
+     0083 01rr                      1-  683     	MOVR	(_WS281x_Style_3_currentColor_65536_60 + 2),W
+                                    1-  684     	BANKSEL	r0x1018
+     0084 00rr                      1-  685     	MOVAR	r0x1018
+     0085 00rr                      1-  686     	MOVAR	STK01
+                                    1-  687     	BANKSEL	r0x1017
+     0086 01rr                      1-  688     	MOVR	r0x1017,W
+     0087 00rr                      1-  689     	MOVAR	STK00
+                                    1-  690     	BANKSEL	r0x1016
+     0088 01rr                      1-  691     	MOVR	r0x1016,W
+     0089 2rrr                      1-  692     	LCALL	_WS281x_RGB
+                                    1-  693     	.line	197, "Hardware\WS281x.c"; 	for(styleIndex = 0; styleIndex < _SET_LED_NUM_; styleIndex++) {
+                                    1-  694     	BANKSEL	_styleIndex
+     008A 05rr                      1-  695     	INCR	_styleIndex,F
+                                    1-  696     ;;unsigned compare: left < lit (0x14=20), size=1
+     008B 2114                      1-  697     	MOVIA	0x14
+     008C 04rr                      1-  698     	SUBAR	_styleIndex,W
+     008D 0803                      1-  699     	BTRSS	STATUS,0
+     008E 3rrr                      1-  700     	LGOTO	_00299_DS_
+                                    1-  701     	.line	200, "Hardware\WS281x.c"; 	if((currentColor[_R_] + currentColor[_G_] + currentColor[_B_]) == 0x00){
+                                    1-  702     	BANKSEL	_WS281x_Style_3_currentColor_65536_60
+     008F 01rr                      1-  703     	MOVR	(_WS281x_Style_3_currentColor_65536_60 + 0),W
+                                    1-  704     ;;3	MOVAR	r0x1016
+                                    1-  705     	BANKSEL	r0x1017
+     0090 00rr                      1-  706     	MOVAR	r0x1017
+                                    1-  707     	BANKSEL	r0x1018
+     0091 02rr                      1-  708     	CLRR	r0x1018
+                                    1-  709     	BANKSEL	_WS281x_Style_3_currentColor_65536_60
+     0092 01rr                      1-  710     	MOVR	(_WS281x_Style_3_currentColor_65536_60 + 1),W
+                                    1-  711     	BANKSEL	r0x1016
+     0093 00rr                      1-  712     	MOVAR	r0x1016
+                                    1-  713     	BANKSEL	r0x1019
+     0094 00rr                      1-  714     	MOVAR	r0x1019
+                                    1-  715     	BANKSEL	r0x101A
+     0095 02rr                      1-  716     	CLRR	r0x101A
+                                    1-  717     	BANKSEL	r0x1019
+     0096 01rr                      1-  718     	MOVR	r0x1019,W
+                                    1-  719     	BANKSEL	r0x1017
+     0097 03rr                      1-  720     	ADDAR	r0x1017,F
+     0098 2100                      1-  721     	MOVIA	0x00
+     0099 0803                      1-  722     	BTRSS	STATUS,0
+     009A 3rrr                      1-  723     	LGOTO	_00001_DS_
+                                    1-  724     	BANKSEL	r0x101A
+     009B 05rr                      1-  725     	INCR	r0x101A,W
+     009C 0D03                      1-  726     	BTRSC	STATUS,2
+     009D 3rrr                      1-  727     	LGOTO	_00002_DS_
+     009E                           1-  728     _00001_DS_:
+                                    1-  729     	BANKSEL	r0x1018
+     009E 03rr                      1-  730     	ADDAR	r0x1018,F
+     009F                           1-  731     _00002_DS_:
+                                    1-  732     	BANKSEL	_WS281x_Style_3_currentColor_65536_60
+     009F 01rr                      1-  733     	MOVR	(_WS281x_Style_3_currentColor_65536_60 + 2),W
+                                    1-  734     	BANKSEL	r0x1016
+     00A0 00rr                      1-  735     	MOVAR	r0x1016
+                                    1-  736     	BANKSEL	r0x1019
+     00A1 00rr                      1-  737     	MOVAR	r0x1019
+                                    1-  738     	BANKSEL	r0x101A
+     00A2 02rr                      1-  739     	CLRR	r0x101A
+                                    1-  740     	BANKSEL	r0x1019
+     00A3 01rr                      1-  741     	MOVR	r0x1019,W
+                                    1-  742     	BANKSEL	r0x1017
+     00A4 03rr                      1-  743     	ADDAR	r0x1017,F
+     00A5 2100                      1-  744     	MOVIA	0x00
+     00A6 0803                      1-  745     	BTRSS	STATUS,0
+     00A7 3rrr                      1-  746     	LGOTO	_00003_DS_
+                                    1-  747     	BANKSEL	r0x101A
+     00A8 05rr                      1-  748     	INCR	r0x101A,W
+     00A9 0D03                      1-  749     	BTRSC	STATUS,2
+     00AA 3rrr                      1-  750     	LGOTO	_00004_DS_
+     00AB                           1-  751     _00003_DS_:
+                                    1-  752     	BANKSEL	r0x1018
+     00AB 03rr                      1-  753     	ADDAR	r0x1018,F
+     00AC                           1-  754     _00004_DS_:
+                                    1-  755     	BANKSEL	r0x1017
+     00AC 01rr                      1-  756     	MOVR	r0x1017,W
+                                    1-  757     	BANKSEL	r0x1018
+     00AD 11rr                      1-  758     	IORAR	r0x1018,W
+     00AE 0903                      1-  759     	BTRSS	STATUS,2
+     00AF 3rrr                      1-  760     	LGOTO	_00293_DS_
+                                    1-  761     	.line	201, "Hardware\WS281x.c"; 	stylePhase = _Style_Idle_Phase_;
+     00B0 2163                      1-  762     	MOVIA	0x63
+                                    1-  763     	BANKSEL	_stylePhase
+     00B1 00rr                      1-  764     	MOVAR	_stylePhase
+     00B2                           1-  765     _00293_DS_:
+                                    1-  766     	.line	203, "Hardware\WS281x.c"; 	styleTime = 2;
+     00B2 2102                      1-  767     	MOVIA	0x02
+                                    1-  768     	BANKSEL	_styleTime
+     00B3 00rr                      1-  769     	MOVAR	_styleTime
+     00B4 02rr                      1-  770     	CLRR	(_styleTime + 1)
+     00B5                           1-  771     _00301_DS_:
+                                    1-  772     	.line	207, "Hardware\WS281x.c"; 	}
+                                    1-  773     	RETURN	
+     00B5 0010                      3-   26 m1      ret
+                                    1-  774     ; exit point of _WS281x_Style_3
+                                    1-  776     ;***
+                                    1-  777     ;  pBlock Stats: dbName = C
+                                    1-  778     ;***
+                                    1-  779     ;has an exit
+                                    1-  780     ;functions called:
+                                    1-  781     ;   _WS281x_RGB
+                                    1-  782     ;   _WS281x_RGB
+                                    1-  783     ;   _WS281x_RGB
+                                    1-  784     ;   _WS281x_RGB
+                                    1-  785     ;   _WS281x_RGB
+                                    1-  786     ;   _WS281x_RGB
+                                    1-  787     ;   _WS281x_RGB
+                                    1-  788     ;   _WS281x_RGB
+                                    1-  789     ;7 compiler assigned registers:
+                                    1-  790     ;   r0x101B
+                                    1-  791     ;   r0x101C
+                                    1-  792     ;   r0x101D
+                                    1-  793     ;   STK01
+                                    1-  794     ;   STK00
+                                    1-  795     ;   r0x101E
+                                    1-  796     ;   r0x101F
+                                    1-  797     ;; Starting pCode block
+                                    1-  798     .segment "code"; module=WS281x, function=_WS281x_Style_2
+                                    1-  800     ;local variable name mapping:
+     0000                           1-  802     _WS281x_Style_2:
+                                    1-  803     ; 2 exit points
+                                    1-  804     	.line	114, "Hardware\WS281x.c"; 	void WS281x_Style_2(uint8_t Dir) {
+                                    1-  805     	BANKSEL	r0x101B
+     0000 00rr                      1-  806     	MOVAR	r0x101B
+                                    1-  807     	.line	115, "Hardware\WS281x.c"; 	switch(stylePhase) {
+                                    1-  808     	BANKSEL	_stylePhase
+     0001 01rr                      1-  809     	MOVR	_stylePhase,W
+     0002 0D03                      1-  810     	BTRSC	STATUS,2
+     0003 3rrr                      1-  811     	LGOTO	_00176_DS_
+     0004 01rr                      1-  812     	MOVR	_stylePhase,W
+     0005 2421                      1-  813     	XORIA	0x21
+     0006 0D03                      1-  814     	BTRSC	STATUS,2
+     0007 3rrr                      1-  815     	LGOTO	_00179_DS_
+     0008 01rr                      1-  816     	MOVR	_stylePhase,W
+     0009 2422                      1-  817     	XORIA	0x22
+     000A 0D03                      1-  818     	BTRSC	STATUS,2
+     000B 3rrr                      1-  819     	LGOTO	_00186_DS_
+     000C 3rrr                      1-  820     	LGOTO	_00206_DS_
+     000D                           1-  821     _00176_DS_:
+                                    1-  822     	.line	118, "Hardware\WS281x.c"; 	if(styleTime == 0) {
+                                    1-  823     	BANKSEL	_styleTime
+     000D 01rr                      1-  824     	MOVR	_styleTime,W
+     000E 11rr                      1-  825     	IORAR	(_styleTime + 1),W
+     000F 0903                      1-  826     	BTRSS	STATUS,2
+     0010 3rrr                      1-  827     	LGOTO	_00206_DS_
+                                    1-  828     	.line	119, "Hardware\WS281x.c"; 	styleIndex = 0;
+                                    1-  829     	BANKSEL	_styleIndex
+     0011 02rr                      1-  830     	CLRR	_styleIndex
+                                    1-  831     	.line	120, "Hardware\WS281x.c"; 	currentStream = 0;
+                                    1-  832     	BANKSEL	_currentStream
+     0012 02rr                      1-  833     	CLRR	_currentStream
+                                    1-  834     	.line	121, "Hardware\WS281x.c"; 	stylePhase = Dir;
+                                    1-  835     	BANKSEL	r0x101B
+     0013 01rr                      1-  836     	MOVR	r0x101B,W
+                                    1-  837     	BANKSEL	_stylePhase
+     0014 00rr                      1-  838     	MOVAR	_stylePhase
+                                    1-  839     	.line	123, "Hardware\WS281x.c"; 	} break;
+     0015 3rrr                      1-  840     	LGOTO	_00206_DS_
+     0016                           1-  841     _00179_DS_:
+                                    1-  842     	.line	126, "Hardware\WS281x.c"; 	if(styleTime == 0) {
+                                    1-  843     	BANKSEL	_styleTime
+     0016 01rr                      1-  844     	MOVR	_styleTime,W
+     0017 11rr                      1-  845     	IORAR	(_styleTime + 1),W
+     0018 0903                      1-  846     	BTRSS	STATUS,2
+     0019 3rrr                      1-  847     	LGOTO	_00206_DS_
+                                    1-  848     	.line	127, "Hardware\WS281x.c"; 	for(styleIndex = 0; styleIndex < currentStream; styleIndex++)
+                                    1-  849     	BANKSEL	_styleIndex
+     001A 02rr                      1-  850     	CLRR	_styleIndex
+     001B                           1-  851     _00195_DS_:
+                                    1-  852     	BANKSEL	_currentStream
+     001B 01rr                      1-  853     	MOVR	_currentStream,W
+                                    1-  854     	BANKSEL	_styleIndex
+     001C 04rr                      1-  855     	SUBAR	_styleIndex,W
+     001D 0C03                      1-  856     	BTRSC	STATUS,0
+     001E 3rrr                      1-  857     	LGOTO	_00180_DS_
+                                    1-  858     	.line	128, "Hardware\WS281x.c"; 	WS281x_RGB(accColor[_R_], accColor[_G_], accColor[_B_]);
+                                    1-  859     	BANKSEL	_accColor
+     001F 01rr                      1-  860     	MOVR	(_accColor + 0),W
+                                    1-  861     	BANKSEL	r0x101B
+     0020 00rr                      1-  862     	MOVAR	r0x101B
+                                    1-  863     	BANKSEL	_accColor
+     0021 01rr                      1-  864     	MOVR	(_accColor + 1),W
+                                    1-  865     	BANKSEL	r0x101C
+     0022 00rr                      1-  866     	MOVAR	r0x101C
+                                    1-  867     	BANKSEL	_accColor
+     0023 01rr                      1-  868     	MOVR	(_accColor + 2),W
+                                    1-  869     	BANKSEL	r0x101D
+     0024 00rr                      1-  870     	MOVAR	r0x101D
+     0025 00rr                      1-  871     	MOVAR	STK01
+                                    1-  872     	BANKSEL	r0x101C
+     0026 01rr                      1-  873     	MOVR	r0x101C,W
+     0027 00rr                      1-  874     	MOVAR	STK00
+                                    1-  875     	BANKSEL	r0x101B
+     0028 01rr                      1-  876     	MOVR	r0x101B,W
+     0029 2rrr                      1-  877     	LCALL	_WS281x_RGB
+                                    1-  878     	.line	127, "Hardware\WS281x.c"; 	for(styleIndex = 0; styleIndex < currentStream; styleIndex++)
+                                    1-  879     	BANKSEL	_styleIndex
+     002A 05rr                      1-  880     	INCR	_styleIndex,F
+     002B 3rrr                      1-  881     	LGOTO	_00195_DS_
+     002C                           1-  882     _00180_DS_:
+                                    1-  883     	.line	129, "Hardware\WS281x.c"; 	for(styleIndex = 0; styleIndex < (_SET_LED_NUM_ - currentStream); styleIndex++)
+                                    1-  884     	BANKSEL	_styleIndex
+     002C 02rr                      1-  885     	CLRR	_styleIndex
+     002D                           1-  886     _00198_DS_:
+                                    1-  887     	BANKSEL	_currentStream
+     002D 01rr                      1-  888     	MOVR	_currentStream,W
+                                    1-  889     	BANKSEL	r0x101B
+     002E 00rr                      1-  890     	MOVAR	r0x101B
+                                    1-  891     	BANKSEL	r0x101C
+     002F 02rr                      1-  892     	CLRR	r0x101C
+                                    1-  893     	BANKSEL	r0x101B
+     0030 01rr                      1-  894     	MOVR	r0x101B,W
+     0031 2714                      1-  895     	SUBIA	0x14
+     0032 00rr                      1-  896     	MOVAR	r0x101B
+     0033 2100                      1-  897     	MOVIA	0x00
+     0034 0C03                      1-  898     	BTRSC	STATUS,0
+     0035 3rrr                      1-  899     	LGOTO	_00005_DS_
+                                    1-  900     	BANKSEL	r0x101C
+     0036 05rr                      1-  901     	INCR	r0x101C,W
+     0037                           1-  902     _00005_DS_:
+     0037 2700                      1-  903     	SUBIA	0x00
+                                    1-  904     	BANKSEL	r0x101C
+     0038 00rr                      1-  905     	MOVAR	r0x101C
+                                    1-  906     	BANKSEL	_styleIndex
+     0039 01rr                      1-  907     	MOVR	_styleIndex,W
+                                    1-  908     	BANKSEL	r0x101D
+     003A 00rr                      1-  909     	MOVAR	r0x101D
+                                    1-  910     	BANKSEL	r0x101E
+     003B 02rr                      1-  911     	CLRR	r0x101E
+     003C 2100                      1-  912     	MOVIA	0x00
+     003D 2580                      1-  913     	ADDIA	0x80
+                                    1-  914     	BANKSEL	r0x101F
+     003E 00rr                      1-  915     	MOVAR	r0x101F
+                                    1-  916     	BANKSEL	r0x101C
+     003F 01rr                      1-  917     	MOVR	r0x101C,W
+     0040 2580                      1-  918     	ADDIA	0x80
+                                    1-  919     	BANKSEL	r0x101F
+     0041 04rr                      1-  920     	SUBAR	r0x101F,W
+     0042 0903                      1-  921     	BTRSS	STATUS,2
+     0043 3rrr                      1-  922     	LGOTO	_00260_DS_
+                                    1-  923     	BANKSEL	r0x101B
+     0044 01rr                      1-  924     	MOVR	r0x101B,W
+                                    1-  925     	BANKSEL	r0x101D
+     0045 04rr                      1-  926     	SUBAR	r0x101D,W
+     0046                           1-  927     _00260_DS_:
+     0046 0C03                      1-  928     	BTRSC	STATUS,0
+     0047 3rrr                      1-  929     	LGOTO	_00181_DS_
+                                    1-  930     	.line	130, "Hardware\WS281x.c"; 	WS281x_RGB(backdropColor[_R_], backdropColor[_G_], backdropColor[_B_]);
+                                    1-  931     	BANKSEL	_backdropColor
+     0048 01rr                      1-  932     	MOVR	(_backdropColor + 0),W
+                                    1-  933     	BANKSEL	r0x101B
+     0049 00rr                      1-  934     	MOVAR	r0x101B
+                                    1-  935     	BANKSEL	_backdropColor
+     004A 01rr                      1-  936     	MOVR	(_backdropColor + 1),W
+                                    1-  937     	BANKSEL	r0x101C
+     004B 00rr                      1-  938     	MOVAR	r0x101C
+                                    1-  939     	BANKSEL	_backdropColor
+     004C 01rr                      1-  940     	MOVR	(_backdropColor + 2),W
+                                    1-  941     	BANKSEL	r0x101D
+     004D 00rr                      1-  942     	MOVAR	r0x101D
+     004E 00rr                      1-  943     	MOVAR	STK01
+                                    1-  944     	BANKSEL	r0x101C
+     004F 01rr                      1-  945     	MOVR	r0x101C,W
+     0050 00rr                      1-  946     	MOVAR	STK00
+                                    1-  947     	BANKSEL	r0x101B
+     0051 01rr                      1-  948     	MOVR	r0x101B,W
+     0052 2rrr                      1-  949     	LCALL	_WS281x_RGB
+                                    1-  950     	.line	129, "Hardware\WS281x.c"; 	for(styleIndex = 0; styleIndex < (_SET_LED_NUM_ - currentStream); styleIndex++)
+                                    1-  951     	BANKSEL	_styleIndex
+     0053 05rr                      1-  952     	INCR	_styleIndex,F
+     0054 3rrr                      1-  953     	LGOTO	_00198_DS_
+     0055                           1-  954     _00181_DS_:
+                                    1-  955     	.line	132, "Hardware\WS281x.c"; 	currentStream++;
+                                    1-  956     	BANKSEL	_currentStream
+     0055 05rr                      1-  957     	INCR	_currentStream,F
+                                    1-  958     ;;swapping arguments (AOP_TYPEs 1/3)
+                                    1-  959     ;;unsigned compare: left >= lit (0x15=21), size=1
+                                    1-  960     	.line	133, "Hardware\WS281x.c"; 	if(currentStream > _SET_LED_NUM_)
+     0056 2115                      1-  961     	MOVIA	0x15
+     0057 04rr                      1-  962     	SUBAR	_currentStream,W
+     0058 0803                      1-  963     	BTRSS	STATUS,0
+     0059 3rrr                      1-  964     	LGOTO	_00183_DS_
+                                    1-  965     	.line	134, "Hardware\WS281x.c"; 	stylePhase = _Style_Idle_Phase_;
+     005A 2163                      1-  966     	MOVIA	0x63
+                                    1-  967     	BANKSEL	_stylePhase
+     005B 00rr                      1-  968     	MOVAR	_stylePhase
+     005C                           1-  969     _00183_DS_:
+                                    1-  970     	.line	135, "Hardware\WS281x.c"; 	styleTime = 30;
+     005C 211E                      1-  971     	MOVIA	0x1e
+                                    1-  972     	BANKSEL	_styleTime
+     005D 00rr                      1-  973     	MOVAR	_styleTime
+     005E 02rr                      1-  974     	CLRR	(_styleTime + 1)
+                                    1-  975     	.line	137, "Hardware\WS281x.c"; 	} break;
+     005F 3rrr                      1-  976     	LGOTO	_00206_DS_
+     0060                           1-  977     _00186_DS_:
+                                    1-  978     	.line	140, "Hardware\WS281x.c"; 	if(styleTime == 0) {
+                                    1-  979     	BANKSEL	_styleTime
+     0060 01rr                      1-  980     	MOVR	_styleTime,W
+     0061 11rr                      1-  981     	IORAR	(_styleTime + 1),W
+     0062 0903                      1-  982     	BTRSS	STATUS,2
+     0063 3rrr                      1-  983     	LGOTO	_00206_DS_
+                                    1-  984     	.line	141, "Hardware\WS281x.c"; 	for(styleIndex = 0; styleIndex < (_SET_LED_NUM_ - currentStream); styleIndex++)
+                                    1-  985     	BANKSEL	_styleIndex
+     0064 02rr                      1-  986     	CLRR	_styleIndex
+     0065                           1-  987     _00201_DS_:
+                                    1-  988     	BANKSEL	_currentStream
+     0065 01rr                      1-  989     	MOVR	_currentStream,W
+                                    1-  990     	BANKSEL	r0x101B
+     0066 00rr                      1-  991     	MOVAR	r0x101B
+                                    1-  992     	BANKSEL	r0x101C
+     0067 02rr                      1-  993     	CLRR	r0x101C
+                                    1-  994     	BANKSEL	r0x101B
+     0068 01rr                      1-  995     	MOVR	r0x101B,W
+     0069 2714                      1-  996     	SUBIA	0x14
+     006A 00rr                      1-  997     	MOVAR	r0x101B
+     006B 2100                      1-  998     	MOVIA	0x00
+     006C 0C03                      1-  999     	BTRSC	STATUS,0
+     006D 3rrr                      1- 1000     	LGOTO	_00006_DS_
+                                    1- 1001     	BANKSEL	r0x101C
+     006E 05rr                      1- 1002     	INCR	r0x101C,W
+     006F                           1- 1003     _00006_DS_:
+     006F 2700                      1- 1004     	SUBIA	0x00
+                                    1- 1005     	BANKSEL	r0x101C
+     0070 00rr                      1- 1006     	MOVAR	r0x101C
+                                    1- 1007     	BANKSEL	_styleIndex
+     0071 01rr                      1- 1008     	MOVR	_styleIndex,W
+                                    1- 1009     	BANKSEL	r0x101D
+     0072 00rr                      1- 1010     	MOVAR	r0x101D
+                                    1- 1011     	BANKSEL	r0x101E
+     0073 02rr                      1- 1012     	CLRR	r0x101E
+     0074 2100                      1- 1013     	MOVIA	0x00
+     0075 2580                      1- 1014     	ADDIA	0x80
+                                    1- 1015     	BANKSEL	r0x101F
+     0076 00rr                      1- 1016     	MOVAR	r0x101F
+                                    1- 1017     	BANKSEL	r0x101C
+     0077 01rr                      1- 1018     	MOVR	r0x101C,W
+     0078 2580                      1- 1019     	ADDIA	0x80
+                                    1- 1020     	BANKSEL	r0x101F
+     0079 04rr                      1- 1021     	SUBAR	r0x101F,W
+     007A 0903                      1- 1022     	BTRSS	STATUS,2
+     007B 3rrr                      1- 1023     	LGOTO	_00262_DS_
+                                    1- 1024     	BANKSEL	r0x101B
+     007C 01rr                      1- 1025     	MOVR	r0x101B,W
+                                    1- 1026     	BANKSEL	r0x101D
+     007D 04rr                      1- 1027     	SUBAR	r0x101D,W
+     007E                           1- 1028     _00262_DS_:
+     007E 0C03                      1- 1029     	BTRSC	STATUS,0
+     007F 3rrr                      1- 1030     	LGOTO	_00187_DS_
+                                    1- 1031     	.line	142, "Hardware\WS281x.c"; 	WS281x_RGB(backdropColor[_R_], backdropColor[_G_], backdropColor[_B_]);
+                                    1- 1032     	BANKSEL	_backdropColor
+     0080 01rr                      1- 1033     	MOVR	(_backdropColor + 0),W
+                                    1- 1034     	BANKSEL	r0x101B
+     0081 00rr                      1- 1035     	MOVAR	r0x101B
+                                    1- 1036     	BANKSEL	_backdropColor
+     0082 01rr                      1- 1037     	MOVR	(_backdropColor + 1),W
+                                    1- 1038     	BANKSEL	r0x101C
+     0083 00rr                      1- 1039     	MOVAR	r0x101C
+                                    1- 1040     	BANKSEL	_backdropColor
+     0084 01rr                      1- 1041     	MOVR	(_backdropColor + 2),W
+                                    1- 1042     	BANKSEL	r0x101D
+     0085 00rr                      1- 1043     	MOVAR	r0x101D
+     0086 00rr                      1- 1044     	MOVAR	STK01
+                                    1- 1045     	BANKSEL	r0x101C
+     0087 01rr                      1- 1046     	MOVR	r0x101C,W
+     0088 00rr                      1- 1047     	MOVAR	STK00
+                                    1- 1048     	BANKSEL	r0x101B
+     0089 01rr                      1- 1049     	MOVR	r0x101B,W
+     008A 2rrr                      1- 1050     	LCALL	_WS281x_RGB
+                                    1- 1051     	.line	141, "Hardware\WS281x.c"; 	for(styleIndex = 0; styleIndex < (_SET_LED_NUM_ - currentStream); styleIndex++)
+                                    1- 1052     	BANKSEL	_styleIndex
+     008B 05rr                      1- 1053     	INCR	_styleIndex,F
+     008C 3rrr                      1- 1054     	LGOTO	_00201_DS_
+     008D                           1- 1055     _00187_DS_:
+                                    1- 1056     	.line	143, "Hardware\WS281x.c"; 	for(styleIndex = 0; styleIndex < currentStream; styleIndex++)
+                                    1- 1057     	BANKSEL	_styleIndex
+     008D 02rr                      1- 1058     	CLRR	_styleIndex
+     008E                           1- 1059     _00204_DS_:
+                                    1- 1060     	BANKSEL	_currentStream
+     008E 01rr                      1- 1061     	MOVR	_currentStream,W
+                                    1- 1062     	BANKSEL	_styleIndex
+     008F 04rr                      1- 1063     	SUBAR	_styleIndex,W
+     0090 0C03                      1- 1064     	BTRSC	STATUS,0
+     0091 3rrr                      1- 1065     	LGOTO	_00188_DS_
+                                    1- 1066     	.line	144, "Hardware\WS281x.c"; 	WS281x_RGB(accColor[_R_], accColor[_G_], accColor[_B_]);
+                                    1- 1067     	BANKSEL	_accColor
+     0092 01rr                      1- 1068     	MOVR	(_accColor + 0),W
+                                    1- 1069     	BANKSEL	r0x101B
+     0093 00rr                      1- 1070     	MOVAR	r0x101B
+                                    1- 1071     	BANKSEL	_accColor
+     0094 01rr                      1- 1072     	MOVR	(_accColor + 1),W
+                                    1- 1073     	BANKSEL	r0x101C
+     0095 00rr                      1- 1074     	MOVAR	r0x101C
+                                    1- 1075     	BANKSEL	_accColor
+     0096 01rr                      1- 1076     	MOVR	(_accColor + 2),W
+                                    1- 1077     	BANKSEL	r0x101D
+     0097 00rr                      1- 1078     	MOVAR	r0x101D
+     0098 00rr                      1- 1079     	MOVAR	STK01
+                                    1- 1080     	BANKSEL	r0x101C
+     0099 01rr                      1- 1081     	MOVR	r0x101C,W
+     009A 00rr                      1- 1082     	MOVAR	STK00
+                                    1- 1083     	BANKSEL	r0x101B
+     009B 01rr                      1- 1084     	MOVR	r0x101B,W
+     009C 2rrr                      1- 1085     	LCALL	_WS281x_RGB
+                                    1- 1086     	.line	143, "Hardware\WS281x.c"; 	for(styleIndex = 0; styleIndex < currentStream; styleIndex++)
+                                    1- 1087     	BANKSEL	_styleIndex
+     009D 05rr                      1- 1088     	INCR	_styleIndex,F
+     009E 3rrr                      1- 1089     	LGOTO	_00204_DS_
+     009F                           1- 1090     _00188_DS_:
+                                    1- 1091     	.line	146, "Hardware\WS281x.c"; 	currentStream++;
+                                    1- 1092     	BANKSEL	_currentStream
+     009F 05rr                      1- 1093     	INCR	_currentStream,F
+                                    1- 1094     ;;swapping arguments (AOP_TYPEs 1/3)
+                                    1- 1095     ;;unsigned compare: left >= lit (0x15=21), size=1
+                                    1- 1096     	.line	147, "Hardware\WS281x.c"; 	if(currentStream > _SET_LED_NUM_)
+     00A0 2115                      1- 1097     	MOVIA	0x15
+     00A1 04rr                      1- 1098     	SUBAR	_currentStream,W
+     00A2 0803                      1- 1099     	BTRSS	STATUS,0
+     00A3 3rrr                      1- 1100     	LGOTO	_00190_DS_
+                                    1- 1101     	.line	148, "Hardware\WS281x.c"; 	stylePhase = _Style_Idle_Phase_;
+     00A4 2163                      1- 1102     	MOVIA	0x63
+                                    1- 1103     	BANKSEL	_stylePhase
+     00A5 00rr                      1- 1104     	MOVAR	_stylePhase
+     00A6                           1- 1105     _00190_DS_:
+                                    1- 1106     	.line	149, "Hardware\WS281x.c"; 	styleTime = 30;
+     00A6 211E                      1- 1107     	MOVIA	0x1e
+                                    1- 1108     	BANKSEL	_styleTime
+     00A7 00rr                      1- 1109     	MOVAR	_styleTime
+     00A8 02rr                      1- 1110     	CLRR	(_styleTime + 1)
+     00A9                           1- 1111     _00206_DS_:
+                                    1- 1112     	.line	153, "Hardware\WS281x.c"; 	}
+                                    1- 1113     	RETURN	
+     00A9 0010                      3-   26 m1      ret
+                                    1- 1114     ; exit point of _WS281x_Style_2
+                                    1- 1116     ;***
+                                    1- 1117     ;  pBlock Stats: dbName = C
+                                    1- 1118     ;***
+                                    1- 1119     ;has an exit
+                                    1- 1120     ;functions called:
+                                    1- 1121     ;   _WS281x_RGB
+                                    1- 1122     ;   _WS281x_RGB
+                                    1- 1123     ;   _WS281x_RGB
+                                    1- 1124     ;   _WS281x_RGB
+                                    1- 1125     ;   _WS281x_RGB
+                                    1- 1126     ;   _WS281x_RGB
+                                    1- 1127     ;   _WS281x_RGB
+                                    1- 1128     ;   _WS281x_RGB
+                                    1- 1129     ;   _WS281x_RGB
+                                    1- 1130     ;   _WS281x_RGB
+                                    1- 1131     ;   _WS281x_RGB
+                                    1- 1132     ;   _WS281x_RGB
+                                    1- 1133     ;2 compiler assigned registers:
+                                    1- 1134     ;   STK01
+                                    1- 1135     ;   STK00
+                                    1- 1136     ;; Starting pCode block
+                                    1- 1137     .segment "code"; module=WS281x, function=_WS281x_Style_1
+     0000                           1- 1139     _WS281x_Style_1:
+                                    1- 1140     ; 2 exit points
+                                    1- 1141     	.line	72, "Hardware\WS281x.c"; 	switch(stylePhase) {
+                                    1- 1142     	BANKSEL	_stylePhase
+     0000 01rr                      1- 1143     	MOVR	_stylePhase,W
+     0001 0D03                      1- 1144     	BTRSC	STATUS,2
+     0002 3rrr                      1- 1145     	LGOTO	_00129_DS_
+     0003 01rr                      1- 1146     	MOVR	_stylePhase,W
+     0004 2401                      1- 1147     	XORIA	0x01
+     0005 0D03                      1- 1148     	BTRSC	STATUS,2
+     0006 3rrr                      1- 1149     	LGOTO	_00132_DS_
+     0007 3rrr                      1- 1150     	LGOTO	_00144_DS_
+     0008                           1- 1151     _00129_DS_:
+                                    1- 1152     	.line	75, "Hardware\WS281x.c"; 	if(styleTime == 0) {
+                                    1- 1153     	BANKSEL	_styleTime
+     0008 01rr                      1- 1154     	MOVR	_styleTime,W
+     0009 11rr                      1- 1155     	IORAR	(_styleTime + 1),W
+     000A 0903                      1- 1156     	BTRSS	STATUS,2
+     000B 3rrr                      1- 1157     	LGOTO	_00144_DS_
+                                    1- 1158     	.line	76, "Hardware\WS281x.c"; 	styleIndex = 0;
+                                    1- 1159     	BANKSEL	_styleIndex
+     000C 02rr                      1- 1160     	CLRR	_styleIndex
+                                    1- 1161     	.line	77, "Hardware\WS281x.c"; 	currentStream = 0;
+                                    1- 1162     	BANKSEL	_currentStream
+     000D 02rr                      1- 1163     	CLRR	_currentStream
+                                    1- 1164     	.line	78, "Hardware\WS281x.c"; 	stylePhase++;
+                                    1- 1165     	BANKSEL	_stylePhase
+     000E 05rr                      1- 1166     	INCR	_stylePhase,F
+                                    1- 1167     	.line	80, "Hardware\WS281x.c"; 	} break;
+     000F 3rrr                      1- 1168     	LGOTO	_00144_DS_
+     0010                           1- 1169     _00132_DS_:
+                                    1- 1170     	.line	82, "Hardware\WS281x.c"; 	if(styleTime == 0) {
+                                    1- 1171     	BANKSEL	_styleTime
+     0010 01rr                      1- 1172     	MOVR	_styleTime,W
+     0011 11rr                      1- 1173     	IORAR	(_styleTime + 1),W
+     0012 0903                      1- 1174     	BTRSS	STATUS,2
+     0013 3rrr                      1- 1175     	LGOTO	_00144_DS_
+                                    1- 1176     	.line	83, "Hardware\WS281x.c"; 	for(styleIndex = 0; styleIndex < _SET_LED_NUM_; styleIndex++) {
+                                    1- 1177     	BANKSEL	_styleIndex
+     0014 02rr                      1- 1178     	CLRR	_styleIndex
+     0015                           1- 1179     _00142_DS_:
+                                    1- 1180     	.line	84, "Hardware\WS281x.c"; 	WS281x_RGB(50, 50, 50);
+                                    1- 1181     	BANKSEL	_currentStream
+     0015 01rr                      1- 1182     	MOVR	_currentStream,W
+                                    1- 1183     	BANKSEL	_styleIndex
+     0016 12rr                      1- 1184     	XORAR	_styleIndex,W
+     0017 0903                      1- 1185     	BTRSS	STATUS,2
+     0018 3rrr                      1- 1186     	LGOTO	_00134_DS_
+                                    1- 1187     	.line	85, "Hardware\WS281x.c"; 	WS281x_RGB(100, 100, 100);
+     0019 2132                      1- 1188     	MOVIA	0x32
+     001A 00rr                      1- 1189     	MOVAR	STK01
+     001B 00rr                      1- 1190     	MOVAR	STK00
+     001C 2rrr                      1- 1191     	LCALL	_WS281x_RGB
+                                    1- 1192     	.line	86, "Hardware\WS281x.c"; 	WS281x_RGB(150, 150, 150);
+     001D 2164                      1- 1193     	MOVIA	0x64
+     001E 00rr                      1- 1194     	MOVAR	STK01
+     001F 00rr                      1- 1195     	MOVAR	STK00
+     0020 2rrr                      1- 1196     	LCALL	_WS281x_RGB
+                                    1- 1197     	.line	87, "Hardware\WS281x.c"; 	WS281x_RGB(200, 200, 200);
+     0021 2196                      1- 1198     	MOVIA	0x96
+     0022 00rr                      1- 1199     	MOVAR	STK01
+     0023 00rr                      1- 1200     	MOVAR	STK00
+     0024 2rrr                      1- 1201     	LCALL	_WS281x_RGB
+                                    1- 1202     	.line	88, "Hardware\WS281x.c"; 	WS281x_RGB(255, 255, 255);
+     0025 21C8                      1- 1203     	MOVIA	0xc8
+     0026 00rr                      1- 1204     	MOVAR	STK01
+     0027 00rr                      1- 1205     	MOVAR	STK00
+     0028 2rrr                      1- 1206     	LCALL	_WS281x_RGB
+                                    1- 1207     	.line	89, "Hardware\WS281x.c"; 	// WS281x_RGB(0, 0, 50);
+     0029 21FF                      1- 1208     	MOVIA	0xff
+     002A 00rr                      1- 1209     	MOVAR	STK01
+     002B 00rr                      1- 1210     	MOVAR	STK00
+     002C 2rrr                      1- 1211     	LCALL	_WS281x_RGB
+                                    1- 1212     	.line	89, "Hardware\WS281x.c"; 	WS281x_RGB(255, 255, 255);
+     002D 3rrr                      1- 1213     	LGOTO	_00143_DS_
+     002E                           1- 1214     _00134_DS_:
+                                    1- 1215     	.line	101, "Hardware\WS281x.c"; 	WS281x_RGB(0, 0, 0);
+     002E 2100                      1- 1216     	MOVIA	0x00
+     002F 00rr                      1- 1217     	MOVAR	STK01
+     0030 00rr                      1- 1218     	MOVAR	STK00
+     0031 2rrr                      1- 1219     	LCALL	_WS281x_RGB
+     0032                           1- 1220     _00143_DS_:
+                                    1- 1221     	.line	83, "Hardware\WS281x.c"; 	for(styleIndex = 0; styleIndex < _SET_LED_NUM_; styleIndex++) {
+                                    1- 1222     	BANKSEL	_styleIndex
+     0032 05rr                      1- 1223     	INCR	_styleIndex,F
+                                    1- 1224     ;;unsigned compare: left < lit (0x14=20), size=1
+     0033 2114                      1- 1225     	MOVIA	0x14
+     0034 04rr                      1- 1226     	SUBAR	_styleIndex,W
+     0035 0803                      1- 1227     	BTRSS	STATUS,0
+     0036 3rrr                      1- 1228     	LGOTO	_00142_DS_
+                                    1- 1229     	.line	103, "Hardware\WS281x.c"; 	currentStream++;
+                                    1- 1230     	BANKSEL	_currentStream
+     0037 05rr                      1- 1231     	INCR	_currentStream,F
+                                    1- 1232     ;;swapping arguments (AOP_TYPEs 1/3)
+                                    1- 1233     ;;unsigned compare: left >= lit (0x10=16), size=1
+                                    1- 1234     	.line	104, "Hardware\WS281x.c"; 	if(currentStream > _SET_LED_NUM_ - 5)
+     0038 2110                      1- 1235     	MOVIA	0x10
+     0039 04rr                      1- 1236     	SUBAR	_currentStream,W
+     003A 0803                      1- 1237     	BTRSS	STATUS,0
+     003B 3rrr                      1- 1238     	LGOTO	_00007_DS_
+                                    1- 1239     	.line	105, "Hardware\WS281x.c"; 	stylePhase = 0;
+                                    1- 1240     	BANKSEL	_stylePhase
+     003C 02rr                      1- 1241     	CLRR	_stylePhase
+     003D                           1- 1242     _00007_DS_:
+                                    1- 1243     	.line	106, "Hardware\WS281x.c"; 	styleTime = 50;	
+     003D 2132                      1- 1244     	MOVIA	0x32
+                                    1- 1245     	BANKSEL	_styleTime
+     003E 00rr                      1- 1246     	MOVAR	_styleTime
+     003F 02rr                      1- 1247     	CLRR	(_styleTime + 1)
+     0040                           1- 1248     _00144_DS_:
+                                    1- 1249     	.line	110, "Hardware\WS281x.c"; 	}
+                                    1- 1250     	RETURN	
+     0040 0010                      3-   26 m1      ret
+                                    1- 1251     ; exit point of _WS281x_Style_1
+                                    1- 1253     ;***
+                                    1- 1254     ;  pBlock Stats: dbName = C
+                                    1- 1255     ;***
+                                    1- 1256     ;has an exit
+                                    1- 1257     ;functions called:
+                                    1- 1258     ;   _WS281x_Style_All
+                                    1- 1259     ;   _WS281x_Style_All
+                                    1- 1260     ;   _User_Style_Collision_Process
+                                    1- 1261     ;   _WS281x_Style_1
+                                    1- 1262     ;   _User_Style_Sweep_Process
+                                    1- 1263     ;   _User_Style_Breath_Process
+                                    1- 1264     ;   _WS281x_Style_All
+                                    1- 1265     ;   _WS281x_Style_All
+                                    1- 1266     ;   _User_Style_Collision_Process
+                                    1- 1267     ;   _WS281x_Style_1
+                                    1- 1268     ;   _User_Style_Sweep_Process
+                                    1- 1269     ;   _User_Style_Breath_Process
+                                    1- 1270     ;2 compiler assigned registers:
+                                    1- 1271     ;   STK01
+                                    1- 1272     ;   STK00
+                                    1- 1273     ;; Starting pCode block
+                                    1- 1274     .segment "code"; module=WS281x, function=_WS281x_Style_Process
+     0000                           1- 1276     _WS281x_Style_Process:
+                                    1- 1277     ; 2 exit points
+                                    1- 1278     	.line	21, "Hardware\WS281x.c"; 	if(styleNum & 0x80) {
+                                    1- 1279     	BANKSEL	_styleNum
+     0000 0Brr                      1- 1280     	BTRSS	_styleNum,7
+     0001 3rrr                      1- 1281     	LGOTO	_00106_DS_
+                                    1- 1282     	.line	22, "Hardware\WS281x.c"; 	styleNum &= ~(1 << 7);
+     0002 1Frr                      1- 1283     	BCR	_styleNum,7
+                                    1- 1284     	.line	23, "Hardware\WS281x.c"; 	stylePhase = 0;
+                                    1- 1285     	BANKSEL	_stylePhase
+     0003 02rr                      1- 1286     	CLRR	_stylePhase
+                                    1- 1287     	.line	24, "Hardware\WS281x.c"; 	userPhase = 0;
+                                    1- 1288     	BANKSEL	_userPhase
+     0004 02rr                      1- 1289     	CLRR	_userPhase
+                                    1- 1290     	.line	25, "Hardware\WS281x.c"; 	styleTime = 10;				// 延时10ms后开始跑样式
+     0005 210A                      1- 1291     	MOVIA	0x0a
+                                    1- 1292     	BANKSEL	_styleTime
+     0006 00rr                      1- 1293     	MOVAR	_styleTime
+     0007 02rr                      1- 1294     	CLRR	(_styleTime + 1)
+                                    1- 1295     ;;swapping arguments (AOP_TYPEs 1/3)
+                                    1- 1296     ;;unsigned compare: left >= lit (0x6=6), size=1
+     0008                           1- 1297     _00106_DS_:
+                                    1- 1298     	.line	28, "Hardware\WS281x.c"; 	switch(styleNum) {
+     0008 2106                      1- 1299     	MOVIA	0x06
+                                    1- 1300     	BANKSEL	_styleNum
+     0009 04rr                      1- 1301     	SUBAR	_styleNum,W
+     000A 0C03                      1- 1302     	BTRSC	STATUS,0
+     000B 3rrr                      1- 1303     	LGOTO	_00115_DS_
+     000C 21rr                      1- 1304     	MOVIA	((_00124_DS_ >> 8) & 0xff)
+     000D 008A                      1- 1305     	MOVAR	PCHBUF
+     000E 01rr                      1- 1306     	MOVR	_styleNum,W
+     000F 25rr                      1- 1307     	ADDIA	_00124_DS_
+     0010 0C03                      1- 1308     	BTRSC	STATUS,0
+     0011 058A                      1- 1309     	INCR	PCHBUF,F
+     0012 0082                      1- 1310     	MOVAR	PCL
+     0013                           1- 1311     _00124_DS_:
+     0013 3rrr                      1- 1312     	LGOTO	_00107_DS_
+     0014 3rrr                      1- 1313     	LGOTO	_00108_DS_
+     0015 3rrr                      1- 1314     	LGOTO	_00109_DS_
+     0016 3rrr                      1- 1315     	LGOTO	_00110_DS_
+     0017 3rrr                      1- 1316     	LGOTO	_00111_DS_
+     0018 3rrr                      1- 1317     	LGOTO	_00112_DS_
+     0019                           1- 1318     _00107_DS_:
+                                    1- 1319     	.line	31, "Hardware\WS281x.c"; 	WS281x_Style_All(0, 0, 0);
+     0019 2100                      1- 1320     	MOVIA	0x00
+     001A 00rr                      1- 1321     	MOVAR	STK01
+     001B 00rr                      1- 1322     	MOVAR	STK00
+     001C 2rrr                      1- 1323     	LCALL	_WS281x_Style_All
+                                    1- 1324     	.line	32, "Hardware\WS281x.c"; 	} break;
+     001D 3rrr                      1- 1325     	LGOTO	_00115_DS_
+     001E                           1- 1326     _00108_DS_:
+                                    1- 1327     	.line	36, "Hardware\WS281x.c"; 	WS281x_Style_All(0, 255, 0);
+     001E 2100                      1- 1328     	MOVIA	0x00
+     001F 00rr                      1- 1329     	MOVAR	STK01
+     0020 21FF                      1- 1330     	MOVIA	0xff
+     0021 00rr                      1- 1331     	MOVAR	STK00
+     0022 2100                      1- 1332     	MOVIA	0x00
+     0023 2rrr                      1- 1333     	LCALL	_WS281x_Style_All
+                                    1- 1334     	.line	37, "Hardware\WS281x.c"; 	} break;
+     0024 3rrr                      1- 1335     	LGOTO	_00115_DS_
+     0025                           1- 1336     _00109_DS_:
+                                    1- 1337     	.line	41, "Hardware\WS281x.c"; 	User_Style_Collision_Process();
+     0025 2rrr                      1- 1338     	LCALL	_User_Style_Collision_Process
+                                    1- 1339     	.line	49, "Hardware\WS281x.c"; 	} break;
+     0026 3rrr                      1- 1340     	LGOTO	_00115_DS_
+     0027                           1- 1341     _00110_DS_:
+                                    1- 1342     	.line	53, "Hardware\WS281x.c"; 	WS281x_Style_1();
+     0027 2rrr                      1- 1343     	LCALL	_WS281x_Style_1
+                                    1- 1344     	.line	54, "Hardware\WS281x.c"; 	} break;
+     0028 3rrr                      1- 1345     	LGOTO	_00115_DS_
+     0029                           1- 1346     _00111_DS_:
+                                    1- 1347     	.line	58, "Hardware\WS281x.c"; 	User_Style_Sweep_Process();
+     0029 2rrr                      1- 1348     	LCALL	_User_Style_Sweep_Process
+                                    1- 1349     	.line	59, "Hardware\WS281x.c"; 	} break;
+     002A 3rrr                      1- 1350     	LGOTO	_00115_DS_
+     002B                           1- 1351     _00112_DS_:
+                                    1- 1352     	.line	63, "Hardware\WS281x.c"; 	User_Style_Breath_Process();
+     002B 2rrr                      1- 1353     	LCALL	_User_Style_Breath_Process
+     002C                           1- 1354     _00115_DS_:
+                                    1- 1355     	.line	68, "Hardware\WS281x.c"; 	}
+                                    1- 1356     	RETURN	
+     002C 0010                      3-   26 m1      ret
+                                    1- 1357     ; exit point of _WS281x_Style_Process
+                                    1- 1360     ;	code size estimation:
+                                    1- 1361     ;	  515+  217 =   732 instructions ( 1898 byte)
+                                    1- 1363     	end
+                                    1- 1363     	end
+
+SYMBOL TABLE            TYPE     VALUE
+__CHECKSUM_ADDR__       Label    00000000
+__PIN_COUNT__           Constant 0000000E
+__PROCESSOR__           Constant 00800543
+_00001_DS_              Label    0000009E
+_00002_DS_              Label    0000009F
+_00003_DS_              Label    000000AB
+_00004_DS_              Label    000000AC
+_00005_DS_              Label    00000037
+_00006_DS_              Label    0000006F
+_00007_DS_              Label    0000003D
+_00106_DS_              Label    00000008
+_00107_DS_              Label    00000019
+_00108_DS_              Label    0000001E
+_00109_DS_              Label    00000025
+_00110_DS_              Label    00000027
+_00111_DS_              Label    00000029
+_00112_DS_              Label    0000002B
+_00115_DS_              Label    0000002C
+_00124_DS_              Label    00000013
+_00129_DS_              Label    00000008
+_00132_DS_              Label    00000010
+_00134_DS_              Label    0000002E
+_00142_DS_              Label    00000015
+_00143_DS_              Label    00000032
+_00144_DS_              Label    00000040
+_00176_DS_              Label    0000000D
+_00179_DS_              Label    00000016
+_00180_DS_              Label    0000002C
+_00181_DS_              Label    00000055
+_00183_DS_              Label    0000005C
+_00186_DS_              Label    00000060
+_00187_DS_              Label    0000008D
+_00188_DS_              Label    0000009F
+_00190_DS_              Label    000000A6
+_00195_DS_              Label    0000001B
+_00198_DS_              Label    0000002D
+_00201_DS_              Label    00000065
+_00204_DS_              Label    0000008E
+_00206_DS_              Label    000000A9
+_00260_DS_              Label    00000046
+_00262_DS_              Label    0000007E
+_00267_DS_              Label    0000000E
+_00270_DS_              Label    00000017
+_00273_DS_              Label    00000036
+_00275_DS_              Label    00000040
+_00277_DS_              Label    0000004A
+_00279_DS_              Label    00000061
+_00284_DS_              Label    00000065
+_00286_DS_              Label    00000070
+_00288_DS_              Label    00000077
+_00290_DS_              Label    0000007E
+_00293_DS_              Label    000000B2
+_00297_DS_              Label    0000001C
+_00299_DS_              Label    0000007F
+_00301_DS_              Label    000000B5
+_00358_DS_              Label    0000000B
+_00363_DS_              Label    00000013
+_00366_DS_              Label    0000001A
+_00370_DS_              Label    0000001B
+_00372_DS_              Label    00000028
+_00387_DS_              Label    00000010
+_ABPLCON                Label    00000000
+_ABPLCONbits            Label    00000000
+_accColor               Label    00000000
+_APHCON                 Label    00000000
+_AWUCON                 Label    00000000
+_AWUCONbits             Label    00000000
+_backdropColor          Label    00000000
+_BODCON                 Label    00000000
+_BPHCON                 Label    00000000
+_BPHCONbits             Label    00000000
+_BWUCON                 Label    00000000
+_BWUCONbits             Label    00000000
+_BZ1CR                  Label    00000000
+_CMPCR                  Label    00000000
+_currentStream          Label    00000000
+_delay                  Label    00000000
+_FSR                    Label    00000000
+_GPIO_Init              Label    00000000
+_INDF                   Label    00000000
+_INT1_Init              Label    00000000
+_INTE                   Label    00000000
+_INTE2                  Label    00000000
+_INTE2bits              Label    00000000
+_INTEbits               Label    00000000
+_INTEDG                 Label    00000000
+_INTEDGbits             Label    00000000
+_INTF                   Label    00000000
+_INTFbits               Label    00000000
+_IOSTA                  Label    00000000
+_IOSTB                  Label    00000000
+_IR_Decode              Label    00000000
+_IR_Decode_Time_Process Label    00000000
+_IR_KEY_Proess          Label    00000000
+_IRCR                   Label    00000000
+_irDeCodeBitIndex       Label    00000000
+_irDeCodeBitTime        Label    00000000
+_irDeCodeDat            Label    00000000
+_irDeCodeTimeOverFlow   Label    00000000
+_K1_struct              Label    00000000
+_KEY_GPIO_Init          Label    00000000
+_KEY_Proess             Label    00000000
+_OSCCR                  Label    00000000
+_P2CR1                  Label    00000000
+_P4CR1                  Label    00000000
+_P5CR1                  Label    00000000
+_PCHBUF                 Label    00000000
+_PCL                    Label    00000000
+_PCON                   Label    00000000
+_PCON1                  Label    00000000
+_PCONbits               Label    00000000
+_PORTA                  Label    00000000
+_PORTAbits              Label    00000000
+_PORTB                  Label    00000000
+_PORTBbits              Label    00000000
+_PS0CV                  Label    00000000
+_PS1CV                  Label    00000000
+_PS3CV                  Label    00000000
+_PWM1DUTY               Label    00000000
+_PWM2DUTY               Label    00000000
+_PWM3DUTY               Label    00000000
+_PWM4DUTY               Label    00000000
+_PWM5DUTY               Label    00000000
+_PWM5RH                 Label    00000000
+_RFC                    Label    00000000
+_RFCbits                Label    00000000
+_ScanKey                Label    00000000
+_ScanKey_Config         Label    00000000
+_STATUS                 Label    00000000
+_styleIndex             Label    00000000
+_styleIndexMax          Label    00000000
+_styleNum               Label    00000000
+_stylePhase             Label    00000000
+_styleTime              Label    00000000
+_T0MD                   Label    00000000
+_T1CR1                  Label    00000000
+_T1CR2                  Label    00000000
+_T3CR1                  Label    00000000
+_T3CR2                  Label    00000000
+_TBHD                   Label    00000000
+_TBHP                   Label    00000000
+_Timer1_Init            Label    00000000
+_Timer3_Init            Label    00000000
+_TM34RH                 Label    00000000
+_TMR0                   Label    00000000
+_TMR1                   Label    00000000
+_TMR3                   Label    00000000
+_TMRH                   Label    00000000
+_User_Style_Breath_Process Label    00000000
+_User_Style_Breath_Start Label    00000000
+_User_Style_Collision_Process Label    00000000
+_User_Style_Collision_Start Label    00000000
+_User_Style_Sweep_Process Label    00000000
+_User_Style_Sweep_Start Label    00000000
+_User_Style_Time_SET    Label    00000000
+_userPhase              Label    00000000
+_WS281x_Drive_Write_Byte Label    00000000
+_WS281x_RGB             Label    00000000
+_WS281x_Style_1         Label    00000000
+_WS281x_Style_2         Label    00000000
+_WS281x_Style_3         Label    00000000
+_WS281x_Style_3_currentColor_65536_60 Label    00000000
+_WS281x_Style_All       Label    00000000
+_WS281x_Style_Process   Label    00000000
+ENABLE_RAM_BANK         Variable 00000000
+F                       Constant 00000001
+FSR                     Constant 00000004
+INDF                    Constant 00000000
+PCHBUF                  Constant 0000000A
+PCL                     Constant 00000002
+PSAVE                   Label    00000000
+r0x1010                 Label    00000000
+r0x1011                 Label    00000000
+r0x1012                 Label    00000000
+r0x1013                 Label    00000000
+r0x1014                 Label    00000000
+r0x1015                 Label    00000000
+r0x1016                 Label    00000000
+r0x1017                 Label    00000000
+r0x1018                 Label    00000000
+r0x1019                 Label    00000000
+r0x101A                 Label    00000000
+r0x101B                 Label    00000000
+r0x101C                 Label    00000000
+r0x101D                 Label    00000000
+r0x101E                 Label    00000000
+r0x101F                 Label    00000000
+SSAVE                   Label    00000000
+STATUS                  Constant 00000003
+STK00                   Label    00000000
+STK01                   Label    00000000
+STK02                   Label    00000000
+STK03                   Label    00000000
+STK04                   Label    00000000
+STK05                   Label    00000000
+STK06                   Label    00000000
+STK07                   Label    00000000
+STK08                   Label    00000000
+STK09                   Label    00000000
+STK10                   Label    00000000
+STK11                   Label    00000000
+STK12                   Label    00000000
+W                       Constant 00000000
+WSAVE                   Label    00000000
+
+
+SOURCE FILE TABLE
+001 Hardware\WS281x.s
+002 ny8a054d.inc
+003 common.inc
+004 Hardware\WS281x.c
+
+PROCESSOR    = NY8A054D (8 bits)
+PROGRAM ROM  = 0x00000000 - 0x000007FF
+DATA ROM     = 0x00000000 - 0x000007FF
+RESERVED MEM = 0x00000800 - 0x00000810
+SRAM / SFR   = 0x00000000 - 0x00000000
