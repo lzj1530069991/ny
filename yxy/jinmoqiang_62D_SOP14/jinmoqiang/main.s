@@ -1452,14 +1452,14 @@ _keyRead:
 	.line	555, "main.c"; 	keyCount++;
 	BANKSEL	_keyCount
 	INCR	_keyCount,F
-;;unsigned compare: left < lit (0xC8=200), size=1
-	.line	556, "main.c"; 	if(keyCount >= 200)
-	MOVIA	0xc8
+;;unsigned compare: left < lit (0x64=100), size=1
+	.line	556, "main.c"; 	if(keyCount >= 100)
+	MOVIA	0x64
 	SUBAR	_keyCount,W
 	BTRSS	STATUS,0
 	LGOTO	_00445_DS_
-	.line	558, "main.c"; 	keyCount = 200;
-	MOVIA	0xc8
+	.line	558, "main.c"; 	keyCount = 100;
+	MOVIA	0x64
 	MOVAR	_keyCount
 	.line	559, "main.c"; 	if(!longPressFlag)
 	BANKSEL	_Status
@@ -1470,10 +1470,10 @@ _keyRead:
 	.line	562, "main.c"; 	return 2;
 	MOVIA	0x02
 	LGOTO	_00446_DS_
-;;unsigned compare: left < lit (0xC8=200), size=1
+;;unsigned compare: left < lit (0x64=100), size=1
 _00444_DS_:
-	.line	568, "main.c"; 	if(keyCount >= 200)
-	MOVIA	0xc8
+	.line	568, "main.c"; 	if(keyCount >= 100)
+	MOVIA	0x64
 	BANKSEL	_keyCount
 	SUBAR	_keyCount,W
 	BTRSS	STATUS,0
@@ -1706,8 +1706,8 @@ _00400_DS_:
 	XORIA	0x01
 	BTRSS	STATUS,2
 	LGOTO	_00410_DS_
-	.line	484, "main.c"; 	maxDuty = 37;
-	MOVIA	0x25
+	.line	484, "main.c"; 	maxDuty = 38;
+	MOVIA	0x26
 	BANKSEL	_maxDuty
 	MOVAR	_maxDuty
 	LGOTO	_00411_DS_
@@ -1718,8 +1718,8 @@ _00410_DS_:
 	XORIA	0x02
 	BTRSS	STATUS,2
 	LGOTO	_00407_DS_
-	.line	486, "main.c"; 	maxDuty = 18;
-	MOVIA	0x12
+	.line	486, "main.c"; 	maxDuty = 26;
+	MOVIA	0x1a
 	BANKSEL	_maxDuty
 	MOVAR	_maxDuty
 	LGOTO	_00411_DS_
@@ -1730,8 +1730,8 @@ _00407_DS_:
 	XORIA	0x03
 	BTRSS	STATUS,2
 	LGOTO	_00404_DS_
-	.line	488, "main.c"; 	maxDuty = 13;
-	MOVIA	0x0d
+	.line	488, "main.c"; 	maxDuty = 15;
+	MOVIA	0x0f
 	BANKSEL	_maxDuty
 	MOVAR	_maxDuty
 	LGOTO	_00411_DS_
@@ -1742,8 +1742,8 @@ _00404_DS_:
 	XORIA	0x04
 	BTRSS	STATUS,2
 	LGOTO	_00411_DS_
-	.line	490, "main.c"; 	maxDuty = 1;
-	MOVIA	0x01
+	.line	490, "main.c"; 	maxDuty = 3;
+	MOVIA	0x03
 	BANKSEL	_maxDuty
 	MOVAR	_maxDuty
 _00411_DS_:
@@ -2064,8 +2064,8 @@ _workCtr:
 _00338_DS_:
 	BTRSS	STATUS,0
 	LGOTO	_00319_DS_
-	.line	353, "main.c"; 	u8t minDuty = 36;
-	MOVIA	0x24
+	.line	353, "main.c"; 	u8t minDuty = 38;
+	MOVIA	0x26
 	BANKSEL	r0x102F
 	MOVAR	r0x102F
 	.line	354, "main.c"; 	if(workStep == 1)
@@ -2074,8 +2074,8 @@ _00338_DS_:
 	XORIA	0x01
 	BTRSS	STATUS,2
 	LGOTO	_00316_DS_
-	.line	355, "main.c"; 	minDuty = 36;
-	MOVIA	0x24
+	.line	355, "main.c"; 	minDuty = 38;
+	MOVIA	0x26
 	BANKSEL	r0x102F
 	MOVAR	r0x102F
 	LGOTO	_00317_DS_
@@ -2110,8 +2110,8 @@ _00310_DS_:
 	XORIA	0x04
 	BTRSS	STATUS,2
 	LGOTO	_00317_DS_
-	.line	361, "main.c"; 	minDuty = 1;
-	MOVIA	0x01
+	.line	361, "main.c"; 	minDuty = 3;
+	MOVIA	0x03
 	BANKSEL	r0x102F
 	MOVAR	r0x102F
 _00317_DS_:

@@ -52,6 +52,7 @@ u8t count500ms = 0;
 u8t firstLow = 0;
 u8t firstLowTime = 0;
 u8t batLowTime = 0;  //电池检测次数
+u8t lowBatLock = 0;	//低电锁，只有充电后才能解锁
 
 void initAD();
 void gotoSleep();
@@ -143,6 +144,7 @@ void main(void)
         CLRWDT();
         if(PORTA & 0x20)
         {
+        	lowBatLock = 0;//解锁低电
         	//有外部电源输入
         	if(chrgStatus < 2)
         	{
@@ -176,7 +178,7 @@ void main(void)
         		CHRGOFF();
         	LED3OFF();
         	chrgStatus = 0;
-        	if(overFlag == 0 && batStatus < 3 && workStatus == 1)
+        	if(overFlag == 0 && batStatus < 3 && workStatus == 1 && lowBatLock == 0)
         	{
         		POWERON();
         	}
@@ -211,10 +213,11 @@ void chrgWork()
 	if(PORTA & 0x20)
 	{
 		checkInV();
+		overFlag = 0;
 		if(chrgStatus == 2)
 		{
 			//低压状态
-			if(workStatus == 1 && batStatus < 3 && overFlag == 0)
+			if(workStatus == 1 && batStatus < 3 &&  lowBatLock == 0)
 			{
 				LED2ON();
 				POWERON();
@@ -227,7 +230,7 @@ void chrgWork()
 				POWEROFF();
 			}
 		}
-		else if(overFlag == 0)
+		else
 		{
 			LED3ON();
 		}
@@ -237,13 +240,6 @@ void chrgWork()
 
 void workCtr()
 {
-	if(PORTA & 0x08)
-	{
-		//有负载了，过载标记清0
-		overFlag = 0;
-	}
-
-	
 
 	//检测电池电压
 	checkBat();
@@ -270,7 +266,7 @@ void workCtr()
 	else
 	{
 		LED1OFF();		//未充电,电池供电
-		if(workStatus == 1 && batStatus < 3)
+		if(workStatus == 1 && batStatus < 3 && overFlag == 0)
 		{
 			LED2ON();
 		}
@@ -325,6 +321,7 @@ void keyCtr()
 			{
 				overFlag = 0;
 				workStatus = 1;
+				lowBatLock = 0;
 				//POWERON();
 			}
 			else
@@ -376,21 +373,38 @@ void checkInV()
         {
         	R_AIN1_DATA = INV;
         }
-        if(R_AIN1_DATA < 2831)
+        if(R_AIN1_DATA < 2830)
         {
-        	inLowTime++;
+        	if(R_AIN1_DATA == 1)
+        	{
+        		if(R_AIN1_DATA < 2820)
+        		{
+        			chrgStatus = 2;	//外部电源过低
+        			
+        		}
+        	}
+        	else
+        	{
+        		chrgStatus = 2;
+        		
+        	}
         }
         else
         {
         	inLowTime = 0;
-        	chrgStatus = 1;
+        	if(chrgStatus == 2)
+        	{
+        		if(R_AIN1_DATA > 2855)
+        		{
+        			chrgStatus = 1;
+        		}
+        	}
+        	else
+        		chrgStatus = 1;
+        	
         }
         
-        if(inLowTime >= 10)
-        {
-        	inLowTime = 10;
-        	chrgStatus = 2;
-        }
+        
         
 }
 
@@ -409,12 +423,42 @@ void checkBat()
         
         if(R_AIN2_DATA < 2470)
         {
-        	if(++batLowTime > 50)
+        	if(batStatus == 1)
+        	{
+        		if(R_AIN2_DATA < 2460)
+        		{
+        			batStatus = 3;//缺电状态
+        			lowBatLock = 1;
+        		}
+        	}
+        	else
+        	{
         		batStatus = 3;//缺电状态
+        		lowBatLock = 1;
+        	}
         }
         else if(R_AIN2_DATA < 2731)
         {
-        	batStatus = 1;//低电状态
+        	
+        	if(batStatus == 2)
+        	{
+        		if(R_AIN2_DATA < 2724)
+        		{
+        			batStatus = 1;//低电状态
+        		}
+        	}
+        	else
+        	{
+        		if(batStatus == 3)
+        		{
+        			if(R_AIN2_DATA > 2470)
+        			{
+        				batStatus = 1;//低电状态
+        			}
+        		}
+        		else
+        			batStatus = 1;//低电状态
+        	}
         	batLowTime = 0;
         	if(R_AIN2_DATA > 2500)
         		firstLow = 0;	//重置低电压
@@ -429,16 +473,36 @@ void checkBat()
 	        		firstLow = 0;	//重置低电压
         		}
         	}
-        	else if(++batLowTime > 50)
+        	else
         	{
-	        	batStatus = 0;//正常状态
+	        	if(batStatus == 1)
+	        	{
+	        		if(R_AIN2_DATA > 2755)
+	        		{
+	        			batStatus = 0;//正常状态
+	        		}
+	        	}
+	        	else
+	        	{
+	        		batStatus = 0;//正常状态
+	        	}
 	        	firstLow = 0;	//重置低电压
         	}
         }
-        else
+        else if(R_AIN2_DATA > 3228)
         {
+        	if(batStatus == 0)
+        	{
+        		if(R_AIN2_DATA > 3233)
+        		{
+        			batStatus = 2;//满电状态
+        		}
+        	}
+        	else
+        	{
+        		batStatus = 2;//满电状态
+        	}
         	batLowTime = 0;
-        	batStatus = 2;//满电状态
         	firstLow = 0;	//重置低电压
         }
         
@@ -460,14 +524,13 @@ void checkOutA()
         
         if(R_AIN4_DATA < 78)
         {
-        	overFlag = 0;
         	overTime = 0;
         }
         else
         {
         	overTime++;
         }
-        if(++overTime >= 10)
+        if(++overTime >= 100)
         {
         	overTime = 10;
         	overFlag = 1;

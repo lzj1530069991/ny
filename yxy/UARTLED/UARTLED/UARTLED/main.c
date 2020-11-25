@@ -401,7 +401,10 @@ void setColor(u8t cindex)
 	switch(cindex)
 	{
 		case 0:
-		sendtoLast(COLOR0);
+		if(Rdata != 0 || Gdata!=0 || Bdata != 0)
+		{
+			sendtoLast(COLOR0);
+		}
 		break;
 			case 1:
 		sendtoLast(COLOR1);
@@ -481,8 +484,8 @@ void sendRGB(unsigned char colorR,unsigned char colorG,unsigned char colorB)
 {
 //		Rdata = colorR;
 //		Gdata = colorG;
-		Rdata = colorR;
-		Gdata = colorG;
+		Rdata = colorG;
+		Gdata = colorR;
 		Bdata = colorB ;
 		
 		DISI();	

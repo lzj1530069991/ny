@@ -32,6 +32,9 @@ u8t randNub = 0;
 u8t	snub = 0;
 u8t preColorIndex = 0;
 u8t preduty = 0;
+u8t offFlag = 0;
+u8t preColor = 0;
+u8t colorTime = 0;
 
 void WaitTF0(void);
 u8t RByte();
@@ -70,6 +73,10 @@ u8t	Rdata1 = 0x00;
 u8t	Gdata1 = 0x00;
 u8t	Bdata1 = 0x00;
 
+u8t	Rdata2 = 0x00;
+u8t	Gdata2 = 0x00;
+u8t	Bdata2 = 0x00;
+
 //u8t	Rdata1 = 0x00;
 //u8t	Gdata1 = 0x00;
 //u8t	Bdata1 = 0x00;
@@ -77,13 +84,13 @@ u8t	Bdata1 = 0x00;
 u8t duty = 0;
 u8t ledCount = 0;
 #define COLOR0 0x00,0x00,0x00
-#define COLOR1 0xFF,0x00,0x00
-#define COLOR2 0xFF,0xA5,0x00
+#define COLOR1 0x00,0xFF,0x00
+#define COLOR2 0x25,0xFF,0x00
 #define COLOR3 0xFF,0xFF,0x00
-#define COLOR4 0x00,0xFF,0x00
-#define COLOR5 0x00,0xFF,0xFF
+#define COLOR4 0xFF,0x00,0x00
+#define COLOR5 0xFF,0x00,0xFF
 #define COLOR6 0x00,0x00,0xFF
-#define COLOR7 0xFF,0x00,0xFF
+#define COLOR7 0x00,0xFF,0xFF
 #define COLOR8 0xFF,0xFF,0xFF
 
 __sbit R7 = Rdata:7;
@@ -115,7 +122,7 @@ __sbit B0 = Bdata:0;
 void sendtoLast(unsigned char colorR,unsigned char colorG,unsigned char colorB);
 void sendRGB(unsigned char colorR,unsigned char colorG,unsigned char colorB);
 void Delay80us();
-void breath3(unsigned char *data,unsigned char *data2,unsigned char *data3);
+void breath3();
 
 void isr(void) __interrupt(0)
 {
@@ -138,7 +145,7 @@ void isr(void) __interrupt(0)
 //					recData3 = revList[2];
 //					recData4 = revList[3];
 //					recData5 = revList[4];
-					if(revList[1] == 3 && (revList[1] + revList[2]) == revList[3])
+					if(revList[4] == 0xBF && revList[1] == 3 && (revList[1] + revList[2]) == revList[3])
 					{
 						workStep = revList[2];
 						colorIndex = 1;
@@ -169,7 +176,8 @@ void isr(void) __interrupt(0)
 				{
 						colorIndex = 1;
 				}
-				setColor(colorIndex);
+				if(workStep == 9)
+					setColor(colorIndex);
 				
 			}
 			if(workStep == 10 && (timeCount % 200 == 0))
@@ -258,7 +266,7 @@ void main(void)
 	//INTEDG = 0x12;
 	
 	ENI();
-
+	workStep = 0;
     while(1)
     {
         CLRWDT();
@@ -269,6 +277,12 @@ void main(void)
         IntFlag = 0;
 		if(uartFlag == 0)
 			workCtr();
+		if(workStep == 0 || workStep > 10)
+		{
+			setColor(0);
+			workStep = 0;
+		}
+		
 			
     }
 }
@@ -393,7 +407,9 @@ void workCtr()
 	if(workStep > 10)
 		return;
 	if(workStep < 9)
+	{
 		setColor(workStep);
+	}
 	else if(workStep == 9)
 	{
 		work9();
@@ -409,8 +425,16 @@ void setColor(u8t cindex)
 	switch(cindex)
 	{
 		case 0:
-		if(Rdata1 != 0 || Gdata1 != 0 || Bdata1 != 0)
+		if(offFlag > 10)
+		{
 			sendtoLast(COLOR0);
+			offFlag = 0;
+			colorIndex = 0;
+		}
+		else
+		{
+			++offFlag;
+		}
 		break;
 			case 1:
 		sendtoLast(COLOR1);
@@ -436,6 +460,9 @@ void setColor(u8t cindex)
 		case 8:
 		sendtoLast(COLOR8);
 		break;
+		default:
+		sendtoLast(COLOR0);
+		break;
 	}
 
 }
@@ -446,15 +473,15 @@ void work9()
 //	{
 //		ledCount = 0;
 //	}
-	duty = timeCount / 4;
+	duty = timeCount / 10;
 	if(preduty != duty)
 	{
 		preduty = duty;
-		breath3(&Rdata1,&Gdata1,&Bdata1);
+		breath3();
 	}
 	else
 	{
-		sendtoLast(Rdata1,Gdata1,Bdata1);
+		sendtoLast(Rdata2,Gdata2,Bdata2);
 	}
 //	if(ledCount % duty == 0)
 //	{
@@ -470,23 +497,37 @@ void work9()
 
 
 
-void breath3(unsigned char *data,unsigned char *data2,unsigned char *data3)
+void breath3()
 {
-    if((*data3) > 10)
+    if(Rdata2 > 0)
 	{
-		--(*data3);
+		
+		if(Rdata2 > 80)
+			Rdata2 = Rdata2-8;
+		else if(Gdata2 < (10 + Rdata2) && Bdata2 < (10 + Rdata2))
+		{
+			--Rdata2;
+		}
 	}
 	
- 	if((*data2) > 10)
+ 	if(Gdata2 > 0)
 	{
-		--(*data2);
+		
+		if(Gdata2 > 80)
+			Gdata2 = Gdata2-8;
+		else if(Rdata2 < (10 + Gdata2) && Bdata2 < (10 + Gdata2))
+			--Gdata2;
 	}
 	
-	if((*data) > 10)
+	if(Bdata2 > 0)
 	{
-		--(*data);
+		
+		if(Bdata2 > 80)
+			Bdata2 = Bdata2-8;
+		else if(Rdata2 < (10 + Bdata2) && Gdata2 < (10 + Bdata2))
+			--Bdata2;
 	}
-	sendtoLast(*data,*data2,*data3);
+	sendtoLast(Rdata2,Gdata2,Bdata2);
 }
 
 
@@ -524,7 +565,7 @@ void sendRGB(unsigned char colorR,unsigned char colorG,unsigned char colorB)
 //		Gdata = colorG;
 		Rdata = colorR;
 		Gdata = colorG;
-		Bdata = colorB ;
+		Bdata = colorB;
 		
 		DISI();	
 		if(R7)
@@ -638,6 +679,13 @@ void sendtoLast(unsigned char colorR,unsigned char colorG,unsigned char colorB)
 	Rdata1 = colorR;
 	Gdata1 = colorG;
 	Bdata1 = colorB;
+	if(workStep == 9 && preColor != colorIndex)
+	{
+		preColor = colorIndex;
+		Rdata2 = colorR;
+		Gdata2 = colorG;
+		Bdata2 = colorB;
+	}
 	for(int i=0;i<LED_N;i++)
 	{
 		sendRGB(colorR,colorG,colorB);

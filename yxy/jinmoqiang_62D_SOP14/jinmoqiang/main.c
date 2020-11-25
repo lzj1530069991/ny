@@ -350,15 +350,15 @@ void workCtr()
 	if(fgPRD > 70)
 	{
 		//堵转了
-		u8t minDuty = 36;
+		u8t minDuty = 38;
 		if(workStep == 1)
-			minDuty = 36;
+			minDuty = 38;
 		else if(workStep == 2)
 			minDuty = 15;
 		else if(workStep == 3)
 			minDuty = 11;
 		else if(workStep == 4)
-			minDuty = 1;
+			minDuty = 3;
 		PWM2DUTY = minDuty;
 //		if(duty > minDuty)
 //		{
@@ -481,13 +481,13 @@ void keyCtr()
 		fgCount = 0;
 		workStartFlag = 0;
 		if(workStep == 1)
-			maxDuty = 37;
+			maxDuty = 38;
 		else if(workStep == 2)
-			maxDuty = 18;
+			maxDuty = 26;
 		else if(workStep == 3)
-			maxDuty = 13;
+			maxDuty = 15;
 		else if(workStep == 4)
-			maxDuty = 1;
+			maxDuty = 3;
 		PWM2DUTY = maxDuty;
 		pwmInit();
 	}
@@ -553,9 +553,9 @@ char keyRead(char keyStatus)
 	if(keyStatus)
 	{
 		keyCount++;
-		if(keyCount >= 200)
+		if(keyCount >= 100)
 		{
-			keyCount = 200;
+			keyCount = 100;
 			if(!longPressFlag)
 			{
 				longPressFlag = 1;
@@ -565,7 +565,7 @@ char keyRead(char keyStatus)
 	}
 	else
 	{
-		if(keyCount >= 200)
+		if(keyCount >= 100)
 		{
 			keyCount = 0;
 			longPressFlag = 0;

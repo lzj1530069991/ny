@@ -207,7 +207,7 @@ _limitCount:
 
 .segment "idata"
 _spkFlag:
-	dw	0x01
+	dw	0x00
 	.debuginfo gvariable name=_spkFlag,1byte,array=0,entsize=1,ext=1
 
 

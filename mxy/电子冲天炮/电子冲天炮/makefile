@@ -1,7 +1,7 @@
 ICBODY       := NY8A054D
 CLIENT_NAME  := 电子冲天炮
 CB_FILE      := 电子冲天炮.cb
-HOST_TOOL    := NYIDE 3.92
+HOST_TOOL    := NYIDE 4.00
 USER_C       := main.c 
 LIBS         :=  
 USER_ASM     := 
