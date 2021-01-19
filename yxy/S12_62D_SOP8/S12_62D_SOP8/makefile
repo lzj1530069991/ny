@@ -1,7 +1,7 @@
 ICBODY       := NY8B062D
 CLIENT_NAME  := ÕÅµÂÍ¨
 CB_FILE      := S12_62D_SOP8.cb
-HOST_TOOL    := NYIDE 4.00
+HOST_TOOL    := NYIDE 4.10
 USER_C       := main.c 
 LIBS         :=  
 USER_ASM     := 
@@ -32,7 +32,7 @@ CFLAGS      := -mny8 --errfmt-ny -p$(ICBODY) -D__CPU_$(ICBODY) --debug \
                -I"$(CC_PATH)/include" -I"C:\Nyquest\NYIDE\\include\NY8 C"  -MD --stack-size 6  \
                 --backup-stk 2 
 
-ASFLAGS     := -p $(ICBODY) -g -l --w-no 32797 --lang en-us  \
+ASFLAGS     := -p $(ICBODY) --dbgfmt 2 -g -l --w-no 32797 --lang en-us  \
                -I "$(CC_PATH)/inc"
 
 DEPS        := $(patsubst %.c,%.d, $(USER_C))

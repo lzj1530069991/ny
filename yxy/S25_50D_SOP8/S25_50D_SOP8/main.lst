@@ -1,0 +1,214 @@
+
+                    Nyquest Technology Co., Ltd.
+
+NYASM 2.27
+
+    ADDR  OPCODE/VALUE              LINE   TAG  SOURCE                   STATEMENT    
+
+                                    1-    1     ;--------------------------------------------------------
+                                    1-    2     ; File Created by SDCC : free open source ANSI-C Compiler
+                                    1-    3     ; Version 3.7.1 #0 (MSVC)
+                                    1-    4     ;--------------------------------------------------------
+                                    1-    5     ; NY8A port
+                                    1-    6     ;--------------------------------------------------------
+                                    1-    7     	.file	"main.c"
+                                    1-    8     	list	p=NY8A050D,c=on
+                                    1-    9     	#include "ny8a050d.inc"
+                                    1-   11     ;--------------------------------------------------------
+                                    1-   12     ; external declarations
+                                    1-   13     ;--------------------------------------------------------
+                                    1-   14     	extern	_PORTBbits
+                                    1-   15     	extern	_PCONbits
+                                    1-   16     	extern	_BWUCONbits
+                                    1-   17     	extern	_BPLCONbits
+                                    1-   18     	extern	_BPHCONbits
+                                    1-   19     	extern	_INTEbits
+                                    1-   20     	extern	_INTFbits
+                                    1-   21     	extern	_INDF
+                                    1-   22     	extern	_TMR0
+                                    1-   23     	extern	_PCL
+                                    1-   24     	extern	_STATUS
+                                    1-   25     	extern	_FSR
+                                    1-   26     	extern	_PORTB
+                                    1-   27     	extern	_PCON
+                                    1-   28     	extern	_BWUCON
+                                    1-   29     	extern	_PCHBUF
+                                    1-   30     	extern	_BPLCON
+                                    1-   31     	extern	_BPHCON
+                                    1-   32     	extern	_INTE
+                                    1-   33     	extern	_INTF
+                                    1-   34     	extern	_TBHP
+                                    1-   35     	extern	_TBHD
+                                    1-   36     	extern	_OSCCR
+                                    1-   37     	extern	_IOSTB
+                                    1-   38     	extern	_PS0CV
+                                    1-   39     	extern	_BODCON
+                                    1-   40     	extern	_PCON1
+                                    1-   41     	extern	_T0MD
+                                    1-   42     	extern	__nyc_ny8_startup
+                                    1-   43     ;--------------------------------------------------------
+                                    1-   44     ; global declarations
+                                    1-   45     ;--------------------------------------------------------
+                                    1-   46     	extern	_main
+                                    1-   48     	extern PSAVE
+                                    1-   49     	extern SSAVE
+                                    1-   50     	extern WSAVE
+                                    1-   51     	extern STK02
+                                    1-   52     	extern STK01
+                                    1-   53     	extern STK00
+                                    1-   55     .segment "uninit", 0x20000010
+ 20000010                           1-   56     PSAVE:
+                                    1-   57     	.res 1
+ 20000011                           1-   58     SSAVE:
+                                    1-   59     	.res 1
+ 20000012                           1-   60     WSAVE:
+                                    1-   61     	.res 1
+ 20000013                           1-   62     STK02:
+                                    1-   63     	.res 1
+ 20000014                           1-   64     STK01:
+                                    1-   65     	.res 1
+ 20000015                           1-   66     STK00:
+                                    1-   67     	.res 1
+                                    1-   69     ;--------------------------------------------------------
+                                    1-   70     ; global definitions
+                                    1-   71     ;--------------------------------------------------------
+                                    1-   72     ;--------------------------------------------------------
+                                    1-   73     ; absolute symbol definitions
+                                    1-   74     ;--------------------------------------------------------
+                                    1-   75     ;--------------------------------------------------------
+                                    1-   76     ; compiler-defined variables
+                                    1-   77     ;--------------------------------------------------------
+                                    1-   78     ;--------------------------------------------------------
+                                    1-   79     ; initialized data
+                                    1-   80     ;--------------------------------------------------------
+                                    1-   81     ;--------------------------------------------------------
+                                    1-   82     ; overlayable items in internal ram 
+                                    1-   83     ;--------------------------------------------------------
+                                    1-   84     ;	udata_ovr
+                                    1-   85     ;--------------------------------------------------------
+                                    1-   86     ; reset vector 
+                                    1-   87     ;--------------------------------------------------------
+                                    1-   88     ORG	0x0000
+     0000 3rrr                      1-   89     	LGOTO	__nyc_ny8_startup
+                                    1-   90     ;--------------------------------------------------------
+                                    1-   91     ; code
+                                    1-   92     ;--------------------------------------------------------
+                                    1-   93     ;***
+                                    1-   94     ;  pBlock Stats: dbName = M
+                                    1-   95     ;***
+                                    1-   96     ;has an exit
+                                    1-   97     ;; Starting pCode block
+                                    1-   98     .segment "code"; module=main, function=_main
+     0000                           1-  100     _main:
+                                    1-  101     ; 2 exit points
+                                    1-  102     	.line	27, "main.c"; 	BODCON = C_PB0_OD;					// set PB0 open-drain output mode 
+     0000 2101                      1-  103     	MOVIA	0x01
+     0001 000r                      1-  104     	IOST	_BODCON
+                                    1-  105     	.line	28, "main.c"; 	BPLCON = (unsigned char)~C_PB1_PLB; 				// Enable PB1 Pull-Low Resistor,others disable	
+     0002 21DF                      1-  106     	MOVIA	0xdf
+     0003 00rr                      1-  107     	MOVAR	_BPLCON
+                                    1-  108     	.line	29, "main.c"; 	BPHCON = (unsigned char)~C_PB4_PHB;				// Enable PB4 Pull-High Resistor,others disable
+     0004 21EF                      1-  109     	MOVIA	0xef
+     0005 00rr                      1-  110     	MOVAR	_BPHCON
+                                    1-  111     	.line	30, "main.c"; 	IOSTB =  C_PB4_Input | C_PB1_Input;	// Set PB4 & PB1 to input mode,others set to output mode
+     0006 2112                      1-  112     	MOVIA	0x12
+     0007 000r                      1-  113     	IOST	_IOSTB
+                                    1-  114     	.line	31, "main.c"; 	PORTB = 0x05;                       // PB2 & PB0 output high
+     0008 2105                      1-  115     	MOVIA	0x05
+     0009 00rr                      1-  116     	MOVAR	_PORTB
+     000A                           1-  117     _00112_DS_:
+                                    1-  118     	.line	35, "main.c"; 	CLRWDT();
+     000A 0002                      1-  119     	clrwdt
+                                    1-  120     	.line	37, "main.c"; 	if(PORTBbits.PB4)
+     000B 0Arr                      1-  121     	BTRSS	_PORTBbits,4
+     000C 3rrr                      1-  122     	LGOTO	_00106_DS_
+                                    1-  123     	.line	38, "main.c"; 	PORTBbits.PB2=1;
+     000D 19rr                      1-  124     	BSR	_PORTBbits,2
+     000E 3rrr                      1-  125     	LGOTO	_00107_DS_
+     000F                           1-  126     _00106_DS_:
+                                    1-  127     	.line	40, "main.c"; 	PORTBbits.PB2=0;
+     000F 1Drr                      1-  128     	BCR	_PORTBbits,2
+     0010                           1-  129     _00107_DS_:
+                                    1-  130     	.line	42, "main.c"; 	if(PORTBbits.PB1)
+     0010 08rr                      1-  131     	BTRSS	_PORTBbits,1
+     0011 3rrr                      1-  132     	LGOTO	_00109_DS_
+                                    1-  133     	.line	43, "main.c"; 	PORTBbits.PB0=1;
+     0012 18rr                      1-  134     	BSR	_PORTBbits,0
+     0013 3rrr                      1-  135     	LGOTO	_00112_DS_
+     0014                           1-  136     _00109_DS_:
+                                    1-  137     	.line	45, "main.c"; 	PORTBbits.PB0=0;        
+     0014 1Crr                      1-  138     	BCR	_PORTBbits,0
+     0015 3rrr                      1-  139     	LGOTO	_00112_DS_
+                                    1-  140     	.line	47, "main.c"; 	}
+                                    1-  141     	RETURN	
+     0016 0010                      3-   26 m1      ret
+                                    1-  142     ; exit point of _main
+                                    1-  145     ;	code size estimation:
+                                    1-  146     ;	   22+    0 =    22 instructions (   44 byte)
+                                    1-  148     	end
+
+SYMBOL TABLE            TYPE     VALUE
+__CHECKSUM_ADDR__       Label    00000000
+__nyc_ny8_startup       Label    00000000
+__PIN_COUNT__           Constant 00000006
+__PROCESSOR__           Constant 00800503
+_00106_DS_              Label    0000000F
+_00107_DS_              Label    00000010
+_00109_DS_              Label    00000014
+_00112_DS_              Label    0000000A
+_BODCON                 Label    00000000
+_BPHCON                 Label    00000000
+_BPHCONbits             Label    00000000
+_BPLCON                 Label    00000000
+_BPLCONbits             Label    00000000
+_BWUCON                 Label    00000000
+_BWUCONbits             Label    00000000
+_FSR                    Label    00000000
+_INDF                   Label    00000000
+_INTE                   Label    00000000
+_INTEbits               Label    00000000
+_INTF                   Label    00000000
+_INTFbits               Label    00000000
+_IOSTB                  Label    00000000
+_main                   Label    00000000
+_OSCCR                  Label    00000000
+_PCHBUF                 Label    00000000
+_PCL                    Label    00000000
+_PCON                   Label    00000000
+_PCON1                  Label    00000000
+_PCONbits               Label    00000000
+_PORTB                  Label    00000000
+_PORTBbits              Label    00000000
+_PS0CV                  Label    00000000
+_STATUS                 Label    00000000
+_T0MD                   Label    00000000
+_TBHD                   Label    00000000
+_TBHP                   Label    00000000
+_TMR0                   Label    00000000
+ENABLE_RAM_BANK         Variable 00000000
+F                       Constant 00000001
+FSR                     Constant 00000004
+INDF                    Constant 00000000
+PCHBUF                  Constant 0000000A
+PCL                     Constant 00000002
+PSAVE                   Label    00000000
+SSAVE                   Label    00000001
+STATUS                  Constant 00000003
+STK00                   Label    00000005
+STK01                   Label    00000004
+STK02                   Label    00000003
+W                       Constant 00000000
+WSAVE                   Label    00000002
+
+
+SOURCE FILE TABLE
+001 main.s
+002 ny8a050d.inc
+003 common.inc
+004 main.c
+
+PROCESSOR    = NY8A050D (8 bits)
+PROGRAM ROM  = 0x00000000 - 0x000001FF
+DATA ROM     = 0x00000000 - 0x000001FF
+RESERVED MEM = 0x00000200 - 0x00000210
+SRAM / SFR   = 0x00000000 - 0x00000000

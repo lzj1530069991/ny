@@ -1,4 +1,4 @@
-﻿#include <ny8.h>
+#include <ny8.h>
 #include "ny8_constant.h"
 #define UPDATE_REG(x)	__asm__("MOVR _" #x ",F")
 #define getbit(x, y)   ((x) >> (y)&1)
@@ -53,6 +53,8 @@ u8t firstLow = 0;
 u8t firstLowTime = 0;
 u8t batLowTime = 0;  //电池检测次数
 u8t lowBatLock = 0;	//低电锁，只有充电后才能解锁
+u8t adCheckTime = 0;
+u8t overNub = 0;
 
 void initAD();
 void gotoSleep();
@@ -207,6 +209,7 @@ void chrgWork()
 		LED3OFF();
 		LED4OFF();
 		POWEROFF();
+		gotoSleep();
 	}
 	
 	//检测充电电压
@@ -240,9 +243,11 @@ void chrgWork()
 
 void workCtr()
 {
-
+	if(++adCheckTime > 20)
+		adCheckTime = 0;
 	//检测电池电压
-	checkBat();
+	if(shandeng == 0 && adCheckTime < 5)
+		checkBat();
 	if(PORTA & 0x20)
 	{
 		if(batStatus == 2 || chrgStatus == 2)
@@ -294,10 +299,12 @@ void workCtr()
 	}
 	
 	//检测电流
-	if(overFlag == 0)
-	{
+	if(adCheckTime > 10 && adCheckTime < 15)
 		checkOutA();
-	}
+//	if(overFlag == 0)
+//	{
+//		checkOutA();
+//	}
 	
 	
 }
@@ -451,7 +458,7 @@ void checkBat()
         	{
         		if(batStatus == 3)
         		{
-        			if(R_AIN2_DATA > 2470)
+        			if(R_AIN2_DATA > 2480)
         			{
         				batStatus = 1;//低电状态
         			}
@@ -460,7 +467,7 @@ void checkBat()
         			batStatus = 1;//低电状态
         	}
         	batLowTime = 0;
-        	if(R_AIN2_DATA > 2500)
+        	if(R_AIN2_DATA > 2480)
         		firstLow = 0;	//重置低电压
         }
         else if(R_AIN2_DATA < 3228)  //16V
@@ -522,7 +529,15 @@ void checkOutA()
         	R_AIN4_DATA = OUTA;
         }
         
-        if(R_AIN4_DATA < 78)
+        if(chrgStatus == 1)
+        {
+        	overNub = 78;
+        }
+        else
+        {
+        	overNub = 58;
+        }
+        if(R_AIN4_DATA < overNub)
         {
         	overTime = 0;
         }

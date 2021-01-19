@@ -1,7 +1,7 @@
 ICBODY       := NY8A051F
 CLIENT_NAME  := hmm
 CB_FILE      := IRLEDRGB.cb
-HOST_TOOL    := NYIDE 3.92
+HOST_TOOL    := NYIDE 4.10
 USER_C       := main.c 
 LIBS         :=  
 USER_ASM     := 
@@ -14,7 +14,7 @@ TEMP_FOLDER  :=
 #  - bank2: 2 bank ram
 #  - bank2_8b: 2 bank ram (NY8B series)
 #  - bank4: 4 bank ram
-MODEL := small
+MODEL := small.v2
 
 ENABLE_INIT_BSS := 1
 
@@ -32,7 +32,7 @@ CFLAGS      := -mny8 --errfmt-ny -p$(ICBODY) -D__CPU_$(ICBODY) --debug \
                -I"$(CC_PATH)/include" -I"C:\Nyquest\NYIDE\\include\NY8 C"  -MD --stack-size 16  \
                 --backup-stk 2 
 
-ASFLAGS     := -p $(ICBODY) -g -l --w-no 32797 --lang en-us  \
+ASFLAGS     := -p $(ICBODY) --dbgfmt 2 -g -l --w-no 32797 --lang en-us  \
                -I "$(CC_PATH)/inc"
 
 DEPS        := $(patsubst %.c,%.d, $(USER_C))

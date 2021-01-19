@@ -1,4 +1,4 @@
-﻿/* =========================================================================
+/* =========================================================================
  * Project:       果汁杯
  * File:          main.c
  * Description:   Set GPIO of PORTA/PORTB
@@ -36,6 +36,7 @@ u8 duty = 0;
 u16 led2count = 0;
 u8 ledCount = 0;
 u8 ledCount2 = 0;
+u8 duty1 = 0;
 u8 duty5 = 0;
 u8 duty7 = 0;
 u8 ledStep = 0; //0灭灯 1亮红灯 2亮绿灯
@@ -49,6 +50,8 @@ u8 stopFlag = 0;
 u8 chrgTime = 0;
 u8 checkTime = 0;
 u8 loadFlag = 0;	//没有负载
+u8 resultTime = 0;
+u8 motorCount = 0;
 
 void gotoSleep();
 char keyRead();
@@ -66,6 +69,7 @@ void LED1ON();
 void LED2ON();
 void LEDOFF();
 void chrgPWM();
+void motorPWM();
 
 void isr(void) __interrupt(0)
 {
@@ -91,6 +95,24 @@ void isr(void) __interrupt(0)
 				}
 			}
 		}
+		if(ledStep == 2)
+   	   	{
+   	   	   	//红灯不亮
+   	   	   	setLed2PWM();
+   	   	   	setLed1PWM();
+   	   	   	
+   	   	}
+   	   	else if(ledStep == 1)
+   	   	{
+   	   		//红灯亮，蓝灯灭
+   	   		setLed2PWM();
+   	   	   	setLed1PWM();
+   	   	}
+   	   	else
+   	   	{
+   	   		PORTA &= 0xEA;
+   	   		IOSTA |= 0x01;
+   	   	}
 	}
 	if(INTFbits.PABIF)
 	{ 
@@ -104,7 +126,7 @@ void main(void)
 {
 
 	DISI();
-	IOSTA = C_PA5_Input;
+	IOSTA = C_PA5_Input | C_PA2_Input;
 	IOSTB = 0x00;
 	PORTB = 0x00;
 	PORTA = 0x00;
@@ -138,28 +160,22 @@ void main(void)
    	   	{
    	   	   	PORTB &= 0xF7;
    	   	}
-   	   	if(ledStep == 2)
+   	   	
+   	   	
+   	   	//马达启动
+   	   	if(workStep == 1 && stopFlag == 0)
    	   	{
-   	   	   	//红灯不亮
-   	   	   	setLed2PWM();
-   	   	   	setLed1PWM();
-   	   	   	PORTA &= 0xFB;
-   	   	}
-   	   	else if(ledStep == 1)
-   	   	{
-   	   		//红灯亮，蓝灯灭
-   	   		setLed2PWM();
-   	   	   	setLed1PWM();
+   	   		PORTA |= 0x80;
    	   	}
    	   	else
    	   	{
-   	   		PORTA &= 0xEA;
-   	   		IOSTA |= 0x01;
+   	   		PORTA &= 0x7F;
    	   	}
+   	   	
    	   	CLRWDT();
         if(!IntFlag)
     		continue;			//5ms执行一次
-    	IntFlag = 0;  
+    	IntFlag = 0; 
     	chrgCtr();
    	   	keyCtr();
    	   	workCtr();
@@ -195,6 +211,9 @@ void initAD()
 
 void checkBat()
 {
+		PORTA &= 0xFB;
+		IOSTA |= 0x04;
+		delay(100);
 		R_AIN2_DATA = R_AIN2_DATA_LB = 0x00;
         F_AIN2_Convert(8);					// execute AIN0 ADC converting 8 times
         R_AIN2_DATA <<= 4;					// R_AIN0_DATA shift left 4 bit
@@ -244,50 +263,80 @@ void workCtr()
    	}
    	if(workStep == 1)
    	{
+   	   	if(++duty1 > 100)
+   	   		duty1 = 100;
    	   	if(checkTime > 0)
    	   	{
    	   		--checkTime;	//检测次数
-   	   		LEDOFF();
-	   	   	checkBat();
-	   	   	ADC_work_value = R_AIN2_DATA;
-	   	   	if(ADC_num_value < (ADC_work_value + 100))
+   	   		if(ledCount > duty)
+	   	   		checkBat();
+	   	   	if(checkTime < 10)
 	   	   	{
-	   	   		loadFlag = 0;//空载
+		   	   	ADC_work_value += R_AIN2_DATA;
+		   	   	u16 tempVale = 0;
+		   	   	u16 ADC_work_AVG = ADC_work_value/(10-checkTime);
+		   	   	if(ADC_num_value > 2300)
+		   	   		tempVale = ADC_work_AVG + 110;
+		   	   	else if(ADC_num_value < 2000)
+		   	   		tempVale = ADC_work_AVG + 120;
+		   	   	else
+		   	   		tempVale = ADC_work_AVG + 115;
+		   	   	if(ADC_num_value > tempVale)
+		   	   	{
+		   	   		if(++resultTime > 4)
+		   	   			loadFlag = 1;//满载
+		   	   	}
+		   	   	else
+		   	   	{
+		   	   		loadFlag = 0;//空载
+		   	   	}
 	   	   	}
-	   	   	else
-	   	   	{
-	   	   		loadFlag = 1;//满载
-	   	   	}
+   	   	}
+   	   	else
+   	   	{
+   	   		resultTime = 0;
+   	   		ADC_work_value = 0;
    	   	}
    	   	if((loadFlag == 0 && count900s < 15) || stopFlag == 1)
    	   	{
    	   	   	
    	   	   	if(count900s >= 6 || stopFlag == 1)
    	   	   	{
-   	   	   	   	PORTA &= 0x7F;
    	   	   	   	stopFlag = 1;
    	   	   	}
    	   	   	else
    	   	   	{
-   	   	   	   	PORTA |= 0x80;
-   	   	   	   	LED2ON();
+   	   	   	   	if(checkTime == 0)
+   	   	   	   		LED2ON();
 
    	   	   	}
    	   	}
    	   	else
    	   	{
-   	   	   	PORTA |= 0x80;
-   	   	   	LED2ON();
+   	   	   	if(checkTime == 0)
+   	   	   		LED2ON();
 
    	   	}
    	   	
    	   	if(stopFlag)
    	   	{
-   	   			if(led2count < 100)
+   	   			if(led2count < 50)
+   	   	   	   	{
+   	   	   	   	   	LEDOFF();
+   	   	   	   	}
+   	   			else if(led2count < 100)
    	   	   	   	{
    	   	   	   	   	LED2ON();
    	   	   	   	}
+   	   	   	   	else if(led2count < 150)
+   	   	   	   	{
+   	   	   	   	   	LEDOFF();
+   	   	   	   	}
    	   	   	   	else if(led2count < 200)
+   	   	   	   	{
+   	   	   	   	   	LED2ON();
+   	   	   	   	}
+   	   	   	   	else if(led2count < 250)
    	   	   	   	{
    	   	   	   	   	LEDOFF();
    	   	   	   	}
@@ -295,19 +344,11 @@ void workCtr()
    	   	   	   	{
    	   	   	   	   	LED2ON();
    	   	   	   	}
-   	   	   	   	else if(led2count < 400)
-   	   	   	   	{
-   	   	   	   	   	LEDOFF();
-   	   	   	   	}
-   	   	   	   	else if(led2count < 500)
-   	   	   	   	{
-   	   	   	   	   	LED2ON();
-   	   	   	   	}
    	   	   	   	else
    	   	   	   	{
    	   	   	   	   	LEDOFF();
    	   	   	   	}
-   	   	   	   	if(++led2count > 600)
+   	   	   	   	if(++led2count > 350)
    	   	   	   	{
    	   	   	   	   	stopFlag = 0;
    	   	   	   	   	gotoSleep();
@@ -327,23 +368,24 @@ void workCtr()
 
 }
 
+
+
 void LED1ON()
 {
    	
    	ledStep = 1;
    	IOSTA |= 0x04;
    	IOSTA &= 0xEE;
-   	duty7 = 6;
-   	duty5 = 4;
+   	duty7 = 15;
+   	duty5 = 1;
 }
 
 void LED2ON()
 {
-  	IOSTA &= 0xEB;
-  	PORTA &= 0xFB;
+  	IOSTA &= 0xEF;
    	ledStep = 2;
-   	duty7 = 6;
-   	duty5 = 6;
+   	duty7 = 30;
+   	duty5 = 40;
 }
 
 void LEDOFF()
@@ -371,6 +413,20 @@ void chrgPWM()
    	   	chrgCount = 0;
 }
 
+void motorPWM()
+{
+	if(motorCount >= duty1)
+   	{ 	
+   	   	PORTA &= 0x7F;
+    }
+   	else 
+   	{
+   	   	PORTA |= 0x80;
+   	}
+   	if(++motorCount >= 50)
+   	   	motorCount = 0;
+}
+
 
 void setLed1PWM()
 {
@@ -384,33 +440,37 @@ void setLed1PWM()
    	   	IOSTA &= 0xFE;
    	   	PORTA |= 0x01;
    	}
-   	if(++ledCount >= 10)
+   	if(++ledCount >= 50)
+   	{
    	   	ledCount = 0;
+   	}
 }
 
 void setLed2PWM()
 {
    	if(ledCount >= duty7)
    	{
-   	   	PORTA &= 0xEF;
-   	   	IOSTA |= 0x10;
+   	   	PORTA &= 0xEB;
+   	   	IOSTA |= 0x14;
    	}
    	else
    	{
-   	   	IOSTA &= 0xEF;
+   	   	IOSTA &= 0xEB;
    	   	PORTA |= 0x10;
+   	   	PORTA &= 0xFB;
    	}
 }
+
+
 
 void chrgCtr()
 {
 
    	//判断P40D电平
-   	if(ledStep == 0 || ledCount > duty5)
+   	if(ledCount > duty7 || ledStep == 0)
    	{
-	   	ledStep = 0;
-	   	IOSTA |= 0x15;
-	   	ABPLCON = 0xFE;
+	   	IOSTA |= 0x01;
+	   	PORTA &= 0xFE;
 	   	delay(10);
 	   	if(PORTA & 0x01)
 	   	{
@@ -445,7 +505,6 @@ void chrgCtr()
 	   	   	if(workStep == 0)
 	   	   	   	LEDOFF();
 	   	}
-	   	ABPLCON = 0xFF;   //关闭PA0下拉
    	}
 }
 
@@ -461,7 +520,7 @@ char keyRead()
    	}
    	else
    	{
-   	   	if(keyCount >= 5)
+   	   	if(keyCount >= 8)
    	   	{
    	   	   	keyCount = 0;
    	   	   	return 	1;
@@ -483,12 +542,13 @@ void keyCtr()
    	   	if(doublePressFlag == 1)
    	   	{
    	   	   	workStep = 1;
+   	   	   	duty1 = 20;
    	   	   	doublePressFlag = 0;
    	   	   	stopFlag = 0;
    	   	   	LEDOFF();
    	   	   	checkBat();
    	   	   	ADC_num_value = R_AIN2_DATA;//未工作时候的电压
-   	   	   	checkTime = 50;
+   	   	   	checkTime = 250;
    	   	   	
    	   	}
    	   	else
@@ -503,6 +563,7 @@ void keyCtr()
    	   	   	   	doublePressFlag = 1;
    	   	   	}
    	   	}
+   	   	sleepTime == 0;
    	   	count1s = 0;
    	   	count900s = 0;
    	   	timeCountKey = 0;
@@ -510,7 +571,7 @@ void keyCtr()
    	   	
     }
    
-   	if(keyCount == 0 && doublePressFlag && (++timeCountKey > 100))
+   	if(keyCount == 0 && doublePressFlag && (++timeCountKey > 50))
    	{
    	   	doublePressFlag = 0;   	//1秒内未双击，重新计数
    	   	timeCountKey = 0;
@@ -522,6 +583,8 @@ void keyCtr()
 
 void gotoSleep()
 {
+	LEDOFF();
+	duty1 = 0;
 	led2count = 0;
 	ADC_work_value = 0;
 	ADC_num_value = 0;

@@ -144,57 +144,57 @@ STK00:
 .segment "uninit"
 _IntFlag:
 	.res	1
-	.debuginfo gvariable name=_IntFlag,1byte,array=0,entsize=1,ext=1
+	.debuginfo gvariable name=_IntFlag,1byte,array=0,entsize=1,ext=1,enc=unsigned
 
 .segment "uninit"
 _count:
 	.res	1
-	.debuginfo gvariable name=_count,1byte,array=0,entsize=1,ext=1
+	.debuginfo gvariable name=_count,1byte,array=0,entsize=1,ext=1,enc=unsigned
 
 .segment "uninit"
 _bitIndex:
 	.res	1
-	.debuginfo gvariable name=_bitIndex,1byte,array=0,entsize=1,ext=1
+	.debuginfo gvariable name=_bitIndex,1byte,array=0,entsize=1,ext=1,enc=unsigned
 
 .segment "uninit"
 _data1:
 	.res	1
-	.debuginfo gvariable name=_data1,1byte,array=0,entsize=1,ext=1
+	.debuginfo gvariable name=_data1,1byte,array=0,entsize=1,ext=1,enc=unsigned
 
 .segment "uninit"
 _data2:
 	.res	1
-	.debuginfo gvariable name=_data2,1byte,array=0,entsize=1,ext=1
+	.debuginfo gvariable name=_data2,1byte,array=0,entsize=1,ext=1,enc=unsigned
 
 .segment "uninit"
 _data3:
 	.res	1
-	.debuginfo gvariable name=_data3,1byte,array=0,entsize=1,ext=1
+	.debuginfo gvariable name=_data3,1byte,array=0,entsize=1,ext=1,enc=unsigned
 
 .segment "uninit"
 _data4:
 	.res	1
-	.debuginfo gvariable name=_data4,1byte,array=0,entsize=1,ext=1
+	.debuginfo gvariable name=_data4,1byte,array=0,entsize=1,ext=1,enc=unsigned
 
 .segment "uninit"
 _irCode:
 	.res	1
-	.debuginfo gvariable name=_irCode,1byte,array=0,entsize=1,ext=1
+	.debuginfo gvariable name=_irCode,1byte,array=0,entsize=1,ext=1,enc=unsigned
 
 .segment "uninit"
 _irCode2:
 	.res	1
-	.debuginfo gvariable name=_irCode2,1byte,array=0,entsize=1,ext=1
+	.debuginfo gvariable name=_irCode2,1byte,array=0,entsize=1,ext=1,enc=unsigned
 
 .segment "uninit"
 _value:
 	.res	1
-	.debuginfo gvariable name=_value,1byte,array=0,entsize=1,ext=1
+	.debuginfo gvariable name=_value,1byte,array=0,entsize=1,ext=1,enc=unsigned
 
 .segment "uninit"
 _T1Counter:
 	.res	2
-	.debuginfo gvariable name=_T1Counter,2byte,array=0,entsize=2,ext=1
+	.debuginfo gvariable name=_T1Counter,2byte,array=0,entsize=2,ext=1,enc=unsigned
 
 ;--------------------------------------------------------
 ; absolute symbol definitions
@@ -221,49 +221,49 @@ r0x1013:
 .segment "idata"
 _sleepFlag:
 	dw	0x00
-	.debuginfo gvariable name=_sleepFlag,1byte,array=0,entsize=1,ext=1
+	.debuginfo gvariable name=_sleepFlag,1byte,array=0,entsize=1,ext=1,enc=unsigned
 
 
 .segment "idata"
 _sleepCount:
 	dw	0x00, 0x00
-	.debuginfo gvariable name=_sleepCount,2byte,array=0,entsize=2,ext=1
+	.debuginfo gvariable name=_sleepCount,2byte,array=0,entsize=2,ext=1,enc=unsigned
 
 
 .segment "idata"
 _ledFlag:
 	dw	0x00
-	.debuginfo gvariable name=_ledFlag,1byte,array=0,entsize=1,ext=1
+	.debuginfo gvariable name=_ledFlag,1byte,array=0,entsize=1,ext=1,enc=unsigned
 
 
 .segment "idata"
 _ledCount:
 	dw	0x00
-	.debuginfo gvariable name=_ledCount,1byte,array=0,entsize=1,ext=1
+	.debuginfo gvariable name=_ledCount,1byte,array=0,entsize=1,ext=1,enc=unsigned
 
 
 .segment "idata"
 _lowTime:
 	dw	0x00
-	.debuginfo gvariable name=_lowTime,1byte,array=0,entsize=1,ext=1
+	.debuginfo gvariable name=_lowTime,1byte,array=0,entsize=1,ext=1,enc=unsigned
 
 
 .segment "idata"
 _Status:
 	dw	0x00
-	.debuginfo gvariable name=_Status,1byte,array=0,entsize=1,ext=1
+	.debuginfo gvariable name=_Status,1byte,array=0,entsize=1,ext=1,enc=unsigned
 
 
 .segment "idata"
 _proTime:
 	dw	0x00
-	.debuginfo gvariable name=_proTime,1byte,array=0,entsize=1,ext=1
+	.debuginfo gvariable name=_proTime,1byte,array=0,entsize=1,ext=1,enc=unsigned
 
 
 .segment "idata"
 _accTimeH:
 	dw	0x00
-	.debuginfo gvariable name=_accTimeH,1byte,array=0,entsize=1,ext=1
+	.debuginfo gvariable name=_accTimeH,1byte,array=0,entsize=1,ext=1,enc=unsigned
 
 ;--------------------------------------------------------
 ; overlayable items in internal ram 
@@ -635,7 +635,7 @@ _00244_DS_:
 .segment "code"; module=main, function=_GetOneByte
 	.debuginfo subprogram _GetOneByte
 ;local variable name mapping:
-	.debuginfo variable _bitNub=r0x1013
+	.debuginfo variable _bitNub=r0x1013,enc=unsigned
 _GetOneByte:
 ; 2 exit points
 	.line	219, "main.c"; 	void GetOneByte(uint8 bitNub)
@@ -712,7 +712,7 @@ _00226_DS_:
 	BCR	_Status,3
 	.line	256, "main.c"; 	bitIndex = 0;
 	CLRR	_bitIndex
-;;shiftRight_Left2ResultLit:5586: shCount=1, size=1, sign=0, same=1, offr=0
+;;shiftRight_Left2ResultLit:5590: shCount=1, size=1, sign=0, same=1, offr=0
 _00233_DS_:
 	.line	259, "main.c"; 	value = value >> 1;
 	BCR	STATUS,0

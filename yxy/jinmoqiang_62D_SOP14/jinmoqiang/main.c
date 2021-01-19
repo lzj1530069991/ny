@@ -44,6 +44,7 @@ u8t count200ms = 0;
 u8t count1s = 0;
 u16t count900s = 0;
 u8t lowBatTime = 0;	//低电次数
+u8t ledTime = 0;
 
 
 __sbit IntFlag = Status:0;
@@ -428,13 +429,15 @@ void LedCtr2()
 
 void ledCtr()
 {
+	if(ledTime > 0)
+		--ledTime;
 	if(workStartFlag == 1)
 	{
-		
 		if(++ledStep > 4)
 		{
 			ledStep = workStep;
 			workStartFlag = 3;
+			pwmInit();
 		}
 		
 	}
@@ -450,8 +453,11 @@ void ledCtr()
 	else
 	{
 		ledStep = workStep;
-		if(workStep)
+		if(workStep && ledTime == 0)
+		{
 			pwmInit();
+			
+		}
 	}
 
 }
@@ -459,7 +465,7 @@ void ledCtr()
 
 void keyCtr()
 {
-	if(workStep > 0)
+	if(workStep > 0 && ledTime == 0)
 	{
 		PORTB |= 0x02;
 	}
@@ -474,6 +480,7 @@ void keyCtr()
 		count500ms = 0;
 		if(workStep > 0)
 		{
+			ledTime = 0;
 			if(++workStep > 4)
 				workStep = 1;
 		}
@@ -499,12 +506,15 @@ void keyCtr()
 		}
 		else
 		{
+			startStep = 0;
+			sleepTime = 0;
+			ledTime = 4;
+			count200ms = 0;
 			workStartFlag = 1;
 			maxDuty = 37;
 			workStep = 1;
 			ledStep = 0;
 			count500ms = 0;
-			pwmInit();
 			duty = 1;
 			fgCount = 0;
 		}

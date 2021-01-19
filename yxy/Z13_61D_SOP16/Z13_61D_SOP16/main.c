@@ -51,8 +51,8 @@ u8t checkTime = 0;
 #define LEDL2OUT()	IOSTB &= 0xFD
 #define LEDW0OUT()	IOSTB &= 0xFE
 #define LEDW1OUT()	IOSTA &= 0xFB
-#define BLUEOUT()	IOSTB &= 0xEF
-#define ORANGEOUT()	IOSTB &= 0xDF
+#define BLUEOUT()	IOSTB &= 0xDF
+#define ORANGEOUT()	IOSTB &= 0xEF
 #define REDOUT()	IOSTA &= 0xFE
 
 __sbit IntFlag = Status:0;
@@ -81,6 +81,7 @@ void startCtr();
 void workCtr();
 void PWM1Start();
 void PWM2Start();
+void LedInput();
 
 void isr(void) __interrupt(0)
 {
@@ -154,6 +155,7 @@ void main(void)
     				workCtr();
     			else
     			{
+    				LedInput();
     				T1CR1 = C_TMR1_En;
     				PORTB &= 0xFE;
 					HOTOFF();
@@ -382,22 +384,32 @@ void startCtr()
 			modeStep = 0;
 			chrgLedStep = 0;
 			powerStep = 0;
+			ORANGEOFF();
+			BLUEOFF();
+			REDOFF();
 			REDON();
 		}
 		else if(startStep == 8)
 		{
+			REDOFF();
+			ORANGEOFF();
+			BLUEOFF();
 			REDOFF();
 			ORANGEON();
 		}
 		else if(startStep == 9)
 		{
 			ORANGEOFF();
+			BLUEOFF();
+			REDOFF();
 			BLUEON();
 		}
 		
-		if(++startStep > 9)
+		if(++startStep > 10)
 		{
+			ORANGEOFF();
 			BLUEOFF();
+			REDOFF();
 			startStep = 0;
 			startLedFlag = 0;
 			modeStep = 1;
@@ -448,9 +460,9 @@ void ADKeyCtr()
 		checkKeyAD();
 	}
 	char tempKey = 0;
-	if(R_VDD_DATA*3 > R_AIN1_DATA && R_AIN1_DATA > R_VDD_DATA)
+	if(R_AIN1_DATA > 100 && R_AIN1_DATA < 2048)
 	{
-		if(R_AIN1_DATA > R_VDD_DATA*2)
+		if(R_AIN1_DATA > 1536)
 		{
 			//小于3/8VDD，S2按下了
 			tempKey = 1;
@@ -479,9 +491,12 @@ void ADKeyCtr()
 				chrgLedStep = 0;
 				startLedFlag = 1;//开机亮灯模式
 			}
-			if(++modeStep > 4)
-				modeStep = 1;
-			powerStep = 1;
+			else
+			{
+				if(++modeStep > 4)
+					modeStep = 1;
+				powerStep = 1;
+			}
 		}
 		else if(modeStep > 0)
 		{

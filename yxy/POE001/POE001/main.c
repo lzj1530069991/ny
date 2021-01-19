@@ -1,4 +1,4 @@
-﻿#include <ny8.h>
+#include <ny8.h>
 #include "ny8_constant.h"
 #define UPDATE_REG(x)	__asm__("MOVR _" #x ",F")
 #define getbit(x, y)   ((x) >> (y)&1)
@@ -23,7 +23,7 @@
 #define CHRGOFF()	PORTB &= 0xFB
 
 #define 	INV		3211
-#define 	BAT		3091
+#define 	BAT		3000
 #define		OUTA	76
 
 u8t debug = 0;		//1打开debug
@@ -116,9 +116,9 @@ void isr(void) __interrupt(0)
 void main(void)
 {
 	DISI();
-	IOSTA = C_PA1_Input | C_PA2_Input | C_PA3_Input | C_PA4_Input | C_PA5_Input;
+	IOSTA = C_PA1_Input | C_PA2_Input  | C_PA5_Input;
 	IOSTB = C_PB0_Input;
-	PORTB = 0x00;
+	PORTB = 0x02;
 	PORTA = 0x00;
 	APHCON = 0xFF;
 	BPHCON = 0xFE;
@@ -191,7 +191,7 @@ void main(void)
 		chrgWork();
 		if(workStatus == 1)
 			workCtr();
-		if(((PORTA & 0x20) == 0 || chrgStatus == 2) && workStatus == 0 && keyCount == 0)
+		if(((PORTA & 0x20) == 0 || chrgStatus == 2) && workStatus == 0 && keyCount == 0 && shandeng == 0)
 		{
 			closeStatus();
 			if(++sleepDelay > 50)
@@ -213,7 +213,8 @@ void chrgWork()
 			//低压状态
 			if(workStatus == 1 && batStatus < 3)
 			{
-				LED2ON();
+				if(R_AIN2_DATA > 100)
+					LED2ON();
 				POWERON();
 			}
 			else
@@ -237,7 +238,7 @@ void workCtr()
 
 	//检测电池电压
 	checkBat();
-	if(PORTA & 0x20)
+	if(PORTA & 0x20 )
 	{
 		
 		if(batStatus == 2 || chrgStatus == 2)
@@ -269,7 +270,7 @@ void workCtr()
 		{
 			LED2ON();
 		}
-		if(batStatus == 1)
+		if(batStatus == 1 && workStatus == 1)
 		{
 			LED4ON();
 		}
@@ -402,35 +403,49 @@ void checkBat()
         	R_AIN2_DATA = BAT;
         }
         
-        if(R_AIN2_DATA < 2348)
+        if(R_AIN2_DATA < 2338)
         {
-        	if(++batLowTime > 50)
+        	if(batStatus == 1)
         	{
-        		batStatus = 3;//缺电状态
+        		if(R_AIN2_DATA < 2330)
+        			batStatus = 3;//缺电状态
         	}
+        	else
+        		batStatus = 3;
         }
         else if(R_AIN2_DATA < 2607)
         {
-        	batLowTime = 0;
+        	firstLow = 0;	//重置低电压
         	if(shandeng == 0)
+        	{
         		batStatus = 1;//低电状态
-        	if(R_AIN2_DATA > 2400)
-        		firstLow = 0;	//重置低电压
+        		batLowTime = 0;
+        	}
+        		
         }
         else if(R_AIN2_DATA < 3080)		//16.55
         {
+        	firstLow = 0;	//重置低电压
         	if(batStatus == 2)
         	{
         		if(R_AIN2_DATA < 3070)
         		{
         			batStatus = 0;//正常状态
-        			firstLow = 0;	//重置低电压
+        			
         		}
         	}
-        	else if(batStatus > 0 && (++batLowTime > 50))
+        	else if(batStatus == 1)
+        	{
+        		if(R_AIN2_DATA > 2630)
+        		{
+        			batStatus = 0;//正常状态
+        			
+        		}
+        	}
+        	else if(batStatus > 0)
         	{
         		batStatus = 0;//正常状态
-        		firstLow = 0;	//重置低电压
+        	
         	}
         	
         }
@@ -438,7 +453,7 @@ void checkBat()
         {
         	batLowTime = 0;
         	firstLow = 0;	//重置低电压
-        	if(R_AIN2_DATA > 3085)
+        	if(R_AIN2_DATA > 3090)
         	{
         		batStatus = 2;//满电状态
         	}
@@ -504,6 +519,8 @@ void gotoSleep()
 	firstLow = 0;
 	sleepDelay = 0;
 	workStep = 0;
+	PORTB = 0x02;
+	PORTA = 0x00;
 	AWUCON = 0x28;
 	BWUCON = 0x01;
 	INTE =  C_INT_TMR0 | C_INT_TMR1 | C_INT_PABKey;
