@@ -185,20 +185,20 @@ void keyCtr()
 		}
 		else if(workStep == 1)
 		{
-			maxDuty = 80;
+			maxDuty = 90;
 			currentDuty = 120;
 		}
 		else if(workStep == 2)
-			maxDuty = 95;
+			maxDuty = 102;
 		else if(workStep == 3)
-			maxDuty = 110;
+			maxDuty = 115;
 		else if(workStep == 4)
 			maxDuty = 128;
 		if(workStep > 0)
 		{
 			if(workStep == 1)
 			{
-				PWM2DUTY = 120;
+				PWM2DUTY = 90;
 			}
 			else
 			{
@@ -218,7 +218,7 @@ void keyCtr()
 		{
 			workStep = 1;
 			PWM2DUTY = 120;
-			maxDuty = 80;
+			maxDuty = 90;
 			currentDuty = 120;
 			pwmInit();
 		}

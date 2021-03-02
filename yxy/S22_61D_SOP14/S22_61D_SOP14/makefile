@@ -1,4 +1,4 @@
-ICBODY       := NY8B061D
+ICBODY       := NY8B062D
 CLIENT_NAME  := ÕÅµÂÍ¨
 CB_FILE      := S22_61D_SOP14.cb
 HOST_TOOL    := NYIDE 4.10
@@ -14,7 +14,7 @@ TEMP_FOLDER  :=
 #  - bank2: 2 bank ram
 #  - bank2_8b: 2 bank ram (NY8B series)
 #  - bank4: 4 bank ram
-MODEL := small_8b
+MODEL := bank2_8b
 
 ENABLE_INIT_BSS := 0
 

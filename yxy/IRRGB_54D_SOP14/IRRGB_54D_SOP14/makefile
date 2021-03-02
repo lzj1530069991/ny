@@ -1,4 +1,4 @@
-ICBODY       := NY8A054D
+ICBODY       := NY8A054E
 CLIENT_NAME  := дЌаубо
 CB_FILE      := IRRGB_54D_SOP14.cb
 HOST_TOOL    := NYIDE 4.10

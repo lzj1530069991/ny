@@ -1,4 +1,4 @@
-﻿#include <ny8.h>
+#include <ny8.h>
 #include "ny8_constant.h"
 #include "number.h"
 #define UPDATE_REG(x)	__asm__("MOVR _" #x ",F")

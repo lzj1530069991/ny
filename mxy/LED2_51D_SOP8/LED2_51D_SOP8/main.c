@@ -49,7 +49,7 @@ void main(void)
 
 	DISI();
     BPHCON = (unsigned char)~C_PB5_PHB;				// Enable PB4 Pull-High Resistor,others disable
-    IOSTB =  C_PB5_Input;	// Set PB4 & PB1 to input mode,others set to output mode
+    IOSTB =  C_PB5_Input | C_PB0_Input | C_PB1_Input;	// Set PB4 & PB1 to input mode,others set to output mode
     PORTB = 0x00;                       // PB2 & PB0 output high
     duty0 = duty1 = 0;
     INTE =  C_INT_TMR0;
@@ -69,7 +69,10 @@ void main(void)
 		if(powerFlag)
 			setLedduty();
 		else
+		{
+			IOSTB =  C_PB5_Input | C_PB0_Input | C_PB1_Input;
 			PORTB = 0x00;
+		}
         if(!IntFlag)
     		continue;			//10ms执行一次
     	IntFlag = 0;   
@@ -195,6 +198,7 @@ void setLedduty()
 void gotoSleep()
 {
 	sleepTime = 0;
+	IOSTB =  C_PB5_Input | C_PB0_Input | C_PB1_Input;
 	PORTB = 0x00;
 	BWUCON = 0x20;
 	INTE =  C_INT_TMR0 | C_INT_PBKey;

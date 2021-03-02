@@ -5,8 +5,8 @@
 ; NY8A port
 ;--------------------------------------------------------
 	.file	"main.c"
-	list	p=NY8A054D,c=on
-	#include "ny8a054d.inc"
+	list	p=NY8A054E,c=on
+	#include "ny8a054e.inc"
 	.debuginfo language C89
 ;--------------------------------------------------------
 ; external declarations

@@ -2342,8 +2342,8 @@ _00203_DS_:
 	XORIA	0x01
 	BTRSS	STATUS,2
 	LGOTO	_00200_DS_
-	.line	188, "main.c"; 	maxDuty = 80;
-	MOVIA	0x50
+	.line	188, "main.c"; 	maxDuty = 90;
+	MOVIA	0x5a
 	BANKSEL	_maxDuty
 	MOVAR	_maxDuty
 	.line	189, "main.c"; 	currentDuty = 120;
@@ -2358,8 +2358,8 @@ _00200_DS_:
 	XORIA	0x02
 	BTRSS	STATUS,2
 	LGOTO	_00197_DS_
-	.line	192, "main.c"; 	maxDuty = 95;
-	MOVIA	0x5f
+	.line	192, "main.c"; 	maxDuty = 102;
+	MOVIA	0x66
 	BANKSEL	_maxDuty
 	MOVAR	_maxDuty
 	LGOTO	_00204_DS_
@@ -2370,8 +2370,8 @@ _00197_DS_:
 	XORIA	0x03
 	BTRSS	STATUS,2
 	LGOTO	_00194_DS_
-	.line	194, "main.c"; 	maxDuty = 110;
-	MOVIA	0x6e
+	.line	194, "main.c"; 	maxDuty = 115;
+	MOVIA	0x73
 	BANKSEL	_maxDuty
 	MOVAR	_maxDuty
 	LGOTO	_00204_DS_
@@ -2397,8 +2397,8 @@ _00204_DS_:
 	XORIA	0x01
 	BTRSS	STATUS,2
 	LGOTO	_00206_DS_
-	.line	201, "main.c"; 	PWM2DUTY = 120;
-	MOVIA	0x78
+	.line	201, "main.c"; 	PWM2DUTY = 90;
+	MOVIA	0x5a
 	SFUN	_PWM2DUTY
 	LGOTO	_00207_DS_
 _00206_DS_:
@@ -2439,8 +2439,8 @@ _00211_DS_:
 	.line	220, "main.c"; 	PWM2DUTY = 120;
 	MOVIA	0x78
 	SFUN	_PWM2DUTY
-	.line	221, "main.c"; 	maxDuty = 80;
-	MOVIA	0x50
+	.line	221, "main.c"; 	maxDuty = 90;
+	MOVIA	0x5a
 	BANKSEL	_maxDuty
 	MOVAR	_maxDuty
 	.line	222, "main.c"; 	currentDuty = 120;

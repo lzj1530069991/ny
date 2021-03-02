@@ -50,9 +50,9 @@ void main(void)
 
 	DISI();
     BPHCON = (unsigned char)~C_PB5_PHB;				// Enable PB4 Pull-High Resistor,others disable
-    IOSTB =  C_PB5_Input;	// Set PB4 & PB1 to input mode,others set to output mode
-    PORTB = 0x00;                       // PB2 & PB0 output high
-    duty0 = duty1 = 0;
+    IOSTB =  0x3F;	// Set PB4 & PB1 to input mode,others set to output mode
+    PORTB = 0x3F;                       // PB2 & PB0 output high
+    duty0 = duty1 = duty2 = duty3 = 0;
     INTE =  C_INT_TMR0;
     TMR0 = 55;
 	T0MD =  C_PS0_TMR0 | C_PS0_Div2;
@@ -70,7 +70,10 @@ void main(void)
 		if(powerFlag)
 			setLedduty();
 		else
-			PORTB = 0x00;
+		{
+			PORTB = 0x3F;
+			IOSTB = 0x3F;
+		}
         if(!IntFlag)
     		continue;			//10ms执行一次
     	IntFlag = 0;   
@@ -194,7 +197,7 @@ void keyCtr()
 //设置PORTB的PWM输出
 void setLedduty()
 {
-	if(ledCount <= duty0)
+	if(ledCount < duty0)
 	{
 		IOSTB &= 0xFE;
 		PORTB &= 0xFE;
@@ -204,7 +207,7 @@ void setLedduty()
 		IOSTB |= 0x01;
 		PORTB |= 0x01;
 	}
-	if(ledCount <= duty1)
+	if(ledCount < duty1)
 	{
 		IOSTB &= 0xFD;
 		PORTB &= 0xFD;
@@ -214,7 +217,7 @@ void setLedduty()
 		IOSTB |= 0x02;
 		PORTB |= 0x02;
 	}
-	if(ledCount <= duty2)
+	if(ledCount < duty2)
 	{
 		IOSTB &= 0xFB;
 		PORTB &= 0xFB;
@@ -224,7 +227,7 @@ void setLedduty()
 		IOSTB |= 0x04;
 		PORTB |= 0x04;
 	}
-	if(ledCount <= duty3)
+	if(ledCount < duty3)
 	{
 		IOSTB &= 0xE7;
 		PORTB &= 0xE7;
@@ -234,7 +237,7 @@ void setLedduty()
 		IOSTB |= 0x18;
 		PORTB |= 0x18;
 	}
-	if(++ledCount >= 100)
+	if(++ledCount >= 150)
 		ledCount = 0;
 }
 
@@ -242,6 +245,7 @@ void setLedduty()
 void gotoSleep()
 {
 	sleepTime = 0;
+	IOSTB = 0x3F;
 	PORTB = 0x00;
 	BWUCON = 0x20;
 	INTE =  C_INT_TMR0 | C_INT_PBKey;

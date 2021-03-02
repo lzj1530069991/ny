@@ -60,6 +60,11 @@ u8t shanshuoTime = 0;
 u8t firstTime = 0;
 u8t tempDuty = 0;
 u8t lowCount = 0;
+u8t cDuty = 0;
+u16t deadTime = 0;
+u16t ssTime = 0;
+u8t tempLedStep = 0;
+ 
 
 u8t debug = 0;		//1打开bug
 #define OUTA	301
@@ -164,6 +169,19 @@ void main(void)
 	{
 	    CLRWDT();
 	    ledShow();
+	    if(workStep > 0 && tempDuty >= 40)
+	    {
+	    	if(cDuty > tempDuty)
+	    	{
+	    		cDuty--;
+	    		PWM2DUTY = cDuty;
+	    	}
+	    	else if(cDuty < tempDuty)
+	    	{
+	    		cDuty++;
+	    		PWM2DUTY = cDuty;
+	    	}
+	    }
         if(!IntFlag)
     		continue;			//10ms执行一次
     	IntFlag = 0;
@@ -188,6 +206,7 @@ void main(void)
 		{
 			currentDuty = currentDuty - 10;
 			PWM2DUTY = currentDuty;
+			cDuty = currentDuty;
 		}
 		if(workStep == 0 && keyCount == 0 && (PORTA & 0x08) == 0 && ledLightTime == 0)
 		{
@@ -216,7 +235,7 @@ void keyCtr()
 		if(workStep == 0)
 		{
 			count1s = 0;
-			ledLightTime = 2;
+			ledLightTime = 6;
 			return;
 		}
 		ledTime = 0;
@@ -224,17 +243,17 @@ void keyCtr()
 			workStep = 1;
 		shanshuoTime = 6;
 		if(workStep == 1)
-			maxDuty = 51;
+			maxDuty = 40;
 		else if(workStep == 2)
-			maxDuty = 53;
+			maxDuty = 42;
 		else if(workStep == 3)
-			maxDuty = 54;
+			maxDuty = 44;
 		else if(workStep == 4)
-			maxDuty = 55;
+			maxDuty = 46;
 		else if(workStep == 5)
-			maxDuty = 56;
+			maxDuty = 48;
 		else if(workStep == 6)
-			maxDuty = 58;
+			maxDuty = 50;
 		if(workStep > 0)
 		{
 			PWM2DUTY = maxDuty;
@@ -256,9 +275,9 @@ void keyCtr()
 				return;
 			}
 			workStep = 1;
-			PWM2DUTY = 100;
-			currentDuty = 100;
-			maxDuty = 50;
+			PWM2DUTY = 90;
+			currentDuty = 90;
+			maxDuty = 40;
 			pwmInit();
 			shanshuoTime = 16;
 			
@@ -311,16 +330,40 @@ void initSys()
 void ledShow()
 {
 	
+	if(ssTime > 0)
+	{
+		ssTime--;
+		if(ssTime % 40 < 20)
+		{
+			ledStep = 0;
+		}
+		else
+		{
+			ledStep = tempLedStep;
+		}
+		if(ssTime == 0)
+		{
+			tempLedStep = 0;
+		}
+	}
 	if(overCount >= 5 && workStep > 0)
 	{
-		if(count1s < 50)
-			ledStep = workStep;
-		else
-			ledStep = 0;
+//		if(count1s < 50)
+//			ledStep = workStep;
+//		else
+//			ledStep = 0;
+		//tempDuty = 70 + workStep*5;
+		if(deadTime >= 500)
+		{
+			ssTime = 500;
+			tempLedStep = workStep;
+			workStep = 0;
+			pwmStop();
+		}
 	}
 	if(ledLightTime > 0 && pwStep > 0)
 	{
-		if(ledLightTime == 2)
+		if(ledLightTime == 6)
 		{
 			if(pwStep > 6 )
 				ledStep = 6;
@@ -458,7 +501,7 @@ void pwmInit()
 	if(0x80&T2CR1)
 		return;
 	TMRH = 0x00;
-	TMR2 = 128;							//频率为110K
+	TMR2 = 100;							//频率为110K
 	//PWM2DUTY = 0x08;				// 		
 	
 	T2CR2 = C_TMR2_ClkSrc_Inst | C_PS2_Div2;	// Enable Prescaler1, Prescaler1 dividing rate = 1:2, Timer1 clock source is instruction clock 
@@ -800,13 +843,18 @@ void checkOutA()
         	if(++overCount > 5)
         	{
         		overCount = 5;
+        		//tempDuty = maxDuty;
         	}
+        	deadTime = 0;
         }
         else if(R_AIN4_DATA > 400)
         {
         	if(++overCount > 5)
         	{
         		overCount = 5;
+        		if(++deadTime > 500)
+        			deadTime = 500;
+        		//tempDuty = maxDuty;
 //        		if(tempDuty > 50)
 //        		{
 //        			tempDuty = tempDuty-1;
@@ -816,55 +864,30 @@ void checkOutA()
         }
         else if(R_AIN4_DATA > 45)
         {
+        	deadTime = 0;
         	if(overCount > 0)
         	{
         		overCount--;
         	}
-        	if(workStep < 4)
+        	if(workStep < 7)
         	{
-        		if(workStep == 1)
-        		{
-        			tempDuty = maxDuty + workStep*4 + 51;
-        		}
-        		else if(workStep == 2)
-        		{
-        			tempDuty = maxDuty + workStep*4 + 48;
-        		}
-        		else if(workStep == 3)
-        		{
-        			tempDuty = maxDuty + workStep*4 + 46;
-        		}
-        		tempDuty = maxDuty + workStep*4 + 45;
+        		tempDuty = 70 + workStep*5;
         	}
-        	else
-        		tempDuty = maxDuty + workStep*5 + 40;
-        	PWM2DUTY = tempDuty;
         }
         else
         {
+        	deadTime = 0;
         	if(overCount > 0)
         	{
         		overCount--;
         	}
         	if(R_AIN4_DATA > 40 && workStep < 4)
         	{
-        			if(workStep == 1)
-        		{
-        			tempDuty = maxDuty + workStep*4 + 45;
-        		}
-        		else if(workStep == 2)
-        		{
-        			tempDuty = maxDuty + workStep*4 + 42;
-        		}
-        		else if(workStep == 3)
-        		{
-        			tempDuty = maxDuty + workStep*4 + 40;
-        		}
-        		PWM2DUTY = tempDuty;
+        		tempDuty = 70 + workStep*5;
         	}
         	else if(R_AIN4_DATA < 68)
         	{
-        		PWM2DUTY = maxDuty;
+        		tempDuty = maxDuty;
         	}
         	if(workStep > 0)
         		ledStep = workStep;

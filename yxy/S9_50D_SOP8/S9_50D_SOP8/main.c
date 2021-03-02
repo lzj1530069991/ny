@@ -1,4 +1,4 @@
-﻿
+
 #include <ny8.h>
 #include "ny8_constant.h"
 #define UPDATE_REG(x)	__asm__("MOVR _" #x ",F")
@@ -16,6 +16,7 @@ u8t keyCount = 0;
 u8t workTime = 0;
 u8t stopTime = 0;
 u16t ledTime = 0;
+u8t startTime = 0;
 
 #define LEDON() PORTB &= 0xFD
 #define LEDOFF() PORTB |= 0x02
@@ -56,10 +57,10 @@ void main(void)
     duty = 5;
     INTE =  C_INT_TMR0;
     TMR0 = 55;
-	T0MD =  C_PS0_TMR0 | C_PS0_Div4;
+	T0MD =  C_PS0_TMR0 | C_PS0_Div2;
 	
 //;Initial Power control register
-	PCON = C_WDT_En | C_LVR_En;				// Enable WDT ,  Enable LVR
+	PCON = C_WDT_En;				// Enable WDT ,  Enable LVR
 	
 //;Enable Timer0 & Global interrupt bit 
 	PCON1 = C_TMR0_En;						// Enable Timer0
@@ -88,6 +89,7 @@ void main(void)
     		if(workStep == 1)
     		{
     			ledTime = 1000;
+    			startTime = 2;
     		}
     		else if(workStep == 2)
     		{
@@ -151,7 +153,10 @@ void main(void)
     		}
     		else
     		{
-    			motorFlag = 1;
+    			if(startTime > 0)
+    				startTime--;
+    			else
+    				motorFlag = 1;
     			PORTB |= 0x10;
     			//PORTB |= 0x10;
     		}
@@ -216,7 +221,7 @@ void gotoSleep()
 	workStep = 0;
 	BWUCON = 0x20;
 	INTE =  C_INT_TMR0 | C_INT_PBKey;
-	PCON =  C_LVR_En;	
+	PCON =  0;	
 	INTF = 0;								// Clear all interrupt flags
 	CLRWDT();
 	ENI();
@@ -225,7 +230,7 @@ void gotoSleep()
 	INTE =  C_INT_TMR0 ;	// Enable Timer0、Timer1、WDT overflow interrupt
 	INTF = 0;
 	//;Initial Power control register
-	PCON = C_WDT_En | C_LVR_En;				// Enable WDT ,  Enable LVR
+	PCON = C_WDT_En;				// Enable WDT ,  Enable LVR
 	
 }
 
@@ -242,7 +247,7 @@ char keyRead(char keyStatus)
 	}
 	else
 	{
-		if(keyCount >= 100)
+		if(keyCount >= 40)
 		{
 			keyCount = 0;
 			return	1;
@@ -257,10 +262,10 @@ char keyRead(char keyStatus)
 //设置PORTB的PWM输出
 void setMotorduty()
 {
-	if(ledCount >= duty)
+	if(ledCount == 0)
 		PORTB &= 0xFB;
 	else
 		PORTB |= 0x04;
-	if(++ledCount >= 10)
+	if(++ledCount >= 2)
 		ledCount = 0;
 }

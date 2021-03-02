@@ -212,8 +212,8 @@ r0x1001:
 .segment "code"; module=number, function=_delayms
 	.debuginfo subprogram _delayms
 ;local variable name mapping:
-	.debuginfo variable _time=r0x1000
-	.debuginfo variable _i=r0x1001
+	.debuginfo variable _time=r0x1000,enc=unsigned
+	.debuginfo variable _i=r0x1001,enc=unsigned
 _delayms:
 ; 2 exit points
 	.line	280, "number.c"; 	void delayms(u8t time)
@@ -279,7 +279,7 @@ _setInput:
 .segment "code"; module=number, function=_setOutput
 	.debuginfo subprogram _setOutput
 ;local variable name mapping:
-	.debuginfo variable _outPut=r0x1003
+	.debuginfo variable _outPut=r0x1003,enc=unsigned
 _setOutput:
 ; 2 exit points
 	.line	249, "number.c"; 	void setOutput(char outPut)
@@ -385,7 +385,7 @@ _00318_DS_:
 .segment "code"; module=number, function=_setlowOutput
 	.debuginfo subprogram _setlowOutput
 ;local variable name mapping:
-	.debuginfo variable _outPut=r0x1004
+	.debuginfo variable _outPut=r0x1004,enc=unsigned
 _setlowOutput:
 ; 2 exit points
 	.line	223, "number.c"; 	void setlowOutput(char outPut)
@@ -461,7 +461,7 @@ _00296_DS_:
 .segment "code"; module=number, function=_setHightOutput
 	.debuginfo subprogram _setHightOutput
 ;local variable name mapping:
-	.debuginfo variable _outPut=r0x1005
+	.debuginfo variable _outPut=r0x1005,enc=unsigned
 _setHightOutput:
 ; 2 exit points
 	.line	197, "number.c"; 	void setHightOutput(char outPut)
@@ -552,8 +552,8 @@ _00274_DS_:
 .segment "code"; module=number, function=_showNub
 	.debuginfo subprogram _showNub
 ;local variable name mapping:
-	.debuginfo variable _hight=r0x1006
-	.debuginfo variable _low=r0x1007
+	.debuginfo variable _hight=r0x1006,enc=unsigned
+	.debuginfo variable _low=r0x1007,enc=unsigned
 _showNub:
 ; 2 exit points
 	.line	181, "number.c"; 	void showNub(char hight,char low)
@@ -1014,7 +1014,7 @@ _showBaiwei:
 .segment "code"; module=number, function=_showNubGewei2
 	.debuginfo subprogram _showNubGewei2
 ;local variable name mapping:
-	.debuginfo variable _index=r0x1008
+	.debuginfo variable _index=r0x1008,enc=unsigned
 _showNubGewei2:
 ; 2 exit points
 	.line	64, "number.c"; 	void showNubGewei2(char index)
@@ -1097,8 +1097,8 @@ _00184_DS_:
 .segment "code"; module=number, function=_showNubGewei
 	.debuginfo subprogram _showNubGewei
 ;local variable name mapping:
-	.debuginfo variable _num=r0x1009
-	.debuginfo variable _i=r0x100A
+	.debuginfo variable _num=r0x1009,enc=unsigned
+	.debuginfo variable _i=r0x100A,enc=unsigned
 _showNubGewei:
 ; 2 exit points
 	.line	52, "number.c"; 	void showNubGewei(char num)
@@ -1177,7 +1177,7 @@ _00157_DS_:
 .segment "code"; module=number, function=_showNubShiwei2
 	.debuginfo subprogram _showNubShiwei2
 ;local variable name mapping:
-	.debuginfo variable _index=r0x100C
+	.debuginfo variable _index=r0x100C,enc=unsigned
 _showNubShiwei2:
 ; 2 exit points
 	.line	24, "number.c"; 	void showNubShiwei2(char index)
@@ -1260,8 +1260,8 @@ _00139_DS_:
 .segment "code"; module=number, function=_showNubShiwei
 	.debuginfo subprogram _showNubShiwei
 ;local variable name mapping:
-	.debuginfo variable _num=r0x100D
-	.debuginfo variable _i=r0x100E
+	.debuginfo variable _num=r0x100D,enc=unsigned
+	.debuginfo variable _i=r0x100E,enc=unsigned
 _showNubShiwei:
 ; 2 exit points
 	.line	12, "number.c"; 	void showNubShiwei(char num)
