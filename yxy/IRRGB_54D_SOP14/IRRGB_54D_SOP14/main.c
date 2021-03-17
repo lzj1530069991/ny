@@ -429,12 +429,12 @@ unsigned char R_shift_regl = 0xFF;
         {
         	proData();
         }
-        if(INT1Level && (PORTA & 0x04))
+        if(INT1Level && (PORTA & 0x02))
         { 
         	INT1Level = 0;
         	proLow();
         }
-        else if(INT1Level == 0 && (PORTA & 0x04) == 0)
+        else if(INT1Level == 0 && (PORTA & 0x02) == 0)
         {
         	  
         	INT1Level = 1;

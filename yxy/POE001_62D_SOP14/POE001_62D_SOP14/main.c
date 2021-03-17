@@ -44,6 +44,10 @@ u8t batLowTime = 0;		//电池低电次数
 u8t longPressFlag = 0;
 u8t checkCount = 0;
 u8t batFlag = 0;		//电池供电
+u8t highTime = 0;
+u8t lowTime = 0;
+u8t count1s = 0;
+u8t tdCount = 0;
 
 void closeStatus();
 void F_AIN1_Convert(char count);
@@ -179,6 +183,27 @@ void main(void)
 		if(!IntFlag)
     		continue;			//5ms执行一次
     	IntFlag = 0;
+    	if(++count1s >= 100)
+    	{
+    		count1s = 0;
+    		if(R_AIN1_DATA > 200 && lowTime < 200 && highTime < 200)
+    		{
+    			//不停的跳动
+    			if(++tdCount > 5)
+    			{
+    				tdCount = 5;
+    				chrgFlag = 0;
+		        	workFlag = 0;
+					closeStatus();
+					gotoSleep();
+    			}
+    			
+    		}
+    		else
+    		{
+    			tdCount = 0;
+    		}
+    	}
     	if(debug){
 	    	if(batvalue < 4000)
 	    		batvalue++;
@@ -312,8 +337,8 @@ void initAD()
 
 void keyCtr()
 {
-	if(chrgFlag == 0)
-	{
+	
+
 		char kClick = keyRead(0x01 & ~PORTB);
 		if(kClick == 2)
 		{
@@ -323,14 +348,13 @@ void keyCtr()
 				if(batStatus == 0)
 					shandeng = 3;
 			}
-			else
+			else if(chrgFlag == 0 || chrgFlag == 2)
 			{
 				workFlag = 0;
 				closeStatus();
 				gotoSleep();
 			}
 		}
-	}
 }
 
 
@@ -354,16 +378,24 @@ void checkInV()
         	{
         		inLowTime++;
         		chrgFlag = 2;		//充电电压低于17.2V
+        		highTime = 0;
+        		if(++lowTime >= 200)
+        			lowTime = 200;
         	}
         	else
         	{
         		inLowTime = 0;
+        		highTime = 0;
         		chrgFlag = 0;
+        		lowTime = 0;
         	}
         }
         else
         {
+        	lowTime = 0;
         	inLowTime = 0;
+        	if(++highTime >= 200)
+        		highTime = 200;
         	 if(R_AIN1_DATA > 3280)
         	 {
         		chrgFlag = 1;
@@ -374,9 +406,6 @@ void checkInV()
         {
         	inLowTime = 100;
         	chrgFlag = 0;
-        	workFlag = 0;
-			closeStatus();
-			gotoSleep();
         }
         
 }

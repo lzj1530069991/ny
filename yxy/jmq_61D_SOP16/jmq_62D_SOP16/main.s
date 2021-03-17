@@ -5,8 +5,8 @@
 ; NY8A port
 ;--------------------------------------------------------
 	.file	"main.c"
-	list	p=NY8B061D,c=on
-	#include "ny8b061d.inc"
+	list	p=NY8B062D,c=on
+	#include "ny8b062d.inc"
 	.debuginfo language C89
 ;--------------------------------------------------------
 ; external declarations
@@ -28,6 +28,7 @@
 	extern	_AWUCONbits
 	extern	_PACONbits
 	extern	_INTEDGbits
+	extern	_ANAENbits
 	extern	_RFCbits
 	extern	_INTE2bits
 	extern	_INDF
@@ -53,6 +54,7 @@
 	extern	_PACON
 	extern	_INTEDG
 	extern	_TMRH
+	extern	_ANAEN
 	extern	_RFC
 	extern	_TM3RH
 	extern	_INTE2
@@ -83,6 +85,7 @@
 	extern	_APHCON
 	extern	_PS0CV
 	extern	_BODCON
+	extern	_CMPCR
 	extern	_PCON1
 	extern	_T0MD
 	extern	___sdcc_saved_fsr
@@ -164,42 +167,42 @@ STK00:
 .segment "uninit"
 _shiwei:
 	.res	1
-	.debuginfo gvariable name=_shiwei,1byte,array=0,entsize=1,ext=1
+	.debuginfo gvariable name=_shiwei,1byte,array=0,entsize=1,ext=1,enc=unsigned
 
 .segment "uninit"
 _gewei:
 	.res	1
-	.debuginfo gvariable name=_gewei,1byte,array=0,entsize=1,ext=1
+	.debuginfo gvariable name=_gewei,1byte,array=0,entsize=1,ext=1,enc=unsigned
 
 .segment "uninit"
 _R_AIN9_DATA:
 	.res	2
-	.debuginfo gvariable name=_R_AIN9_DATA,2byte,array=0,entsize=2,ext=1
+	.debuginfo gvariable name=_R_AIN9_DATA,2byte,array=0,entsize=2,ext=1,enc=unsigned
 
 .segment "uninit"
 _R_AIN9_DATA_LB:
 	.res	1
-	.debuginfo gvariable name=_R_AIN9_DATA_LB,1byte,array=0,entsize=1,ext=1
+	.debuginfo gvariable name=_R_AIN9_DATA_LB,1byte,array=0,entsize=1,ext=1,enc=unsigned
 
 .segment "uninit"
 _R_AIN2_DATA:
 	.res	2
-	.debuginfo gvariable name=_R_AIN2_DATA,2byte,array=0,entsize=2,ext=1
+	.debuginfo gvariable name=_R_AIN2_DATA,2byte,array=0,entsize=2,ext=1,enc=unsigned
 
 .segment "uninit"
 _R_AIN2_DATA_LB:
 	.res	1
-	.debuginfo gvariable name=_R_AIN2_DATA_LB,1byte,array=0,entsize=1,ext=1
+	.debuginfo gvariable name=_R_AIN2_DATA_LB,1byte,array=0,entsize=1,ext=1,enc=unsigned
 
 .segment "uninit"
 _maxDuty:
 	.res	1
-	.debuginfo gvariable name=_maxDuty,1byte,array=0,entsize=1,ext=1
+	.debuginfo gvariable name=_maxDuty,1byte,array=0,entsize=1,ext=1,enc=unsigned
 
 .segment "uninit"
 _duty:
 	.res	1
-	.debuginfo gvariable name=_duty,1byte,array=0,entsize=1,ext=1
+	.debuginfo gvariable name=_duty,1byte,array=0,entsize=1,ext=1,enc=unsigned
 
 ;--------------------------------------------------------
 ; absolute symbol definitions
@@ -208,31 +211,16 @@ _duty:
 ; compiler-defined variables
 ;--------------------------------------------------------
 .segment "uninit"
-r0x104F:
-	.res	1
-.segment "uninit"
-r0x104E:
-	.res	1
-.segment "uninit"
 r0x104A:
 	.res	1
 .segment "uninit"
-r0x104C:
-	.res	1
-.segment "uninit"
 r0x104B:
-	.res	1
-.segment "uninit"
-r0x104D:
 	.res	1
 .segment "uninit"
 r0x1047:
 	.res	1
 .segment "uninit"
 r0x1048:
-	.res	1
-.segment "uninit"
-r0x1049:
 	.res	1
 .segment "uninit"
 r0x1045:
@@ -321,85 +309,85 @@ _table:
 	dw	0x6f
 	dw	0x71
 	dw	0x38
-	.debuginfo gvariable name=_table,12byte,array=1,entsize=1,ext=0
+	.debuginfo gvariable name=_table,12byte,array=1,entsize=1,ext=0,enc=unsigned
 
 
 .segment "idata"
 _intCount:
 	dw	0x00
-	.debuginfo gvariable name=_intCount,1byte,array=0,entsize=1,ext=1
+	.debuginfo gvariable name=_intCount,1byte,array=0,entsize=1,ext=1,enc=unsigned
 
 
 .segment "idata"
 _IntFlag:
 	dw	0x00
-	.debuginfo gvariable name=_IntFlag,1byte,array=0,entsize=1,ext=1
+	.debuginfo gvariable name=_IntFlag,1byte,array=0,entsize=1,ext=1,enc=unsigned
 
 
 .segment "idata"
 _longPressFlag:
 	dw	0x00
-	.debuginfo gvariable name=_longPressFlag,1byte,array=0,entsize=1,ext=1
+	.debuginfo gvariable name=_longPressFlag,1byte,array=0,entsize=1,ext=1,enc=unsigned
 
 
 .segment "idata"
 _workStep:
 	dw	0x00
-	.debuginfo gvariable name=_workStep,1byte,array=0,entsize=1,ext=1
+	.debuginfo gvariable name=_workStep,1byte,array=0,entsize=1,ext=1,enc=unsigned
 
 
 .segment "idata"
 _chrgStep:
 	dw	0x00
-	.debuginfo gvariable name=_chrgStep,1byte,array=0,entsize=1,ext=1
+	.debuginfo gvariable name=_chrgStep,1byte,array=0,entsize=1,ext=1,enc=unsigned
 
 
 .segment "idata"
 _sleepTime:
 	dw	0x00
-	.debuginfo gvariable name=_sleepTime,1byte,array=0,entsize=1,ext=1
+	.debuginfo gvariable name=_sleepTime,1byte,array=0,entsize=1,ext=1,enc=unsigned
 
 
 .segment "idata"
 _keyCount:
 	dw	0x00
-	.debuginfo gvariable name=_keyCount,1byte,array=0,entsize=1,ext=1
+	.debuginfo gvariable name=_keyCount,1byte,array=0,entsize=1,ext=1,enc=unsigned
 
 
 .segment "idata"
 _keyCount2:
 	dw	0x00
-	.debuginfo gvariable name=_keyCount2,1byte,array=0,entsize=1,ext=1
+	.debuginfo gvariable name=_keyCount2,1byte,array=0,entsize=1,ext=1,enc=unsigned
 
 
 .segment "idata"
 _keyCount3:
 	dw	0x00
-	.debuginfo gvariable name=_keyCount3,1byte,array=0,entsize=1,ext=1
+	.debuginfo gvariable name=_keyCount3,1byte,array=0,entsize=1,ext=1,enc=unsigned
 
 
 .segment "idata"
 _batValue:
 	dw	0x00, 0x00
-	.debuginfo gvariable name=_batValue,2byte,array=0,entsize=2,ext=1
+	.debuginfo gvariable name=_batValue,2byte,array=0,entsize=2,ext=1,enc=unsigned
 
 
 .segment "idata"
 _adCheckTime:
 	dw	0x00
-	.debuginfo gvariable name=_adCheckTime,1byte,array=0,entsize=1,ext=1
+	.debuginfo gvariable name=_adCheckTime,1byte,array=0,entsize=1,ext=1,enc=unsigned
 
 
 .segment "idata"
 _count3S:
 	dw	0x00, 0x00
-	.debuginfo gvariable name=_count3S,2byte,array=0,entsize=2,ext=1
+	.debuginfo gvariable name=_count3S,2byte,array=0,entsize=2,ext=1,enc=unsigned
 
 
 .segment "idata"
 _firstTime:
 	dw	0x00
-	.debuginfo gvariable name=_firstTime,1byte,array=0,entsize=1,ext=1
+	.debuginfo gvariable name=_firstTime,1byte,array=0,entsize=1,ext=1,enc=unsigned
 
 ;--------------------------------------------------------
 ; overlayable items in internal ram 
@@ -624,11 +612,9 @@ _00204_DS_:
 	MOVAR	STK00
 	MOVR	(_batValue + 1),W
 	LCALL	__divuint
-	BANKSEL	r0x104E
-	MOVAR	r0x104E
+;;102	MOVAR	r0x104E
 	MOVR	STK00,W
-	BANKSEL	r0x104F
-	MOVAR	r0x104F
+;;100	MOVAR	r0x104F
 	BANKSEL	_shiwei
 	MOVAR	_shiwei
 	.line	116, "main.c"; 	gewei = batValue%10;
@@ -641,11 +627,9 @@ _00204_DS_:
 	MOVAR	STK00
 	MOVR	(_batValue + 1),W
 	LCALL	__moduint
-	BANKSEL	r0x104E
-	MOVAR	r0x104E
+;;101	MOVAR	r0x104E
 	MOVR	STK00,W
-	BANKSEL	r0x104F
-	MOVAR	r0x104F
+;;99	MOVAR	r0x104F
 	BANKSEL	_gewei
 	MOVAR	_gewei
 	LGOTO	_00119_DS_
@@ -1229,8 +1213,8 @@ _00343_DS_:
 .segment "code"; module=main, function=_F_AIN2_Convert
 	.debuginfo subprogram _F_AIN2_Convert
 ;local variable name mapping:
-	.debuginfo variable _count=r0x102C
-	.debuginfo variable _i=r0x102D
+	.debuginfo variable _count=r0x102C,enc=unsigned
+	.debuginfo variable _i=r0x102D,enc=unsigned
 _F_AIN2_Convert:
 ; 2 exit points
 	.line	409, "main.c"; 	void F_AIN2_Convert(char count)
@@ -1274,12 +1258,12 @@ _00336_DS_:
 	BANKSEL	r0x102E
 	MOVAR	r0x102E
 ;;1	CLRR	r0x102F
-;;106	MOVR	r0x102E,W
-;;104	MOVAR	r0x1030
+;;112	MOVR	r0x102E,W
+;;110	MOVAR	r0x1030
 	MOVIA	0x00
 	BANKSEL	r0x1031
 	MOVAR	r0x1031
-;;105	MOVR	r0x1030,W
+;;111	MOVR	r0x1030,W
 	BANKSEL	r0x102E
 	MOVR	r0x102E,W
 	BANKSEL	_R_AIN2_DATA
@@ -1322,8 +1306,8 @@ _00338_DS_:
 .segment "code"; module=main, function=_F_AIN9_Convert
 	.debuginfo subprogram _F_AIN9_Convert
 ;local variable name mapping:
-	.debuginfo variable _count=r0x1032
-	.debuginfo variable _i=r0x1033
+	.debuginfo variable _count=r0x1032,enc=unsigned
+	.debuginfo variable _i=r0x1033,enc=unsigned
 _F_AIN9_Convert:
 ; 2 exit points
 	.line	394, "main.c"; 	void F_AIN9_Convert(char count)
@@ -1367,12 +1351,12 @@ _00327_DS_:
 	BANKSEL	r0x1034
 	MOVAR	r0x1034
 ;;1	CLRR	r0x1035
-;;103	MOVR	r0x1034,W
-;;101	MOVAR	r0x1036
+;;109	MOVR	r0x1034,W
+;;107	MOVAR	r0x1036
 	MOVIA	0x00
 	BANKSEL	r0x1037
 	MOVAR	r0x1037
-;;102	MOVR	r0x1036,W
+;;108	MOVR	r0x1036,W
 	BANKSEL	r0x1034
 	MOVR	r0x1034,W
 	BANKSEL	_R_AIN9_DATA
@@ -1441,7 +1425,7 @@ _checkPWAAD:
 	MOVAR	r0x103A
 ;;1	MOVAR	r0x1038
 ;;1	CLRR	r0x1039
-;;100	MOVR	r0x1038,W
+;;106	MOVR	r0x1038,W
 	MOVIA	0x00
 	BANKSEL	r0x103B
 	MOVAR	r0x103B
@@ -1457,18 +1441,18 @@ _checkPWAAD:
 	LGOTO	_00003_DS_
 	BANKSEL	_R_AIN2_DATA
 	ADDAR	(_R_AIN2_DATA + 1),F
-;;shiftRight_Left2ResultLit:5589: shCount=1, size=2, sign=0, same=1, offr=0
+;;shiftRight_Left2ResultLit:5590: shCount=1, size=2, sign=0, same=1, offr=0
 _00003_DS_:
 	.line	387, "main.c"; 	R_AIN2_DATA >>=3;					// R_AIN0_DATA divided 8	
 	BCR	STATUS,0
 	BANKSEL	_R_AIN2_DATA
 	RRR	(_R_AIN2_DATA + 1),F
 	RRR	_R_AIN2_DATA,F
-;;shiftRight_Left2ResultLit:5589: shCount=1, size=2, sign=0, same=1, offr=0
+;;shiftRight_Left2ResultLit:5590: shCount=1, size=2, sign=0, same=1, offr=0
 	BCR	STATUS,0
 	RRR	(_R_AIN2_DATA + 1),F
 	RRR	_R_AIN2_DATA,F
-;;shiftRight_Left2ResultLit:5589: shCount=1, size=2, sign=0, same=1, offr=0
+;;shiftRight_Left2ResultLit:5590: shCount=1, size=2, sign=0, same=1, offr=0
 	BCR	STATUS,0
 	RRR	(_R_AIN2_DATA + 1),F
 	RRR	_R_AIN2_DATA,F
@@ -1527,7 +1511,7 @@ _checkBatAD:
 	MOVAR	r0x103E
 ;;1	MOVAR	r0x103C
 ;;1	CLRR	r0x103D
-;;99	MOVR	r0x103C,W
+;;105	MOVR	r0x103C,W
 	MOVIA	0x00
 	BANKSEL	r0x103F
 	MOVAR	r0x103F
@@ -1543,18 +1527,18 @@ _checkBatAD:
 	LGOTO	_00004_DS_
 	BANKSEL	_R_AIN9_DATA
 	ADDAR	(_R_AIN9_DATA + 1),F
-;;shiftRight_Left2ResultLit:5589: shCount=1, size=2, sign=0, same=1, offr=0
+;;shiftRight_Left2ResultLit:5590: shCount=1, size=2, sign=0, same=1, offr=0
 _00004_DS_:
 	.line	368, "main.c"; 	R_AIN9_DATA >>=3;					// R_AIN0_DATA divided 8	
 	BCR	STATUS,0
 	BANKSEL	_R_AIN9_DATA
 	RRR	(_R_AIN9_DATA + 1),F
 	RRR	_R_AIN9_DATA,F
-;;shiftRight_Left2ResultLit:5589: shCount=1, size=2, sign=0, same=1, offr=0
+;;shiftRight_Left2ResultLit:5590: shCount=1, size=2, sign=0, same=1, offr=0
 	BCR	STATUS,0
 	RRR	(_R_AIN9_DATA + 1),F
 	RRR	_R_AIN9_DATA,F
-;;shiftRight_Left2ResultLit:5589: shCount=1, size=2, sign=0, same=1, offr=0
+;;shiftRight_Left2ResultLit:5590: shCount=1, size=2, sign=0, same=1, offr=0
 	BCR	STATUS,0
 	RRR	(_R_AIN9_DATA + 1),F
 	RRR	_R_AIN9_DATA,F
@@ -1704,10 +1688,10 @@ _initAD:
 .segment "code"; module=main, function=_keyRead2
 	.debuginfo subprogram _keyRead2
 ;local variable name mapping:
-	.debuginfo variable _KeyStatus=r0x1040
-	.debuginfo variable _keyCount[0]=r0x1043
-	.debuginfo variable _keyCount[1]=r0x1042
-	.debuginfo variable _keyCount[2]=r0x1041
+	.debuginfo variable _KeyStatus=r0x1040,enc=unsigned
+	.debuginfo variable _keyCount[0]=r0x1043,enc=unsigned
+	.debuginfo variable _keyCount[1]=r0x1042,enc=unsigned
+	.debuginfo variable _keyCount[2]=r0x1041,enc=unsigned
 _keyRead2:
 ; 2 exit points
 	.line	313, "main.c"; 	char keyRead2(char KeyStatus,uint8_t* keyCount)	
@@ -1835,7 +1819,7 @@ _00293_DS_:
 .segment "code"; module=main, function=_keyRead
 	.debuginfo subprogram _keyRead
 ;local variable name mapping:
-	.debuginfo variable _keyStatus=r0x1044
+	.debuginfo variable _keyStatus=r0x1044,enc=unsigned
 _keyRead:
 ; 2 exit points
 	.line	280, "main.c"; 	char keyRead(char keyStatus)	
@@ -1929,8 +1913,8 @@ _00281_DS_:
 .segment "code"; module=main, function=_ind_light_disp
 	.debuginfo subprogram _ind_light_disp
 ;local variable name mapping:
-	.debuginfo variable _udata=r0x1045
-	.debuginfo variable _Count0=r0x1046
+	.debuginfo variable _udata=r0x1045,enc=unsigned
+	.debuginfo variable _Count0=r0x1046,enc=unsigned
 _ind_light_disp:
 ; 2 exit points
 	.line	255, "main.c"; 	void ind_light_disp( uint8_t udata )
@@ -2039,8 +2023,7 @@ _refresh:
 	MOVAR	STK00
 	MOVIA	0x00
 	LCALL	__gptrget1
-	BANKSEL	r0x1049
-	MOVAR	r0x1049
+;;104	MOVAR	r0x1049
 	LCALL	_ind_light_disp
 	.line	241, "main.c"; 	COM1 = 1;
 	BSR	_PORTB,5
@@ -2073,8 +2056,7 @@ _00255_DS_:
 	MOVAR	STK00
 	MOVIA	0x00
 	LCALL	__gptrget1
-	BANKSEL	r0x1049
-	MOVAR	r0x1049
+;;103	MOVAR	r0x1049
 	LCALL	_ind_light_disp
 	.line	248, "main.c"; 	COM1 = 0;
 	BCR	_PORTB,5
@@ -2114,7 +2096,7 @@ _00255_DS_:
 .segment "code"; module=main, function=_keyCtr
 	.debuginfo subprogram _keyCtr
 ;local variable name mapping:
-	.debuginfo variable _kclick=r0x104A
+	.debuginfo variable _kclick=r0x104A,enc=unsigned
 _keyCtr:
 ; 2 exit points
 	.line	205, "main.c"; 	uint8_t kclick = keyRead(0x20 & ~PORTA);
@@ -2162,12 +2144,8 @@ _00238_DS_:
 	BANKSEL	r0x104B
 	MOVAR	r0x104B
 	MOVIA	(_keyCount2 + 0)
-	BANKSEL	r0x104C
-	MOVAR	r0x104C
-	BANKSEL	r0x104D
-	CLRR	r0x104D
-	BANKSEL	r0x104C
-	MOVR	r0x104C,W
+;;116	BANKSEL	r0x104C
+;;115	MOVAR	r0x104C
 	MOVAR	STK02
 	BANKSEL	r0x104B
 	MOVR	r0x104B,W
@@ -2204,12 +2182,8 @@ _00242_DS_:
 	BANKSEL	r0x104B
 	MOVAR	r0x104B
 	MOVIA	(_keyCount3 + 0)
-	BANKSEL	r0x104C
-	MOVAR	r0x104C
-	BANKSEL	r0x104D
-	CLRR	r0x104D
-	BANKSEL	r0x104C
-	MOVR	r0x104C,W
+;;2	BANKSEL	r0x104C
+;;2	MOVAR	r0x104C
 	MOVAR	STK02
 	BANKSEL	r0x104B
 	MOVR	r0x104B,W
@@ -2308,6 +2282,6 @@ _00217_DS_:
 
 
 ;	code size estimation:
-;	  853+  214 =  1067 instructions ( 2562 byte)
+;	  841+  202 =  1043 instructions ( 2490 byte)
 
 	end

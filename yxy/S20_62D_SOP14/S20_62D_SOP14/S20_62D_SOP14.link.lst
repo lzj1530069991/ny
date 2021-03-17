@@ -1,6 +1,6 @@
 00000000 c7fe                 LGOTO 0x1; __nyc_ny8_startup=0x1
 00000001                      __nyc_ny8_startup:
-00000001 d487                 LCALL 0x378; ___cinit_load__=0x378
+00000001 d47e                 LCALL 0x381; ___cinit_load__=0x381
 00000002 c7a8                 LGOTO 0x57; _main=0x57
 00000003                      main.o:_00572_DS_:
 00000003 f56f                 BTRSS 0x10, 0x5
@@ -93,19 +93,19 @@
 00000056                      main.o:END_OF_INTERRUPT:
 00000056 ffee                 RETIE
 00000057                      _main:
-00000057 d512                 LCALL 0x2ed; _initSys=0x2ed
+00000057 d509                 LCALL 0x2f6; _initSys=0x2f6
 00000058 d60b                 LCALL 0x1f4; _initAD=0x1f4
 00000059                      main.o:_00144_DS_:
-00000059 d541                 LCALL 0x2be; _ledShow=0x2be
+00000059 d538                 LCALL 0x2c7; _ledShow=0x2c7
 0000005a fffd                 CLRWDT
 0000005b e0fc                 BCR 0x3, 0x6
 0000005c f7c9                 BTRSS 0x36, 0x0
 0000005d c7a6                 LGOTO 0x59; main.o:_00144_DS_=0x59
 0000005e e3c9                 BCR 0x36, 0x0
-0000005f d541                 LCALL 0x2be; _ledShow=0x2be
+0000005f d538                 LCALL 0x2c7; _ledShow=0x2c7
 00000060 e0fc                 BCR 0x3, 0x6
 00000061 f649                 BTRSS 0x36, 0x3
-00000062 d4eb                 LCALL 0x314; _keyCtr=0x314
+00000062 d4e2                 LCALL 0x31d; _keyCtr=0x31d
 00000063 defa                 MOVIA 0x5
 00000064 e0fc                 BCR 0x3, 0x6
 00000065 fbb3                 SUBAR 0x4c, 0x0
@@ -158,7 +158,7 @@
 00000091                      main.o:_00184_DS_:
 00000091 f7fc                 BTRSS 0x3, 0x0
 00000092 c7a6                 LGOTO 0x59; main.o:_00144_DS_=0x59
-00000093 d4f4                 LCALL 0x30b; _powerOff=0x30b
+00000093 d4eb                 LCALL 0x314; _powerOff=0x314
 00000094 c7a6                 LGOTO 0x59; main.o:_00144_DS_=0x59
 00000095 ffef                 RET
 00000096                      _F_AIN4_Convert:
@@ -584,7 +584,7 @@
 0000020d c5da                 LGOTO 0x225; main.o:_00328_DS_=0x225
 0000020e e649                 BSR 0x36, 0x3
 0000020f fd45                 CLRR 0x3a
-00000210 d58d                 LCALL 0x272; _pwmStop=0x272
+00000210 d584                 LCALL 0x27b; _pwmStop=0x27b
 00000211 e0fc                 BCR 0x3, 0x6
 00000212 feb8                 MOVR 0x47, 0x0
 00000213 dbfa                 XORIA 0x5
@@ -664,11 +664,11 @@
 00000254                      main.o:_00313_DS_:
 00000254 ffef                 RET
 00000255                      _gotoSleep:
-00000255 d551                 LCALL 0x2ae; _LedInput=0x2ae
+00000255 d548                 LCALL 0x2b7; _LedInput=0x2b7
 00000256 e0fc                 BCR 0x3, 0x6
 00000257 fd35                 CLRR 0x4a
 00000258 fd34                 CLRR 0x4b
-00000259 d58d                 LCALL 0x272; _pwmStop=0x272
+00000259 d584                 LCALL 0x27b; _pwmStop=0x27b
 0000025a e0fc                 BCR 0x3, 0x6
 0000025b fd45                 CLRR 0x3a
 0000025c de9f                 MOVIA 0x60
@@ -678,315 +678,324 @@
 00000260 fd43                 CLRR 0x3c
 00000261 fd42                 CLRR 0x3d
 00000262 e2c9                 BCR 0x36, 0x2
-00000263 def4                 MOVIA 0xb
-00000264 ff71                 MOVAR 0xe
-00000265 dee7                 MOVIA 0x18
-00000266 ff77                 MOVAR 0x8
-00000267 fd70                 CLRR 0xf
-00000268 fffd                 CLRWDT
-00000269 fffb                 ENI
-0000026a fffe                 SLEEP
-0000026b fd6a                 CLRR 0x15
-0000026c defe                 MOVIA 0x1
-0000026d ff71                 MOVAR 0xe
+00000263 de9f                 MOVIA 0x60
+00000264 fffa                 IOST 0x5
+00000265 fdff                 CLRA
+00000266 fff9                 IOST 0x6
+00000267 fd79                 CLRR 0x6
+00000268 de9f                 MOVIA 0x60
+00000269 ff7a                 MOVAR 0x5
+0000026a def4                 MOVIA 0xb
+0000026b ff71                 MOVAR 0xe
+0000026c dee7                 MOVIA 0x18
+0000026d ff77                 MOVAR 0x8
 0000026e fd70                 CLRR 0xf
-0000026f de47                 MOVIA 0xb8
-00000270 ff77                 MOVAR 0x8
-00000271 ffef                 RET
-00000272                      _pwmStop:
-00000272 fdff                 CLRA
-00000273 ffb5                 SFUN 0xa
-00000274 ffef                 RET
-00000275                      _pwmInit:
-00000275 ff95                 SFUNR 0xa
-00000276 e0fc                 BCR 0x3, 0x6
-00000277 ff56                 MOVAR 0x29
-00000278 f056                 BTRSC 0x29, 0x7
-00000279 c57e                 LGOTO 0x281; main.o:_00288_DS_=0x281
-0000027a fd66                 CLRR 0x19
-0000027b de7f                 MOVIA 0x80
-0000027c ffb6                 SFUN 0x9
-0000027d fdff                 CLRA
-0000027e ffb4                 SFUN 0xb
-0000027f de7c                 MOVIA 0x83
-00000280 ffb5                 SFUN 0xa
-00000281                      main.o:_00288_DS_:
-00000281 ffef                 RET
-00000282                      _LED4ON:
-00000282 ffe9                 IOSTR 0x6
-00000283 e0fc                 BCR 0x3, 0x6
-00000284 ff57                 MOVAR 0x28
-00000285 e257                 BCR 0x28, 0x3
-00000286 fed7                 MOVR 0x28, 0x0
-00000287 fff9                 IOST 0x6
-00000288 e679                 BSR 0x6, 0x3
-00000289 de9b                 MOVIA 0x64
-0000028a d600                 LCALL 0x1ff; _delay=0x1ff
-0000028b d551                 LCALL 0x2ae; _LedInput=0x2ae
-0000028c ffef                 RET
-0000028d                      _LED3ON:
-0000028d ffea                 IOSTR 0x5
-0000028e e0fc                 BCR 0x3, 0x6
-0000028f ff58                 MOVAR 0x27
-00000290 e3d8                 BCR 0x27, 0x0
-00000291 fed8                 MOVR 0x27, 0x0
-00000292 fffa                 IOST 0x5
-00000293 e7fa                 BSR 0x5, 0x0
-00000294 de9b                 MOVIA 0x64
-00000295 d600                 LCALL 0x1ff; _delay=0x1ff
-00000296 d551                 LCALL 0x2ae; _LedInput=0x2ae
-00000297 ffef                 RET
-00000298                      _LED2ON:
-00000298 ffea                 IOSTR 0x5
-00000299 e0fc                 BCR 0x3, 0x6
-0000029a ff59                 MOVAR 0x26
-0000029b e059                 BCR 0x26, 0x7
-0000029c fed9                 MOVR 0x26, 0x0
-0000029d fffa                 IOST 0x5
-0000029e e47a                 BSR 0x5, 0x7
-0000029f de9b                 MOVIA 0x64
-000002a0 d600                 LCALL 0x1ff; _delay=0x1ff
-000002a1 d551                 LCALL 0x2ae; _LedInput=0x2ae
-000002a2 ffef                 RET
-000002a3                      _LED1ON:
-000002a3 ffea                 IOSTR 0x5
-000002a4 e0fc                 BCR 0x3, 0x6
-000002a5 ff5a                 MOVAR 0x25
-000002a6 e35a                 BCR 0x25, 0x1
-000002a7 feda                 MOVR 0x25, 0x0
-000002a8 fffa                 IOST 0x5
-000002a9 e77a                 BSR 0x5, 0x1
-000002aa de9b                 MOVIA 0x64
-000002ab d600                 LCALL 0x1ff; _delay=0x1ff
-000002ac d551                 LCALL 0x2ae; _LedInput=0x2ae
-000002ad ffef                 RET
-000002ae                      _LedInput:
-000002ae ffea                 IOSTR 0x5
-000002af e0fc                 BCR 0x3, 0x6
-000002b0 ff5b                 MOVAR 0x24
-000002b1 de7c                 MOVIA 0x83
-000002b2 ee5b                 IORAR 0x24, 0x1
-000002b3 fedb                 MOVR 0x24, 0x0
-000002b4 fffa                 IOST 0x5
-000002b5 ffe9                 IOSTR 0x6
-000002b6 ff5b                 MOVAR 0x24
-000002b7 e65b                 BSR 0x24, 0x3
-000002b8 fedb                 MOVR 0x24, 0x0
-000002b9 fff9                 IOST 0x6
-000002ba de83                 MOVIA 0x7c
-000002bb ef7a                 ANDAR 0x5, 0x1
-000002bc e279                 BCR 0x6, 0x3
-000002bd ffef                 RET
-000002be                      _ledShow:
-000002be def5                 MOVIA 0xa
-000002bf e0fc                 BCR 0x3, 0x6
-000002c0 fbae                 SUBAR 0x51, 0x0
-000002c1 f3fc                 BTRSC 0x3, 0x0
-000002c2 c538                 LGOTO 0x2c7; main.o:_00237_DS_=0x2c7
-000002c3 fead                 MOVR 0x52, 0x0
-000002c4 dbfe                 XORIA 0x1
-000002c5 f6fc                 BTRSS 0x3, 0x2
-000002c6 c52b                 LGOTO 0x2d4; main.o:_00235_DS_=0x2d4
-000002c7                      main.o:_00237_DS_:
-000002c7 e0fc                 BCR 0x3, 0x6
-000002c8 fec5                 MOVR 0x3a, 0x0
-000002c9 f2fc                 BTRSC 0x3, 0x2
-000002ca c52b                 LGOTO 0x2d4; main.o:_00235_DS_=0x2d4
-000002cb decd                 MOVIA 0x32
-000002cc fbb2                 SUBAR 0x4d, 0x0
-000002cd f3fc                 BTRSC 0x3, 0x0
-000002ce c52d                 LGOTO 0x2d2; main.o:_00232_DS_=0x2d2
-000002cf fec5                 MOVR 0x3a, 0x0
-000002d0 ff44                 MOVAR 0x3b
-000002d1 c52b                 LGOTO 0x2d4; main.o:_00235_DS_=0x2d4
-000002d2                      main.o:_00232_DS_:
-000002d2 e0fc                 BCR 0x3, 0x6
-000002d3 fd44                 CLRR 0x3b
-000002d4                      main.o:_00235_DS_:
-000002d4 d551                 LCALL 0x2ae; _LedInput=0x2ae
-000002d5 defa                 MOVIA 0x5
-000002d6 e0fc                 BCR 0x3, 0x6
-000002d7 fbc4                 SUBAR 0x3b, 0x0
-000002d8 f3fc                 BTRSC 0x3, 0x0
-000002d9 c513                 LGOTO 0x2ec; main.o:_00244_DS_=0x2ec
-000002da defd                 MOVIA 0x2
-000002db ff75                 MOVAR 0xa
-000002dc fec4                 MOVR 0x3b, 0x0
-000002dd da1e                 ADDIA 0xe1
-000002de f3fc                 BTRSC 0x3, 0x0
-000002df fa75                 INCR 0xa, 0x1
-000002e0 ff7d                 MOVAR 0x2
-000002e1                      main.o:_00261_DS_:
-000002e1 c519                 LGOTO 0x2e6; main.o:_00238_DS_=0x2e6
-000002e2 c514                 LGOTO 0x2eb; main.o:_00242_DS_=0x2eb
-000002e3 c515                 LGOTO 0x2ea; main.o:_00241_DS_=0x2ea
-000002e4 c516                 LGOTO 0x2e9; main.o:_00240_DS_=0x2e9
-000002e5 c517                 LGOTO 0x2e8; main.o:_00239_DS_=0x2e8
-000002e6                      main.o:_00238_DS_:
-000002e6 d551                 LCALL 0x2ae; _LedInput=0x2ae
-000002e7 c513                 LGOTO 0x2ec; main.o:_00244_DS_=0x2ec
-000002e8                      main.o:_00239_DS_:
-000002e8 d57d                 LCALL 0x282; _LED4ON=0x282
-000002e9                      main.o:_00240_DS_:
-000002e9 d572                 LCALL 0x28d; _LED3ON=0x28d
-000002ea                      main.o:_00241_DS_:
-000002ea d567                 LCALL 0x298; _LED2ON=0x298
-000002eb                      main.o:_00242_DS_:
-000002eb d55c                 LCALL 0x2a3; _LED1ON=0x2a3
-000002ec                      main.o:_00244_DS_:
-000002ec ffef                 RET
-000002ed                      _initSys:
-000002ed ffec                 DISI
-000002ee de87                 MOVIA 0x78
-000002ef fffa                 IOST 0x5
-000002f0 defc                 MOVIA 0x3
-000002f1 fff9                 IOST 0x6
-000002f2 fd79                 CLRR 0x6
-000002f3 e0fc                 BCR 0x3, 0x6
-000002f4 fd7a                 CLRR 0x5
-000002f5 de60                 MOVIA 0x9f
-000002f6 fff6                 IOST 0x9
-000002f7 de00                 MOVIA 0xff
-000002f8 ff73                 MOVAR 0xc
-000002f9 de20                 MOVIA 0xdf
-000002fa ff74                 MOVAR 0xb
-000002fb defe                 MOVIA 0x1
-000002fc ff71                 MOVAR 0xe
-000002fd fdff                 CLRA
-000002fe fff0                 IOST 0xf
-000002ff dec8                 MOVIA 0x37
-00000300 ff7e                 MOVAR 0x1
-00000301 fdff                 CLRA
-00000302 fffc                 T0MD
-00000303 defe                 MOVIA 0x1
-00000304 fff0                 IOST 0xf
-00000305 de67                 MOVIA 0x98
-00000306 ff77                 MOVAR 0x8
-00000307 defe                 MOVIA 0x1
-00000308 fff0                 IOST 0xf
-00000309 fffb                 ENI
-0000030a ffef                 RET
-0000030b                      _powerOff:
-0000030b e0fc                 BCR 0x3, 0x6
-0000030c fd45                 CLRR 0x3a
-0000030d d58d                 LCALL 0x272; _pwmStop=0x272
-0000030e defa                 MOVIA 0x5
-0000030f e0fc                 BCR 0x3, 0x6
-00000310 ff44                 MOVAR 0x3b
-00000311 defd                 MOVIA 0x2
-00000312 ff27                 MOVAR 0x58
+0000026f fffd                 CLRWDT
+00000270 fffb                 ENI
+00000271 fffe                 SLEEP
+00000272 fd6a                 CLRR 0x15
+00000273 de8f                 MOVIA 0x70
+00000274 fffa                 IOST 0x5
+00000275 defe                 MOVIA 0x1
+00000276 ff71                 MOVAR 0xe
+00000277 fd70                 CLRR 0xf
+00000278 de47                 MOVIA 0xb8
+00000279 ff77                 MOVAR 0x8
+0000027a ffef                 RET
+0000027b                      _pwmStop:
+0000027b fdff                 CLRA
+0000027c ffb5                 SFUN 0xa
+0000027d ffef                 RET
+0000027e                      _pwmInit:
+0000027e ff95                 SFUNR 0xa
+0000027f e0fc                 BCR 0x3, 0x6
+00000280 ff56                 MOVAR 0x29
+00000281 f056                 BTRSC 0x29, 0x7
+00000282 c575                 LGOTO 0x28a; main.o:_00288_DS_=0x28a
+00000283 fd66                 CLRR 0x19
+00000284 de7f                 MOVIA 0x80
+00000285 ffb6                 SFUN 0x9
+00000286 fdff                 CLRA
+00000287 ffb4                 SFUN 0xb
+00000288 de7c                 MOVIA 0x83
+00000289 ffb5                 SFUN 0xa
+0000028a                      main.o:_00288_DS_:
+0000028a ffef                 RET
+0000028b                      _LED4ON:
+0000028b ffe9                 IOSTR 0x6
+0000028c e0fc                 BCR 0x3, 0x6
+0000028d ff57                 MOVAR 0x28
+0000028e e257                 BCR 0x28, 0x3
+0000028f fed7                 MOVR 0x28, 0x0
+00000290 fff9                 IOST 0x6
+00000291 e679                 BSR 0x6, 0x3
+00000292 de9b                 MOVIA 0x64
+00000293 d600                 LCALL 0x1ff; _delay=0x1ff
+00000294 d548                 LCALL 0x2b7; _LedInput=0x2b7
+00000295 ffef                 RET
+00000296                      _LED3ON:
+00000296 ffea                 IOSTR 0x5
+00000297 e0fc                 BCR 0x3, 0x6
+00000298 ff58                 MOVAR 0x27
+00000299 e3d8                 BCR 0x27, 0x0
+0000029a fed8                 MOVR 0x27, 0x0
+0000029b fffa                 IOST 0x5
+0000029c e7fa                 BSR 0x5, 0x0
+0000029d de9b                 MOVIA 0x64
+0000029e d600                 LCALL 0x1ff; _delay=0x1ff
+0000029f d548                 LCALL 0x2b7; _LedInput=0x2b7
+000002a0 ffef                 RET
+000002a1                      _LED2ON:
+000002a1 ffea                 IOSTR 0x5
+000002a2 e0fc                 BCR 0x3, 0x6
+000002a3 ff59                 MOVAR 0x26
+000002a4 e059                 BCR 0x26, 0x7
+000002a5 fed9                 MOVR 0x26, 0x0
+000002a6 fffa                 IOST 0x5
+000002a7 e47a                 BSR 0x5, 0x7
+000002a8 de9b                 MOVIA 0x64
+000002a9 d600                 LCALL 0x1ff; _delay=0x1ff
+000002aa d548                 LCALL 0x2b7; _LedInput=0x2b7
+000002ab ffef                 RET
+000002ac                      _LED1ON:
+000002ac ffea                 IOSTR 0x5
+000002ad e0fc                 BCR 0x3, 0x6
+000002ae ff5a                 MOVAR 0x25
+000002af e35a                 BCR 0x25, 0x1
+000002b0 feda                 MOVR 0x25, 0x0
+000002b1 fffa                 IOST 0x5
+000002b2 e77a                 BSR 0x5, 0x1
+000002b3 de9b                 MOVIA 0x64
+000002b4 d600                 LCALL 0x1ff; _delay=0x1ff
+000002b5 d548                 LCALL 0x2b7; _LedInput=0x2b7
+000002b6 ffef                 RET
+000002b7                      _LedInput:
+000002b7 ffea                 IOSTR 0x5
+000002b8 e0fc                 BCR 0x3, 0x6
+000002b9 ff5b                 MOVAR 0x24
+000002ba de7c                 MOVIA 0x83
+000002bb ee5b                 IORAR 0x24, 0x1
+000002bc fedb                 MOVR 0x24, 0x0
+000002bd fffa                 IOST 0x5
+000002be ffe9                 IOSTR 0x6
+000002bf ff5b                 MOVAR 0x24
+000002c0 e65b                 BSR 0x24, 0x3
+000002c1 fedb                 MOVR 0x24, 0x0
+000002c2 fff9                 IOST 0x6
+000002c3 de83                 MOVIA 0x7c
+000002c4 ef7a                 ANDAR 0x5, 0x1
+000002c5 e279                 BCR 0x6, 0x3
+000002c6 ffef                 RET
+000002c7                      _ledShow:
+000002c7 def5                 MOVIA 0xa
+000002c8 e0fc                 BCR 0x3, 0x6
+000002c9 fbae                 SUBAR 0x51, 0x0
+000002ca f3fc                 BTRSC 0x3, 0x0
+000002cb c52f                 LGOTO 0x2d0; main.o:_00237_DS_=0x2d0
+000002cc fead                 MOVR 0x52, 0x0
+000002cd dbfe                 XORIA 0x1
+000002ce f6fc                 BTRSS 0x3, 0x2
+000002cf c522                 LGOTO 0x2dd; main.o:_00235_DS_=0x2dd
+000002d0                      main.o:_00237_DS_:
+000002d0 e0fc                 BCR 0x3, 0x6
+000002d1 fec5                 MOVR 0x3a, 0x0
+000002d2 f2fc                 BTRSC 0x3, 0x2
+000002d3 c522                 LGOTO 0x2dd; main.o:_00235_DS_=0x2dd
+000002d4 decd                 MOVIA 0x32
+000002d5 fbb2                 SUBAR 0x4d, 0x0
+000002d6 f3fc                 BTRSC 0x3, 0x0
+000002d7 c524                 LGOTO 0x2db; main.o:_00232_DS_=0x2db
+000002d8 fec5                 MOVR 0x3a, 0x0
+000002d9 ff44                 MOVAR 0x3b
+000002da c522                 LGOTO 0x2dd; main.o:_00235_DS_=0x2dd
+000002db                      main.o:_00232_DS_:
+000002db e0fc                 BCR 0x3, 0x6
+000002dc fd44                 CLRR 0x3b
+000002dd                      main.o:_00235_DS_:
+000002dd d548                 LCALL 0x2b7; _LedInput=0x2b7
+000002de defa                 MOVIA 0x5
+000002df e0fc                 BCR 0x3, 0x6
+000002e0 fbc4                 SUBAR 0x3b, 0x0
+000002e1 f3fc                 BTRSC 0x3, 0x0
+000002e2 c50a                 LGOTO 0x2f5; main.o:_00244_DS_=0x2f5
+000002e3 defd                 MOVIA 0x2
+000002e4 ff75                 MOVAR 0xa
+000002e5 fec4                 MOVR 0x3b, 0x0
+000002e6 da15                 ADDIA 0xea
+000002e7 f3fc                 BTRSC 0x3, 0x0
+000002e8 fa75                 INCR 0xa, 0x1
+000002e9 ff7d                 MOVAR 0x2
+000002ea                      main.o:_00261_DS_:
+000002ea c510                 LGOTO 0x2ef; main.o:_00238_DS_=0x2ef
+000002eb c50b                 LGOTO 0x2f4; main.o:_00242_DS_=0x2f4
+000002ec c50c                 LGOTO 0x2f3; main.o:_00241_DS_=0x2f3
+000002ed c50d                 LGOTO 0x2f2; main.o:_00240_DS_=0x2f2
+000002ee c50e                 LGOTO 0x2f1; main.o:_00239_DS_=0x2f1
+000002ef                      main.o:_00238_DS_:
+000002ef d548                 LCALL 0x2b7; _LedInput=0x2b7
+000002f0 c50a                 LGOTO 0x2f5; main.o:_00244_DS_=0x2f5
+000002f1                      main.o:_00239_DS_:
+000002f1 d574                 LCALL 0x28b; _LED4ON=0x28b
+000002f2                      main.o:_00240_DS_:
+000002f2 d569                 LCALL 0x296; _LED3ON=0x296
+000002f3                      main.o:_00241_DS_:
+000002f3 d55e                 LCALL 0x2a1; _LED2ON=0x2a1
+000002f4                      main.o:_00242_DS_:
+000002f4 d553                 LCALL 0x2ac; _LED1ON=0x2ac
+000002f5                      main.o:_00244_DS_:
+000002f5 ffef                 RET
+000002f6                      _initSys:
+000002f6 ffec                 DISI
+000002f7 de87                 MOVIA 0x78
+000002f8 fffa                 IOST 0x5
+000002f9 defc                 MOVIA 0x3
+000002fa fff9                 IOST 0x6
+000002fb fd79                 CLRR 0x6
+000002fc e0fc                 BCR 0x3, 0x6
+000002fd fd7a                 CLRR 0x5
+000002fe de60                 MOVIA 0x9f
+000002ff fff6                 IOST 0x9
+00000300 de00                 MOVIA 0xff
+00000301 ff73                 MOVAR 0xc
+00000302 de20                 MOVIA 0xdf
+00000303 ff74                 MOVAR 0xb
+00000304 defe                 MOVIA 0x1
+00000305 ff71                 MOVAR 0xe
+00000306 fdff                 CLRA
+00000307 fff0                 IOST 0xf
+00000308 dec8                 MOVIA 0x37
+00000309 ff7e                 MOVAR 0x1
+0000030a fdff                 CLRA
+0000030b fffc                 T0MD
+0000030c defe                 MOVIA 0x1
+0000030d fff0                 IOST 0xf
+0000030e de67                 MOVIA 0x98
+0000030f ff77                 MOVAR 0x8
+00000310 defe                 MOVIA 0x1
+00000311 fff0                 IOST 0xf
+00000312 fffb                 ENI
 00000313 ffef                 RET
-00000314                      _keyCtr:
+00000314                      _powerOff:
 00000314 e0fc                 BCR 0x3, 0x6
-00000315 f8fa                 COMR 0x5, 0x0
-00000316 ff5c                 MOVAR 0x23
-00000317 debf                 MOVIA 0x40
-00000318 ef5c                 ANDAR 0x23, 0x1
-00000319 fedc                 MOVR 0x23, 0x0
-0000031a d5d0                 LCALL 0x22f; _keyRead=0x22f
-0000031b e0fc                 BCR 0x3, 0x6
-0000031c ff5c                 MOVAR 0x23
-0000031d dbfe                 XORIA 0x1
-0000031e f6fc                 BTRSS 0x3, 0x2
-0000031f c49f                 LGOTO 0x360; main.o:_00216_DS_=0x360
-00000320 fd47                 CLRR 0x38
-00000321 fd2f                 CLRR 0x50
-00000322 fa45                 INCR 0x3a, 0x1
-00000323 defa                 MOVIA 0x5
-00000324 fbc5                 SUBAR 0x3a, 0x0
-00000325 f3fc                 BTRSC 0x3, 0x0
-00000326 fd45                 CLRR 0x3a
-00000327 fec5                 MOVR 0x3a, 0x0
-00000328 f6fc                 BTRSS 0x3, 0x2
-00000329 c4d3                 LGOTO 0x32c; main.o:_00203_DS_=0x32c
-0000032a d4f4                 LCALL 0x30b; _powerOff=0x30b
-0000032b c4b2                 LGOTO 0x34d; main.o:_00204_DS_=0x34d
-0000032c                      main.o:_00203_DS_:
-0000032c e0fc                 BCR 0x3, 0x6
-0000032d fec5                 MOVR 0x3a, 0x0
-0000032e dbfe                 XORIA 0x1
-0000032f f6fc                 BTRSS 0x3, 0x2
-00000330 c4c9                 LGOTO 0x336; main.o:_00200_DS_=0x336
-00000331 dea5                 MOVIA 0x5a
-00000332 ff39                 MOVAR 0x46
-00000333 de87                 MOVIA 0x78
-00000334 ff2c                 MOVAR 0x53
-00000335 c4b2                 LGOTO 0x34d; main.o:_00204_DS_=0x34d
-00000336                      main.o:_00200_DS_:
-00000336 e0fc                 BCR 0x3, 0x6
-00000337 fec5                 MOVR 0x3a, 0x0
-00000338 dbfd                 XORIA 0x2
-00000339 f6fc                 BTRSS 0x3, 0x2
-0000033a c4c1                 LGOTO 0x33e; main.o:_00197_DS_=0x33e
-0000033b de99                 MOVIA 0x66
-0000033c ff39                 MOVAR 0x46
-0000033d c4b2                 LGOTO 0x34d; main.o:_00204_DS_=0x34d
-0000033e                      main.o:_00197_DS_:
-0000033e e0fc                 BCR 0x3, 0x6
-0000033f fec5                 MOVR 0x3a, 0x0
-00000340 dbfc                 XORIA 0x3
-00000341 f6fc                 BTRSS 0x3, 0x2
-00000342 c4b9                 LGOTO 0x346; main.o:_00194_DS_=0x346
-00000343 de8c                 MOVIA 0x73
-00000344 ff39                 MOVAR 0x46
-00000345 c4b2                 LGOTO 0x34d; main.o:_00204_DS_=0x34d
-00000346                      main.o:_00194_DS_:
-00000346 e0fc                 BCR 0x3, 0x6
-00000347 fec5                 MOVR 0x3a, 0x0
-00000348 dbfb                 XORIA 0x4
-00000349 f6fc                 BTRSS 0x3, 0x2
-0000034a c4b2                 LGOTO 0x34d; main.o:_00204_DS_=0x34d
-0000034b de7f                 MOVIA 0x80
-0000034c ff39                 MOVAR 0x46
-0000034d                      main.o:_00204_DS_:
-0000034d e0fc                 BCR 0x3, 0x6
-0000034e fec5                 MOVR 0x3a, 0x0
-0000034f f2fc                 BTRSC 0x3, 0x2
-00000350 c4a3                 LGOTO 0x35c; main.o:_00209_DS_=0x35c
-00000351 fec5                 MOVR 0x3a, 0x0
-00000352 dbfe                 XORIA 0x1
-00000353 f6fc                 BTRSS 0x3, 0x2
-00000354 c4a7                 LGOTO 0x358; main.o:_00206_DS_=0x358
-00000355 dea5                 MOVIA 0x5a
-00000356 ffb3                 SFUN 0xc
-00000357 c4a4                 LGOTO 0x35b; main.o:_00207_DS_=0x35b
-00000358                      main.o:_00206_DS_:
-00000358 e0fc                 BCR 0x3, 0x6
-00000359 feb9                 MOVR 0x46, 0x0
-0000035a ffb3                 SFUN 0xc
-0000035b                      main.o:_00207_DS_:
-0000035b d58a                 LCALL 0x275; _pwmInit=0x275
-0000035c                      main.o:_00209_DS_:
-0000035c e0fc                 BCR 0x3, 0x6
-0000035d fec5                 MOVR 0x3a, 0x0
-0000035e ff44                 MOVAR 0x3b
-0000035f c488                 LGOTO 0x377; main.o:_00218_DS_=0x377
-00000360                      main.o:_00216_DS_:
-00000360 e0fc                 BCR 0x3, 0x6
-00000361 fedc                 MOVR 0x23, 0x0
-00000362 dbfd                 XORIA 0x2
-00000363 f6fc                 BTRSS 0x3, 0x2
-00000364 c488                 LGOTO 0x377; main.o:_00218_DS_=0x377
-00000365 fec5                 MOVR 0x3a, 0x0
-00000366 f2fc                 BTRSC 0x3, 0x2
-00000367 c495                 LGOTO 0x36a; main.o:_00211_DS_=0x36a
-00000368 d4f4                 LCALL 0x30b; _powerOff=0x30b
-00000369 c48b                 LGOTO 0x374; main.o:_00212_DS_=0x374
-0000036a                      main.o:_00211_DS_:
-0000036a defe                 MOVIA 0x1
-0000036b e0fc                 BCR 0x3, 0x6
-0000036c ff45                 MOVAR 0x3a
-0000036d de87                 MOVIA 0x78
-0000036e ffb3                 SFUN 0xc
-0000036f dea5                 MOVIA 0x5a
-00000370 ff39                 MOVAR 0x46
-00000371 de87                 MOVIA 0x78
-00000372 ff2c                 MOVAR 0x53
-00000373 d58a                 LCALL 0x275; _pwmInit=0x275
-00000374                      main.o:_00212_DS_:
+00000315 fd45                 CLRR 0x3a
+00000316 d584                 LCALL 0x27b; _pwmStop=0x27b
+00000317 defa                 MOVIA 0x5
+00000318 e0fc                 BCR 0x3, 0x6
+00000319 ff44                 MOVAR 0x3b
+0000031a defd                 MOVIA 0x2
+0000031b ff27                 MOVAR 0x58
+0000031c ffef                 RET
+0000031d                      _keyCtr:
+0000031d e0fc                 BCR 0x3, 0x6
+0000031e f8fa                 COMR 0x5, 0x0
+0000031f ff5c                 MOVAR 0x23
+00000320 debf                 MOVIA 0x40
+00000321 ef5c                 ANDAR 0x23, 0x1
+00000322 fedc                 MOVR 0x23, 0x0
+00000323 d5d0                 LCALL 0x22f; _keyRead=0x22f
+00000324 e0fc                 BCR 0x3, 0x6
+00000325 ff5c                 MOVAR 0x23
+00000326 dbfe                 XORIA 0x1
+00000327 f6fc                 BTRSS 0x3, 0x2
+00000328 c496                 LGOTO 0x369; main.o:_00216_DS_=0x369
+00000329 fd47                 CLRR 0x38
+0000032a fd2f                 CLRR 0x50
+0000032b fa45                 INCR 0x3a, 0x1
+0000032c defa                 MOVIA 0x5
+0000032d fbc5                 SUBAR 0x3a, 0x0
+0000032e f3fc                 BTRSC 0x3, 0x0
+0000032f fd45                 CLRR 0x3a
+00000330 fec5                 MOVR 0x3a, 0x0
+00000331 f6fc                 BTRSS 0x3, 0x2
+00000332 c4ca                 LGOTO 0x335; main.o:_00203_DS_=0x335
+00000333 d4eb                 LCALL 0x314; _powerOff=0x314
+00000334 c4a9                 LGOTO 0x356; main.o:_00204_DS_=0x356
+00000335                      main.o:_00203_DS_:
+00000335 e0fc                 BCR 0x3, 0x6
+00000336 fec5                 MOVR 0x3a, 0x0
+00000337 dbfe                 XORIA 0x1
+00000338 f6fc                 BTRSS 0x3, 0x2
+00000339 c4c0                 LGOTO 0x33f; main.o:_00200_DS_=0x33f
+0000033a dea5                 MOVIA 0x5a
+0000033b ff39                 MOVAR 0x46
+0000033c de87                 MOVIA 0x78
+0000033d ff2c                 MOVAR 0x53
+0000033e c4a9                 LGOTO 0x356; main.o:_00204_DS_=0x356
+0000033f                      main.o:_00200_DS_:
+0000033f e0fc                 BCR 0x3, 0x6
+00000340 fec5                 MOVR 0x3a, 0x0
+00000341 dbfd                 XORIA 0x2
+00000342 f6fc                 BTRSS 0x3, 0x2
+00000343 c4b8                 LGOTO 0x347; main.o:_00197_DS_=0x347
+00000344 de99                 MOVIA 0x66
+00000345 ff39                 MOVAR 0x46
+00000346 c4a9                 LGOTO 0x356; main.o:_00204_DS_=0x356
+00000347                      main.o:_00197_DS_:
+00000347 e0fc                 BCR 0x3, 0x6
+00000348 fec5                 MOVR 0x3a, 0x0
+00000349 dbfc                 XORIA 0x3
+0000034a f6fc                 BTRSS 0x3, 0x2
+0000034b c4b0                 LGOTO 0x34f; main.o:_00194_DS_=0x34f
+0000034c de8c                 MOVIA 0x73
+0000034d ff39                 MOVAR 0x46
+0000034e c4a9                 LGOTO 0x356; main.o:_00204_DS_=0x356
+0000034f                      main.o:_00194_DS_:
+0000034f e0fc                 BCR 0x3, 0x6
+00000350 fec5                 MOVR 0x3a, 0x0
+00000351 dbfb                 XORIA 0x4
+00000352 f6fc                 BTRSS 0x3, 0x2
+00000353 c4a9                 LGOTO 0x356; main.o:_00204_DS_=0x356
+00000354 de7f                 MOVIA 0x80
+00000355 ff39                 MOVAR 0x46
+00000356                      main.o:_00204_DS_:
+00000356 e0fc                 BCR 0x3, 0x6
+00000357 fec5                 MOVR 0x3a, 0x0
+00000358 f2fc                 BTRSC 0x3, 0x2
+00000359 c49a                 LGOTO 0x365; main.o:_00209_DS_=0x365
+0000035a fec5                 MOVR 0x3a, 0x0
+0000035b dbfe                 XORIA 0x1
+0000035c f6fc                 BTRSS 0x3, 0x2
+0000035d c49e                 LGOTO 0x361; main.o:_00206_DS_=0x361
+0000035e dea5                 MOVIA 0x5a
+0000035f ffb3                 SFUN 0xc
+00000360 c49b                 LGOTO 0x364; main.o:_00207_DS_=0x364
+00000361                      main.o:_00206_DS_:
+00000361 e0fc                 BCR 0x3, 0x6
+00000362 feb9                 MOVR 0x46, 0x0
+00000363 ffb3                 SFUN 0xc
+00000364                      main.o:_00207_DS_:
+00000364 d581                 LCALL 0x27e; _pwmInit=0x27e
+00000365                      main.o:_00209_DS_:
+00000365 e0fc                 BCR 0x3, 0x6
+00000366 fec5                 MOVR 0x3a, 0x0
+00000367 ff44                 MOVAR 0x3b
+00000368 c47f                 LGOTO 0x380; main.o:_00218_DS_=0x380
+00000369                      main.o:_00216_DS_:
+00000369 e0fc                 BCR 0x3, 0x6
+0000036a fedc                 MOVR 0x23, 0x0
+0000036b dbfd                 XORIA 0x2
+0000036c f6fc                 BTRSS 0x3, 0x2
+0000036d c47f                 LGOTO 0x380; main.o:_00218_DS_=0x380
+0000036e fec5                 MOVR 0x3a, 0x0
+0000036f f2fc                 BTRSC 0x3, 0x2
+00000370 c48c                 LGOTO 0x373; main.o:_00211_DS_=0x373
+00000371 d4eb                 LCALL 0x314; _powerOff=0x314
+00000372 c482                 LGOTO 0x37d; main.o:_00212_DS_=0x37d
+00000373                      main.o:_00211_DS_:
+00000373 defe                 MOVIA 0x1
 00000374 e0fc                 BCR 0x3, 0x6
-00000375 fec5                 MOVR 0x3a, 0x0
-00000376 ff44                 MOVAR 0x3b
-00000377                      main.o:_00218_DS_:
-00000377 ffef                 RET
-00000378                      ___cinit_load__:
+00000375 ff45                 MOVAR 0x3a
+00000376 de87                 MOVIA 0x78
+00000377 ffb3                 SFUN 0xc
+00000378 dea5                 MOVIA 0x5a
+00000379 ff39                 MOVAR 0x46
+0000037a de87                 MOVIA 0x78
+0000037b ff2c                 MOVAR 0x53
+0000037c d581                 LCALL 0x27e; _pwmInit=0x27e
+0000037d                      main.o:_00212_DS_:
+0000037d e0fc                 BCR 0x3, 0x6
+0000037e fec5                 MOVR 0x3a, 0x0
+0000037f ff44                 MOVAR 0x3b
+00000380                      main.o:_00218_DS_:
+00000380 ffef                 RET
+00000381                      ___cinit_load__:

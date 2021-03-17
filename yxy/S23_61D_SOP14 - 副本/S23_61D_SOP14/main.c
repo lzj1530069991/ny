@@ -281,7 +281,10 @@ void keyCtr()
 		if(pwStep == 0)
 			shanshuoTime = 10;
 		if(workStep == 1)
+		{
 			maxDuty = 40;
+			ledLightTime = 0;
+		}
 		else if(workStep == 2)
 			maxDuty = 42;
 		else if(workStep == 3)
@@ -312,6 +315,8 @@ void keyCtr()
 				sleepTime = 0;
 				return;
 			}
+			ledLightTime = 0;
+			ledStep = 1;
 			workStep = 1;
 			PWM2DUTY = 70;
 			currentDuty = 70;
@@ -650,14 +655,14 @@ void chrgCtr()
 				if(chrgStep <= 2)
 				{
 					chrgStep = 2;
-					PWM1DUTY = 12;
+					PWM1DUTY = 13;
 				}
 			}
 			else
 			{
 				if(chrgStep <= 3)
 				{
-					PWM1DUTY = 11;
+					PWM1DUTY = 12;
 					chrgStep = 3;
 				}
 			}
@@ -751,7 +756,7 @@ void checkBatAD()
         }
         R_AIN2_DATA = R_AIN2_DATA - 1150;
 
-        if(R_AIN2_DATA >= 422)
+        if(R_AIN2_DATA >= 410)
        	{
        		pwStep = 7;
        	}
@@ -915,6 +920,11 @@ void checkOutA()
         	else
         		tempDuty = 70 + workStep*5;
         	//PWM2DUTY = tempDuty;
+        	//1도속2% 2도속1%
+        	if(workStep == 1)
+        		tempDuty = tempDuty + 2;
+        	else if(workStep == 2)
+        		tempDuty = tempDuty + 1;
         }
         else
         {

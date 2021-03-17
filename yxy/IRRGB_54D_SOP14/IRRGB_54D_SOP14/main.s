@@ -563,11 +563,11 @@ _00370_DS_:
 	.line	430, "main.c"; 	proData();
 	LCALL	_proData
 _00343_DS_:
-	.line	432, "main.c"; 	if(INT1Level && (PORTA & 0x04))
+	.line	432, "main.c"; 	if(INT1Level && (PORTA & 0x02))
 	BANKSEL	_Status
 	BTRSS	_Status,5
 	LGOTO	_00348_DS_
-	BTRSS	_PORTA,2
+	BTRSS	_PORTA,1
 	LGOTO	_00348_DS_
 	.line	434, "main.c"; 	INT1Level = 0;
 	BCR	_Status,5
@@ -575,11 +575,11 @@ _00343_DS_:
 	LCALL	_proLow
 	LGOTO	_00349_DS_
 _00348_DS_:
-	.line	437, "main.c"; 	else if(INT1Level == 0 && (PORTA & 0x04) == 0)
+	.line	437, "main.c"; 	else if(INT1Level == 0 && (PORTA & 0x02) == 0)
 	BANKSEL	_Status
 	BTRSC	_Status,5
 	LGOTO	_00349_DS_
-	BTRSC	_PORTA,2
+	BTRSC	_PORTA,1
 	LGOTO	_00349_DS_
 	.line	440, "main.c"; 	INT1Level = 1;
 	BSR	_Status,5

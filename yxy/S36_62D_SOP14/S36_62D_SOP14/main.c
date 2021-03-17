@@ -570,7 +570,7 @@ void chrgCtr()
 		ledLightTime = 0;
 		pwmStop();
 		
-		if(pwStep == 9)
+		if(pwStep >= 9)
 		{
 			//充满了
 			ledStep = 8;
@@ -912,7 +912,7 @@ void checkOutA()
         	{
         		overCount--;
         	}
-        	if(R_AIN3_DATA > 80 && workStep < 4)
+        	if(R_AIN3_DATA > 60 && workStep < 4)
         	{
         		if(workStep == 1)
         		{
@@ -928,7 +928,7 @@ void checkOutA()
         		}
         		PWM2DUTY = tempDuty;
         	}
-        	else if(R_AIN3_DATA < 80)
+        	else if(R_AIN3_DATA < 70)
         	{
         		PWM2DUTY = maxDuty;
         	}

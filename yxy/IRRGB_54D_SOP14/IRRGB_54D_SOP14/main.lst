@@ -495,12 +495,12 @@ NYASM 2.27
                                     1-  563     	.line	430, "main.c"; 	proData();
      002B 2rrr                      1-  564     	LCALL	_proData
      002C                           1-  565     _00343_DS_:
-                                    1-  566     	.line	432, "main.c"; 	if(INT1Level && (PORTA & 0x04))
+                                    1-  566     	.line	432, "main.c"; 	if(INT1Level && (PORTA & 0x02))
                                     1-  567     	BANKSEL	_Status
      002C rrrr                      3-   71 m1      .banksel ram_address
      002D 0Arr                      1-  568     	BTRSS	_Status,5
      002E 3rrr                      1-  569     	LGOTO	_00348_DS_
-     002F 09rr                      1-  570     	BTRSS	_PORTA,2
+     002F 08rr                      1-  570     	BTRSS	_PORTA,1
      0030 3rrr                      1-  571     	LGOTO	_00348_DS_
                                     1-  572     	.line	434, "main.c"; 	INT1Level = 0;
      0031 1Err                      1-  573     	BCR	_Status,5
@@ -508,12 +508,12 @@ NYASM 2.27
      0032 2rrr                      1-  575     	LCALL	_proLow
      0033 3rrr                      1-  576     	LGOTO	_00349_DS_
      0034                           1-  577     _00348_DS_:
-                                    1-  578     	.line	437, "main.c"; 	else if(INT1Level == 0 && (PORTA & 0x04) == 0)
+                                    1-  578     	.line	437, "main.c"; 	else if(INT1Level == 0 && (PORTA & 0x02) == 0)
                                     1-  579     	BANKSEL	_Status
      0034 rrrr                      3-   71 m1      .banksel ram_address
      0035 0Err                      1-  580     	BTRSC	_Status,5
      0036 3rrr                      1-  581     	LGOTO	_00349_DS_
-     0037 0Drr                      1-  582     	BTRSC	_PORTA,2
+     0037 0Crr                      1-  582     	BTRSC	_PORTA,1
      0038 3rrr                      1-  583     	LGOTO	_00349_DS_
                                     1-  584     	.line	440, "main.c"; 	INT1Level = 1;
      0039 1Arr                      1-  585     	BSR	_Status,5

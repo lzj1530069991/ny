@@ -371,6 +371,10 @@ void gotoSleep()
 	fgPRD = 0;
 	fgCount = 0;
 	redLedFlag = 0;
+	IOSTA = C_PA6_Input | C_PA5_Input;
+	IOSTB = 0x00;
+	PORTB = 0x00;
+	PORTA = 0x60;
 	INTE =  C_INT_TMR0 | C_INT_TMR1 | C_INT_PABKey;
 	PCON =  C_LVR_En | 0x10;	
 	INTF = 0;								// Clear all interrupt flags
@@ -378,6 +382,7 @@ void gotoSleep()
 	ENI();
 	SLEEP();
 	AWUCON = 0x00;
+	IOSTA = C_PA6_Input | C_PA5_Input | C_PA4_Input;
 	INTE =  C_INT_TMR0 ;	// Enable Timer0¡¢Timer1¡¢WDT overflow interrupt
 	INTF = 0;
 	//;Initial Power control register

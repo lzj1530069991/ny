@@ -24,6 +24,7 @@ u16t sleepTime = 0;
 u8t count200ms = 0;
 u8t count500ms = 0;
 u8t count1s = 0;
+u16t count5s = 0;
 u16t count900s = 0;
 u8t workStep = 0;
 u8t keyCount = 0;
@@ -36,6 +37,8 @@ u8t overCount = 0;
 u8t tempDuty = 0;
 u16t count5S = 0;
 u8t ledDeadTime = 0;
+//u8t prePwStep = 0;
+u8t countFull = 0;
 
 u8t	tempshiweiNum = 0;	//十位
 u8t	tempgeweiNum = 0;	//个位
@@ -48,6 +51,7 @@ u8t preBatValue = 0;
 u8t showFlag = 0;
 u8t chrgStep = 0;
 u8t lightBat = 0;
+u16t closeCount = 0;
 
 
 __sbit IntFlag = Status:0;
@@ -100,6 +104,8 @@ void isr(void) __interrupt(0)
 				if(ledDeadTime > 0)
 					--ledDeadTime;
 			}
+			if(++count5s >= 500)
+					count5s = 0;
 			if(++count1s >= 100)
 			{
 				count1s = 0;
@@ -161,10 +167,24 @@ void main(void)
         if(!IntFlag)
     		continue;			//10ms执行一次
     	IntFlag = 0;
+    	//低电自动关机
+    	if(batValue == 0 && workStep > 0)
+		{
+			if(++closeCount >= 1000)
+			{
+				closeCount = 0;
+				workStep = 0;
+				pwmStop();
+			}
+		}
+		else
+		{
+			closeCount = 0;
+		}
     	//refreshNub();
     	if(overCount >= 5 && workStep > 0)
     	{
-    		if(++count5S > 500)
+    		if(++count5S > 250)
     		{
     			overCount = 0;
     			count5S = 0;
@@ -216,23 +236,25 @@ void chrgCtr()
 		ledLightTime = 0;
 		pwmStop();
 		
-		if(batValue == 100)
+		if(batValue > 99)
 		{
 			chrgStep = 4;
 			shiweiNum = 9;
 			geweiNum = 9;
 			//充满了
-			pwm1Stop();
+			if(++countFull > 200)
+				pwm1Stop();
 			//ABPLCON &= 0X7F;
 			PORTB &= 0xF7;
 			IOSTB |= 0X08;
 		}
 		else
 		{
+			countFull = 0;
 			IOSTB &= 0xF7;
 			if(batValue >= preBatValue)
 			{
-				if(count1s == 10)
+				if(count5s == 10)
 				{
 					shiweiNum = preBatValue/10;
 					geweiNum = preBatValue%10;
@@ -269,7 +291,6 @@ void chrgCtr()
 	else 
 	{
 		chrgStep = 0;
-		preBatValue = batValue;
 		pwm1Stop();
 		chrgFlag = 0;
 		//未充电
@@ -281,24 +302,24 @@ void chrgCtr()
 		}
 		else 
 		{
-			if(batValue == 100)
+			if(batValue > 99)
 			{
 				shiweiNum = 9;
 				geweiNum = 9;
 			}
-			else
+			else if(ledLightTime > 0)
 			{
-				if(ledLightTime > 0)
+				
+				shiweiNum = preBatValue/10;
+				geweiNum = preBatValue%10;
+			}
+			if(count5s == 10)
+			{
+				if(preBatValue > batValue)
 				{
-					if(lightBat < batValue)
-						lightBat = batValue;
-					shiweiNum = lightBat/10;
-					geweiNum = lightBat%10;
+					preBatValue = preBatValue-1;
 				}
-				else
-				{
-					lightBat = batValue;
-				}
+				
 			}
 		}
 	}
@@ -364,10 +385,12 @@ void keyCtr()
 	{
 		count500ms = 0;
 		ledLightTime = 0;
+		count5S = 0;
 		if(workStep == 0)
 		{
 			count1s = 0;
 			ledLightTime = 3;
+			preBatValue = batValue;
 			showFlag = 1;
 			return;
 		}
@@ -395,6 +418,7 @@ void keyCtr()
 	{
 		if(workStep > 0)
 		{
+			workStep = 0;
 			powerOff();
 			showFlag = 0;
 		}
@@ -451,16 +475,6 @@ void powerOff()
 {
 		workStep = 0;
 		pwmStop();
-		if(batValue == 100)
-		{
-			tempshiweiNum = 9;
-			tempgeweiNum = 9;
-		}
-		else
-		{
-			tempshiweiNum = batValue/10;
-			tempgeweiNum = batValue%10;
-		}
 }
 
 
@@ -503,6 +517,7 @@ void pwmStop()
 
 void gotoSleep()
 {
+	count5s = 0;
 	showFlag = 0;
 	PORTB = 0x00;
 	PORTA = 0x00;
@@ -597,9 +612,9 @@ void checkBatAD()
          if(debug)
         	R_AIN2_DATA = BATTLE;
         
-        if(R_AIN2_DATA > 1560)
+        if(R_AIN2_DATA > 1555)
         {
-        	R_AIN2_DATA = 1560;
+        	//R_AIN2_DATA = 1555;
         	lowCount = 0;
         }
         else if(R_AIN2_DATA < 1160)
@@ -610,11 +625,12 @@ void checkBatAD()
         	pwStep = 0;
         	R_AIN2_DATA = 1160;
         }
-      	
+
        	R_AIN2_DATA = R_AIN2_DATA - 1160;
        	if(R_AIN2_DATA >= 400)
        	{
-       		batValue = 100;
+       		//batValue = 100;
+       		batValue = 50+(R_AIN2_DATA-300)/2;
        	}
        	else if(R_AIN2_DATA >= 300)
        	{
@@ -629,7 +645,6 @@ void checkBatAD()
        	{
        		batValue = R_AIN2_DATA/8;
        	}
-   
 }
 
 
@@ -675,6 +690,12 @@ void checkOutA()
         	}
         	else
         		tempDuty = 70 + workStep*5;
+        		//PWM2DUTY = tempDuty;
+        	//1档加2% 2档加1%
+        	if(workStep == 1)
+        		tempDuty = tempDuty + 2;
+        	else if(workStep == 2)
+        		tempDuty = tempDuty + 1;
         }
         else
         {
