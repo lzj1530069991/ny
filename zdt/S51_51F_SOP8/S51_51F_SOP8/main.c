@@ -41,7 +41,7 @@ void isr(void) __interrupt(0)
 		{
 			intCount = 0;
 			IntFlag = 1;
-			if(++keyTime > 10)
+			if(++keyTime > 20)
 				keyTime = 0;
 		}
 		
@@ -77,10 +77,15 @@ void main(void)
         	zfWaitTime--;
         	PORTB &= 0xF9;	//停止输出
         }
-        if(workFlag == 0 && pwKeyCount == 0 && muchKeyCount == 0)
+        if(workFlag == 0)
         {
-        	if(++sleepDealy > 20)
-        		gotoSleep();
+			PORTB &= 0xF9;	//停止输出
+			workStep = 0;
+			gnStep = 0;
+			workFlag = 0;
+			zfFlag = 0;
+			pwmDuty = 0;
+			LEDOFF();		//灭灯
         }
 	}
 	
@@ -90,97 +95,109 @@ void main(void)
 void keyCon()
 {
 	
-	if(keyTime < 5)
+	if(keyTime < 10)
 	{
 		//PB5为输入脚
 		BPHCON &= 0xDF;	//PB5拉高 
 		IOSTB |= 0x20;
-		if(keyRead((0x20 & ~PORTB),&pwKeyCount))
+		if(keyTime > 2)
 		{
-			//12按下了,开关机功能
+			if(keyRead((0x20 & ~PORTB),&pwKeyCount))
+			{
+				//12按下了,开关机功能
+				if(workFlag)
+				{
+					workFlag = 0;
+					workStep = 0;
+					pwmDuty = 0;
+				}
+				else
+				{
+					gnStep = 0;
+					workFlag = 1;
+					workStep = 3;
+					pwmDuty = 99;
+				}
+			}
 			if(workFlag)
 			{
-				workFlag = 0;
-				workStep = 0;
-				pwmDuty = 0;
-			}
-			else
-			{
-				gnStep = 0;
-				workFlag = 1;
-				workStep = 3;
-				pwmDuty = 99;
-			}
-		}
-		if(workFlag)
-		{
-			if(keyRead((0x10 & ~PORTB),&zfKeyCount))
-			{
-				//正反转方向控制
-				zfWaitTime = 20;
-				if(zfFlag)
-					zfFlag = 0;
-				else
-					zfFlag = 1;
-			}
-			
-			//三挡调速
-			if(keyRead((0x08 & ~PORTB),&speedKeyCount))
-			{
+				if(keyRead((0x10 & ~PORTB),&zfKeyCount))
+				{
+					//正反转方向控制
+					PORTB &= 0xF9;
+					zfWaitTime = 40;
+					if(zfFlag)
+						zfFlag = 0;
+					else
+						zfFlag = 1;
+				}
+				
 				//三挡调速
-				if(++workStep > 3)
-					workStep = 1;
-				if(workStep == 1)
+				if(keyRead((0x08 & ~PORTB),&speedKeyCount))
 				{
-					pwmDuty = 60;
-				}
-				else if(workStep == 2)
-				{
-					pwmDuty = 80;
-				}
-				else if(workStep == 3)
-				{
-					pwmDuty = 99;
+					//三挡调速
+					if(++workStep > 3)
+						workStep = 1;
+					if(workStep == 1)
+					{
+						pwmDuty = 8;
+					}
+					else if(workStep == 2)
+					{
+						pwmDuty = 9;
+					}
+					else if(workStep == 3)
+					{
+						pwmDuty = 10;
+					}
 				}
 			}
 		}
 	}
-	else if(keyTime > 5)
+	else
 	{
 		//PB5输出低电平
+		BPHCON |= 0x20;
 		IOSTB &= 0xDF;
 		PORTB &= 0xDF;
-		if(keyRead((0x10 & ~PORTB),&muchKeyCount))
+		zfKeyCount = 0;
+		if(keyTime > 12)
 		{
-			//多功能功方向控制
-			if(++gnStep > 3)
+			if(keyRead((0x10 & ~PORTB),&muchKeyCount))
 			{
-				gnStep = 0;
-				LEDOFF();
-				workFlag = 0;
-				workStep = 0;
-				pwmDuty = 0;
-			}
-			if(gnStep > 0)
-			{
-				workFlag = 1;
-				if(gnStep == 1)
+				//多功能功方向控制
+				if(++gnStep > 3)
 				{
-					zfWaitTime = 20;
-					zfFlag = 0;
-					workStep = 3;
-					pwmDuty = 99;
-					LEDON();
-				}
-				else if(gnStep == 2)
-				{
-					zfWaitTime = 20;
-					zfFlag = 1;
-					LEDON();
-				}
-				else if(gnStep == 3)
-				{
+					gnStep = 0;
 					LEDOFF();
+					workFlag = 0;
+					workStep = 0;
+					pwmDuty = 0;
+				}
+				if(gnStep > 0)
+				{
+					workFlag = 1;
+					if(gnStep == 1)
+					{
+						PORTB &= 0xF9;
+						zfWaitTime = 40;
+						zfFlag = 0;
+						workStep = 3;
+						pwmDuty = 99;
+						LEDON();
+					}
+					else if(gnStep == 2)
+					{
+						PORTB &= 0xF9;
+						zfWaitTime = 40;
+						zfFlag = 1;
+						LEDON();
+					}
+					else if(gnStep == 3)
+					{
+						zfFlag = 1;
+						LEDOFF();
+					}
 				}
 			}
 		}
@@ -202,7 +219,7 @@ char keyRead(char keyStatus,char *keyCount)
 	}
 	else
 	{
-		if((*keyCount) >= 2)
+		if((*keyCount) >= 4)
 		{
 			(*keyCount) = 0;
 			return	1;
@@ -244,11 +261,13 @@ void setPWM()
 		{
 			//反转 PB2输出高
 			PORTB |= 0x04;
+			PORTB &= 0xFD;
 		}
 		else
 		{
 			//正转 PB1输出高
 			PORTB |= 0x02;
+			PORTB &= 0xFB;
 		}
 	}
 	else
@@ -257,7 +276,7 @@ void setPWM()
 		PORTB &= 0xF9;
 	}
 	
-	if(++pwmCount > 100)
+	if(++pwmCount > 10)
 		pwmCount = 0;
 }
 
@@ -265,6 +284,7 @@ void setPWM()
 void gotoSleep()
 {
 	IOSTB =  C_PB3_Input | C_PB4_Input | C_PB5_Input;	
+	BPHCON &= 0xDF;
 	sleepDealy = 0;
 	PORTB &= 0xF9;	//停止输出
 	workStep = 0;

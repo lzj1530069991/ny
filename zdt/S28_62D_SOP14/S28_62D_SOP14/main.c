@@ -15,8 +15,6 @@ static unsigned char numArray[]={0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x
 u8t Status = 0;
 u16t  R_AIN4_DATA;	
 u8t R_AIN4_DATA_LB;
-u16t  R_AIN3_DATA;	
-u8t R_AIN3_DATA_LB;
 u16t  R_AIN2_DATA;	
 u8t R_AIN2_DATA_LB;
 u8t intCount = 0;
@@ -29,7 +27,6 @@ u16t count900s = 0;
 u8t workStep = 0;
 u8t keyCount = 0;
 u8t pwStep = 0;
-u8t lowCount = 0;
 u8t ledLightTime = 0;
 u8t maxDuty = 0;
 u8t currentDuty = 0;
@@ -48,17 +45,18 @@ u8t	geweiNum = 0;	//个位
 u8t batValue = 0;
 u8t cDuty = 0;
 u8t preBatValue = 0;
-u8t showFlag = 0;
 u8t chrgStep = 0;
 u8t lightBat = 0;
 u16t closeCount = 0;
+u8t firstShowCount = 0;
+u8t batCount = 0;
 
 
 __sbit IntFlag = Status:0;
 __sbit longPressFlag = Status:1;
 __sbit redLedFlag = Status:2;
 __sbit chrgFlag = Status:3;
-
+__sbit showFlag = Status:4;
 
 void delay(int);
 void gotoSleep();
@@ -140,6 +138,10 @@ void main(void)
     
 	initSys();
 	initAD();
+	firstShowCount = 100;
+	ledLightTime = showFlag = 1;
+	tempshiweiNum = shiweiNum = 8;
+	tempgeweiNum = geweiNum = 8;
 	while(1)
 	{
 	    CLRWDT();
@@ -167,10 +169,15 @@ void main(void)
         if(!IntFlag)
     		continue;			//10ms执行一次
     	IntFlag = 0;
+    	if(firstShowCount > 0)
+    	{
+    		firstShowCount--;
+    		preBatValue = batValue;
+    	}
     	//低电自动关机
-    	if(batValue == 0 && workStep > 0)
+    	if(batValue < 5 && workStep > 0)
 		{
-			if(++closeCount >= 1000)
+			if(++closeCount >= 6000)
 			{
 				closeCount = 0;
 				workStep = 0;
@@ -227,6 +234,22 @@ void main(void)
 
 void chrgCtr()
 {
+	
+	if(preBatValue > 99)
+	{
+		shiweiNum = geweiNum = 9;
+	}
+	else
+	{
+		shiweiNum = preBatValue/10;
+		geweiNum = preBatValue%10;
+	}
+	if(workStep > 0)
+	{
+		showFlag = 1;
+		shiweiNum = 0;
+		geweiNum = workStep;
+	}
 	if(0x08 & PORTA)
 	{
 		//充电中
@@ -235,43 +258,44 @@ void chrgCtr()
 		workStep = 0;
 		ledLightTime = 0;
 		pwmStop();
-		
-		if(batValue > 99)
+		if(preBatValue < 99 && batValue >= preBatValue && count5s == 1)
+		{
+			preBatValue = preBatValue+1;
+		}
+		if(batValue >= 99)
 		{
 			chrgStep = 4;
-			shiweiNum = 9;
-			geweiNum = 9;
 			//充满了
-			if(++countFull > 200)
+			if(shiweiNum == 9 &&  geweiNum == 9 && batValue > 102 && ++countFull > 200)
+			{
 				pwm1Stop();
 			//ABPLCON &= 0X7F;
-			PORTB &= 0xF7;
-			IOSTB |= 0X08;
+				PORTB &= 0xF7;
+				IOSTB |= 0X08;
+			}
+		
 		}
 		else
 		{
 			countFull = 0;
 			IOSTB &= 0xF7;
-			if(batValue >= preBatValue && count5s == 1)
-			{
-				preBatValue = preBatValue+1;
-			}
-			shiweiNum = preBatValue/10;
-			geweiNum = preBatValue%10;
-			if(shiweiNum < 2)
+
+			if(shiweiNum < 5)
 			{
 				if(chrgStep <= 1)
 				{
-					PWM1DUTY = 8;
+					PWM1DUTY = 10;
 					chrgStep = 1;
+					pwm1Init();
 				}
 			}
-			else if(shiweiNum < 9 && geweiNum < 8)
+			else if(shiweiNum < 9)
 			{
 				if(chrgStep <= 2)
 				{
 					chrgStep = 2;
-					PWM1DUTY = 13;
+					PWM1DUTY = 11;
+					pwm1Init();
 				}
 			}
 			else
@@ -280,45 +304,38 @@ void chrgCtr()
 				{
 					PWM1DUTY = 12;
 					chrgStep = 3;
+					pwm1Init();
 				}
 			}
-			pwm1Init();
+			
 		}
 	}
 	else 
 	{
 		chrgStep = 0;
+		countFull = 0;
 		pwm1Stop();
 		chrgFlag = 0;
 		//未充电
-		if(workStep > 0)
+		
+
+		if(workStep == 0 && (preBatValue > batValue + 1))
 		{
-			showFlag = 1;
-			shiweiNum = 0;
-			geweiNum = workStep;
-		}
-		else 
-		{
-			if(batValue > 99)
+			if(++batCount > 30)
 			{
-				shiweiNum = 9;
-				geweiNum = 9;
-			}
-			else if(ledLightTime > 0)
-			{
-				
-				shiweiNum = preBatValue/10;
-				geweiNum = preBatValue%10;
-			}
-			if(count5s == 1)
-			{
-				if(preBatValue > batValue)
-				{
-					preBatValue = preBatValue-1;
-				}
-				
+				batCount = 0;
+				preBatValue = batValue;
+//				if(preBatValue < (batValue + 5))
+//					preBatValue = preBatValue-1;
+//				else
+//					preBatValue = batValue;
 			}
 		}
+		else
+		{
+			batCount = 0;
+		}
+		
 	}
 }
 
@@ -369,6 +386,8 @@ void refreshNub()
 		tempgeweiNum = 12;
 	}
 	//if(tempshiweiNum)
+	if(firstShowCount > 0)
+		tempshiweiNum = tempgeweiNum = 8;
 	showNubShiwei(numArray[tempshiweiNum]);
 	showNubGewei(numArray[tempgeweiNum]);
 }
@@ -387,8 +406,12 @@ void keyCtr()
 		{
 			count1s = 0;
 			ledLightTime = 3;
-			if(preBatValue < batValue)
-				preBatValue = batValue;
+//			if(preBatValue > batValue)
+//			{
+//				preBatValue = batValue;
+//				if(preBatValue > 99)
+//					preBatValue = 99;
+//			}
 			showFlag = 1;
 			return;
 		}
@@ -422,9 +445,11 @@ void keyCtr()
 		}
 		else
 		{
-			if(pwStep == 10)
+			if(batValue == 0 || preBatValue == 0)
 			{
-				sleepTime = 0;
+				ledLightTime = 3;
+				preBatValue = 0;
+				showFlag = 1;
 				return;
 			}
 			workStep = 1;
@@ -462,7 +487,7 @@ void initSys()
 	PCON1 = C_TMR0_En;
 	
 //;Initial Power control register
-	PCON = C_WDT_En | C_LVR_En ;				// Enable WDT ,  Enable LVR
+	PCON = C_WDT_En | C_LVR_En;				// Enable WDT ,  Enable LVR
 	
 //;Enable Timer0 & Global interrupt bit 
 	PCON1 = C_TMR0_En;						// Enable Timer0
@@ -515,8 +540,12 @@ void pwmStop()
 
 void gotoSleep()
 {
+	setInput();
 	count5s = 0;
 	showFlag = 0;
+	IOSTA = C_PA5_Input | C_PA3_Input | C_PA2_Input | C_PA1_Input;
+	//ABPLCON = 0X09;
+	IOSTB = 0x00;
 	PORTB = 0x00;
 	PORTA = 0x00;
 	sleepTime = 0;
@@ -526,12 +555,14 @@ void gotoSleep()
 	workStep = 0;
 	AWUCON = 0x28;
 	INTE =  C_INT_TMR0 | C_INT_TMR1 | C_INT_PABKey;
-	PCON =  C_LVR_En ;	
+	PCON =  C_LVR_En | 0x10;	
 	INTF = 0;								// Clear all interrupt flags
 	CLRWDT();
 	ENI();
 	SLEEP();
 	AWUCON = 0x00;
+	//ABPLCON = 0XFF;
+	IOSTA =  C_PA5_Input | C_PA4_Input | C_PA3_Input | C_PA2_Input | C_PA1_Input;
 	INTE =  C_INT_TMR0 ;	// Enable Timer0、Timer1、WDT overflow interrupt
 	INTF = 0;
 	//;Initial Power control register
@@ -563,7 +594,7 @@ char keyRead(char keyStatus)
 			longPressFlag = 0;
 			return	0;
 		}
-		else if(keyCount >= 8)
+		else if(keyCount >= 4)
 		{
 			keyCount = 0;
 			return	1;
@@ -591,7 +622,7 @@ void initAD()
 	//ADR	 = C_Ckl_Div16;					// ADC clock=Fcpu/16, Clear ADIF, disable ADC interrupt	
 	ADCR  = C_Sample_1clk | C_12BIT;
 
-	//PACON = C_PB0_AIN5;						// Set AIN0(PA0) as pure ADC input for reduce power consumption (SFR "PACON")
+	PACON = C_PA2_AIN2 | C_PA1_AIN1 | C_PA4_AIN4;						// Set AIN0(PA0) as pure ADC input for reduce power consumption (SFR "PACON")
 	ADMDbits.GCHS = 1;						// Enable global ADC channel	(SFR "ADMD")
 	delay(100);								// Delay 0.56ms(Instruction clock=4MHz/2T) for waiting ADC stable 
 	
@@ -610,25 +641,17 @@ void checkBatAD()
          if(debug)
         	R_AIN2_DATA = BATTLE;
         
-        if(R_AIN2_DATA > 1555)
+      	if(R_AIN2_DATA <= 1165)
         {
-        	//R_AIN2_DATA = 1555;
-        	lowCount = 0;
-        }
-        else if(R_AIN2_DATA < 1160)
-        {
-        	if(++lowCount < 10)
-        		return;
-        	lowCount = 10;
         	pwStep = 0;
-        	R_AIN2_DATA = 1160;
+        	R_AIN2_DATA = 1165;
         }
 
-       	R_AIN2_DATA = R_AIN2_DATA - 1160;
+       	R_AIN2_DATA = R_AIN2_DATA - 1165;
        	if(R_AIN2_DATA >= 400)
        	{
        		//batValue = 100;
-       		batValue = 50+(R_AIN2_DATA-300)/2;
+       		batValue = 75+(R_AIN2_DATA-300)/4;
        	}
        	else if(R_AIN2_DATA >= 300)
        	{
@@ -643,6 +666,16 @@ void checkBatAD()
        	{
        		batValue = R_AIN2_DATA/8;
        	}
+       	if(0x08 & PORTA)
+       	{
+       		if(batValue > 10)
+       			batValue = batValue - 10 +  shiweiNum;
+       	}
+       	else if(batValue > 10 && batValue < 99)
+       	{
+       		batValue = batValue + shiweiNum +  shiweiNum + 3;
+       	}
+   
 }
 
 
@@ -682,12 +715,8 @@ void checkOutA()
         	{
         		overCount--;
         	}
-        	if(workStep < 4)
-        	{
-        		tempDuty = 70 + workStep*5;
-        	}
-        	else
-        		tempDuty = 70 + workStep*5;
+
+        	tempDuty = 70 + workStep*5;
         		//PWM2DUTY = tempDuty;
         	//1档加2% 2档加1%
         	if(workStep == 1)
@@ -735,21 +764,6 @@ void F_AIN4_Convert(char count)
   	 F_wait_eoc();							// Wait for ADC conversion complete
   	 R_AIN4_DATA_LB += ( 0x0F & ADR); 
   	 R_AIN4_DATA    += ADD; 
-  	}
-}
-
-void F_AIN3_Convert(char count)
-{
-  	R_AIN3_DATA=R_AIN3_DATA_LB=0x00;   
-  	char i;
-  	ADMD  = 0x90 | C_ADC_PA3;				// Select AIN6(PB1) pad as ADC input
-  	delay(200);	
-  	for(i=1;i<=count;i++)
-  	{     			 
-  	 ADMDbits.START = 1;					// Start a ADC conversion session
-  	 F_wait_eoc();							// Wait for ADC conversion complete
-  	 R_AIN3_DATA_LB += ( 0x0F & ADR); 
-  	 R_AIN3_DATA    += ADD; 
   	}
 }
 

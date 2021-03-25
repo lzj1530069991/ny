@@ -72,6 +72,8 @@ u8t tempLedStep = 0;
 u16t count5S = 0;
 u8t ledDeadTime = 0;
 u8t lockLedStep = 0;
+u16t shandengTime = 0;
+u16t lowBat = 0;
 
 u8t debug = 0;		//1打开bug
 
@@ -213,7 +215,7 @@ void main(void)
     	{
     		count5S = 0;
     	}
-		if(workStep == 0 && keyCount == 0 && (PORTA & 0x20) == 0 && ledLightTime == 0 && ledDeadTime == 0)
+		if(workStep == 0 && keyCount == 0 && (PORTA & 0x20) == 0 && ledLightTime == 0 && ledDeadTime == 0 && shandengTime == 0)
 		{
 			if(++sleepTime > 30)
 			{
@@ -282,6 +284,12 @@ void keyCtr()
 		}
 		else
 		{
+			if(pwStep <= 1)
+			{
+				//电量不足时候
+				shandengTime = 500;
+				return;	
+			}
 			ledLightTime = 0;
 			workStep = 1;
 			PWM2DUTY = 80;
@@ -356,19 +364,19 @@ void ledShow()
 
 		ledStep = tempLedStep;
 	}
-	if(shanshuoTime > 0 && workStep > 0 && pwStep == 0)
-	{
-		if(count1s < 50)
-			ledStep = workStep;
-		else
-			ledStep = 0;
-	}
-	if(shanshuoTime == 0 && pwStep == 0)
-	{
-		workStep = 0;
-		ledStep = 0;
-		pwmStop();
-	}
+//	if(shanshuoTime > 0 && workStep > 0 && pwStep == 0)
+//	{
+//		if(count1s < 50)
+//			ledStep = workStep;
+//		else
+//			ledStep = 0;
+//	}
+//	if(shanshuoTime == 0 && pwStep == 0)
+//	{
+//		workStep = 0;
+//		ledStep = 0;
+//		pwmStop();
+//	}
 	LedInput();
 	switch(ledStep)
 	{
@@ -638,7 +646,33 @@ void chrgCtr()
 	else 
 	{
 		lockLedStep = 0;
-		PORTA &= 0XFD;		//关闭充电灯
+		if(workStep > 0 && pwStep == 0)
+		{
+			if(++lowBat > 1000)
+			{
+				shandengTime = 500;
+				lowBat = 0;
+				powerOff();
+			}
+		}
+		else
+		{
+			lowBat = 0;
+		}
+		if(shandengTime > 0)
+		{
+			shandengTime--;
+			if(count500ms < 30)
+			{
+				PORTA |= 0x02;		//打开充电灯
+			}
+			else
+			{
+				PORTA &= 0XFD;		//关闭充电灯
+			}
+		}
+		else
+			PORTA &= 0XFD;		//关闭充电灯
 		PORTA &= 0xFB;		//关闭充满提示灯
 		IOSTA |= 0x01;
 		chrgTime = 0;
@@ -706,7 +740,7 @@ void checkBatAD()
         		return;
         	lowCount = 10;
         	pwStep = 0;
-        	R_AIN4_DATA = 1105;
+        	R_AIN4_DATA = 1135;
         	
         	if(workStep > 0 && ++firstTime == 10)
         	{
@@ -843,7 +877,7 @@ void checkBatAD()
       		}
       		if(pwStep > 2)
       		{
-      			if(R_AIN4_DATA < 190)
+      			if(R_AIN4_DATA < 150)
       				pwStep = 2;
       		}
       		else
@@ -855,7 +889,7 @@ void checkBatAD()
       		//大于10% 小于30%
       		if(pwStep > 1)
       		{
-      			if(R_AIN4_DATA < 90)
+      			if(R_AIN4_DATA < 50)
       				pwStep = 1;
       		}
       		else
@@ -937,11 +971,13 @@ void checkOutA()
     		}
 			else if(workStep == 7)
     		{
-    			tempDuty = 96;
+    			if(R_AIN3_DATA > 85)
+    				tempDuty = 96;
     		}
     		else
     		{
-    			tempDuty = 99;
+    			if(R_AIN3_DATA > 90)
+    				tempDuty = 99;
     		}
    
         	PWM2DUTY = tempDuty;
@@ -952,23 +988,27 @@ void checkOutA()
         	{
         		overCount--;
         	}
-        	if(R_AIN3_DATA > 65 && workStep < 4)
+        	if(R_AIN3_DATA > 64 && workStep < 3)
         	{
         		if(workStep == 1)
         		{
         			tempDuty = 79;
         		}
-        		else if(workStep == 2)
+        		else if(workStep == 2 && R_AIN3_DATA > 68)
         		{
         			tempDuty = 82;
         		}
-        		else if(workStep == 3)
+        		else if(workStep == 3 && R_AIN3_DATA > 70)
         		{
         			tempDuty = 85;
         		}
         		PWM2DUTY = tempDuty;
         	}
-        	else if(R_AIN3_DATA < 45)
+        	else if(R_AIN3_DATA < 50)
+        	{
+        		PWM2DUTY = maxDuty;
+        	}
+        	else if(workStep >= 7 && R_AIN3_DATA < 68)
         	{
         		PWM2DUTY = maxDuty;
         	}

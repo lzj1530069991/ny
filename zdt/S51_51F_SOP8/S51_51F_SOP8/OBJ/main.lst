@@ -236,11 +236,11 @@ NYASM 2.28
                                     1-  276     	.line	43, "main.c"; 	IntFlag = 1;
      0017 2101                      1-  277     	MOVIA	0x01
      0018 00rr                      1-  278     	MOVAR	_IntFlag
-                                    1-  279     	.line	44, "main.c"; 	if(++keyTime > 10)
+                                    1-  279     	.line	44, "main.c"; 	if(++keyTime > 20)
      0019 05rr                      1-  280     	INCR	_keyTime,F
                                     1-  281     ;;swapping arguments (AOP_TYPEs 1/3)
-                                    1-  282     ;;unsigned compare: left >= lit (0xB=11), size=1
-     001A 210B                      1-  283     	MOVIA	0x0b
+                                    1-  282     ;;unsigned compare: left >= lit (0x15=21), size=1
+     001A 2115                      1-  283     	MOVIA	0x15
      001B 04rr                      1-  284     	SUBAR	_keyTime,W
      001C 0C03                      1-  285     	BTRSC	STATUS,0
                                     1-  286     	.line	45, "main.c"; 	keyTime = 0;
@@ -283,238 +283,234 @@ NYASM 2.28
                                     1-  323     ;   _initSys
                                     1-  324     ;   _setPWM
                                     1-  325     ;   _keyCon
-                                    1-  326     ;   _gotoSleep
-                                    1-  327     ;   _initSys
-                                    1-  328     ;   _setPWM
-                                    1-  329     ;   _keyCon
-                                    1-  330     ;   _gotoSleep
-                                    1-  331     ;; Starting pCode block
-                                    1-  332     .segment "code"; module=main, function=_main
-     0000                           1-  334     _main:
-                                    1-  335     ; 2 exit points
-                                    1-  336     	.line	61, "main.c"; 	initSys();
-                                    1-  337     	MCALL	_initSys
+                                    1-  326     ;   _initSys
+                                    1-  327     ;   _setPWM
+                                    1-  328     ;   _keyCon
+                                    1-  329     ;; Starting pCode block
+                                    1-  330     .segment "code"; module=main, function=_main
+     0000                           1-  332     _main:
+                                    1-  333     ; 2 exit points
+                                    1-  334     	.line	61, "main.c"; 	initSys();
+                                    1-  335     	MCALL	_initSys
      0000 2rrr                      3-   66 m1      LCALL rom_address
-     0001                           1-  338     _00131_DS_:
-                                    1-  339     	.line	64, "main.c"; 	CLRWDT();
-     0001 0002                      1-  340     	clrwdt
-                                    1-  341     	.line	65, "main.c"; 	if(zfWaitTime == 0 && workFlag == 1)
-     0002 01rr                      1-  342     	MOVR	_zfWaitTime,W
-     0003 0903                      1-  343     	BTRSS	STATUS,2
-                                    1-  344     	MGOTO	_00118_DS_
+     0001                           1-  336     _00127_DS_:
+                                    1-  337     	.line	64, "main.c"; 	CLRWDT();
+     0001 0002                      1-  338     	clrwdt
+                                    1-  339     	.line	65, "main.c"; 	if(zfWaitTime == 0 && workFlag == 1)
+     0002 01rr                      1-  340     	MOVR	_zfWaitTime,W
+     0003 0903                      1-  341     	BTRSS	STATUS,2
+                                    1-  342     	MGOTO	_00118_DS_
      0004 3rrr                      3-   63 m1      LGOTO rom_address
-     0005 01rr                      1-  345     	MOVR	_workFlag,W
-     0006 2401                      1-  346     	XORIA	0x01
-     0007 0D03                      1-  347     	BTRSC	STATUS,2
-                                    1-  348     	.line	66, "main.c"; 	setPWM();
-                                    1-  349     	MCALL	_setPWM
+     0005 01rr                      1-  343     	MOVR	_workFlag,W
+     0006 2401                      1-  344     	XORIA	0x01
+     0007 0D03                      1-  345     	BTRSC	STATUS,2
+                                    1-  346     	.line	66, "main.c"; 	setPWM();
+                                    1-  347     	MCALL	_setPWM
      0008 2rrr                      3-   66 m1      LCALL rom_address
-     0009                           1-  350     _00118_DS_:
-                                    1-  351     	.line	67, "main.c"; 	if(!IntFlag)
-     0009 01rr                      1-  352     	MOVR	_IntFlag,W
-     000A 0D03                      1-  353     	BTRSC	STATUS,2
-                                    1-  354     	MGOTO	_00131_DS_
+     0009                           1-  348     _00118_DS_:
+                                    1-  349     	.line	67, "main.c"; 	if(!IntFlag)
+     0009 01rr                      1-  350     	MOVR	_IntFlag,W
+     000A 0D03                      1-  351     	BTRSC	STATUS,2
+                                    1-  352     	MGOTO	_00127_DS_
      000B 3rrr                      3-   63 m1      LGOTO rom_address
-                                    1-  355     	.line	69, "main.c"; 	IntFlag = 0;
-     000C 02rr                      1-  356     	CLRR	_IntFlag
-                                    1-  357     	.line	70, "main.c"; 	keyCon();
-                                    1-  358     	MCALL	_keyCon
+                                    1-  353     	.line	69, "main.c"; 	IntFlag = 0;
+     000C 02rr                      1-  354     	CLRR	_IntFlag
+                                    1-  355     	.line	70, "main.c"; 	keyCon();
+                                    1-  356     	MCALL	_keyCon
      000D 2rrr                      3-   66 m1      LCALL rom_address
-                                    1-  359     	.line	75, "main.c"; 	if(zfWaitTime > 0)
-     000E 01rr                      1-  360     	MOVR	_zfWaitTime,W
-     000F 0D03                      1-  361     	BTRSC	STATUS,2
-                                    1-  362     	MGOTO	_00123_DS_
+                                    1-  357     	.line	75, "main.c"; 	if(zfWaitTime > 0)
+     000E 01rr                      1-  358     	MOVR	_zfWaitTime,W
+     000F 0D03                      1-  359     	BTRSC	STATUS,2
+                                    1-  360     	MGOTO	_00123_DS_
      0010 3rrr                      3-   63 m1      LGOTO rom_address
-                                    1-  363     	.line	77, "main.c"; 	zfWaitTime--;
-     0011 06rr                      1-  364     	DECR	_zfWaitTime,F
-                                    1-  365     	.line	78, "main.c"; 	PORTB &= 0xF9;	//停止输出
-     0012 21F9                      1-  366     	MOVIA	0xf9
-     0013 10rr                      1-  367     	ANDAR	_PORTB,F
-     0014                           1-  368     _00123_DS_:
-                                    1-  369     	.line	80, "main.c"; 	if(workFlag == 0 && pwKeyCount == 0 && muchKeyCount == 0)
-     0014 01rr                      1-  370     	MOVR	_workFlag,W
-     0015 0903                      1-  371     	BTRSS	STATUS,2
-                                    1-  372     	MGOTO	_00131_DS_
+                                    1-  361     	.line	77, "main.c"; 	zfWaitTime--;
+     0011 06rr                      1-  362     	DECR	_zfWaitTime,F
+                                    1-  363     	.line	78, "main.c"; 	PORTB &= 0xF9;	//停止输出
+     0012 21F9                      1-  364     	MOVIA	0xf9
+     0013 10rr                      1-  365     	ANDAR	_PORTB,F
+     0014                           1-  366     _00123_DS_:
+                                    1-  367     	.line	80, "main.c"; 	if(workFlag == 0)
+     0014 01rr                      1-  368     	MOVR	_workFlag,W
+     0015 0903                      1-  369     	BTRSS	STATUS,2
+                                    1-  370     	MGOTO	_00127_DS_
      0016 3rrr                      3-   63 m1      LGOTO rom_address
-     0017 01rr                      1-  373     	MOVR	_pwKeyCount,W
-     0018 0903                      1-  374     	BTRSS	STATUS,2
-                                    1-  375     	MGOTO	_00131_DS_
-     0019 3rrr                      3-   63 m1      LGOTO rom_address
-     001A 01rr                      1-  376     	MOVR	_muchKeyCount,W
-     001B 0903                      1-  377     	BTRSS	STATUS,2
-                                    1-  378     	MGOTO	_00131_DS_
-     001C 3rrr                      3-   63 m1      LGOTO rom_address
-                                    1-  379     	.line	82, "main.c"; 	if(++sleepDealy > 20)
-     001D 05rr                      1-  380     	INCR	_sleepDealy,F
-                                    1-  381     ;;swapping arguments (AOP_TYPEs 1/3)
-                                    1-  382     ;;unsigned compare: left >= lit (0x15=21), size=1
-     001E 2115                      1-  383     	MOVIA	0x15
-     001F 04rr                      1-  384     	SUBAR	_sleepDealy,W
-     0020 0803                      1-  385     	BTRSS	STATUS,0
-                                    1-  386     	MGOTO	_00131_DS_
-     0021 3rrr                      3-   63 m1      LGOTO rom_address
-                                    1-  387     	.line	83, "main.c"; 	gotoSleep();
-                                    1-  388     	MCALL	_gotoSleep
-     0022 2rrr                      3-   66 m1      LCALL rom_address
-                                    1-  389     	MGOTO	_00131_DS_
-     0023 3rrr                      3-   63 m1      LGOTO rom_address
-                                    1-  390     	.line	87, "main.c"; 	}
-                                    1-  391     	RETURN	
-     0024 0010                      3-   40 m1      ret
-                                    1-  392     ; exit point of _main
-                                    1-  394     ;***
-                                    1-  395     ;  pBlock Stats: dbName = C
-                                    1-  396     ;***
-                                    1-  397     ;has an exit
-                                    1-  398     ;; Starting pCode block
-                                    1-  399     .segment "code"; module=main, function=_gotoSleep
-     0000                           1-  401     _gotoSleep:
-                                    1-  402     ; 2 exit points
-                                    1-  403     	.line	267, "main.c"; 	IOSTB =  C_PB3_Input | C_PB4_Input | C_PB5_Input;	
-     0000 2138                      1-  404     	MOVIA	0x38
-     0001 000r                      1-  405     	IOST	_IOSTB
-                                    1-  406     	.line	268, "main.c"; 	sleepDealy = 0;
-     0002 02rr                      1-  407     	CLRR	_sleepDealy
-                                    1-  408     	.line	269, "main.c"; 	PORTB &= 0xF9;	//停止输出
-     0003 21F9                      1-  409     	MOVIA	0xf9
-     0004 10rr                      1-  410     	ANDAR	_PORTB,F
-                                    1-  411     	.line	270, "main.c"; 	workStep = 0;
-     0005 02rr                      1-  412     	CLRR	_workStep
-                                    1-  413     	.line	271, "main.c"; 	gnStep = 0;
-     0006 02rr                      1-  414     	CLRR	_gnStep
-                                    1-  415     	.line	272, "main.c"; 	workFlag = 0;
-     0007 02rr                      1-  416     	CLRR	_workFlag
-                                    1-  417     	.line	273, "main.c"; 	zfFlag = 0;
-     0008 02rr                      1-  418     	CLRR	_zfFlag
-                                    1-  419     	.line	274, "main.c"; 	pwmDuty = 0;
-     0009 02rr                      1-  420     	CLRR	_pwmDuty
-                                    1-  421     	.line	275, "main.c"; 	LEDOFF();		//灭灯
-     000A 1Crr                      1-  422     	BCR	_PORTB,0
-                                    1-  423     	.line	276, "main.c"; 	BWUCON = 0x38;
-     000B 2138                      1-  424     	MOVIA	0x38
-     000C 00rr                      1-  425     	MOVAR	_BWUCON
-                                    1-  426     	.line	277, "main.c"; 	INTE =  C_INT_TMR0 | C_INT_PBKey;
-     000D 2103                      1-  427     	MOVIA	0x03
-     000E 00rr                      1-  428     	MOVAR	_INTE
-                                    1-  429     	.line	278, "main.c"; 	PCON =  C_LVR_En;	
-     000F 2108                      1-  430     	MOVIA	0x08
-     0010 00rr                      1-  431     	MOVAR	_PCON
-                                    1-  432     	.line	279, "main.c"; 	INTF = 0;								// Clear all interrupt flags
-     0011 02rr                      1-  433     	CLRR	_INTF
-                                    1-  434     	.line	280, "main.c"; 	CLRWDT();
-     0012 0002                      1-  435     	clrwdt
-                                    1-  436     	.line	281, "main.c"; 	SLEEP();
-     0013 0001                      1-  437     	sleep
-                                    1-  438     	.line	282, "main.c"; 	BWUCON = 0x00;
-     0014 02rr                      1-  439     	CLRR	_BWUCON
-                                    1-  440     	.line	283, "main.c"; 	INTE =  C_INT_TMR0;	// Enable Timer0、Timer1、WDT overflow interrupt
-     0015 2101                      1-  441     	MOVIA	0x01
-     0016 00rr                      1-  442     	MOVAR	_INTE
-                                    1-  443     	.line	284, "main.c"; 	INTF = 0;
-     0017 02rr                      1-  444     	CLRR	_INTF
-                                    1-  445     	.line	286, "main.c"; 	PCON = C_WDT_En | C_LVR_En ;				// Enable WDT ,  Enable LVR
-     0018 2188                      1-  446     	MOVIA	0x88
-     0019 00rr                      1-  447     	MOVAR	_PCON
-                                    1-  448     	.line	287, "main.c"; 	}
-                                    1-  449     	RETURN	
-     001A 0010                      3-   40 m1      ret
-                                    1-  450     ; exit point of _gotoSleep
-                                    1-  452     ;***
-                                    1-  453     ;  pBlock Stats: dbName = C
-                                    1-  454     ;***
-                                    1-  455     ;; Starting pCode block
-                                    1-  456     .segment "code"; module=main, function=_setPWM
-     0000                           1-  458     _setPWM:
-                                    1-  459     ; 0 exit points
-                                    1-  460     	.line	240, "main.c"; 	sleepDealy = 0;
-     0000 02rr                      1-  461     	CLRR	_sleepDealy
-                                    1-  462     	.line	241, "main.c"; 	if(pwmDuty >= pwmCount)
-     0001 01rr                      1-  463     	MOVR	_pwmCount,W
-     0002 04rr                      1-  464     	SUBAR	_pwmDuty,W
-     0003 0803                      1-  465     	BTRSS	STATUS,0
-                                    1-  466     	MGOTO	_00204_DS_
+                                    1-  371     	.line	82, "main.c"; 	PORTB &= 0xF9;	//停止输出
+     0017 21F9                      1-  372     	MOVIA	0xf9
+     0018 10rr                      1-  373     	ANDAR	_PORTB,F
+                                    1-  374     	.line	83, "main.c"; 	workStep = 0;
+     0019 02rr                      1-  375     	CLRR	_workStep
+                                    1-  376     	.line	84, "main.c"; 	gnStep = 0;
+     001A 02rr                      1-  377     	CLRR	_gnStep
+                                    1-  378     	.line	85, "main.c"; 	workFlag = 0;
+     001B 02rr                      1-  379     	CLRR	_workFlag
+                                    1-  380     	.line	86, "main.c"; 	zfFlag = 0;
+     001C 02rr                      1-  381     	CLRR	_zfFlag
+                                    1-  382     	.line	87, "main.c"; 	pwmDuty = 0;
+     001D 02rr                      1-  383     	CLRR	_pwmDuty
+                                    1-  384     	.line	88, "main.c"; 	LEDOFF();		//灭灯
+     001E 1Crr                      1-  385     	BCR	_PORTB,0
+                                    1-  386     	MGOTO	_00127_DS_
+     001F 3rrr                      3-   63 m1      LGOTO rom_address
+                                    1-  387     	.line	92, "main.c"; 	}
+                                    1-  388     	RETURN	
+     0020 0010                      3-   40 m1      ret
+                                    1-  389     ; exit point of _main
+                                    1-  391     ;***
+                                    1-  392     ;  pBlock Stats: dbName = C
+                                    1-  393     ;***
+                                    1-  394     ;has an exit
+                                    1-  395     ;; Starting pCode block
+                                    1-  396     .segment "code"; module=main, function=_gotoSleep
+     0000                           1-  398     _gotoSleep:
+                                    1-  399     ; 2 exit points
+                                    1-  400     	.line	286, "main.c"; 	IOSTB =  C_PB3_Input | C_PB4_Input | C_PB5_Input;	
+     0000 2138                      1-  401     	MOVIA	0x38
+     0001 000r                      1-  402     	IOST	_IOSTB
+                                    1-  403     	.line	287, "main.c"; 	BPHCON &= 0xDF;
+     0002 1Err                      1-  404     	BCR	_BPHCON,5
+                                    1-  405     	.line	288, "main.c"; 	sleepDealy = 0;
+     0003 02rr                      1-  406     	CLRR	_sleepDealy
+                                    1-  407     	.line	289, "main.c"; 	PORTB &= 0xF9;	//停止输出
+     0004 21F9                      1-  408     	MOVIA	0xf9
+     0005 10rr                      1-  409     	ANDAR	_PORTB,F
+                                    1-  410     	.line	290, "main.c"; 	workStep = 0;
+     0006 02rr                      1-  411     	CLRR	_workStep
+                                    1-  412     	.line	291, "main.c"; 	gnStep = 0;
+     0007 02rr                      1-  413     	CLRR	_gnStep
+                                    1-  414     	.line	292, "main.c"; 	workFlag = 0;
+     0008 02rr                      1-  415     	CLRR	_workFlag
+                                    1-  416     	.line	293, "main.c"; 	zfFlag = 0;
+     0009 02rr                      1-  417     	CLRR	_zfFlag
+                                    1-  418     	.line	294, "main.c"; 	pwmDuty = 0;
+     000A 02rr                      1-  419     	CLRR	_pwmDuty
+                                    1-  420     	.line	295, "main.c"; 	LEDOFF();		//灭灯
+     000B 1Crr                      1-  421     	BCR	_PORTB,0
+                                    1-  422     	.line	296, "main.c"; 	BWUCON = 0x38;
+     000C 2138                      1-  423     	MOVIA	0x38
+     000D 00rr                      1-  424     	MOVAR	_BWUCON
+                                    1-  425     	.line	297, "main.c"; 	INTE =  C_INT_TMR0 | C_INT_PBKey;
+     000E 2103                      1-  426     	MOVIA	0x03
+     000F 00rr                      1-  427     	MOVAR	_INTE
+                                    1-  428     	.line	298, "main.c"; 	PCON =  C_LVR_En;	
+     0010 2108                      1-  429     	MOVIA	0x08
+     0011 00rr                      1-  430     	MOVAR	_PCON
+                                    1-  431     	.line	299, "main.c"; 	INTF = 0;								// Clear all interrupt flags
+     0012 02rr                      1-  432     	CLRR	_INTF
+                                    1-  433     	.line	300, "main.c"; 	CLRWDT();
+     0013 0002                      1-  434     	clrwdt
+                                    1-  435     	.line	301, "main.c"; 	SLEEP();
+     0014 0001                      1-  436     	sleep
+                                    1-  437     	.line	302, "main.c"; 	BWUCON = 0x00;
+     0015 02rr                      1-  438     	CLRR	_BWUCON
+                                    1-  439     	.line	303, "main.c"; 	INTE =  C_INT_TMR0;	// Enable Timer0、Timer1、WDT overflow interrupt
+     0016 2101                      1-  440     	MOVIA	0x01
+     0017 00rr                      1-  441     	MOVAR	_INTE
+                                    1-  442     	.line	304, "main.c"; 	INTF = 0;
+     0018 02rr                      1-  443     	CLRR	_INTF
+                                    1-  444     	.line	306, "main.c"; 	PCON = C_WDT_En | C_LVR_En ;				// Enable WDT ,  Enable LVR
+     0019 2188                      1-  445     	MOVIA	0x88
+     001A 00rr                      1-  446     	MOVAR	_PCON
+                                    1-  447     	.line	307, "main.c"; 	}
+                                    1-  448     	RETURN	
+     001B 0010                      3-   40 m1      ret
+                                    1-  449     ; exit point of _gotoSleep
+                                    1-  451     ;***
+                                    1-  452     ;  pBlock Stats: dbName = C
+                                    1-  453     ;***
+                                    1-  454     ;; Starting pCode block
+                                    1-  455     .segment "code"; module=main, function=_setPWM
+     0000                           1-  457     _setPWM:
+                                    1-  458     ; 0 exit points
+                                    1-  459     	.line	257, "main.c"; 	sleepDealy = 0;
+     0000 02rr                      1-  460     	CLRR	_sleepDealy
+                                    1-  461     	.line	258, "main.c"; 	if(pwmDuty >= pwmCount)
+     0001 01rr                      1-  462     	MOVR	_pwmCount,W
+     0002 04rr                      1-  463     	SUBAR	_pwmDuty,W
+     0003 0803                      1-  464     	BTRSS	STATUS,0
+                                    1-  465     	MGOTO	_00202_DS_
      0004 3rrr                      3-   63 m1      LGOTO rom_address
-                                    1-  467     	.line	243, "main.c"; 	if(zfFlag)
-     0005 01rr                      1-  468     	MOVR	_zfFlag,W
-     0006 0D03                      1-  469     	BTRSC	STATUS,2
-                                    1-  470     	MGOTO	_00201_DS_
+                                    1-  466     	.line	260, "main.c"; 	if(zfFlag)
+     0005 01rr                      1-  467     	MOVR	_zfFlag,W
+     0006 0D03                      1-  468     	BTRSC	STATUS,2
+                                    1-  469     	MGOTO	_00199_DS_
      0007 3rrr                      3-   63 m1      LGOTO rom_address
-                                    1-  471     	.line	246, "main.c"; 	PORTB |= 0x04;
-     0008 19rr                      1-  472     	BSR	_PORTB,2
-                                    1-  473     	MGOTO	_00205_DS_
-     0009 3rrr                      3-   63 m1      LGOTO rom_address
-     000A                           1-  474     _00201_DS_:
-                                    1-  475     	.line	251, "main.c"; 	PORTB |= 0x02;
-     000A 18rr                      1-  476     	BSR	_PORTB,1
-                                    1-  477     	MGOTO	_00205_DS_
-     000B 3rrr                      3-   63 m1      LGOTO rom_address
-     000C                           1-  478     _00204_DS_:
-                                    1-  479     	.line	257, "main.c"; 	PORTB &= 0xF9;
-     000C 21F9                      1-  480     	MOVIA	0xf9
-     000D 10rr                      1-  481     	ANDAR	_PORTB,F
-     000E                           1-  482     _00205_DS_:
-                                    1-  483     	.line	260, "main.c"; 	if(++pwmCount > 100)
-     000E 05rr                      1-  484     	INCR	_pwmCount,F
-                                    1-  485     ;;swapping arguments (AOP_TYPEs 1/3)
-                                    1-  486     ;;unsigned compare: left >= lit (0x65=101), size=1
-     000F 2165                      1-  487     	MOVIA	0x65
-     0010 04rr                      1-  488     	SUBAR	_pwmCount,W
-     0011 0C03                      1-  489     	BTRSC	STATUS,0
-                                    1-  490     	.line	261, "main.c"; 	pwmCount = 0;
-     0012 02rr                      1-  491     	CLRR	_pwmCount
-                                    1-  492     	.line	262, "main.c"; 	}
-                                    1-  493     	RETURN	
+                                    1-  470     	.line	263, "main.c"; 	PORTB |= 0x04;
+     0008 19rr                      1-  471     	BSR	_PORTB,2
+                                    1-  472     	.line	264, "main.c"; 	PORTB &= 0xFD;
+     0009 1Crr                      1-  473     	BCR	_PORTB,1
+                                    1-  474     	MGOTO	_00203_DS_
+     000A 3rrr                      3-   63 m1      LGOTO rom_address
+     000B                           1-  475     _00199_DS_:
+                                    1-  476     	.line	269, "main.c"; 	PORTB |= 0x02;
+     000B 18rr                      1-  477     	BSR	_PORTB,1
+                                    1-  478     	.line	270, "main.c"; 	PORTB &= 0xFB;
+     000C 1Drr                      1-  479     	BCR	_PORTB,2
+                                    1-  480     	MGOTO	_00203_DS_
+     000D 3rrr                      3-   63 m1      LGOTO rom_address
+     000E                           1-  481     _00202_DS_:
+                                    1-  482     	.line	276, "main.c"; 	PORTB &= 0xF9;
+     000E 21F9                      1-  483     	MOVIA	0xf9
+     000F 10rr                      1-  484     	ANDAR	_PORTB,F
+     0010                           1-  485     _00203_DS_:
+                                    1-  486     	.line	279, "main.c"; 	if(++pwmCount > 10)
+     0010 05rr                      1-  487     	INCR	_pwmCount,F
+                                    1-  488     ;;swapping arguments (AOP_TYPEs 1/3)
+                                    1-  489     ;;unsigned compare: left >= lit (0xB=11), size=1
+     0011 210B                      1-  490     	MOVIA	0x0b
+     0012 04rr                      1-  491     	SUBAR	_pwmCount,W
+     0013 0C03                      1-  492     	BTRSC	STATUS,0
+                                    1-  493     	.line	280, "main.c"; 	pwmCount = 0;
+     0014 02rr                      1-  494     	CLRR	_pwmCount
+                                    1-  495     	.line	281, "main.c"; 	}
+                                    1-  496     	RETURN	
+     0015 0010                      3-   40 m1      ret
+                                    1-  498     ;***
+                                    1-  499     ;  pBlock Stats: dbName = C
+                                    1-  500     ;***
+                                    1-  501     ;has an exit
+                                    1-  502     ;; Starting pCode block
+                                    1-  503     .segment "code"; module=main, function=_initSys
+     0000                           1-  505     _initSys:
+                                    1-  506     ; 2 exit points
+                                    1-  507     	.line	236, "main.c"; 	PORTB = 0x28;
+     0000 2128                      1-  508     	MOVIA	0x28
+     0001 00rr                      1-  509     	MOVAR	_PORTB
+                                    1-  510     	.line	237, "main.c"; 	BPHCON = 0xC7;		//PB3 上拉
+     0002 21C7                      1-  511     	MOVIA	0xc7
+     0003 00rr                      1-  512     	MOVAR	_BPHCON
+                                    1-  513     	.line	240, "main.c"; 	IOSTB =  C_PB3_Input | C_PB4_Input | C_PB5_Input;	
+     0004 2138                      1-  514     	MOVIA	0x38
+     0005 000r                      1-  515     	IOST	_IOSTB
+                                    1-  516     	.line	241, "main.c"; 	PORTB = 0x38;                        	// PortB Data Register = 0x00
+     0006 00rr                      1-  517     	MOVAR	_PORTB
+                                    1-  518     	.line	242, "main.c"; 	PCON = C_WDT_En | C_LVR_En;				// Enable WDT & LVR
+     0007 2188                      1-  519     	MOVIA	0x88
+     0008 00rr                      1-  520     	MOVAR	_PCON
+                                    1-  521     	.line	244, "main.c"; 	PCON1 = C_TMR0_Dis;
+     0009 0200                      1-  522     	CLRA	
+     000A 000r                      1-  523     	IOST	_PCON1
+                                    1-  524     	.line	246, "main.c"; 	TMR0 = 55;
+     000B 2137                      1-  525     	MOVIA	0x37
+     000C 00rr                      1-  526     	MOVAR	_TMR0
+                                    1-  527     	.line	247, "main.c"; 	T0MD =  C_PS0_TMR0 | C_PS0_Div2;
+     000D 0200                      1-  528     	CLRA	
+     000E 0003                      1-  529     	T0MD	
+                                    1-  530     	.line	249, "main.c"; 	PCON1 = C_TMR0_En;
+     000F 2101                      1-  531     	MOVIA	0x01
+     0010 000r                      1-  532     	IOST	_PCON1
+                                    1-  533     	.line	250, "main.c"; 	INTE =  C_INT_TMR0 ;
+     0011 00rr                      1-  534     	MOVAR	_INTE
+                                    1-  535     	.line	251, "main.c"; 	ENI();	
+     0012 0004                      1-  536     	ENI
+                                    1-  537     	.line	252, "main.c"; 	}
+                                    1-  538     	RETURN	
      0013 0010                      3-   40 m1      ret
-                                    1-  495     ;***
-                                    1-  496     ;  pBlock Stats: dbName = C
-                                    1-  497     ;***
-                                    1-  498     ;has an exit
-                                    1-  499     ;; Starting pCode block
-                                    1-  500     .segment "code"; module=main, function=_initSys
-     0000                           1-  502     _initSys:
-                                    1-  503     ; 2 exit points
-                                    1-  504     	.line	219, "main.c"; 	PORTB = 0x28;
-     0000 2128                      1-  505     	MOVIA	0x28
-     0001 00rr                      1-  506     	MOVAR	_PORTB
-                                    1-  507     	.line	220, "main.c"; 	BPHCON = 0xC7;		//PB3 上拉
-     0002 21C7                      1-  508     	MOVIA	0xc7
-     0003 00rr                      1-  509     	MOVAR	_BPHCON
-                                    1-  510     	.line	223, "main.c"; 	IOSTB =  C_PB3_Input | C_PB4_Input | C_PB5_Input;	
-     0004 2138                      1-  511     	MOVIA	0x38
-     0005 000r                      1-  512     	IOST	_IOSTB
-                                    1-  513     	.line	224, "main.c"; 	PORTB = 0x38;                        	// PortB Data Register = 0x00
-     0006 00rr                      1-  514     	MOVAR	_PORTB
-                                    1-  515     	.line	225, "main.c"; 	PCON = C_WDT_En | C_LVR_En;				// Enable WDT & LVR
-     0007 2188                      1-  516     	MOVIA	0x88
-     0008 00rr                      1-  517     	MOVAR	_PCON
-                                    1-  518     	.line	227, "main.c"; 	PCON1 = C_TMR0_Dis;
-     0009 0200                      1-  519     	CLRA	
-     000A 000r                      1-  520     	IOST	_PCON1
-                                    1-  521     	.line	229, "main.c"; 	TMR0 = 55;
-     000B 2137                      1-  522     	MOVIA	0x37
-     000C 00rr                      1-  523     	MOVAR	_TMR0
-                                    1-  524     	.line	230, "main.c"; 	T0MD =  C_PS0_TMR0 | C_PS0_Div2;
-     000D 0200                      1-  525     	CLRA	
-     000E 0003                      1-  526     	T0MD	
-                                    1-  527     	.line	232, "main.c"; 	PCON1 = C_TMR0_En;
-     000F 2101                      1-  528     	MOVIA	0x01
-     0010 000r                      1-  529     	IOST	_PCON1
-                                    1-  530     	.line	233, "main.c"; 	INTE =  C_INT_TMR0 ;
-     0011 00rr                      1-  531     	MOVAR	_INTE
-                                    1-  532     	.line	234, "main.c"; 	ENI();	
-     0012 0004                      1-  533     	ENI
-                                    1-  534     	.line	235, "main.c"; 	}
-                                    1-  535     	RETURN	
-     0013 0010                      3-   40 m1      ret
-                                    1-  536     ; exit point of _initSys
-                                    1-  538     ;***
-                                    1-  539     ;  pBlock Stats: dbName = C
-                                    1-  540     ;***
-                                    1-  541     ;has an exit
-                                    1-  542     ;functions called:
-                                    1-  543     ;   __gptrget1
-                                    1-  544     ;   __gptrput1
-                                    1-  545     ;   __gptrput1
+                                    1-  539     ; exit point of _initSys
+                                    1-  541     ;***
+                                    1-  542     ;  pBlock Stats: dbName = C
+                                    1-  543     ;***
+                                    1-  544     ;has an exit
+                                    1-  545     ;functions called:
                                     1-  546     ;   __gptrget1
                                     1-  547     ;   __gptrput1
                                     1-  548     ;   __gptrput1
@@ -524,439 +520,470 @@ NYASM 2.28
                                     1-  552     ;   __gptrget1
                                     1-  553     ;   __gptrput1
                                     1-  554     ;   __gptrput1
-                                    1-  555     ;7 compiler assigned registers:
-                                    1-  556     ;   r0x1012
-                                    1-  557     ;   STK00
-                                    1-  558     ;   r0x1013
-                                    1-  559     ;   STK01
-                                    1-  560     ;   r0x1014
-                                    1-  561     ;   STK02
-                                    1-  562     ;   r0x1015
-                                    1-  563     ;; Starting pCode block
-                                    1-  564     .segment "code"; module=main, function=_keyRead
-                                    1-  566     ;local variable name mapping:
-     0000                           1-  571     _keyRead:
-                                    1-  572     ; 2 exit points
-                                    1-  573     	.line	193, "main.c"; 	char keyRead(char keyStatus,char *keyCount)	
-     0000 00rr                      1-  574     	MOVAR	r0x1012
-     0001 01rr                      1-  575     	MOVR	STK00,W
-     0002 00rr                      1-  576     	MOVAR	r0x1013
-     0003 01rr                      1-  577     	MOVR	STK01,W
-     0004 00rr                      1-  578     	MOVAR	r0x1014
-     0005 01rr                      1-  579     	MOVR	STK02,W
-     0006 00rr                      1-  580     	MOVAR	r0x1015
-                                    1-  581     	.line	195, "main.c"; 	if(keyStatus)
-     0007 01rr                      1-  582     	MOVR	r0x1012,W
-     0008 0D03                      1-  583     	BTRSC	STATUS,2
-                                    1-  584     	MGOTO	_00189_DS_
+                                    1-  555     ;   __gptrget1
+                                    1-  556     ;   __gptrput1
+                                    1-  557     ;   __gptrput1
+                                    1-  558     ;7 compiler assigned registers:
+                                    1-  559     ;   r0x1012
+                                    1-  560     ;   STK00
+                                    1-  561     ;   r0x1013
+                                    1-  562     ;   STK01
+                                    1-  563     ;   r0x1014
+                                    1-  564     ;   STK02
+                                    1-  565     ;   r0x1015
+                                    1-  566     ;; Starting pCode block
+                                    1-  567     .segment "code"; module=main, function=_keyRead
+                                    1-  569     ;local variable name mapping:
+     0000                           1-  574     _keyRead:
+                                    1-  575     ; 2 exit points
+                                    1-  576     	.line	210, "main.c"; 	char keyRead(char keyStatus,char *keyCount)	
+     0000 00rr                      1-  577     	MOVAR	r0x1012
+     0001 01rr                      1-  578     	MOVR	STK00,W
+     0002 00rr                      1-  579     	MOVAR	r0x1013
+     0003 01rr                      1-  580     	MOVR	STK01,W
+     0004 00rr                      1-  581     	MOVAR	r0x1014
+     0005 01rr                      1-  582     	MOVR	STK02,W
+     0006 00rr                      1-  583     	MOVAR	r0x1015
+                                    1-  584     	.line	212, "main.c"; 	if(keyStatus)
+     0007 01rr                      1-  585     	MOVR	r0x1012,W
+     0008 0D03                      1-  586     	BTRSC	STATUS,2
+                                    1-  587     	MGOTO	_00187_DS_
      0009 3rrr                      3-   63 m1      LGOTO rom_address
-                                    1-  585     	.line	197, "main.c"; 	(*keyCount)++;
-     000A 01rr                      1-  586     	MOVR	r0x1015,W
-     000B 00rr                      1-  587     	MOVAR	STK01
-     000C 01rr                      1-  588     	MOVR	r0x1014,W
-     000D 00rr                      1-  589     	MOVAR	STK00
-     000E 01rr                      1-  590     	MOVR	r0x1013,W
-                                    1-  591     	MCALL	__gptrget1
+                                    1-  588     	.line	214, "main.c"; 	(*keyCount)++;
+     000A 01rr                      1-  589     	MOVR	r0x1015,W
+     000B 00rr                      1-  590     	MOVAR	STK01
+     000C 01rr                      1-  591     	MOVR	r0x1014,W
+     000D 00rr                      1-  592     	MOVAR	STK00
+     000E 01rr                      1-  593     	MOVR	r0x1013,W
+                                    1-  594     	MCALL	__gptrget1
      000F 2rrr                      3-   66 m1      LCALL rom_address
-     0010 00rr                      1-  592     	MOVAR	r0x1012
-     0011 05rr                      1-  593     	INCR	r0x1012,F
-     0012 01rr                      1-  594     	MOVR	r0x1012,W
-     0013 00rr                      1-  595     	MOVAR	STK02
-     0014 01rr                      1-  596     	MOVR	r0x1015,W
-     0015 00rr                      1-  597     	MOVAR	STK01
-     0016 01rr                      1-  598     	MOVR	r0x1014,W
-     0017 00rr                      1-  599     	MOVAR	STK00
-     0018 01rr                      1-  600     	MOVR	r0x1013,W
-                                    1-  601     	MCALL	__gptrput1
+     0010 00rr                      1-  595     	MOVAR	r0x1012
+     0011 05rr                      1-  596     	INCR	r0x1012,F
+     0012 01rr                      1-  597     	MOVR	r0x1012,W
+     0013 00rr                      1-  598     	MOVAR	STK02
+     0014 01rr                      1-  599     	MOVR	r0x1015,W
+     0015 00rr                      1-  600     	MOVAR	STK01
+     0016 01rr                      1-  601     	MOVR	r0x1014,W
+     0017 00rr                      1-  602     	MOVAR	STK00
+     0018 01rr                      1-  603     	MOVR	r0x1013,W
+                                    1-  604     	MCALL	__gptrput1
      0019 2rrr                      3-   66 m1      LCALL rom_address
-                                    1-  602     ;;unsigned compare: left < lit (0x64=100), size=1
-                                    1-  603     	.line	198, "main.c"; 	if((*keyCount) >= 100)
-     001A 2164                      1-  604     	MOVIA	0x64
-     001B 04rr                      1-  605     	SUBAR	r0x1012,W
-     001C 0803                      1-  606     	BTRSS	STATUS,0
-                                    1-  607     	MGOTO	_00190_DS_
+                                    1-  605     ;;unsigned compare: left < lit (0x64=100), size=1
+                                    1-  606     	.line	215, "main.c"; 	if((*keyCount) >= 100)
+     001A 2164                      1-  607     	MOVIA	0x64
+     001B 04rr                      1-  608     	SUBAR	r0x1012,W
+     001C 0803                      1-  609     	BTRSS	STATUS,0
+                                    1-  610     	MGOTO	_00188_DS_
      001D 3rrr                      3-   63 m1      LGOTO rom_address
-                                    1-  608     	.line	200, "main.c"; 	(*keyCount) = 100;
-     001E 2164                      1-  609     	MOVIA	0x64
-     001F 00rr                      1-  610     	MOVAR	STK02
-     0020 01rr                      1-  611     	MOVR	r0x1015,W
-     0021 00rr                      1-  612     	MOVAR	STK01
-     0022 01rr                      1-  613     	MOVR	r0x1014,W
-     0023 00rr                      1-  614     	MOVAR	STK00
-     0024 01rr                      1-  615     	MOVR	r0x1013,W
-                                    1-  616     	MCALL	__gptrput1
+                                    1-  611     	.line	217, "main.c"; 	(*keyCount) = 100;
+     001E 2164                      1-  612     	MOVIA	0x64
+     001F 00rr                      1-  613     	MOVAR	STK02
+     0020 01rr                      1-  614     	MOVR	r0x1015,W
+     0021 00rr                      1-  615     	MOVAR	STK01
+     0022 01rr                      1-  616     	MOVR	r0x1014,W
+     0023 00rr                      1-  617     	MOVAR	STK00
+     0024 01rr                      1-  618     	MOVR	r0x1013,W
+                                    1-  619     	MCALL	__gptrput1
      0025 2rrr                      3-   66 m1      LCALL rom_address
-                                    1-  617     	MGOTO	_00190_DS_
+                                    1-  620     	MGOTO	_00188_DS_
      0026 3rrr                      3-   63 m1      LGOTO rom_address
-     0027                           1-  618     _00189_DS_:
-                                    1-  619     	.line	205, "main.c"; 	if((*keyCount) >= 2)
-     0027 01rr                      1-  620     	MOVR	r0x1015,W
-     0028 00rr                      1-  621     	MOVAR	STK01
-     0029 01rr                      1-  622     	MOVR	r0x1014,W
-     002A 00rr                      1-  623     	MOVAR	STK00
-     002B 01rr                      1-  624     	MOVR	r0x1013,W
-                                    1-  625     	MCALL	__gptrget1
+     0027                           1-  621     _00187_DS_:
+                                    1-  622     	.line	222, "main.c"; 	if((*keyCount) >= 4)
+     0027 01rr                      1-  623     	MOVR	r0x1015,W
+     0028 00rr                      1-  624     	MOVAR	STK01
+     0029 01rr                      1-  625     	MOVR	r0x1014,W
+     002A 00rr                      1-  626     	MOVAR	STK00
+     002B 01rr                      1-  627     	MOVR	r0x1013,W
+                                    1-  628     	MCALL	__gptrget1
      002C 2rrr                      3-   66 m1      LCALL rom_address
-     002D 00rr                      1-  626     	MOVAR	r0x1012
-                                    1-  627     ;;unsigned compare: left < lit (0x2=2), size=1
-     002E 2102                      1-  628     	MOVIA	0x02
-     002F 04rr                      1-  629     	SUBAR	r0x1012,W
-     0030 0803                      1-  630     	BTRSS	STATUS,0
-                                    1-  631     	MGOTO	_00187_DS_
+     002D 00rr                      1-  629     	MOVAR	r0x1012
+                                    1-  630     ;;unsigned compare: left < lit (0x4=4), size=1
+     002E 2104                      1-  631     	MOVIA	0x04
+     002F 04rr                      1-  632     	SUBAR	r0x1012,W
+     0030 0803                      1-  633     	BTRSS	STATUS,0
+                                    1-  634     	MGOTO	_00185_DS_
      0031 3rrr                      3-   63 m1      LGOTO rom_address
-                                    1-  632     	.line	207, "main.c"; 	(*keyCount) = 0;
-     0032 2100                      1-  633     	MOVIA	0x00
-     0033 00rr                      1-  634     	MOVAR	STK02
-     0034 01rr                      1-  635     	MOVR	r0x1015,W
-     0035 00rr                      1-  636     	MOVAR	STK01
-     0036 01rr                      1-  637     	MOVR	r0x1014,W
-     0037 00rr                      1-  638     	MOVAR	STK00
-     0038 01rr                      1-  639     	MOVR	r0x1013,W
-                                    1-  640     	MCALL	__gptrput1
+                                    1-  635     	.line	224, "main.c"; 	(*keyCount) = 0;
+     0032 2100                      1-  636     	MOVIA	0x00
+     0033 00rr                      1-  637     	MOVAR	STK02
+     0034 01rr                      1-  638     	MOVR	r0x1015,W
+     0035 00rr                      1-  639     	MOVAR	STK01
+     0036 01rr                      1-  640     	MOVR	r0x1014,W
+     0037 00rr                      1-  641     	MOVAR	STK00
+     0038 01rr                      1-  642     	MOVR	r0x1013,W
+                                    1-  643     	MCALL	__gptrput1
      0039 2rrr                      3-   66 m1      LCALL rom_address
-                                    1-  641     	.line	208, "main.c"; 	return	1;
-     003A 2101                      1-  642     	MOVIA	0x01
-                                    1-  643     	MGOTO	_00191_DS_
+                                    1-  644     	.line	225, "main.c"; 	return	1;
+     003A 2101                      1-  645     	MOVIA	0x01
+                                    1-  646     	MGOTO	_00189_DS_
      003B 3rrr                      3-   63 m1      LGOTO rom_address
-     003C                           1-  644     _00187_DS_:
-                                    1-  645     	.line	210, "main.c"; 	(*keyCount) = 0;
-     003C 2100                      1-  646     	MOVIA	0x00
-     003D 00rr                      1-  647     	MOVAR	STK02
-     003E 01rr                      1-  648     	MOVR	r0x1015,W
-     003F 00rr                      1-  649     	MOVAR	STK01
-     0040 01rr                      1-  650     	MOVR	r0x1014,W
-     0041 00rr                      1-  651     	MOVAR	STK00
-     0042 01rr                      1-  652     	MOVR	r0x1013,W
-                                    1-  653     	MCALL	__gptrput1
+     003C                           1-  647     _00185_DS_:
+                                    1-  648     	.line	227, "main.c"; 	(*keyCount) = 0;
+     003C 2100                      1-  649     	MOVIA	0x00
+     003D 00rr                      1-  650     	MOVAR	STK02
+     003E 01rr                      1-  651     	MOVR	r0x1015,W
+     003F 00rr                      1-  652     	MOVAR	STK01
+     0040 01rr                      1-  653     	MOVR	r0x1014,W
+     0041 00rr                      1-  654     	MOVAR	STK00
+     0042 01rr                      1-  655     	MOVR	r0x1013,W
+                                    1-  656     	MCALL	__gptrput1
      0043 2rrr                      3-   66 m1      LCALL rom_address
-     0044                           1-  654     _00190_DS_:
-                                    1-  655     	.line	212, "main.c"; 	return 0;
-     0044 2100                      1-  656     	MOVIA	0x00
-     0045                           1-  657     _00191_DS_:
-                                    1-  658     	.line	213, "main.c"; 	}
-                                    1-  659     	RETURN	
+     0044                           1-  657     _00188_DS_:
+                                    1-  658     	.line	229, "main.c"; 	return 0;
+     0044 2100                      1-  659     	MOVIA	0x00
+     0045                           1-  660     _00189_DS_:
+                                    1-  661     	.line	230, "main.c"; 	}
+                                    1-  662     	RETURN	
      0045 0010                      3-   40 m1      ret
-                                    1-  660     ; exit point of _keyRead
-                                    1-  662     ;***
-                                    1-  663     ;  pBlock Stats: dbName = C
-                                    1-  664     ;***
-                                    1-  665     ;functions called:
-                                    1-  666     ;   _keyRead
-                                    1-  667     ;   _keyRead
-                                    1-  668     ;   _keyRead
-                                    1-  669     ;   _keyRead
+                                    1-  663     ; exit point of _keyRead
+                                    1-  665     ;***
+                                    1-  666     ;  pBlock Stats: dbName = C
+                                    1-  667     ;***
+                                    1-  668     ;has an exit
+                                    1-  669     ;functions called:
                                     1-  670     ;   _keyRead
                                     1-  671     ;   _keyRead
                                     1-  672     ;   _keyRead
                                     1-  673     ;   _keyRead
-                                    1-  674     ;7 compiler assigned registers:
-                                    1-  675     ;   r0x1016
-                                    1-  676     ;   r0x1017
-                                    1-  677     ;   r0x1018
-                                    1-  678     ;   r0x1019
-                                    1-  679     ;   STK02
-                                    1-  680     ;   STK01
-                                    1-  681     ;   STK00
-                                    1-  682     ;; Starting pCode block
-                                    1-  683     .segment "code"; module=main, function=_keyCon
-     0000                           1-  685     _keyCon:
-                                    1-  686     ; 0 exit points
-                                    1-  687     ;;unsigned compare: left < lit (0x5=5), size=1
-                                    1-  688     	.line	93, "main.c"; 	if(keyTime < 5)
-     0000 2105                      1-  689     	MOVIA	0x05
-     0001 04rr                      1-  690     	SUBAR	_keyTime,W
-     0002 0C03                      1-  691     	BTRSC	STATUS,0
-                                    1-  692     	MGOTO	_00177_DS_
+                                    1-  674     ;   _keyRead
+                                    1-  675     ;   _keyRead
+                                    1-  676     ;   _keyRead
+                                    1-  677     ;   _keyRead
+                                    1-  678     ;7 compiler assigned registers:
+                                    1-  679     ;   r0x1016
+                                    1-  680     ;   r0x1017
+                                    1-  681     ;   r0x1018
+                                    1-  682     ;   r0x1019
+                                    1-  683     ;   STK02
+                                    1-  684     ;   STK01
+                                    1-  685     ;   STK00
+                                    1-  686     ;; Starting pCode block
+                                    1-  687     .segment "code"; module=main, function=_keyCon
+     0000                           1-  689     _keyCon:
+                                    1-  690     ; 2 exit points
+                                    1-  691     ;;unsigned compare: left < lit (0xA=10), size=1
+                                    1-  692     	.line	98, "main.c"; 	if(keyTime < 10)
+     0000 210A                      1-  693     	MOVIA	0x0a
+     0001 04rr                      1-  694     	SUBAR	_keyTime,W
+     0002 0C03                      1-  695     	BTRSC	STATUS,0
+                                    1-  696     	MGOTO	_00175_DS_
      0003 3rrr                      3-   63 m1      LGOTO rom_address
-                                    1-  693     	.line	96, "main.c"; 	BPHCON &= 0xDF;	//PB5拉高 
-     0004 1Err                      1-  694     	BCR	_BPHCON,5
-                                    1-  695     	.line	97, "main.c"; 	IOSTB |= 0x20;
-     0005 001r                      1-  696     	IOSTR	_IOSTB
-     0006 00rr                      1-  697     	MOVAR	r0x1016
-     0007 1Arr                      1-  698     	BSR	r0x1016,5
-     0008 01rr                      1-  699     	MOVR	r0x1016,W
-     0009 000r                      1-  700     	IOST	_IOSTB
-                                    1-  701     	.line	98, "main.c"; 	if(keyRead((0x20 & ~PORTB),&pwKeyCount))
-     000A 07rr                      1-  702     	COMR	_PORTB,W
-     000B 00rr                      1-  703     	MOVAR	r0x1016
-     000C 2120                      1-  704     	MOVIA	0x20
-     000D 10rr                      1-  705     	ANDAR	r0x1016,F
-     000E 21rr                      1-  706     	MOVIA	((_pwKeyCount + 0) >> 8) & 0xff
-     000F 00rr                      1-  707     	MOVAR	r0x1017
-     0010 21rr                      1-  708     	MOVIA	(_pwKeyCount + 0)
-                                    1-  709     ;;102	MOVAR	r0x1018
-     0011 00rr                      1-  710     	MOVAR	STK02
-     0012 01rr                      1-  711     	MOVR	r0x1017,W
-     0013 00rr                      1-  712     	MOVAR	STK01
-     0014 2100                      1-  713     	MOVIA	0x00
-     0015 00rr                      1-  714     	MOVAR	STK00
-     0016 01rr                      1-  715     	MOVR	r0x1016,W
-                                    1-  716     	MCALL	_keyRead
-     0017 2rrr                      3-   66 m1      LCALL rom_address
-     0018 00rr                      1-  717     	MOVAR	r0x1016
-     0019 01rr                      1-  718     	MOVR	r0x1016,W
-     001A 0D03                      1-  719     	BTRSC	STATUS,2
-                                    1-  720     	MGOTO	_00140_DS_
-     001B 3rrr                      3-   63 m1      LGOTO rom_address
-                                    1-  721     	.line	101, "main.c"; 	if(workFlag)
-     001C 01rr                      1-  722     	MOVR	_workFlag,W
-     001D 0D03                      1-  723     	BTRSC	STATUS,2
-                                    1-  724     	MGOTO	_00137_DS_
-     001E 3rrr                      3-   63 m1      LGOTO rom_address
-                                    1-  725     	.line	103, "main.c"; 	workFlag = 0;
-     001F 02rr                      1-  726     	CLRR	_workFlag
-                                    1-  727     	.line	104, "main.c"; 	workStep = 0;
-     0020 02rr                      1-  728     	CLRR	_workStep
-                                    1-  729     	.line	105, "main.c"; 	pwmDuty = 0;
-     0021 02rr                      1-  730     	CLRR	_pwmDuty
-                                    1-  731     	MGOTO	_00140_DS_
+                                    1-  697     	.line	101, "main.c"; 	BPHCON &= 0xDF;	//PB5拉高 
+     0004 1Err                      1-  698     	BCR	_BPHCON,5
+                                    1-  699     	.line	102, "main.c"; 	IOSTB |= 0x20;
+     0005 001r                      1-  700     	IOSTR	_IOSTB
+     0006 00rr                      1-  701     	MOVAR	r0x1016
+     0007 1Arr                      1-  702     	BSR	r0x1016,5
+     0008 01rr                      1-  703     	MOVR	r0x1016,W
+     0009 000r                      1-  704     	IOST	_IOSTB
+                                    1-  705     ;;swapping arguments (AOP_TYPEs 1/3)
+                                    1-  706     ;;unsigned compare: left >= lit (0x3=3), size=1
+                                    1-  707     	.line	103, "main.c"; 	if(keyTime > 2)
+     000A 2103                      1-  708     	MOVIA	0x03
+     000B 04rr                      1-  709     	SUBAR	_keyTime,W
+     000C 0803                      1-  710     	BTRSS	STATUS,0
+                                    1-  711     	MGOTO	_00177_DS_
+     000D 3rrr                      3-   63 m1      LGOTO rom_address
+                                    1-  712     	.line	105, "main.c"; 	if(keyRead((0x20 & ~PORTB),&pwKeyCount))
+     000E 07rr                      1-  713     	COMR	_PORTB,W
+     000F 00rr                      1-  714     	MOVAR	r0x1016
+     0010 2120                      1-  715     	MOVIA	0x20
+     0011 10rr                      1-  716     	ANDAR	r0x1016,F
+     0012 21rr                      1-  717     	MOVIA	((_pwKeyCount + 0) >> 8) & 0xff
+     0013 00rr                      1-  718     	MOVAR	r0x1017
+     0014 21rr                      1-  719     	MOVIA	(_pwKeyCount + 0)
+                                    1-  720     ;;102	MOVAR	r0x1018
+     0015 00rr                      1-  721     	MOVAR	STK02
+     0016 01rr                      1-  722     	MOVR	r0x1017,W
+     0017 00rr                      1-  723     	MOVAR	STK01
+     0018 2100                      1-  724     	MOVIA	0x00
+     0019 00rr                      1-  725     	MOVAR	STK00
+     001A 01rr                      1-  726     	MOVR	r0x1016,W
+                                    1-  727     	MCALL	_keyRead
+     001B 2rrr                      3-   66 m1      LCALL rom_address
+     001C 00rr                      1-  728     	MOVAR	r0x1016
+     001D 01rr                      1-  729     	MOVR	r0x1016,W
+     001E 0D03                      1-  730     	BTRSC	STATUS,2
+                                    1-  731     	MGOTO	_00136_DS_
+     001F 3rrr                      3-   63 m1      LGOTO rom_address
+                                    1-  732     	.line	108, "main.c"; 	if(workFlag)
+     0020 01rr                      1-  733     	MOVR	_workFlag,W
+     0021 0D03                      1-  734     	BTRSC	STATUS,2
+                                    1-  735     	MGOTO	_00133_DS_
      0022 3rrr                      3-   63 m1      LGOTO rom_address
-     0023                           1-  732     _00137_DS_:
-                                    1-  733     	.line	109, "main.c"; 	gnStep = 0;
-     0023 02rr                      1-  734     	CLRR	_gnStep
-                                    1-  735     	.line	110, "main.c"; 	workFlag = 1;
-     0024 2101                      1-  736     	MOVIA	0x01
-     0025 00rr                      1-  737     	MOVAR	_workFlag
-                                    1-  738     	.line	111, "main.c"; 	workStep = 3;
-     0026 2103                      1-  739     	MOVIA	0x03
-     0027 00rr                      1-  740     	MOVAR	_workStep
-                                    1-  741     	.line	112, "main.c"; 	pwmDuty = 99;
-     0028 2163                      1-  742     	MOVIA	0x63
-     0029 00rr                      1-  743     	MOVAR	_pwmDuty
-     002A                           1-  744     _00140_DS_:
-                                    1-  745     	.line	115, "main.c"; 	if(workFlag)
-     002A 01rr                      1-  746     	MOVR	_workFlag,W
-     002B 0D03                      1-  747     	BTRSC	STATUS,2
-                                    1-  748     	MGOTO	_00179_DS_
-     002C 3rrr                      3-   63 m1      LGOTO rom_address
-                                    1-  749     	.line	117, "main.c"; 	if(keyRead((0x10 & ~PORTB),&zfKeyCount))
-     002D 07rr                      1-  750     	COMR	_PORTB,W
-     002E 00rr                      1-  751     	MOVAR	r0x1016
-     002F 2110                      1-  752     	MOVIA	0x10
-     0030 10rr                      1-  753     	ANDAR	r0x1016,F
-     0031 21rr                      1-  754     	MOVIA	((_zfKeyCount + 0) >> 8) & 0xff
-     0032 00rr                      1-  755     	MOVAR	r0x1017
-     0033 21rr                      1-  756     	MOVIA	(_zfKeyCount + 0)
-                                    1-  757     ;;101	MOVAR	r0x1018
-     0034 00rr                      1-  758     	MOVAR	STK02
-     0035 01rr                      1-  759     	MOVR	r0x1017,W
-     0036 00rr                      1-  760     	MOVAR	STK01
-     0037 2100                      1-  761     	MOVIA	0x00
-     0038 00rr                      1-  762     	MOVAR	STK00
-     0039 01rr                      1-  763     	MOVR	r0x1016,W
-                                    1-  764     	MCALL	_keyRead
-     003A 2rrr                      3-   66 m1      LCALL rom_address
-     003B 00rr                      1-  765     	MOVAR	r0x1016
-     003C 01rr                      1-  766     	MOVR	r0x1016,W
-     003D 0D03                      1-  767     	BTRSC	STATUS,2
-                                    1-  768     	MGOTO	_00145_DS_
-     003E 3rrr                      3-   63 m1      LGOTO rom_address
-                                    1-  769     	.line	120, "main.c"; 	zfWaitTime = 20;
-     003F 2114                      1-  770     	MOVIA	0x14
-     0040 00rr                      1-  771     	MOVAR	_zfWaitTime
-                                    1-  772     	.line	121, "main.c"; 	if(zfFlag)
-     0041 01rr                      1-  773     	MOVR	_zfFlag,W
-     0042 0D03                      1-  774     	BTRSC	STATUS,2
-                                    1-  775     	MGOTO	_00142_DS_
-     0043 3rrr                      3-   63 m1      LGOTO rom_address
-                                    1-  776     	.line	122, "main.c"; 	zfFlag = 0;
-     0044 02rr                      1-  777     	CLRR	_zfFlag
-                                    1-  778     	MGOTO	_00145_DS_
-     0045 3rrr                      3-   63 m1      LGOTO rom_address
-     0046                           1-  779     _00142_DS_:
-                                    1-  780     	.line	124, "main.c"; 	zfFlag = 1;
-     0046 2101                      1-  781     	MOVIA	0x01
-     0047 00rr                      1-  782     	MOVAR	_zfFlag
-     0048                           1-  783     _00145_DS_:
-                                    1-  784     	.line	128, "main.c"; 	if(keyRead((0x08 & ~PORTB),&speedKeyCount))
-     0048 07rr                      1-  785     	COMR	_PORTB,W
-     0049 00rr                      1-  786     	MOVAR	r0x1016
-     004A 2108                      1-  787     	MOVIA	0x08
-     004B 10rr                      1-  788     	ANDAR	r0x1016,F
-     004C 21rr                      1-  789     	MOVIA	((_speedKeyCount + 0) >> 8) & 0xff
-     004D 00rr                      1-  790     	MOVAR	r0x1017
-     004E 21rr                      1-  791     	MOVIA	(_speedKeyCount + 0)
-                                    1-  792     ;;2	MOVAR	r0x1018
-     004F 00rr                      1-  793     	MOVAR	STK02
-     0050 01rr                      1-  794     	MOVR	r0x1017,W
-     0051 00rr                      1-  795     	MOVAR	STK01
-     0052 2100                      1-  796     	MOVIA	0x00
-     0053 00rr                      1-  797     	MOVAR	STK00
-     0054 01rr                      1-  798     	MOVR	r0x1016,W
-                                    1-  799     	MCALL	_keyRead
-     0055 2rrr                      3-   66 m1      LCALL rom_address
-     0056 00rr                      1-  800     	MOVAR	r0x1016
-     0057 01rr                      1-  801     	MOVR	r0x1016,W
-     0058 0D03                      1-  802     	BTRSC	STATUS,2
-                                    1-  803     	MGOTO	_00179_DS_
-     0059 3rrr                      3-   63 m1      LGOTO rom_address
-                                    1-  804     	.line	131, "main.c"; 	if(++workStep > 3)
-     005A 05rr                      1-  805     	INCR	_workStep,F
-                                    1-  806     ;;swapping arguments (AOP_TYPEs 1/3)
-                                    1-  807     ;;unsigned compare: left >= lit (0x4=4), size=1
-     005B 2104                      1-  808     	MOVIA	0x04
-     005C 04rr                      1-  809     	SUBAR	_workStep,W
-     005D 0803                      1-  810     	BTRSS	STATUS,0
-                                    1-  811     	MGOTO	_00147_DS_
-     005E 3rrr                      3-   63 m1      LGOTO rom_address
-                                    1-  812     	.line	132, "main.c"; 	workStep = 1;
-     005F 2101                      1-  813     	MOVIA	0x01
-     0060 00rr                      1-  814     	MOVAR	_workStep
-     0061                           1-  815     _00147_DS_:
-                                    1-  816     	.line	133, "main.c"; 	if(workStep == 1)
-     0061 01rr                      1-  817     	MOVR	_workStep,W
-     0062 2401                      1-  818     	XORIA	0x01
-     0063 0903                      1-  819     	BTRSS	STATUS,2
-                                    1-  820     	MGOTO	_00154_DS_
+                                    1-  736     	.line	110, "main.c"; 	workFlag = 0;
+     0023 02rr                      1-  737     	CLRR	_workFlag
+                                    1-  738     	.line	111, "main.c"; 	workStep = 0;
+     0024 02rr                      1-  739     	CLRR	_workStep
+                                    1-  740     	.line	112, "main.c"; 	pwmDuty = 0;
+     0025 02rr                      1-  741     	CLRR	_pwmDuty
+                                    1-  742     	MGOTO	_00136_DS_
+     0026 3rrr                      3-   63 m1      LGOTO rom_address
+     0027                           1-  743     _00133_DS_:
+                                    1-  744     	.line	116, "main.c"; 	gnStep = 0;
+     0027 02rr                      1-  745     	CLRR	_gnStep
+                                    1-  746     	.line	117, "main.c"; 	workFlag = 1;
+     0028 2101                      1-  747     	MOVIA	0x01
+     0029 00rr                      1-  748     	MOVAR	_workFlag
+                                    1-  749     	.line	118, "main.c"; 	workStep = 3;
+     002A 2103                      1-  750     	MOVIA	0x03
+     002B 00rr                      1-  751     	MOVAR	_workStep
+                                    1-  752     	.line	119, "main.c"; 	pwmDuty = 99;
+     002C 2163                      1-  753     	MOVIA	0x63
+     002D 00rr                      1-  754     	MOVAR	_pwmDuty
+     002E                           1-  755     _00136_DS_:
+                                    1-  756     	.line	122, "main.c"; 	if(workFlag)
+     002E 01rr                      1-  757     	MOVR	_workFlag,W
+     002F 0D03                      1-  758     	BTRSC	STATUS,2
+                                    1-  759     	MGOTO	_00177_DS_
+     0030 3rrr                      3-   63 m1      LGOTO rom_address
+                                    1-  760     	.line	124, "main.c"; 	if(keyRead((0x10 & ~PORTB),&zfKeyCount))
+     0031 07rr                      1-  761     	COMR	_PORTB,W
+     0032 00rr                      1-  762     	MOVAR	r0x1016
+     0033 2110                      1-  763     	MOVIA	0x10
+     0034 10rr                      1-  764     	ANDAR	r0x1016,F
+     0035 21rr                      1-  765     	MOVIA	((_zfKeyCount + 0) >> 8) & 0xff
+     0036 00rr                      1-  766     	MOVAR	r0x1017
+     0037 21rr                      1-  767     	MOVIA	(_zfKeyCount + 0)
+                                    1-  768     ;;101	MOVAR	r0x1018
+     0038 00rr                      1-  769     	MOVAR	STK02
+     0039 01rr                      1-  770     	MOVR	r0x1017,W
+     003A 00rr                      1-  771     	MOVAR	STK01
+     003B 2100                      1-  772     	MOVIA	0x00
+     003C 00rr                      1-  773     	MOVAR	STK00
+     003D 01rr                      1-  774     	MOVR	r0x1016,W
+                                    1-  775     	MCALL	_keyRead
+     003E 2rrr                      3-   66 m1      LCALL rom_address
+     003F 00rr                      1-  776     	MOVAR	r0x1016
+     0040 01rr                      1-  777     	MOVR	r0x1016,W
+     0041 0D03                      1-  778     	BTRSC	STATUS,2
+                                    1-  779     	MGOTO	_00141_DS_
+     0042 3rrr                      3-   63 m1      LGOTO rom_address
+                                    1-  780     	.line	127, "main.c"; 	PORTB &= 0xF9;
+     0043 21F9                      1-  781     	MOVIA	0xf9
+     0044 10rr                      1-  782     	ANDAR	_PORTB,F
+                                    1-  783     	.line	128, "main.c"; 	zfWaitTime = 40;
+     0045 2128                      1-  784     	MOVIA	0x28
+     0046 00rr                      1-  785     	MOVAR	_zfWaitTime
+                                    1-  786     	.line	129, "main.c"; 	if(zfFlag)
+     0047 01rr                      1-  787     	MOVR	_zfFlag,W
+     0048 0D03                      1-  788     	BTRSC	STATUS,2
+                                    1-  789     	MGOTO	_00138_DS_
+     0049 3rrr                      3-   63 m1      LGOTO rom_address
+                                    1-  790     	.line	130, "main.c"; 	zfFlag = 0;
+     004A 02rr                      1-  791     	CLRR	_zfFlag
+                                    1-  792     	MGOTO	_00141_DS_
+     004B 3rrr                      3-   63 m1      LGOTO rom_address
+     004C                           1-  793     _00138_DS_:
+                                    1-  794     	.line	132, "main.c"; 	zfFlag = 1;
+     004C 2101                      1-  795     	MOVIA	0x01
+     004D 00rr                      1-  796     	MOVAR	_zfFlag
+     004E                           1-  797     _00141_DS_:
+                                    1-  798     	.line	136, "main.c"; 	if(keyRead((0x08 & ~PORTB),&speedKeyCount))
+     004E 07rr                      1-  799     	COMR	_PORTB,W
+     004F 00rr                      1-  800     	MOVAR	r0x1016
+     0050 2108                      1-  801     	MOVIA	0x08
+     0051 10rr                      1-  802     	ANDAR	r0x1016,F
+     0052 21rr                      1-  803     	MOVIA	((_speedKeyCount + 0) >> 8) & 0xff
+     0053 00rr                      1-  804     	MOVAR	r0x1017
+     0054 21rr                      1-  805     	MOVIA	(_speedKeyCount + 0)
+                                    1-  806     ;;2	MOVAR	r0x1018
+     0055 00rr                      1-  807     	MOVAR	STK02
+     0056 01rr                      1-  808     	MOVR	r0x1017,W
+     0057 00rr                      1-  809     	MOVAR	STK01
+     0058 2100                      1-  810     	MOVIA	0x00
+     0059 00rr                      1-  811     	MOVAR	STK00
+     005A 01rr                      1-  812     	MOVR	r0x1016,W
+                                    1-  813     	MCALL	_keyRead
+     005B 2rrr                      3-   66 m1      LCALL rom_address
+     005C 00rr                      1-  814     	MOVAR	r0x1016
+     005D 01rr                      1-  815     	MOVR	r0x1016,W
+     005E 0D03                      1-  816     	BTRSC	STATUS,2
+                                    1-  817     	MGOTO	_00177_DS_
+     005F 3rrr                      3-   63 m1      LGOTO rom_address
+                                    1-  818     	.line	139, "main.c"; 	if(++workStep > 3)
+     0060 05rr                      1-  819     	INCR	_workStep,F
+                                    1-  820     ;;swapping arguments (AOP_TYPEs 1/3)
+                                    1-  821     ;;unsigned compare: left >= lit (0x4=4), size=1
+     0061 2104                      1-  822     	MOVIA	0x04
+     0062 04rr                      1-  823     	SUBAR	_workStep,W
+     0063 0803                      1-  824     	BTRSS	STATUS,0
+                                    1-  825     	MGOTO	_00143_DS_
      0064 3rrr                      3-   63 m1      LGOTO rom_address
-                                    1-  821     	.line	135, "main.c"; 	pwmDuty = 60;
-     0065 213C                      1-  822     	MOVIA	0x3c
-     0066 00rr                      1-  823     	MOVAR	_pwmDuty
-                                    1-  824     	MGOTO	_00179_DS_
-     0067 3rrr                      3-   63 m1      LGOTO rom_address
-     0068                           1-  825     _00154_DS_:
-                                    1-  826     	.line	137, "main.c"; 	else if(workStep == 2)
-     0068 01rr                      1-  827     	MOVR	_workStep,W
-     0069 2402                      1-  828     	XORIA	0x02
-     006A 0903                      1-  829     	BTRSS	STATUS,2
-                                    1-  830     	MGOTO	_00151_DS_
-     006B 3rrr                      3-   63 m1      LGOTO rom_address
-                                    1-  831     	.line	139, "main.c"; 	pwmDuty = 80;
-     006C 2150                      1-  832     	MOVIA	0x50
-     006D 00rr                      1-  833     	MOVAR	_pwmDuty
-                                    1-  834     	MGOTO	_00179_DS_
-     006E 3rrr                      3-   63 m1      LGOTO rom_address
-     006F                           1-  835     _00151_DS_:
-                                    1-  836     	.line	141, "main.c"; 	else if(workStep == 3)
-     006F 01rr                      1-  837     	MOVR	_workStep,W
-     0070 2403                      1-  838     	XORIA	0x03
-     0071 0903                      1-  839     	BTRSS	STATUS,2
-                                    1-  840     	MGOTO	_00179_DS_
-     0072 3rrr                      3-   63 m1      LGOTO rom_address
-                                    1-  841     	.line	143, "main.c"; 	pwmDuty = 99;
-     0073 2163                      1-  842     	MOVIA	0x63
-     0074 00rr                      1-  843     	MOVAR	_pwmDuty
-                                    1-  844     	MGOTO	_00179_DS_
-     0075 3rrr                      3-   63 m1      LGOTO rom_address
-                                    1-  845     ;;swapping arguments (AOP_TYPEs 1/3)
-                                    1-  846     ;;unsigned compare: left >= lit (0x6=6), size=1
-     0076                           1-  847     _00177_DS_:
-                                    1-  848     	.line	148, "main.c"; 	else if(keyTime > 5)
-     0076 2106                      1-  849     	MOVIA	0x06
-     0077 04rr                      1-  850     	SUBAR	_keyTime,W
-     0078 0803                      1-  851     	BTRSS	STATUS,0
-                                    1-  852     	MGOTO	_00179_DS_
-     0079 3rrr                      3-   63 m1      LGOTO rom_address
-                                    1-  853     	.line	151, "main.c"; 	IOSTB &= 0xDF;
-     007A 001r                      1-  854     	IOSTR	_IOSTB
-     007B 00rr                      1-  855     	MOVAR	r0x1016
-     007C 1Err                      1-  856     	BCR	r0x1016,5
-     007D 01rr                      1-  857     	MOVR	r0x1016,W
-     007E 000r                      1-  858     	IOST	_IOSTB
-                                    1-  859     	.line	152, "main.c"; 	PORTB &= 0xDF;
-     007F 1Err                      1-  860     	BCR	_PORTB,5
-                                    1-  861     	.line	153, "main.c"; 	if(keyRead((0x10 & ~PORTB),&muchKeyCount))
-     0080 07rr                      1-  862     	COMR	_PORTB,W
-     0081 00rr                      1-  863     	MOVAR	r0x1016
-     0082 2110                      1-  864     	MOVIA	0x10
-     0083 10rr                      1-  865     	ANDAR	r0x1016,F
-     0084 21rr                      1-  866     	MOVIA	((_muchKeyCount + 0) >> 8) & 0xff
-     0085 00rr                      1-  867     	MOVAR	r0x1017
-     0086 21rr                      1-  868     	MOVIA	(_muchKeyCount + 0)
-                                    1-  869     ;;2	MOVAR	r0x1018
-     0087 00rr                      1-  870     	MOVAR	STK02
-     0088 01rr                      1-  871     	MOVR	r0x1017,W
-     0089 00rr                      1-  872     	MOVAR	STK01
-     008A 2100                      1-  873     	MOVIA	0x00
-     008B 00rr                      1-  874     	MOVAR	STK00
-     008C 01rr                      1-  875     	MOVR	r0x1016,W
-                                    1-  876     	MCALL	_keyRead
-     008D 2rrr                      3-   66 m1      LCALL rom_address
-     008E 00rr                      1-  877     	MOVAR	r0x1016
-     008F 01rr                      1-  878     	MOVR	r0x1016,W
-     0090 0D03                      1-  879     	BTRSC	STATUS,2
-                                    1-  880     	MGOTO	_00179_DS_
-     0091 3rrr                      3-   63 m1      LGOTO rom_address
-                                    1-  881     	.line	156, "main.c"; 	if(++gnStep > 3)
-     0092 05rr                      1-  882     	INCR	_gnStep,F
-                                    1-  883     ;;swapping arguments (AOP_TYPEs 1/3)
-                                    1-  884     ;;unsigned compare: left >= lit (0x4=4), size=1
-     0093 2104                      1-  885     	MOVIA	0x04
-     0094 04rr                      1-  886     	SUBAR	_gnStep,W
-     0095 0803                      1-  887     	BTRSS	STATUS,0
-                                    1-  888     	MGOTO	_00161_DS_
-     0096 3rrr                      3-   63 m1      LGOTO rom_address
-                                    1-  889     	.line	158, "main.c"; 	gnStep = 0;
-     0097 02rr                      1-  890     	CLRR	_gnStep
-                                    1-  891     	.line	159, "main.c"; 	LEDOFF();
-     0098 1Crr                      1-  892     	BCR	_PORTB,0
-                                    1-  893     	.line	160, "main.c"; 	workFlag = 0;
-     0099 02rr                      1-  894     	CLRR	_workFlag
-                                    1-  895     	.line	161, "main.c"; 	workStep = 0;
-     009A 02rr                      1-  896     	CLRR	_workStep
-                                    1-  897     	.line	162, "main.c"; 	pwmDuty = 0;
-     009B 02rr                      1-  898     	CLRR	_pwmDuty
-     009C                           1-  899     _00161_DS_:
-                                    1-  900     	.line	164, "main.c"; 	if(gnStep > 0)
-     009C 01rr                      1-  901     	MOVR	_gnStep,W
-     009D 0D03                      1-  902     	BTRSC	STATUS,2
-                                    1-  903     	MGOTO	_00179_DS_
+                                    1-  826     	.line	140, "main.c"; 	workStep = 1;
+     0065 2101                      1-  827     	MOVIA	0x01
+     0066 00rr                      1-  828     	MOVAR	_workStep
+     0067                           1-  829     _00143_DS_:
+                                    1-  830     	.line	141, "main.c"; 	if(workStep == 1)
+     0067 01rr                      1-  831     	MOVR	_workStep,W
+     0068 2401                      1-  832     	XORIA	0x01
+     0069 0903                      1-  833     	BTRSS	STATUS,2
+                                    1-  834     	MGOTO	_00150_DS_
+     006A 3rrr                      3-   63 m1      LGOTO rom_address
+                                    1-  835     	.line	143, "main.c"; 	pwmDuty = 8;
+     006B 2108                      1-  836     	MOVIA	0x08
+     006C 00rr                      1-  837     	MOVAR	_pwmDuty
+                                    1-  838     	MGOTO	_00177_DS_
+     006D 3rrr                      3-   63 m1      LGOTO rom_address
+     006E                           1-  839     _00150_DS_:
+                                    1-  840     	.line	145, "main.c"; 	else if(workStep == 2)
+     006E 01rr                      1-  841     	MOVR	_workStep,W
+     006F 2402                      1-  842     	XORIA	0x02
+     0070 0903                      1-  843     	BTRSS	STATUS,2
+                                    1-  844     	MGOTO	_00147_DS_
+     0071 3rrr                      3-   63 m1      LGOTO rom_address
+                                    1-  845     	.line	147, "main.c"; 	pwmDuty = 9;
+     0072 2109                      1-  846     	MOVIA	0x09
+     0073 00rr                      1-  847     	MOVAR	_pwmDuty
+                                    1-  848     	MGOTO	_00177_DS_
+     0074 3rrr                      3-   63 m1      LGOTO rom_address
+     0075                           1-  849     _00147_DS_:
+                                    1-  850     	.line	149, "main.c"; 	else if(workStep == 3)
+     0075 01rr                      1-  851     	MOVR	_workStep,W
+     0076 2403                      1-  852     	XORIA	0x03
+     0077 0903                      1-  853     	BTRSS	STATUS,2
+                                    1-  854     	MGOTO	_00177_DS_
+     0078 3rrr                      3-   63 m1      LGOTO rom_address
+                                    1-  855     	.line	151, "main.c"; 	pwmDuty = 10;
+     0079 210A                      1-  856     	MOVIA	0x0a
+     007A 00rr                      1-  857     	MOVAR	_pwmDuty
+                                    1-  858     	MGOTO	_00177_DS_
+     007B 3rrr                      3-   63 m1      LGOTO rom_address
+     007C                           1-  859     _00175_DS_:
+                                    1-  860     	.line	160, "main.c"; 	BPHCON |= 0x20;
+     007C 1Arr                      1-  861     	BSR	_BPHCON,5
+                                    1-  862     	.line	161, "main.c"; 	IOSTB &= 0xDF;
+     007D 001r                      1-  863     	IOSTR	_IOSTB
+     007E 00rr                      1-  864     	MOVAR	r0x1016
+     007F 1Err                      1-  865     	BCR	r0x1016,5
+     0080 01rr                      1-  866     	MOVR	r0x1016,W
+     0081 000r                      1-  867     	IOST	_IOSTB
+                                    1-  868     	.line	162, "main.c"; 	PORTB &= 0xDF;
+     0082 1Err                      1-  869     	BCR	_PORTB,5
+                                    1-  870     	.line	163, "main.c"; 	zfKeyCount = 0;
+     0083 02rr                      1-  871     	CLRR	_zfKeyCount
+                                    1-  872     ;;swapping arguments (AOP_TYPEs 1/3)
+                                    1-  873     ;;unsigned compare: left >= lit (0xD=13), size=1
+                                    1-  874     	.line	164, "main.c"; 	if(keyTime > 12)
+     0084 210D                      1-  875     	MOVIA	0x0d
+     0085 04rr                      1-  876     	SUBAR	_keyTime,W
+     0086 0803                      1-  877     	BTRSS	STATUS,0
+                                    1-  878     	MGOTO	_00177_DS_
+     0087 3rrr                      3-   63 m1      LGOTO rom_address
+                                    1-  879     	.line	166, "main.c"; 	if(keyRead((0x10 & ~PORTB),&muchKeyCount))
+     0088 07rr                      1-  880     	COMR	_PORTB,W
+     0089 00rr                      1-  881     	MOVAR	r0x1016
+     008A 2110                      1-  882     	MOVIA	0x10
+     008B 10rr                      1-  883     	ANDAR	r0x1016,F
+     008C 21rr                      1-  884     	MOVIA	((_muchKeyCount + 0) >> 8) & 0xff
+     008D 00rr                      1-  885     	MOVAR	r0x1017
+     008E 21rr                      1-  886     	MOVIA	(_muchKeyCount + 0)
+                                    1-  887     ;;2	MOVAR	r0x1018
+     008F 00rr                      1-  888     	MOVAR	STK02
+     0090 01rr                      1-  889     	MOVR	r0x1017,W
+     0091 00rr                      1-  890     	MOVAR	STK01
+     0092 2100                      1-  891     	MOVIA	0x00
+     0093 00rr                      1-  892     	MOVAR	STK00
+     0094 01rr                      1-  893     	MOVR	r0x1016,W
+                                    1-  894     	MCALL	_keyRead
+     0095 2rrr                      3-   66 m1      LCALL rom_address
+     0096 00rr                      1-  895     	MOVAR	r0x1016
+     0097 01rr                      1-  896     	MOVR	r0x1016,W
+     0098 0D03                      1-  897     	BTRSC	STATUS,2
+                                    1-  898     	MGOTO	_00177_DS_
+     0099 3rrr                      3-   63 m1      LGOTO rom_address
+                                    1-  899     	.line	169, "main.c"; 	if(++gnStep > 3)
+     009A 05rr                      1-  900     	INCR	_gnStep,F
+                                    1-  901     ;;swapping arguments (AOP_TYPEs 1/3)
+                                    1-  902     ;;unsigned compare: left >= lit (0x4=4), size=1
+     009B 2104                      1-  903     	MOVIA	0x04
+     009C 04rr                      1-  904     	SUBAR	_gnStep,W
+     009D 0803                      1-  905     	BTRSS	STATUS,0
+                                    1-  906     	MGOTO	_00159_DS_
      009E 3rrr                      3-   63 m1      LGOTO rom_address
-                                    1-  904     	.line	166, "main.c"; 	workFlag = 1;
-     009F 2101                      1-  905     	MOVIA	0x01
-     00A0 00rr                      1-  906     	MOVAR	_workFlag
-                                    1-  907     	.line	167, "main.c"; 	if(gnStep == 1)
-     00A1 01rr                      1-  908     	MOVR	_gnStep,W
-     00A2 2401                      1-  909     	XORIA	0x01
-     00A3 0903                      1-  910     	BTRSS	STATUS,2
-                                    1-  911     	MGOTO	_00168_DS_
-     00A4 3rrr                      3-   63 m1      LGOTO rom_address
-                                    1-  912     	.line	169, "main.c"; 	zfWaitTime = 20;
-     00A5 2114                      1-  913     	MOVIA	0x14
-     00A6 00rr                      1-  914     	MOVAR	_zfWaitTime
-                                    1-  915     	.line	170, "main.c"; 	zfFlag = 0;
-     00A7 02rr                      1-  916     	CLRR	_zfFlag
-                                    1-  917     	.line	171, "main.c"; 	workStep = 3;
-     00A8 2103                      1-  918     	MOVIA	0x03
-     00A9 00rr                      1-  919     	MOVAR	_workStep
-                                    1-  920     	.line	172, "main.c"; 	pwmDuty = 99;
-     00AA 2163                      1-  921     	MOVIA	0x63
-     00AB 00rr                      1-  922     	MOVAR	_pwmDuty
-                                    1-  923     	.line	173, "main.c"; 	LEDON();
-     00AC 18rr                      1-  924     	BSR	_PORTB,0
-                                    1-  925     	MGOTO	_00179_DS_
-     00AD 3rrr                      3-   63 m1      LGOTO rom_address
-     00AE                           1-  926     _00168_DS_:
-                                    1-  927     	.line	175, "main.c"; 	else if(gnStep == 2)
-     00AE 01rr                      1-  928     	MOVR	_gnStep,W
-     00AF 2402                      1-  929     	XORIA	0x02
-     00B0 0903                      1-  930     	BTRSS	STATUS,2
-                                    1-  931     	MGOTO	_00165_DS_
-     00B1 3rrr                      3-   63 m1      LGOTO rom_address
-                                    1-  932     	.line	177, "main.c"; 	zfWaitTime = 20;
-     00B2 2114                      1-  933     	MOVIA	0x14
-     00B3 00rr                      1-  934     	MOVAR	_zfWaitTime
-                                    1-  935     	.line	178, "main.c"; 	zfFlag = 1;
-     00B4 2101                      1-  936     	MOVIA	0x01
-     00B5 00rr                      1-  937     	MOVAR	_zfFlag
-                                    1-  938     	.line	179, "main.c"; 	LEDON();
-     00B6 18rr                      1-  939     	BSR	_PORTB,0
-                                    1-  940     	MGOTO	_00179_DS_
+                                    1-  907     	.line	171, "main.c"; 	gnStep = 0;
+     009F 02rr                      1-  908     	CLRR	_gnStep
+                                    1-  909     	.line	172, "main.c"; 	LEDOFF();
+     00A0 1Crr                      1-  910     	BCR	_PORTB,0
+                                    1-  911     	.line	173, "main.c"; 	workFlag = 0;
+     00A1 02rr                      1-  912     	CLRR	_workFlag
+                                    1-  913     	.line	174, "main.c"; 	workStep = 0;
+     00A2 02rr                      1-  914     	CLRR	_workStep
+                                    1-  915     	.line	175, "main.c"; 	pwmDuty = 0;
+     00A3 02rr                      1-  916     	CLRR	_pwmDuty
+     00A4                           1-  917     _00159_DS_:
+                                    1-  918     	.line	177, "main.c"; 	if(gnStep > 0)
+     00A4 01rr                      1-  919     	MOVR	_gnStep,W
+     00A5 0D03                      1-  920     	BTRSC	STATUS,2
+                                    1-  921     	MGOTO	_00177_DS_
+     00A6 3rrr                      3-   63 m1      LGOTO rom_address
+                                    1-  922     	.line	179, "main.c"; 	workFlag = 1;
+     00A7 2101                      1-  923     	MOVIA	0x01
+     00A8 00rr                      1-  924     	MOVAR	_workFlag
+                                    1-  925     	.line	180, "main.c"; 	if(gnStep == 1)
+     00A9 01rr                      1-  926     	MOVR	_gnStep,W
+     00AA 2401                      1-  927     	XORIA	0x01
+     00AB 0903                      1-  928     	BTRSS	STATUS,2
+                                    1-  929     	MGOTO	_00166_DS_
+     00AC 3rrr                      3-   63 m1      LGOTO rom_address
+                                    1-  930     	.line	182, "main.c"; 	PORTB &= 0xF9;
+     00AD 21F9                      1-  931     	MOVIA	0xf9
+     00AE 10rr                      1-  932     	ANDAR	_PORTB,F
+                                    1-  933     	.line	183, "main.c"; 	zfWaitTime = 40;
+     00AF 2128                      1-  934     	MOVIA	0x28
+     00B0 00rr                      1-  935     	MOVAR	_zfWaitTime
+                                    1-  936     	.line	184, "main.c"; 	zfFlag = 0;
+     00B1 02rr                      1-  937     	CLRR	_zfFlag
+                                    1-  938     	.line	185, "main.c"; 	workStep = 3;
+     00B2 2103                      1-  939     	MOVIA	0x03
+     00B3 00rr                      1-  940     	MOVAR	_workStep
+                                    1-  941     	.line	186, "main.c"; 	pwmDuty = 99;
+     00B4 2163                      1-  942     	MOVIA	0x63
+     00B5 00rr                      1-  943     	MOVAR	_pwmDuty
+                                    1-  944     	.line	187, "main.c"; 	LEDON();
+     00B6 18rr                      1-  945     	BSR	_PORTB,0
+                                    1-  946     	MGOTO	_00177_DS_
      00B7 3rrr                      3-   63 m1      LGOTO rom_address
-     00B8                           1-  941     _00165_DS_:
-                                    1-  942     	.line	181, "main.c"; 	else if(gnStep == 3)
-     00B8 01rr                      1-  943     	MOVR	_gnStep,W
-     00B9 2403                      1-  944     	XORIA	0x03
-     00BA 0D03                      1-  945     	BTRSC	STATUS,2
-                                    1-  946     	.line	183, "main.c"; 	LEDOFF();
-     00BB 1Crr                      1-  947     	BCR	_PORTB,0
-     00BC                           1-  948     _00179_DS_:
-                                    1-  949     	.line	188, "main.c"; 	}
-                                    1-  950     	RETURN	
-     00BC 0010                      3-   40 m1      ret
-                                    1-  953     ;	code size estimation:
-                                    1-  954     ;	  408+    0 =   408 instructions (  816 byte)
-                                    1-  956     	end
+     00B8                           1-  947     _00166_DS_:
+                                    1-  948     	.line	189, "main.c"; 	else if(gnStep == 2)
+     00B8 01rr                      1-  949     	MOVR	_gnStep,W
+     00B9 2402                      1-  950     	XORIA	0x02
+     00BA 0903                      1-  951     	BTRSS	STATUS,2
+                                    1-  952     	MGOTO	_00163_DS_
+     00BB 3rrr                      3-   63 m1      LGOTO rom_address
+                                    1-  953     	.line	191, "main.c"; 	PORTB &= 0xF9;
+     00BC 21F9                      1-  954     	MOVIA	0xf9
+     00BD 10rr                      1-  955     	ANDAR	_PORTB,F
+                                    1-  956     	.line	192, "main.c"; 	zfWaitTime = 40;
+     00BE 2128                      1-  957     	MOVIA	0x28
+     00BF 00rr                      1-  958     	MOVAR	_zfWaitTime
+                                    1-  959     	.line	193, "main.c"; 	zfFlag = 1;
+     00C0 2101                      1-  960     	MOVIA	0x01
+     00C1 00rr                      1-  961     	MOVAR	_zfFlag
+                                    1-  962     	.line	194, "main.c"; 	LEDON();
+     00C2 18rr                      1-  963     	BSR	_PORTB,0
+                                    1-  964     	MGOTO	_00177_DS_
+     00C3 3rrr                      3-   63 m1      LGOTO rom_address
+     00C4                           1-  965     _00163_DS_:
+                                    1-  966     	.line	196, "main.c"; 	else if(gnStep == 3)
+     00C4 01rr                      1-  967     	MOVR	_gnStep,W
+     00C5 2403                      1-  968     	XORIA	0x03
+     00C6 0903                      1-  969     	BTRSS	STATUS,2
+                                    1-  970     	MGOTO	_00177_DS_
+     00C7 3rrr                      3-   63 m1      LGOTO rom_address
+                                    1-  971     	.line	198, "main.c"; 	zfFlag = 1;
+     00C8 2101                      1-  972     	MOVIA	0x01
+     00C9 00rr                      1-  973     	MOVAR	_zfFlag
+                                    1-  974     	.line	199, "main.c"; 	LEDOFF();
+     00CA 1Crr                      1-  975     	BCR	_PORTB,0
+     00CB                           1-  976     _00177_DS_:
+                                    1-  977     	.line	205, "main.c"; 	}
+                                    1-  978     	RETURN	
+     00CB 0010                      3-   40 m1      ret
+                                    1-  979     ; exit point of _keyCon
+                                    1-  982     ;	code size estimation:
+                                    1-  983     ;	  422+    0 =   422 instructions (  844 byte)
+                                    1-  985     	end
 
 SYMBOL TABLE            TYPE     VALUE
 __PIN_COUNT__           Constant 00000006
