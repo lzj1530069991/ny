@@ -150,7 +150,7 @@ void workCtr()
 			if(workCount > 0)
 			{
 				--workCount;
-				timeCount = 8+delayCount;
+				timeCount = 4+delayCount;
 				if(workCount == 0)
 				{
 					if(++workStep > 7)
@@ -164,7 +164,7 @@ void workCtr()
 	{
 		if(0x20 & PORTA || SKFlag == 1)
 		{
-			timeCount = 8+delayCount;
+			timeCount = 4+delayCount;
 			workCount = 2;
 			SKFlag = 0;
 			delayCount = R_AIN8_DATA /56;

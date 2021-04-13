@@ -372,6 +372,7 @@ void gotoSleep()
 	sleepCount = 0;
 	workStep = 0;
 	AWUCON = 0x34;
+	BWUCON = 0X00;
 	INTE =  C_INT_TMR0 | C_INT_TMR1 | C_INT_PABKey;
 	PCON =  C_LVR_En;	
 	INTF = 0;								// Clear all interrupt flags
@@ -392,7 +393,7 @@ unsigned char R_shift_regl = 0xFF;
 //;Initial GPIO   
 	IOSTA =   C_PA2_Input | C_PA4_Input | C_PA5_Input; 
     IOSTB =   0x00;     // Set PB0 & PB1 to input mode,others set to output mode
-    APHCON = 0xEF;
+    APHCON = 0xEB;
     BPHCON = 0xFF;
     ABPLCON = 0xFF;
     PORTA = 0x00;    

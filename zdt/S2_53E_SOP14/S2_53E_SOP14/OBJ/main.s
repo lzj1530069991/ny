@@ -873,8 +873,8 @@ _pwmInit:
 	.line	108, "main.c"; 	TMRH = 0x00;
 	CLRA	
 	SFUN	_TMRH
-	.line	109, "main.c"; 	TMR1 = 99;							//频率为110K
-	MOVIA	0x63
+	.line	109, "main.c"; 	TMR1 = 100;							//频率为110K
+	MOVIA	0x64
 	SFUN	_TMR1
 	.line	111, "main.c"; 	T1CR2	 = C_PS1_Div2 | C_TMR1_ClkSrc_Inst;	// Prescaler 1:1 , Timer1 clock source is instruction clockF
 	CLRA	

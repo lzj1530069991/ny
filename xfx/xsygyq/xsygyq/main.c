@@ -45,6 +45,8 @@ u8t longPressFlag = 0;
 u8t sleepTime = 0;
 u8t fullFlag = 0;
 u16t shanTime = 0;
+u8t count1s = 0;
+u16t waitTime = 0;
 
 static unsigned char numArray[]={0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f,0x71,0x79,0x50};
 
@@ -61,6 +63,7 @@ void pwmStop();
 void gotoSleep();
 void keyCtr();
 void chrgCtr();
+void initSys();
 
 void isr(void) __interrupt(0)
 {
@@ -72,12 +75,22 @@ void isr(void) __interrupt(0)
 		{
 			IntFlag = 1;
 			intCount = 0;	
+			if(++count1s > 100)
+			{
+				count1s = 0;
+				if(pwShowTime > 0)
+					pwShowTime--;
+				else if(stepShowTime > 0)
+				{
+					stepShowTime--;
+				}
+			}
 		}
 		//模拟pwm输出
 		if(pwmTime < 12 && sendFlag)
-			PORTB &= 0xFD;
-		else
 			PORTB |= 0x02;
+		else
+			PORTB &= 0xFD;
 		if(++pwmTime >= 44)
 		{
 			pwmTime = 0;
@@ -97,6 +110,7 @@ void isr(void) __interrupt(0)
 
 void main(void)
 {
+    initSys();
     initAD();
     gotoSleep();
     while(1)
@@ -104,6 +118,11 @@ void main(void)
         CLRWDT();							// Clear WatchDog
 	    if(showFlag)
 	    	refreshNub();
+	    else
+	    {
+			baiweiNum = shiweiNum = geweiNum = 0;
+	    	setInput();
+	    }
 	    if(!IntFlag)
     		continue;			//10ms执行一次
     	IntFlag = 0;
@@ -111,9 +130,9 @@ void main(void)
     	checkIRKey();
     	keyCtr();
     	chrgCtr();
-    	
-		
-		if(0x20 & ~PORTA)
+    	if(waitTime > 0)
+			waitTime--;
+		if((0x20 & ~PORTA) && keyCount == 0 && pwFlag == 0)
 		{
 			//休眠
 			if(++sleepTime > 100)
@@ -194,7 +213,7 @@ void chrgCtr()
 			if(pwStep <= 5)
 			{
 				showFlag = 1;
-				if(++shanTime > 500)
+				if(++shanTime > 500)			//电量不足闪灯
 				{
 					shanTime = 0;
 					showFlag = 0;
@@ -204,8 +223,8 @@ void chrgCtr()
 				{
 					showFlag = 1;
 					baiweiNum = 0;
-					shiweiNum = pwStep/10;
-					geweiNum = pwStep%10;
+					shiweiNum = 0;
+					geweiNum = pwStep;
 				}
 				else
 				{
@@ -224,7 +243,7 @@ void chrgCtr()
 //检测红外遮挡
 void checkIRKey()
 {
-	if(getbit(PORTB, 3))
+	if(getbit(PORTB, 3) == 0)
 	{
 		revCount++;		//检测到遮挡了
 	}
@@ -242,7 +261,7 @@ void checkIRKey()
 	{
 		if(revCount > 2)
 		{
-			if(irStep == 0)
+			if(irStep == 0 && waitTime == 0)
 			{
 				irStep = 1;		//检测到遮挡了
 				//马达动起来
@@ -258,6 +277,7 @@ void checkIRKey()
 				{
 					workTime = 150;
 				}
+				waitTime = workTime + 300;
 			}
 			revZeroCount = 0;		//重置
 		}
@@ -290,20 +310,49 @@ void refreshNub()
 }
 
 
+void initSys()
+{
+	 DISI();
+	IOSTA = C_PA7_Input | C_PA6_Input | C_PA5_Input;
+	IOSTB = C_PB3_Input;
+	PORTB = 0x00;
+	PORTA = 0x00;
+	setInput();
+	APHCON = 0x3F;
+	BPHCON = 0xF7;		//PB3上拉
+	ABPLCON = 0xFF;
+//;Setting Interrupt Enable Register	
+	INTE =  C_INT_TMR0 ;	// Enable Timer0、Timer1、WDT overflow interrupt
+	
+	PCON1 = C_TMR0_Dis;
+	
+	TMR0 = 55;
+	T0MD =  C_PS0_TMR0 | C_PS0_Div2;
+	
+	PCON1 = C_TMR0_En;
+	
+//;Initial Power control register
+	PCON = C_WDT_En | C_LVR_En | 0x10;				// Enable WDT ,  Enable LVR
+	
+//;Enable Timer0 & Global interrupt bit 
+	PCON1 = C_TMR0_En;						// Enable Timer0
+	ENI();
+}
+
+
+
 void gotoSleep()
 {
-
+	waitTime = 0;
 	setInput();
 	sleepTime = 0;
 	//pwStep = 0;
 	pwmStop();
-	IOSTA = 0x21;
-	PORTA = 0x00;
-	APHCON = 0xDE;
-	PORTB = 0x00;
-	workStep = 0;
-	AWUCON = 0x21;
+	AWUCON = 0x60;
 	BWUCON = 0x00;
+	IOSTB = C_PB3_Input | C_PB1_Input;
+	PORTA = 0X00;
+	PORTB = 0X00;
 	INTE =  C_INT_PABKey;
 	PCON =  C_LVR_En | 0x10;	
 	INTF = 0;								// Clear all interrupt flags
@@ -311,10 +360,9 @@ void gotoSleep()
 	ENI();
 	SLEEP();
 	AWUCON = 0x00;
-	IOSTA = C_PA7_Input | C_PA5_Input | C_PA0_Input;
+	IOSTA = C_PA7_Input | C_PA6_Input | C_PA5_Input;
 	IOSTB = C_PB3_Input;
 	PORTA = 0x00;
-	APHCON = 0xDE;
 	INTE =  C_INT_TMR0;	// Enable Timer0、Timer1、WDT overflow interrupt
 	INTF = 0;
 	//;Initial Power control register
@@ -379,7 +427,7 @@ char keyRead(char keyStatus)
 
 void keyCtr()
 {
-	char kclick = keyRead(0x20 & (~PORTA));
+	char kclick = keyRead(0x40 & (~PORTA));
 	if(kclick == 1)
 	{
 		if(pwFlag)
@@ -394,7 +442,7 @@ void keyCtr()
 				pwShowTime = 0;
 				if(++workStep > 3)
 					workStep = 1;
-				stepShowTime = workStep;
+				stepShowTime = 2;
 			}
 		}
 	}
@@ -407,10 +455,11 @@ void keyCtr()
 		}
 		else
 		{
-			workStep = 1;
 			pwFlag = 1;		//开机
 			pwShowTime = 3;
 			stepShowTime = 2;
+			if(workStep == 0)
+				workStep = 1;
 		}
 	}
 }
@@ -463,7 +512,7 @@ void checkBat()
     }
     else
     {
-    	u8t tempValue = (R_Quarter_VDD_DATA - 1500)/7;
+    	u16t tempValue = (R_Quarter_VDD_DATA - 1500)/7;
     	if(0x20 & PORTA)
     	{
     		if(pwStep < tempValue)
@@ -471,7 +520,7 @@ void checkBat()
     	}
     	else
     	{
-    		if(pwStep > tempValue)
+    		if(pwStep > tempValue || pwStep == 0)
     			pwStep = tempValue;
     	}
     }

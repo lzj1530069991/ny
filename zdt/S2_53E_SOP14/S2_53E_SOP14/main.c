@@ -106,7 +106,7 @@ void pwmInit()
 	if(0x80&P2CR1)
 		return;
 	TMRH = 0x00;
-	TMR1 = 99;							//频率为110K
+	TMR1 = 100;							//频率为110K
 	//PWM2DUTY = 0x08;				// 		
 	T1CR2	 = C_PS1_Div2 | C_TMR1_ClkSrc_Inst;	// Prescaler 1:1 , Timer1 clock source is instruction clockF
 	T1CR1	 = C_TMR1_Reload | C_TMR1_En;	// Enable PWM1 , Active_High , Non-Stop mode ,reloaded from TMR1[9:0] , enable Timer1

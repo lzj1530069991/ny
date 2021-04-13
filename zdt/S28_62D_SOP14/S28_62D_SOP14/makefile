@@ -1,5 +1,5 @@
 ICBODY       := NY8B062D
-CLIENT_NAME  := дЌаубо
+CLIENT_NAME  := zdt
 CB_FILE      := S28_62D_SOP14.cb
 HOST_TOOL    := NYIDE 4.20
 USER_C       := main.c number.c  

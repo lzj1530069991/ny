@@ -346,7 +346,7 @@ void initSys()
 {
 	 DISI();
 	IOSTA = C_PA7_Input | C_PA5_Input | C_PA4_Input | C_PA3_Input | C_PA2_Input | C_PA1_Input;
-	IOSTB = 0x00;
+	IOSTB = C_PB3_Input;
 	PORTB = 0x00;
 	PORTA = 0x00;
 	LedInput();

@@ -3542,8 +3542,8 @@ _initSys:
 	.line	348, "main.c"; 	IOSTA = C_PA7_Input | C_PA5_Input | C_PA4_Input | C_PA3_Input | C_PA2_Input | C_PA1_Input;
 	MOVIA	0xbe
 	IOST	_IOSTA
-	.line	349, "main.c"; 	IOSTB = 0x00;
-	CLRA	
+	.line	349, "main.c"; 	IOSTB = C_PB3_Input;
+	MOVIA	0x08
 	IOST	_IOSTB
 	.line	350, "main.c"; 	PORTB = 0x00;
 	CLRR	_PORTB

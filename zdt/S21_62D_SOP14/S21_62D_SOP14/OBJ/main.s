@@ -2374,8 +2374,8 @@ _00480_DS_:
 	SUBAR	_chrgStep,W
 	BTRSC	STATUS,0
 	MGOTO	_00504_DS_
-	.line	681, "main.c"; 	PWM1DUTY = 8;
-	MOVIA	0x08
+	.line	681, "main.c"; 	PWM1DUTY = 9;
+	MOVIA	0x09
 	SFUN	_PWM1DUTY
 	.line	682, "main.c"; 	chrgStep = 1;
 	MOVIA	0x01
@@ -2400,8 +2400,8 @@ _00503_DS_:
 	.line	689, "main.c"; 	chrgStep = 2;
 	MOVIA	0x02
 	MOVAR	_chrgStep
-	.line	690, "main.c"; 	PWM1DUTY = 9;
-	MOVIA	0x09
+	.line	690, "main.c"; 	PWM1DUTY = 10;
+	MOVIA	0x0a
 	SFUN	_PWM1DUTY
 	MGOTO	_00504_DS_
 ;;unsigned compare: left < lit (0x3=3), size=1
@@ -2423,8 +2423,8 @@ _00500_DS_:
 	.line	697, "main.c"; 	chrgStep = 3;
 	MOVIA	0x03
 	MOVAR	_chrgStep
-	.line	698, "main.c"; 	PWM1DUTY = 10;
-	MOVIA	0x0a
+	.line	698, "main.c"; 	PWM1DUTY = 11;
+	MOVIA	0x0b
 	SFUN	_PWM1DUTY
 	MGOTO	_00504_DS_
 ;;unsigned compare: left < lit (0x5=5), size=1
@@ -2446,8 +2446,8 @@ _00497_DS_:
 	.line	705, "main.c"; 	chrgStep = 4;
 	MOVIA	0x04
 	MOVAR	_chrgStep
-	.line	706, "main.c"; 	PWM1DUTY = 11;
-	MOVIA	0x0b
+	.line	706, "main.c"; 	PWM1DUTY = 12;
+	MOVIA	0x0c
 	SFUN	_PWM1DUTY
 	MGOTO	_00504_DS_
 ;;swapping arguments (AOP_TYPEs 1/3)
@@ -2459,8 +2459,8 @@ _00494_DS_:
 	SUBAR	_chrgStep,W
 	BTRSC	STATUS,0
 	MGOTO	_00504_DS_
-	.line	713, "main.c"; 	PWM1DUTY = 12;
-	MOVIA	0x0c
+	.line	713, "main.c"; 	PWM1DUTY = 13;
+	MOVIA	0x0d
 	SFUN	_PWM1DUTY
 	.line	714, "main.c"; 	chrgStep = 5;
 	MOVIA	0x05

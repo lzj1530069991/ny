@@ -495,59 +495,59 @@ END_OF_INTERRUPT:
 	.debuginfo subprogram _main
 _main:
 ; 2 exit points
-	.line	393, "main.c"; 	IOSTA =   C_PA2_Input | C_PA4_Input | C_PA5_Input; 
+	.line	394, "main.c"; 	IOSTA =   C_PA2_Input | C_PA4_Input | C_PA5_Input; 
 	MOVIA	0x34
 	IOST	_IOSTA
-	.line	394, "main.c"; 	IOSTB =   0x00;     // Set PB0 & PB1 to input mode,others set to output mode
+	.line	395, "main.c"; 	IOSTB =   0x00;     // Set PB0 & PB1 to input mode,others set to output mode
 	CLRA	
 	IOST	_IOSTB
-	.line	395, "main.c"; 	APHCON = 0xEF;
-	MOVIA	0xef
+	.line	396, "main.c"; 	APHCON = 0xEB;
+	MOVIA	0xeb
 	IOST	_APHCON
-	.line	396, "main.c"; 	BPHCON = 0xFF;
+	.line	397, "main.c"; 	BPHCON = 0xFF;
 	MOVIA	0xff
 	MOVAR	_BPHCON
-	.line	397, "main.c"; 	ABPLCON = 0xFF;
+	.line	398, "main.c"; 	ABPLCON = 0xFF;
 	MOVAR	_ABPLCON
-	.line	398, "main.c"; 	PORTA = 0x00;    
+	.line	399, "main.c"; 	PORTA = 0x00;    
 	CLRR	_PORTA
-	.line	399, "main.c"; 	PORTB = 0x00;                           // PB0、PB1 & PB2 are output High
+	.line	400, "main.c"; 	PORTB = 0x00;                           // PB0、PB1 & PB2 are output High
 	CLRR	_PORTB
-	.line	400, "main.c"; 	DISI();
+	.line	401, "main.c"; 	DISI();
 	DISI
-	.line	402, "main.c"; 	PCON1 = C_TMR0_Dis;						// Disable Timer0
+	.line	403, "main.c"; 	PCON1 = C_TMR0_Dis;						// Disable Timer0
 	CLRA	
 	IOST	_PCON1
-	.line	406, "main.c"; 	TMR1 = 0xFF;
+	.line	407, "main.c"; 	TMR1 = 0xFF;
 	MOVIA	0xff
 	SFUN	_TMR1
-	.line	407, "main.c"; 	T1CR2 = C_PS1_Div64 | C_PS1_EN | C_TMR1_ClkSrc_Inst;
+	.line	408, "main.c"; 	T1CR2 = C_PS1_Div64 | C_PS1_EN | C_TMR1_ClkSrc_Inst;
 	MOVIA	0x05
 	SFUN	_T1CR2
-	.line	408, "main.c"; 	T1CR1 = C_TMR1_En | C_TMR1_Reload;
+	.line	409, "main.c"; 	T1CR1 = C_TMR1_En | C_TMR1_Reload;
 	MOVIA	0x03
 	SFUN	_T1CR1
-	.line	411, "main.c"; 	INT1Level = 1;
+	.line	412, "main.c"; 	INT1Level = 1;
 	BANKSEL	_Status
 	BSR	_Status,5
-	.line	414, "main.c"; 	INTE =  C_INT_TMR0 | C_INT_TMR1 | C_INT_PABKey;	// Enable Timer0、Timer1、WDT overflow interrupt
+	.line	415, "main.c"; 	INTE =  C_INT_TMR0 | C_INT_TMR1 | C_INT_PABKey;	// Enable Timer0、Timer1、WDT overflow interrupt
 	MOVIA	0x0b
 	MOVAR	_INTE
-	.line	416, "main.c"; 	TMR0 = 55;
+	.line	417, "main.c"; 	TMR0 = 55;
 	MOVIA	0x37
 	MOVAR	_TMR0
-	.line	417, "main.c"; 	T0MD =  C_PS0_TMR0 | C_PS0_Div2;
+	.line	418, "main.c"; 	T0MD =  C_PS0_TMR0 | C_PS0_Div2;
 	CLRA	
 	T0MD	
-	.line	420, "main.c"; 	PCON = C_WDT_En | C_LVR_En;				// Enable WDT ,  Enable LVR
+	.line	421, "main.c"; 	PCON = C_WDT_En | C_LVR_En;				// Enable WDT ,  Enable LVR
 	MOVIA	0x88
 	MOVAR	_PCON
-	.line	423, "main.c"; 	PCON1 = C_TMR0_En;						// Enable Timer0
+	.line	424, "main.c"; 	PCON1 = C_TMR0_En;						// Enable Timer0
 	MOVIA	0x01
 	IOST	_PCON1
-	.line	424, "main.c"; 	ENI();									// Enable all unmasked interrupts			
+	.line	425, "main.c"; 	ENI();									// Enable all unmasked interrupts			
 	ENI
-	.line	425, "main.c"; 	data1 = data2 = data3 = data4 = 0;
+	.line	426, "main.c"; 	data1 = data2 = data3 = data4 = 0;
 	BANKSEL	_data4
 	CLRR	_data4
 	BANKSEL	_data3
@@ -557,41 +557,41 @@ _main:
 	BANKSEL	_data1
 	CLRR	_data1
 _00370_DS_:
-	.line	428, "main.c"; 	if(ReadOver)
+	.line	429, "main.c"; 	if(ReadOver)
 	BANKSEL	_Status
 	BTRSC	_Status,4
-	.line	430, "main.c"; 	proData();
+	.line	431, "main.c"; 	proData();
 	MCALL	_proData
 _00343_DS_:
-	.line	432, "main.c"; 	if(INT1Level && (PORTA & 0x04))
+	.line	433, "main.c"; 	if(INT1Level && (PORTA & 0x04))
 	BANKSEL	_Status
 	BTRSS	_Status,5
 	MGOTO	_00348_DS_
 	BTRSS	_PORTA,2
 	MGOTO	_00348_DS_
-	.line	434, "main.c"; 	INT1Level = 0;
+	.line	435, "main.c"; 	INT1Level = 0;
 	BCR	_Status,5
-	.line	435, "main.c"; 	proLow();
+	.line	436, "main.c"; 	proLow();
 	MCALL	_proLow
 	MGOTO	_00349_DS_
 _00348_DS_:
-	.line	437, "main.c"; 	else if(INT1Level == 0 && (PORTA & 0x04) == 0)
+	.line	438, "main.c"; 	else if(INT1Level == 0 && (PORTA & 0x04) == 0)
 	BANKSEL	_Status
 	BTRSC	_Status,5
 	MGOTO	_00349_DS_
 	BTRSC	_PORTA,2
 	MGOTO	_00349_DS_
-	.line	440, "main.c"; 	INT1Level = 1;
+	.line	441, "main.c"; 	INT1Level = 1;
 	BSR	_Status,5
-	.line	441, "main.c"; 	proHight();
+	.line	442, "main.c"; 	proHight();
 	MCALL	_proHight
 _00349_DS_:
-	.line	443, "main.c"; 	if(workStep == 0)
+	.line	444, "main.c"; 	if(workStep == 0)
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	BTRSS	STATUS,2
 	MGOTO	_00352_DS_
-	.line	444, "main.c"; 	red = green = blue = white = 0;
+	.line	445, "main.c"; 	red = green = blue = white = 0;
 	BANKSEL	_white
 	CLRR	_white
 	BANKSEL	_blue
@@ -601,26 +601,26 @@ _00349_DS_:
 	BANKSEL	_red
 	CLRR	_red
 _00352_DS_:
-	.line	445, "main.c"; 	showRGB();
+	.line	446, "main.c"; 	showRGB();
 	MCALL	_showRGB
-	.line	446, "main.c"; 	CLRWDT();
+	.line	447, "main.c"; 	CLRWDT();
 	clrwdt
-	.line	447, "main.c"; 	if(!IntFlag)
+	.line	448, "main.c"; 	if(!IntFlag)
 	BANKSEL	_IntFlag
 	MOVR	_IntFlag,W
 	BTRSC	STATUS,2
 	MGOTO	_00370_DS_
-	.line	449, "main.c"; 	IntFlag = 0;		//10ms执行一次
+	.line	450, "main.c"; 	IntFlag = 0;		//10ms执行一次
 	CLRR	_IntFlag
-	.line	450, "main.c"; 	keyCtr();
+	.line	451, "main.c"; 	keyCtr();
 	MCALL	_keyCtr
-	.line	451, "main.c"; 	if(workStep > 0)
+	.line	452, "main.c"; 	if(workStep > 0)
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	BTRSS	STATUS,2
-	.line	452, "main.c"; 	workCtr();
+	.line	453, "main.c"; 	workCtr();
 	MCALL	_workCtr
-	.line	453, "main.c"; 	if(bitIndex == 0 &&  keyCount == 0 && workStep == 0 && ++sleepCount >= 250)
+	.line	454, "main.c"; 	if(bitIndex == 0 &&  keyCount == 0 && workStep == 0 && ++sleepCount >= 250)
 	BANKSEL	_bitIndex
 	MOVR	_bitIndex,W
 	BTRSS	STATUS,2
@@ -647,10 +647,10 @@ _00352_DS_:
 _00422_DS_:
 	BTRSS	STATUS,0
 	MGOTO	_00358_DS_
-	.line	455, "main.c"; 	gotoSleep();
+	.line	456, "main.c"; 	gotoSleep();
 	MCALL	_gotoSleep
 _00358_DS_:
-	.line	457, "main.c"; 	if(++count1s > 100)
+	.line	458, "main.c"; 	if(++count1s > 100)
 	BANKSEL	_count1s
 	INCR	_count1s,F
 ;;swapping arguments (AOP_TYPEs 1/3)
@@ -659,38 +659,38 @@ _00358_DS_:
 	SUBAR	_count1s,W
 	BTRSS	STATUS,0
 	MGOTO	_00370_DS_
-	.line	459, "main.c"; 	count1s = 0;
+	.line	460, "main.c"; 	count1s = 0;
 	CLRR	_count1s
 ;;swapping arguments (AOP_TYPEs 1/3)
 ;;unsigned compare: left >= lit (0x5=5), size=1
-	.line	460, "main.c"; 	if(workStep > 4)
+	.line	461, "main.c"; 	if(workStep > 4)
 	MOVIA	0x05
 	BANKSEL	_workStep
 	SUBAR	_workStep,W
 	BTRSS	STATUS,0
 	MGOTO	_00370_DS_
-	.line	463, "main.c"; 	if(lowTime > 0)
+	.line	464, "main.c"; 	if(lowTime > 0)
 	BANKSEL	_lowTime
 	MOVR	_lowTime,W
 	IORAR	(_lowTime + 1),W
 	BTRSC	STATUS,2
 	MGOTO	_00363_DS_
-	.line	465, "main.c"; 	--lowTime;
+	.line	466, "main.c"; 	--lowTime;
 	MOVIA	0xff
 	ADDAR	_lowTime,F
 	BTRSS	STATUS,0
 	DECR	(_lowTime + 1),F
 	MGOTO	_00370_DS_
 _00363_DS_:
-	.line	469, "main.c"; 	sleepFlag = 1;
+	.line	470, "main.c"; 	sleepFlag = 1;
 	MOVIA	0x01
 	BANKSEL	_sleepFlag
 	MOVAR	_sleepFlag
-	.line	470, "main.c"; 	workStep = 0;
+	.line	471, "main.c"; 	workStep = 0;
 	BANKSEL	_workStep
 	CLRR	_workStep
 	MGOTO	_00370_DS_
-	.line	478, "main.c"; 	}
+	.line	479, "main.c"; 	}
 	RETURN	
 ; exit point of _main
 
@@ -703,191 +703,191 @@ _00363_DS_:
 	.debuginfo subprogram _rainbow
 _rainbow:
 ; 2 exit points
-	.line	728, "main.c"; 	if(colorStep == 1)
+	.line	729, "main.c"; 	if(colorStep == 1)
 	BANKSEL	_colorStep
 	MOVR	_colorStep,W
 	XORIA	0x01
 	BTRSS	STATUS,2
 	MGOTO	_00586_DS_
-	.line	730, "main.c"; 	lastRed = 250;
+	.line	731, "main.c"; 	lastRed = 250;
 	MOVIA	0xfa
 	BANKSEL	_lastRed
 	MOVAR	_lastRed
-	.line	731, "main.c"; 	lastGreen = 0;
+	.line	732, "main.c"; 	lastGreen = 0;
 	BANKSEL	_lastGreen
 	CLRR	_lastGreen
-	.line	732, "main.c"; 	lastBlue = 0;
+	.line	733, "main.c"; 	lastBlue = 0;
 	BANKSEL	_lastBlue
 	CLRR	_lastBlue
 	MGOTO	_00587_DS_
 _00586_DS_:
-	.line	734, "main.c"; 	else if(colorStep == 2)
+	.line	735, "main.c"; 	else if(colorStep == 2)
 	BANKSEL	_colorStep
 	MOVR	_colorStep,W
 	XORIA	0x02
 	BTRSS	STATUS,2
 	MGOTO	_00583_DS_
-	.line	736, "main.c"; 	lastRed = 250;
+	.line	737, "main.c"; 	lastRed = 250;
 	MOVIA	0xfa
 	BANKSEL	_lastRed
 	MOVAR	_lastRed
-	.line	737, "main.c"; 	lastGreen = 150;
+	.line	738, "main.c"; 	lastGreen = 150;
 	MOVIA	0x96
 	BANKSEL	_lastGreen
 	MOVAR	_lastGreen
-	.line	738, "main.c"; 	lastBlue = 0;
+	.line	739, "main.c"; 	lastBlue = 0;
 	BANKSEL	_lastBlue
 	CLRR	_lastBlue
 	MGOTO	_00587_DS_
 _00583_DS_:
-	.line	740, "main.c"; 	else if(colorStep == 3)
+	.line	741, "main.c"; 	else if(colorStep == 3)
 	BANKSEL	_colorStep
 	MOVR	_colorStep,W
 	XORIA	0x03
 	BTRSS	STATUS,2
 	MGOTO	_00580_DS_
-	.line	742, "main.c"; 	lastRed = 250;
+	.line	743, "main.c"; 	lastRed = 250;
 	MOVIA	0xfa
 	BANKSEL	_lastRed
 	MOVAR	_lastRed
-	.line	743, "main.c"; 	lastGreen = 250;
+	.line	744, "main.c"; 	lastGreen = 250;
 	BANKSEL	_lastGreen
 	MOVAR	_lastGreen
-	.line	744, "main.c"; 	lastBlue = 0;
+	.line	745, "main.c"; 	lastBlue = 0;
 	BANKSEL	_lastBlue
 	CLRR	_lastBlue
 	MGOTO	_00587_DS_
 _00580_DS_:
-	.line	746, "main.c"; 	else if(colorStep == 4)
+	.line	747, "main.c"; 	else if(colorStep == 4)
 	BANKSEL	_colorStep
 	MOVR	_colorStep,W
 	XORIA	0x04
 	BTRSS	STATUS,2
 	MGOTO	_00577_DS_
-	.line	748, "main.c"; 	lastRed = 0;
+	.line	749, "main.c"; 	lastRed = 0;
 	BANKSEL	_lastRed
 	CLRR	_lastRed
-	.line	749, "main.c"; 	lastGreen = 250;
+	.line	750, "main.c"; 	lastGreen = 250;
 	MOVIA	0xfa
 	BANKSEL	_lastGreen
 	MOVAR	_lastGreen
-	.line	750, "main.c"; 	lastBlue = 0;
+	.line	751, "main.c"; 	lastBlue = 0;
 	BANKSEL	_lastBlue
 	CLRR	_lastBlue
 	MGOTO	_00587_DS_
 _00577_DS_:
-	.line	752, "main.c"; 	else if(colorStep == 5)
+	.line	753, "main.c"; 	else if(colorStep == 5)
 	BANKSEL	_colorStep
 	MOVR	_colorStep,W
 	XORIA	0x05
 	BTRSS	STATUS,2
 	MGOTO	_00574_DS_
-	.line	754, "main.c"; 	lastRed = 0;
+	.line	755, "main.c"; 	lastRed = 0;
 	BANKSEL	_lastRed
 	CLRR	_lastRed
-	.line	755, "main.c"; 	lastGreen = 250;
+	.line	756, "main.c"; 	lastGreen = 250;
 	MOVIA	0xfa
 	BANKSEL	_lastGreen
 	MOVAR	_lastGreen
-	.line	756, "main.c"; 	lastBlue = 250;
+	.line	757, "main.c"; 	lastBlue = 250;
 	BANKSEL	_lastBlue
 	MOVAR	_lastBlue
 	MGOTO	_00587_DS_
 _00574_DS_:
-	.line	758, "main.c"; 	else if(colorStep == 6)
+	.line	759, "main.c"; 	else if(colorStep == 6)
 	BANKSEL	_colorStep
 	MOVR	_colorStep,W
 	XORIA	0x06
 	BTRSS	STATUS,2
 	MGOTO	_00571_DS_
-	.line	760, "main.c"; 	lastRed = 0;
+	.line	761, "main.c"; 	lastRed = 0;
 	BANKSEL	_lastRed
 	CLRR	_lastRed
-	.line	761, "main.c"; 	lastGreen = 0;
+	.line	762, "main.c"; 	lastGreen = 0;
 	BANKSEL	_lastGreen
 	CLRR	_lastGreen
-	.line	762, "main.c"; 	lastBlue = 250;
+	.line	763, "main.c"; 	lastBlue = 250;
 	MOVIA	0xfa
 	BANKSEL	_lastBlue
 	MOVAR	_lastBlue
 	MGOTO	_00587_DS_
 _00571_DS_:
-	.line	764, "main.c"; 	else if(colorStep == 7)
+	.line	765, "main.c"; 	else if(colorStep == 7)
 	BANKSEL	_colorStep
 	MOVR	_colorStep,W
 	XORIA	0x07
 	BTRSS	STATUS,2
 	MGOTO	_00587_DS_
-	.line	766, "main.c"; 	lastRed = 150;
+	.line	767, "main.c"; 	lastRed = 150;
 	MOVIA	0x96
 	BANKSEL	_lastRed
 	MOVAR	_lastRed
-	.line	767, "main.c"; 	lastGreen = 0;
+	.line	768, "main.c"; 	lastGreen = 0;
 	BANKSEL	_lastGreen
 	CLRR	_lastGreen
-	.line	768, "main.c"; 	lastBlue = 250;
+	.line	769, "main.c"; 	lastBlue = 250;
 	MOVIA	0xfa
 	BANKSEL	_lastBlue
 	MOVAR	_lastBlue
 _00587_DS_:
-	.line	771, "main.c"; 	if(red > lastRed)
+	.line	772, "main.c"; 	if(red > lastRed)
 	BANKSEL	_red
 	MOVR	_red,W
 	BANKSEL	_lastRed
 	SUBAR	_lastRed,W
 	BTRSC	STATUS,0
 	MGOTO	_00001_DS_
-	.line	772, "main.c"; 	red--;
+	.line	773, "main.c"; 	red--;
 	BANKSEL	_red
 	DECR	_red,F
 _00001_DS_:
-	.line	773, "main.c"; 	if(green > lastGreen)
+	.line	774, "main.c"; 	if(green > lastGreen)
 	BANKSEL	_green
 	MOVR	_green,W
 	BANKSEL	_lastGreen
 	SUBAR	_lastGreen,W
 	BTRSC	STATUS,0
 	MGOTO	_00002_DS_
-	.line	774, "main.c"; 	green--;
+	.line	775, "main.c"; 	green--;
 	BANKSEL	_green
 	DECR	_green,F
 _00002_DS_:
-	.line	775, "main.c"; 	if(blue > lastBlue)
+	.line	776, "main.c"; 	if(blue > lastBlue)
 	BANKSEL	_blue
 	MOVR	_blue,W
 	BANKSEL	_lastBlue
 	SUBAR	_lastBlue,W
 	BTRSC	STATUS,0
 	MGOTO	_00003_DS_
-	.line	776, "main.c"; 	blue--;
+	.line	777, "main.c"; 	blue--;
 	BANKSEL	_blue
 	DECR	_blue,F
 _00003_DS_:
-	.line	777, "main.c"; 	if(red < lastRed)
+	.line	778, "main.c"; 	if(red < lastRed)
 	BANKSEL	_lastRed
 	MOVR	_lastRed,W
 	BANKSEL	_red
 	SUBAR	_red,W
 	BTRSS	STATUS,0
-	.line	778, "main.c"; 	red++;
+	.line	779, "main.c"; 	red++;
 	INCR	_red,F
-	.line	779, "main.c"; 	if(green < lastGreen)
+	.line	780, "main.c"; 	if(green < lastGreen)
 	BANKSEL	_lastGreen
 	MOVR	_lastGreen,W
 	BANKSEL	_green
 	SUBAR	_green,W
 	BTRSS	STATUS,0
-	.line	780, "main.c"; 	green++;
+	.line	781, "main.c"; 	green++;
 	INCR	_green,F
-	.line	781, "main.c"; 	if(blue < lastBlue)
+	.line	782, "main.c"; 	if(blue < lastBlue)
 	BANKSEL	_lastBlue
 	MOVR	_lastBlue,W
 	BANKSEL	_blue
 	SUBAR	_blue,W
 	BTRSS	STATUS,0
-	.line	782, "main.c"; 	blue++;
+	.line	783, "main.c"; 	blue++;
 	INCR	_blue,F
-	.line	784, "main.c"; 	if(red == lastRed && blue == lastBlue && green == lastGreen)
+	.line	785, "main.c"; 	if(red == lastRed && blue == lastBlue && green == lastGreen)
 	BANKSEL	_lastRed
 	MOVR	_lastRed,W
 	BANKSEL	_red
@@ -906,7 +906,7 @@ _00003_DS_:
 	XORAR	_green,W
 	BTRSS	STATUS,2
 	MGOTO	_00606_DS_
-	.line	786, "main.c"; 	if(++colorStep > 7)
+	.line	787, "main.c"; 	if(++colorStep > 7)
 	BANKSEL	_colorStep
 	INCR	_colorStep,F
 ;;swapping arguments (AOP_TYPEs 1/3)
@@ -915,11 +915,11 @@ _00003_DS_:
 	SUBAR	_colorStep,W
 	BTRSS	STATUS,0
 	MGOTO	_00606_DS_
-	.line	787, "main.c"; 	colorStep = 1;
+	.line	788, "main.c"; 	colorStep = 1;
 	MOVIA	0x01
 	MOVAR	_colorStep
 _00606_DS_:
-	.line	789, "main.c"; 	}
+	.line	790, "main.c"; 	}
 	RETURN	
 ; exit point of _rainbow
 
@@ -934,7 +934,7 @@ _00606_DS_:
 	.debuginfo subprogram _colorChange
 _colorChange:
 ; 2 exit points
-	.line	660, "main.c"; 	if(++colorStep > 16)
+	.line	661, "main.c"; 	if(++colorStep > 16)
 	BANKSEL	_colorStep
 	INCR	_colorStep,F
 ;;swapping arguments (AOP_TYPEs 1/3)
@@ -943,11 +943,11 @@ _colorChange:
 	SUBAR	_colorStep,W
 	BTRSS	STATUS,0
 	MGOTO	_00531_DS_
-	.line	661, "main.c"; 	colorStep = 1;
+	.line	662, "main.c"; 	colorStep = 1;
 	MOVIA	0x01
 	MOVAR	_colorStep
 _00531_DS_:
-	.line	662, "main.c"; 	white = red = green = blue = 0;
+	.line	663, "main.c"; 	white = red = green = blue = 0;
 	BANKSEL	_blue
 	CLRR	_blue
 	BANKSEL	_green
@@ -957,7 +957,7 @@ _00531_DS_:
 	BANKSEL	_white
 	CLRR	_white
 ;;unsigned compare: left < lit (0x1=1), size=1
-	.line	663, "main.c"; 	switch(colorStep)
+	.line	664, "main.c"; 	switch(colorStep)
 	MOVIA	0x01
 	BANKSEL	_colorStep
 	SUBAR	_colorStep,W
@@ -997,159 +997,159 @@ _00563_DS_:
 	MGOTO	_00546_DS_
 	MGOTO	_00547_DS_
 _00532_DS_:
-	.line	666, "main.c"; 	red = 250;
+	.line	667, "main.c"; 	red = 250;
 	MOVIA	0xfa
 	BANKSEL	_red
 	MOVAR	_red
-	.line	667, "main.c"; 	break;
+	.line	668, "main.c"; 	break;
 	MGOTO	_00549_DS_
 _00533_DS_:
-	.line	669, "main.c"; 	green = 250;
+	.line	670, "main.c"; 	green = 250;
 	MOVIA	0xfa
 	BANKSEL	_green
 	MOVAR	_green
-	.line	670, "main.c"; 	break;
+	.line	671, "main.c"; 	break;
 	MGOTO	_00549_DS_
 _00534_DS_:
-	.line	672, "main.c"; 	blue = 250;
+	.line	673, "main.c"; 	blue = 250;
 	MOVIA	0xfa
 	BANKSEL	_blue
 	MOVAR	_blue
-	.line	673, "main.c"; 	break;
+	.line	674, "main.c"; 	break;
 	MGOTO	_00549_DS_
 _00535_DS_:
-	.line	675, "main.c"; 	white = 250;
+	.line	676, "main.c"; 	white = 250;
 	MOVIA	0xfa
 	BANKSEL	_white
 	MOVAR	_white
-	.line	676, "main.c"; 	break;
+	.line	677, "main.c"; 	break;
 	MGOTO	_00549_DS_
 _00536_DS_:
-	.line	678, "main.c"; 	red = green = 250;
+	.line	679, "main.c"; 	red = green = 250;
 	MOVIA	0xfa
 	BANKSEL	_green
 	MOVAR	_green
 	BANKSEL	_red
 	MOVAR	_red
-	.line	679, "main.c"; 	break;
+	.line	680, "main.c"; 	break;
 	MGOTO	_00549_DS_
 _00537_DS_:
-	.line	681, "main.c"; 	green = blue = 250;
+	.line	682, "main.c"; 	green = blue = 250;
 	MOVIA	0xfa
 	BANKSEL	_blue
 	MOVAR	_blue
 	BANKSEL	_green
 	MOVAR	_green
-	.line	682, "main.c"; 	break;
+	.line	683, "main.c"; 	break;
 	MGOTO	_00549_DS_
 _00538_DS_:
-	.line	684, "main.c"; 	red = blue = 250;
+	.line	685, "main.c"; 	red = blue = 250;
 	MOVIA	0xfa
 	BANKSEL	_blue
 	MOVAR	_blue
 	BANKSEL	_red
 	MOVAR	_red
-	.line	685, "main.c"; 	break;
+	.line	686, "main.c"; 	break;
 	MGOTO	_00549_DS_
 _00539_DS_:
-	.line	687, "main.c"; 	red =  250;
+	.line	688, "main.c"; 	red =  250;
 	MOVIA	0xfa
 	BANKSEL	_red
 	MOVAR	_red
-	.line	688, "main.c"; 	green = 100;
+	.line	689, "main.c"; 	green = 100;
 	MOVIA	0x64
 	BANKSEL	_green
 	MOVAR	_green
-	.line	689, "main.c"; 	break;
+	.line	690, "main.c"; 	break;
 	MGOTO	_00549_DS_
 _00540_DS_:
-	.line	691, "main.c"; 	green = 100;
+	.line	692, "main.c"; 	green = 100;
 	MOVIA	0x64
 	BANKSEL	_green
 	MOVAR	_green
-	.line	692, "main.c"; 	blue = 250;
+	.line	693, "main.c"; 	blue = 250;
 	MOVIA	0xfa
 	BANKSEL	_blue
 	MOVAR	_blue
-	.line	693, "main.c"; 	break;
+	.line	694, "main.c"; 	break;
 	MGOTO	_00549_DS_
 _00541_DS_:
-	.line	695, "main.c"; 	red = 100;
+	.line	696, "main.c"; 	red = 100;
 	MOVIA	0x64
 	BANKSEL	_red
 	MOVAR	_red
-	.line	696, "main.c"; 	blue = 250;
+	.line	697, "main.c"; 	blue = 250;
 	MOVIA	0xfa
 	BANKSEL	_blue
 	MOVAR	_blue
-	.line	697, "main.c"; 	break;
+	.line	698, "main.c"; 	break;
 	MGOTO	_00549_DS_
 _00542_DS_:
-	.line	699, "main.c"; 	red =  100;
+	.line	700, "main.c"; 	red =  100;
 	MOVIA	0x64
 	BANKSEL	_red
 	MOVAR	_red
-	.line	700, "main.c"; 	green = 250;
+	.line	701, "main.c"; 	green = 250;
 	MOVIA	0xfa
 	BANKSEL	_green
 	MOVAR	_green
-	.line	701, "main.c"; 	break;
+	.line	702, "main.c"; 	break;
 	MGOTO	_00549_DS_
 _00543_DS_:
-	.line	703, "main.c"; 	green = 250;
+	.line	704, "main.c"; 	green = 250;
 	MOVIA	0xfa
 	BANKSEL	_green
 	MOVAR	_green
-	.line	704, "main.c"; 	blue = 100;
+	.line	705, "main.c"; 	blue = 100;
 	MOVIA	0x64
 	BANKSEL	_blue
 	MOVAR	_blue
-	.line	705, "main.c"; 	break;
+	.line	706, "main.c"; 	break;
 	MGOTO	_00549_DS_
 _00544_DS_:
-	.line	707, "main.c"; 	red = 250;
+	.line	708, "main.c"; 	red = 250;
 	MOVIA	0xfa
 	BANKSEL	_red
 	MOVAR	_red
-	.line	708, "main.c"; 	blue = 100;
+	.line	709, "main.c"; 	blue = 100;
 	MOVIA	0x64
 	BANKSEL	_blue
 	MOVAR	_blue
-	.line	709, "main.c"; 	break;
+	.line	710, "main.c"; 	break;
 	MGOTO	_00549_DS_
 _00545_DS_:
-	.line	711, "main.c"; 	red =  50;
+	.line	712, "main.c"; 	red =  50;
 	MOVIA	0x32
 	BANKSEL	_red
 	MOVAR	_red
-	.line	712, "main.c"; 	green = 250;
+	.line	713, "main.c"; 	green = 250;
 	MOVIA	0xfa
 	BANKSEL	_green
 	MOVAR	_green
-	.line	713, "main.c"; 	break;
+	.line	714, "main.c"; 	break;
 	MGOTO	_00549_DS_
 _00546_DS_:
-	.line	715, "main.c"; 	green = 250;
+	.line	716, "main.c"; 	green = 250;
 	MOVIA	0xfa
 	BANKSEL	_green
 	MOVAR	_green
-	.line	716, "main.c"; 	blue = 50;
+	.line	717, "main.c"; 	blue = 50;
 	MOVIA	0x32
 	BANKSEL	_blue
 	MOVAR	_blue
-	.line	717, "main.c"; 	break;
+	.line	718, "main.c"; 	break;
 	MGOTO	_00549_DS_
 _00547_DS_:
-	.line	719, "main.c"; 	red = 250;
+	.line	720, "main.c"; 	red = 250;
 	MOVIA	0xfa
 	BANKSEL	_red
 	MOVAR	_red
-	.line	720, "main.c"; 	blue = 50;
+	.line	721, "main.c"; 	blue = 50;
 	MOVIA	0x32
 	BANKSEL	_blue
 	MOVAR	_blue
 _00549_DS_:
-	.line	723, "main.c"; 	}
+	.line	724, "main.c"; 	}
 	RETURN	
 ; exit point of _colorChange
 
@@ -1169,7 +1169,7 @@ _00549_DS_:
 	.debuginfo variable _kclick=r0x1025,enc=unsigned
 _keyCtr:
 ; 2 exit points
-	.line	637, "main.c"; 	char kclick = keyRead(0x30 & (~PORTA));
+	.line	638, "main.c"; 	char kclick = keyRead(0x30 & (~PORTA));
 	COMR	_PORTA,W
 	BANKSEL	r0x1025
 	MOVAR	r0x1025
@@ -1179,11 +1179,11 @@ _keyCtr:
 	MCALL	_keyRead
 	BANKSEL	r0x1025
 	MOVAR	r0x1025
-	.line	638, "main.c"; 	if(kclick == 1)
+	.line	639, "main.c"; 	if(kclick == 1)
 	XORIA	0x01
 	BTRSS	STATUS,2
 	MGOTO	_00525_DS_
-	.line	640, "main.c"; 	if(++workStep > 5)
+	.line	641, "main.c"; 	if(++workStep > 5)
 	BANKSEL	_workStep
 	INCR	_workStep,F
 ;;swapping arguments (AOP_TYPEs 1/3)
@@ -1191,45 +1191,45 @@ _keyCtr:
 	MOVIA	0x06
 	SUBAR	_workStep,W
 	BTRSC	STATUS,0
-	.line	641, "main.c"; 	workStep = 0;
+	.line	642, "main.c"; 	workStep = 0;
 	CLRR	_workStep
-	.line	642, "main.c"; 	ledFlag = 1;
+	.line	643, "main.c"; 	ledFlag = 1;
 	MOVIA	0x01
 	BANKSEL	_ledFlag
 	MOVAR	_ledFlag
-	.line	643, "main.c"; 	if(workStep == 1)
+	.line	644, "main.c"; 	if(workStep == 1)
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	XORIA	0x01
 	BTRSS	STATUS,2
 	MGOTO	_00521_DS_
-	.line	645, "main.c"; 	light = 5;
+	.line	646, "main.c"; 	light = 5;
 	MOVIA	0x05
 	BANKSEL	_light
 	MOVAR	_light
-	.line	646, "main.c"; 	lightValue = 25*light;
+	.line	647, "main.c"; 	lightValue = 25*light;
 	MOVIA	0x7d
 	BANKSEL	_lightValue
 	MOVAR	_lightValue
-	.line	647, "main.c"; 	colorStep = 0;
+	.line	648, "main.c"; 	colorStep = 0;
 	BANKSEL	_colorStep
 	CLRR	_colorStep
 	MGOTO	_00525_DS_
 _00521_DS_:
-	.line	649, "main.c"; 	else if(workStep == 5)
+	.line	650, "main.c"; 	else if(workStep == 5)
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	XORIA	0x05
 	BTRSS	STATUS,2
 	MGOTO	_00525_DS_
-	.line	651, "main.c"; 	lowTime = 600;
+	.line	652, "main.c"; 	lowTime = 600;
 	MOVIA	0x58
 	BANKSEL	_lowTime
 	MOVAR	_lowTime
 	MOVIA	0x02
 	MOVAR	(_lowTime + 1)
 _00525_DS_:
-	.line	655, "main.c"; 	}
+	.line	656, "main.c"; 	}
 	RETURN	
 ; exit point of _keyCtr
 
@@ -1252,35 +1252,35 @@ _00525_DS_:
 	.debuginfo variable _keyStatus=r0x1024,enc=unsigned
 _keyRead:
 ; 2 exit points
-	.line	587, "main.c"; 	char keyRead(uint8 keyStatus)	
+	.line	588, "main.c"; 	char keyRead(uint8 keyStatus)	
 	BANKSEL	r0x1024
 	MOVAR	r0x1024
-	.line	589, "main.c"; 	if(keyStatus)
+	.line	590, "main.c"; 	if(keyStatus)
 	MOVR	r0x1024,W
 	BTRSC	STATUS,2
 	MGOTO	_00509_DS_
-	.line	591, "main.c"; 	keyCount++;
+	.line	592, "main.c"; 	keyCount++;
 	BANKSEL	_keyCount
 	INCR	_keyCount,F
-	.line	592, "main.c"; 	sleepCount = 0;
+	.line	593, "main.c"; 	sleepCount = 0;
 	BANKSEL	_sleepCount
 	CLRR	_sleepCount
 	CLRR	(_sleepCount + 1)
 ;;unsigned compare: left < lit (0xC8=200), size=1
-	.line	593, "main.c"; 	if(keyCount >= 200)
+	.line	594, "main.c"; 	if(keyCount >= 200)
 	MOVIA	0xc8
 	BANKSEL	_keyCount
 	SUBAR	_keyCount,W
 	BTRSS	STATUS,0
 	MGOTO	_00510_DS_
-	.line	595, "main.c"; 	keyCount = 200;
+	.line	596, "main.c"; 	keyCount = 200;
 	MOVIA	0xc8
 	MOVAR	_keyCount
-	.line	596, "main.c"; 	if(keyStatus & 0x10)
+	.line	597, "main.c"; 	if(keyStatus & 0x10)
 	BANKSEL	r0x1024
 	BTRSS	r0x1024,4
 	MGOTO	_00497_DS_
-	.line	598, "main.c"; 	if(++lightValue > 250)
+	.line	599, "main.c"; 	if(++lightValue > 250)
 	BANKSEL	_lightValue
 	INCR	_lightValue,F
 ;;swapping arguments (AOP_TYPEs 1/3)
@@ -1289,11 +1289,11 @@ _keyRead:
 	SUBAR	_lightValue,W
 	BTRSS	STATUS,0
 	MGOTO	_00491_DS_
-	.line	599, "main.c"; 	lightValue = 250;
+	.line	600, "main.c"; 	lightValue = 250;
 	MOVIA	0xfa
 	MOVAR	_lightValue
 _00491_DS_:
-	.line	600, "main.c"; 	light = lightValue/25;
+	.line	601, "main.c"; 	light = lightValue/25;
 	MOVIA	0x19
 	MOVAR	STK00
 	BANKSEL	_lightValue
@@ -1303,11 +1303,11 @@ _00491_DS_:
 	MOVAR	_light
 	MGOTO	_00498_DS_
 _00497_DS_:
-	.line	602, "main.c"; 	else if(keyStatus &= 0x20)
+	.line	603, "main.c"; 	else if(keyStatus &= 0x20)
 	BANKSEL	r0x1024
 	BTRSS	r0x1024,5
 	MGOTO	_00498_DS_
-	.line	604, "main.c"; 	if(--lightValue < 25)
+	.line	605, "main.c"; 	if(--lightValue < 25)
 	BANKSEL	_lightValue
 	DECR	_lightValue,F
 ;;unsigned compare: left < lit (0x19=25), size=1
@@ -1315,11 +1315,11 @@ _00497_DS_:
 	SUBAR	_lightValue,W
 	BTRSC	STATUS,0
 	MGOTO	_00493_DS_
-	.line	605, "main.c"; 	lightValue = 25;
+	.line	606, "main.c"; 	lightValue = 25;
 	MOVIA	0x19
 	MOVAR	_lightValue
 _00493_DS_:
-	.line	606, "main.c"; 	light = lightValue/25;
+	.line	607, "main.c"; 	light = lightValue/25;
 	MOVIA	0x19
 	MOVAR	STK00
 	BANKSEL	_lightValue
@@ -1328,53 +1328,53 @@ _00493_DS_:
 	BANKSEL	_light
 	MOVAR	_light
 _00498_DS_:
-	.line	608, "main.c"; 	if(!longPressFlag)
+	.line	609, "main.c"; 	if(!longPressFlag)
 	BANKSEL	_Status
 	BTRSC	_Status,6
 	MGOTO	_00510_DS_
-	.line	610, "main.c"; 	longPressFlag = 1;
+	.line	611, "main.c"; 	longPressFlag = 1;
 	BSR	_Status,6
-	.line	611, "main.c"; 	return 2;
+	.line	612, "main.c"; 	return 2;
 	MOVIA	0x02
 	MGOTO	_00511_DS_
 ;;unsigned compare: left < lit (0xC8=200), size=1
 _00509_DS_:
-	.line	617, "main.c"; 	if(keyCount >= 200)
+	.line	618, "main.c"; 	if(keyCount >= 200)
 	MOVIA	0xc8
 	BANKSEL	_keyCount
 	SUBAR	_keyCount,W
 	BTRSS	STATUS,0
 	MGOTO	_00506_DS_
-	.line	619, "main.c"; 	keyCount = 0;
+	.line	620, "main.c"; 	keyCount = 0;
 	CLRR	_keyCount
-	.line	620, "main.c"; 	longPressFlag = 0;
+	.line	621, "main.c"; 	longPressFlag = 0;
 	BANKSEL	_Status
 	BCR	_Status,6
-	.line	621, "main.c"; 	return	0;
+	.line	622, "main.c"; 	return	0;
 	MOVIA	0x00
 	MGOTO	_00511_DS_
 ;;unsigned compare: left < lit (0x8=8), size=1
 _00506_DS_:
-	.line	623, "main.c"; 	else if(keyCount >= 8)
+	.line	624, "main.c"; 	else if(keyCount >= 8)
 	MOVIA	0x08
 	BANKSEL	_keyCount
 	SUBAR	_keyCount,W
 	BTRSS	STATUS,0
 	MGOTO	_00507_DS_
-	.line	625, "main.c"; 	keyCount = 0;
+	.line	626, "main.c"; 	keyCount = 0;
 	CLRR	_keyCount
-	.line	626, "main.c"; 	return	1;
+	.line	627, "main.c"; 	return	1;
 	MOVIA	0x01
 	MGOTO	_00511_DS_
 _00507_DS_:
-	.line	628, "main.c"; 	keyCount = 0;
+	.line	629, "main.c"; 	keyCount = 0;
 	BANKSEL	_keyCount
 	CLRR	_keyCount
 _00510_DS_:
-	.line	630, "main.c"; 	return 0;
+	.line	631, "main.c"; 	return 0;
 	MOVIA	0x00
 _00511_DS_:
-	.line	631, "main.c"; 	}
+	.line	632, "main.c"; 	}
 	RETURN	
 ; exit point of _keyRead
 
@@ -1399,12 +1399,12 @@ _00511_DS_:
 	.debuginfo subprogram _workCtr
 _workCtr:
 ; 0 exit points
-	.line	530, "main.c"; 	if(lightValue == 0)
+	.line	531, "main.c"; 	if(lightValue == 0)
 	BANKSEL	_lightValue
 	MOVR	_lightValue,W
 	BTRSS	STATUS,2
 	MGOTO	_00449_DS_
-	.line	531, "main.c"; 	lightValue = 25*light;
+	.line	532, "main.c"; 	lightValue = 25*light;
 	MOVIA	0x19
 	MOVAR	STK00
 	BANKSEL	_light
@@ -1413,12 +1413,12 @@ _workCtr:
 	BANKSEL	_lightValue
 	MOVAR	_lightValue
 _00449_DS_:
-	.line	532, "main.c"; 	if(workStep == 0)
+	.line	533, "main.c"; 	if(workStep == 0)
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	BTRSS	STATUS,2
 	MGOTO	_00483_DS_
-	.line	534, "main.c"; 	white = red = green = blue = 0;
+	.line	535, "main.c"; 	white = red = green = blue = 0;
 	BANKSEL	_blue
 	CLRR	_blue
 	BANKSEL	_green
@@ -1427,26 +1427,26 @@ _00449_DS_:
 	CLRR	_red
 	BANKSEL	_white
 	CLRR	_white
-	.line	535, "main.c"; 	PORTB &= 0xBE;
+	.line	536, "main.c"; 	PORTB &= 0xBE;
 	MOVIA	0xbe
 	ANDAR	_PORTB,F
-	.line	536, "main.c"; 	PORTA &= 0xFC;
+	.line	537, "main.c"; 	PORTA &= 0xFC;
 	MOVIA	0xfc
 	ANDAR	_PORTA,F
 	MGOTO	_00485_DS_
 _00483_DS_:
-	.line	538, "main.c"; 	else if(workStep == 1)
+	.line	539, "main.c"; 	else if(workStep == 1)
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	XORIA	0x01
 	BTRSS	STATUS,2
 	MGOTO	_00480_DS_
-	.line	540, "main.c"; 	white = lightValue;
+	.line	541, "main.c"; 	white = lightValue;
 	BANKSEL	_lightValue
 	MOVR	_lightValue,W
 	BANKSEL	_white
 	MOVAR	_white
-	.line	541, "main.c"; 	red = green = blue = 0;
+	.line	542, "main.c"; 	red = green = blue = 0;
 	BANKSEL	_blue
 	CLRR	_blue
 	BANKSEL	_green
@@ -1455,18 +1455,18 @@ _00483_DS_:
 	CLRR	_red
 	MGOTO	_00485_DS_
 _00480_DS_:
-	.line	543, "main.c"; 	else if(workStep == 2)
+	.line	544, "main.c"; 	else if(workStep == 2)
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	XORIA	0x02
 	BTRSS	STATUS,2
 	MGOTO	_00477_DS_
-	.line	545, "main.c"; 	red = lightValue;
+	.line	546, "main.c"; 	red = lightValue;
 	BANKSEL	_lightValue
 	MOVR	_lightValue,W
 	BANKSEL	_red
 	MOVAR	_red
-	.line	546, "main.c"; 	white = green = blue = 0;
+	.line	547, "main.c"; 	white = green = blue = 0;
 	BANKSEL	_blue
 	CLRR	_blue
 	BANKSEL	_green
@@ -1475,18 +1475,18 @@ _00480_DS_:
 	CLRR	_white
 	MGOTO	_00485_DS_
 _00477_DS_:
-	.line	548, "main.c"; 	else if(workStep == 3)
+	.line	549, "main.c"; 	else if(workStep == 3)
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	XORIA	0x03
 	BTRSS	STATUS,2
 	MGOTO	_00474_DS_
-	.line	550, "main.c"; 	green = lightValue;
+	.line	551, "main.c"; 	green = lightValue;
 	BANKSEL	_lightValue
 	MOVR	_lightValue,W
 	BANKSEL	_green
 	MOVAR	_green
-	.line	551, "main.c"; 	white = red = blue = 0;
+	.line	552, "main.c"; 	white = red = blue = 0;
 	BANKSEL	_blue
 	CLRR	_blue
 	BANKSEL	_red
@@ -1495,18 +1495,18 @@ _00477_DS_:
 	CLRR	_white
 	MGOTO	_00485_DS_
 _00474_DS_:
-	.line	553, "main.c"; 	else if(workStep == 4)
+	.line	554, "main.c"; 	else if(workStep == 4)
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	XORIA	0x04
 	BTRSS	STATUS,2
 	MGOTO	_00471_DS_
-	.line	555, "main.c"; 	blue = lightValue;
+	.line	556, "main.c"; 	blue = lightValue;
 	BANKSEL	_lightValue
 	MOVR	_lightValue,W
 	BANKSEL	_blue
 	MOVAR	_blue
-	.line	556, "main.c"; 	white = green = red = 0;
+	.line	557, "main.c"; 	white = green = red = 0;
 	BANKSEL	_red
 	CLRR	_red
 	BANKSEL	_green
@@ -1515,76 +1515,76 @@ _00474_DS_:
 	CLRR	_white
 	MGOTO	_00485_DS_
 _00471_DS_:
-	.line	558, "main.c"; 	else if(workStep == 5)
+	.line	559, "main.c"; 	else if(workStep == 5)
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	XORIA	0x05
 	BTRSS	STATUS,2
 	MGOTO	_00468_DS_
-	.line	560, "main.c"; 	if(count1s == 0)
+	.line	561, "main.c"; 	if(count1s == 0)
 	BANKSEL	_count1s
 	MOVR	_count1s,W
 	BTRSS	STATUS,2
 	MGOTO	_00485_DS_
-	.line	561, "main.c"; 	colorChange();
+	.line	562, "main.c"; 	colorChange();
 	MCALL	_colorChange
 	MGOTO	_00485_DS_
 _00468_DS_:
-	.line	563, "main.c"; 	else if(workStep == 6)
+	.line	564, "main.c"; 	else if(workStep == 6)
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	XORIA	0x06
 	BTRSS	STATUS,2
 	MGOTO	_00465_DS_
-	.line	565, "main.c"; 	if(count1s == 0)
+	.line	566, "main.c"; 	if(count1s == 0)
 	BANKSEL	_count1s
 	MOVR	_count1s,W
 	BTRSS	STATUS,2
 	MGOTO	_00455_DS_
-	.line	567, "main.c"; 	ledFlag = 1;
+	.line	568, "main.c"; 	ledFlag = 1;
 	MOVIA	0x01
 	BANKSEL	_ledFlag
 	MOVAR	_ledFlag
-	.line	568, "main.c"; 	colorChange();
+	.line	569, "main.c"; 	colorChange();
 	MCALL	_colorChange
 	MGOTO	_00485_DS_
 ;;swapping arguments (AOP_TYPEs 1/3)
 ;;unsigned compare: left >= lit (0x33=51), size=1
 _00455_DS_:
-	.line	570, "main.c"; 	else if(count1s > 50)
+	.line	571, "main.c"; 	else if(count1s > 50)
 	MOVIA	0x33
 	BANKSEL	_count1s
 	SUBAR	_count1s,W
 	BTRSS	STATUS,0
 	MGOTO	_00485_DS_
-	.line	572, "main.c"; 	ledFlag = 0;
+	.line	573, "main.c"; 	ledFlag = 0;
 	BANKSEL	_ledFlag
 	CLRR	_ledFlag
 	MGOTO	_00485_DS_
 _00465_DS_:
-	.line	575, "main.c"; 	else if(workStep == 7)
+	.line	576, "main.c"; 	else if(workStep == 7)
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	XORIA	0x07
 	BTRSS	STATUS,2
 	MGOTO	_00462_DS_
-	.line	577, "main.c"; 	if(count1s %2 == 0)
+	.line	578, "main.c"; 	if(count1s %2 == 0)
 	BANKSEL	_count1s
 	BTRSC	_count1s,0
 	MGOTO	_00485_DS_
-	.line	578, "main.c"; 	rainbow();
+	.line	579, "main.c"; 	rainbow();
 	MCALL	_rainbow
 	MGOTO	_00485_DS_
 _00462_DS_:
-	.line	580, "main.c"; 	else if(workStep == 8)
+	.line	581, "main.c"; 	else if(workStep == 8)
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	XORIA	0x08
 	BTRSC	STATUS,2
-	.line	582, "main.c"; 	rainbow();
+	.line	583, "main.c"; 	rainbow();
 	MCALL	_rainbow
 _00485_DS_:
-	.line	584, "main.c"; 	}
+	.line	585, "main.c"; 	}
 	RETURN	
 
 ;***
@@ -1595,77 +1595,77 @@ _00485_DS_:
 	.debuginfo subprogram _showRGB
 _showRGB:
 ; 0 exit points
-	.line	483, "main.c"; 	if(ledFlag == 0)
+	.line	484, "main.c"; 	if(ledFlag == 0)
 	BANKSEL	_ledFlag
 	MOVR	_ledFlag,W
 	BTRSS	STATUS,2
 	MGOTO	_00428_DS_
-	.line	485, "main.c"; 	PORTB &= 0xDE;
+	.line	486, "main.c"; 	PORTB &= 0xDE;
 	MOVIA	0xde
 	ANDAR	_PORTB,F
-	.line	486, "main.c"; 	PORTA &= 0xFC;
+	.line	487, "main.c"; 	PORTA &= 0xFC;
 	MOVIA	0xfc
 	ANDAR	_PORTA,F
-	.line	487, "main.c"; 	return;
+	.line	488, "main.c"; 	return;
 	MGOTO	_00443_DS_
 _00428_DS_:
-	.line	489, "main.c"; 	if(white > ledCount)
+	.line	490, "main.c"; 	if(white > ledCount)
 	BANKSEL	_white
 	MOVR	_white,W
 	BANKSEL	_ledCount
 	SUBAR	_ledCount,W
 	BTRSC	STATUS,0
 	MGOTO	_00430_DS_
-	.line	491, "main.c"; 	PORTB |= 0x20;
+	.line	492, "main.c"; 	PORTB |= 0x20;
 	BSR	_PORTB,5
 	MGOTO	_00431_DS_
 _00430_DS_:
-	.line	495, "main.c"; 	PORTB &= 0xDF;
+	.line	496, "main.c"; 	PORTB &= 0xDF;
 	BCR	_PORTB,5
 _00431_DS_:
-	.line	498, "main.c"; 	if(blue > ledCount)
+	.line	499, "main.c"; 	if(blue > ledCount)
 	BANKSEL	_blue
 	MOVR	_blue,W
 	BANKSEL	_ledCount
 	SUBAR	_ledCount,W
 	BTRSC	STATUS,0
 	MGOTO	_00433_DS_
-	.line	500, "main.c"; 	PORTA |= 0x01;
+	.line	501, "main.c"; 	PORTA |= 0x01;
 	BSR	_PORTA,0
 	MGOTO	_00434_DS_
 _00433_DS_:
-	.line	504, "main.c"; 	PORTA &= 0xFE;
+	.line	505, "main.c"; 	PORTA &= 0xFE;
 	BCR	_PORTA,0
 _00434_DS_:
-	.line	507, "main.c"; 	if(green > ledCount)
+	.line	508, "main.c"; 	if(green > ledCount)
 	BANKSEL	_green
 	MOVR	_green,W
 	BANKSEL	_ledCount
 	SUBAR	_ledCount,W
 	BTRSC	STATUS,0
 	MGOTO	_00436_DS_
-	.line	509, "main.c"; 	PORTA |= 0x02;
+	.line	510, "main.c"; 	PORTA |= 0x02;
 	BSR	_PORTA,1
 	MGOTO	_00437_DS_
 _00436_DS_:
-	.line	513, "main.c"; 	PORTA &= 0xFD;
+	.line	514, "main.c"; 	PORTA &= 0xFD;
 	BCR	_PORTA,1
 _00437_DS_:
-	.line	516, "main.c"; 	if(red > ledCount)
+	.line	517, "main.c"; 	if(red > ledCount)
 	BANKSEL	_red
 	MOVR	_red,W
 	BANKSEL	_ledCount
 	SUBAR	_ledCount,W
 	BTRSC	STATUS,0
 	MGOTO	_00439_DS_
-	.line	518, "main.c"; 	PORTB |= 0x01;
+	.line	519, "main.c"; 	PORTB |= 0x01;
 	BSR	_PORTB,0
 	MGOTO	_00440_DS_
 _00439_DS_:
-	.line	522, "main.c"; 	PORTB &= 0xFE;
+	.line	523, "main.c"; 	PORTB &= 0xFE;
 	BCR	_PORTB,0
 _00440_DS_:
-	.line	524, "main.c"; 	if(++ledCount > 254)
+	.line	525, "main.c"; 	if(++ledCount > 254)
 	BANKSEL	_ledCount
 	INCR	_ledCount,F
 ;;swapping arguments (AOP_TYPEs 1/3)
@@ -1673,10 +1673,10 @@ _00440_DS_:
 	MOVIA	0xff
 	SUBAR	_ledCount,W
 	BTRSC	STATUS,0
-	.line	525, "main.c"; 	ledCount = 0;
+	.line	526, "main.c"; 	ledCount = 0;
 	CLRR	_ledCount
 _00443_DS_:
-	.line	526, "main.c"; 	}
+	.line	527, "main.c"; 	}
 	RETURN	
 
 ;***
@@ -1698,36 +1698,38 @@ _gotoSleep:
 	.line	374, "main.c"; 	AWUCON = 0x34;
 	MOVIA	0x34
 	MOVAR	_AWUCON
-	.line	375, "main.c"; 	INTE =  C_INT_TMR0 | C_INT_TMR1 | C_INT_PABKey;
+	.line	375, "main.c"; 	BWUCON = 0X00;
+	CLRR	_BWUCON
+	.line	376, "main.c"; 	INTE =  C_INT_TMR0 | C_INT_TMR1 | C_INT_PABKey;
 	MOVIA	0x0b
 	MOVAR	_INTE
-	.line	376, "main.c"; 	PCON =  C_LVR_En;	
+	.line	377, "main.c"; 	PCON =  C_LVR_En;	
 	MOVIA	0x08
 	MOVAR	_PCON
-	.line	377, "main.c"; 	INTF = 0;								// Clear all interrupt flags
+	.line	378, "main.c"; 	INTF = 0;								// Clear all interrupt flags
 	CLRR	_INTF
-	.line	378, "main.c"; 	CLRWDT();
+	.line	379, "main.c"; 	CLRWDT();
 	clrwdt
-	.line	379, "main.c"; 	SLEEP();
+	.line	380, "main.c"; 	SLEEP();
 	sleep
-	.line	380, "main.c"; 	INTE =  C_INT_TMR0 | C_INT_TMR1 | C_INT_PABKey;	// Enable Timer0、Timer1、WDT overflow interrupt
+	.line	381, "main.c"; 	INTE =  C_INT_TMR0 | C_INT_TMR1 | C_INT_PABKey;	// Enable Timer0、Timer1、WDT overflow interrupt
 	MOVIA	0x0b
 	MOVAR	_INTE
-	.line	381, "main.c"; 	INTF = 0;
+	.line	382, "main.c"; 	INTF = 0;
 	CLRR	_INTF
-	.line	383, "main.c"; 	PCON = C_WDT_En;				// Enable WDT ,  Enable LVR
+	.line	384, "main.c"; 	PCON = C_WDT_En;				// Enable WDT ,  Enable LVR
 	MOVIA	0x80
 	MOVAR	_PCON
-	.line	384, "main.c"; 	sleepFlag = 0;
+	.line	385, "main.c"; 	sleepFlag = 0;
 	BANKSEL	_sleepFlag
 	CLRR	_sleepFlag
-	.line	385, "main.c"; 	bitIndex = 0;
+	.line	386, "main.c"; 	bitIndex = 0;
 	BANKSEL	_bitIndex
 	CLRR	_bitIndex
-	.line	386, "main.c"; 	value = 0;
+	.line	387, "main.c"; 	value = 0;
 	BANKSEL	_value
 	CLRR	_value
-	.line	387, "main.c"; 	}
+	.line	388, "main.c"; 	}
 	RETURN	
 ; exit point of _gotoSleep
 
@@ -2583,6 +2585,6 @@ _cleanData:
 
 
 ;	code size estimation:
-;	 1064+  333 =  1397 instructions ( 3460 byte)
+;	 1065+  333 =  1398 instructions ( 3462 byte)
 
 	end

@@ -7,7 +7,7 @@
 
 
 u8t debug = 0;		//1打开bug
-#define OUTA	301
+#define OUTA	100
 #define BATTLE	1550
 
 static unsigned char numArray[]={0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f,0x71,0x79,0x50};
@@ -35,7 +35,7 @@ u8t tempDuty = 0;
 u16t count5S = 0;
 u8t ledDeadTime = 0;
 //u8t prePwStep = 0;
-u8t countFull = 0;
+u16t countFull = 0;
 
 u8t	tempshiweiNum = 0;	//十位
 u8t	tempgeweiNum = 0;	//个位
@@ -49,7 +49,7 @@ u8t chrgStep = 0;
 u8t lightBat = 0;
 u16t closeCount = 0;
 u8t firstShowCount = 0;
-u8t batCount = 0;
+u16t batCount = 0;
 
 
 __sbit IntFlag = Status:0;
@@ -147,6 +147,8 @@ void main(void)
 	    CLRWDT();
 	    if(showFlag)
 	    	refreshNub();
+	    else
+	    	setInput();
 	    if(workStep > 0 && tempDuty >= 40)
 	    {
 	    	if(cDuty > tempDuty)
@@ -180,6 +182,7 @@ void main(void)
 			if(++closeCount >= 6000)
 			{
 				closeCount = 0;
+				preBatValue = 0;
 				workStep = 0;
 				pwmStop();
 			}
@@ -219,8 +222,8 @@ void main(void)
     		keyCtr();
 		if(workStep == 0 && keyCount == 0 && (PORTA & 0x08) == 0 && ledLightTime == 0 && ledDeadTime == 0)
 		{
-	
-			gotoSleep();
+			if(++sleepTime > 200)
+				gotoSleep();
 	
 		}
 		//900s关机
@@ -266,7 +269,7 @@ void chrgCtr()
 		{
 			chrgStep = 4;
 			//充满了
-			if(shiweiNum == 9 &&  geweiNum == 9 && batValue > 102 && ++countFull > 200)
+			if(shiweiNum == 9 &&  geweiNum == 9 && batValue >= 101 && ++countFull > 2000)
 			{
 				pwm1Stop();
 			//ABPLCON &= 0X7F;
@@ -279,30 +282,38 @@ void chrgCtr()
 		{
 			countFull = 0;
 			IOSTB &= 0xF7;
-
+			if(shiweiNum < 2)
+			{
+				if(chrgStep <= 0)
+				{
+					PWM1DUTY = 9;
+					chrgStep = 0;
+					pwm1Init();
+				}
+			}
 			if(shiweiNum < 5)
 			{
 				if(chrgStep <= 1)
 				{
-					PWM1DUTY = 10;
+					PWM1DUTY = 11;
 					chrgStep = 1;
 					pwm1Init();
 				}
 			}
-			else if(shiweiNum < 9)
+			else if(shiweiNum < 8)
 			{
 				if(chrgStep <= 2)
 				{
 					chrgStep = 2;
-					PWM1DUTY = 11;
+					PWM1DUTY = 12;
 					pwm1Init();
 				}
 			}
-			else
+			else 
 			{
 				if(chrgStep <= 3)
 				{
-					PWM1DUTY = 12;
+					PWM1DUTY = 13;
 					chrgStep = 3;
 					pwm1Init();
 				}
@@ -324,11 +335,8 @@ void chrgCtr()
 			if(++batCount > 30)
 			{
 				batCount = 0;
-				preBatValue = batValue;
-//				if(preBatValue < (batValue + 5))
-//					preBatValue = preBatValue-1;
-//				else
-//					preBatValue = batValue;
+				preBatValue = preBatValue/2;
+				preBatValue = preBatValue + batValue/2;
 			}
 		}
 		else
@@ -349,32 +357,8 @@ void refreshNub()
 		setInput();
 		return;
 	}
-	if(tempshiweiNum != shiweiNum || tempgeweiNum != geweiNum)
-	{
-		
-		if(workStep == 0)
-		{
-			if(++refreshCount >= 20)
-			{
-				refreshCount = 0;
-				tempshiweiNum = shiweiNum;
-				tempgeweiNum = geweiNum;
-			}
-		}
-		else
-		{
-			if(++refreshCount >= 20)
-			{
-				refreshCount = 0;
-				tempshiweiNum = shiweiNum;
-				tempgeweiNum = geweiNum;
-			}
-		}
-	}
-	else
-	{
-		refreshCount = 0;
-	}
+	tempshiweiNum = shiweiNum;
+	tempgeweiNum = geweiNum;
 	if(workStep > 0 || ledLightTime > 0)
 	{
 		showKeyLed();
@@ -392,6 +376,13 @@ void refreshNub()
 	showNubGewei(numArray[tempgeweiNum]);
 }
 
+void setMaxDuty()
+{
+	if(batValue < 50)
+		maxDuty = maxDuty + 10 - (batValue/10);
+	tempDuty = maxDuty;
+	pwmInit();
+}
 
 
 void keyCtr()
@@ -429,11 +420,7 @@ void keyCtr()
 			maxDuty = 48;
 		else if(workStep == 6)
 			maxDuty = 50;
-		if(workStep > 0)
-		{
-			PWM2DUTY = maxDuty;
-			pwmInit();
-		}
+		setMaxDuty();
 	}
 	else if(kclick == 2)
 	{
@@ -453,11 +440,10 @@ void keyCtr()
 				return;
 			}
 			workStep = 1;
-			PWM2DUTY = 70;
-			currentDuty = 70;
+			PWM2DUTY = 60;
+			currentDuty = 60;
 			maxDuty = 40;
-			pwmInit();
-			
+			setMaxDuty();
 		}
 		
 	}
@@ -540,6 +526,7 @@ void pwmStop()
 
 void gotoSleep()
 {
+	checkBatAD();
 	setInput();
 	count5s = 0;
 	showFlag = 0;
@@ -576,6 +563,7 @@ char keyRead(char keyStatus)
 	if(keyStatus)
 	{
 		keyCount++;
+		checkBatAD();
 		if(keyCount >= 200)
 		{
 			keyCount = 200;
@@ -640,27 +628,27 @@ void checkBatAD()
         R_AIN2_DATA >>=3;					// R_AIN0_DATA divided 
          if(debug)
         	R_AIN2_DATA = BATTLE;
-        
-      	if(R_AIN2_DATA <= 1165)
+        if(R_AIN2_DATA >= 1650)
+        {
+        	chrgStep = 4;
+        	pwm1Stop();
+        }
+      	if(R_AIN2_DATA <= 1178)
         {
         	pwStep = 0;
-        	R_AIN2_DATA = 1165;
+        	R_AIN2_DATA = 1170;
         }
-
-       	R_AIN2_DATA = R_AIN2_DATA - 1165;
-       	if(R_AIN2_DATA >= 400)
+		
+       	R_AIN2_DATA = R_AIN2_DATA - 1170;
+        if(R_AIN2_DATA >= 340)
        	{
-       		//batValue = 100;
-       		batValue = 75+(R_AIN2_DATA-300)/4;
-       	}
-       	else if(R_AIN2_DATA >= 300)
-       	{
-       		batValue = 50+(R_AIN2_DATA-300)/2;
-			
+       		batValue = 80+(R_AIN2_DATA-300)/4;
        	}
        	else if(R_AIN2_DATA >= 200)
        	{
-       		batValue = 25+(R_AIN2_DATA-200)/4;
+       		batValue = 25 + (R_AIN2_DATA-200)/2;
+       		if(batValue > 95)
+       			batValue = 90;
        	}
        	else
        	{
@@ -668,12 +656,17 @@ void checkBatAD()
        	}
        	if(0x08 & PORTA)
        	{
-       		if(batValue > 10)
+       	
+       		if(batValue > 30)
+       			batValue = batValue - 20 +  shiweiNum*2;
+       		else if(batValue > 10)
        			batValue = batValue - 10 +  shiweiNum;
+       		else if(batValue > 0)
+       			batValue = batValue/2 + 1;
        	}
-       	else if(batValue > 10 && batValue < 99)
+       	else if(batValue > 20 && batValue < 98)
        	{
-       		batValue = batValue + shiweiNum +  shiweiNum + 3;
+       		batValue = batValue + 7;
        	}
    
 }

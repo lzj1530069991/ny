@@ -74,6 +74,10 @@ u8t ledDeadTime = 0;
 u8t lockLedStep = 0;
 u16t shandengTime = 0;
 u16t lowBat = 0;
+u8t lockStart = 0;	//低电锁定状态
+u8t fullLock = 0;	//充满了锁定
+u8t fullLockCount = 0;
+u8t ledCount = 0;
 
 u8t debug = 0;		//1打开bug
 
@@ -253,22 +257,45 @@ void keyCtr()
 		if(++workStep > 8)
 			workStep = 1;
 		shanshuoTime = 6;
-		if(workStep == 1)
+	
+		if(pwStep <= 2)
+		{
+			if(workStep == 1)
+				maxDuty = 50;
+			else if(workStep == 2)
+				maxDuty = 52;
+			else if(workStep == 3)
+				maxDuty = 54;
+			else if(workStep == 4)
+				maxDuty = 56;
+			else if(workStep == 5)
+				maxDuty = 58;
+			else if(workStep == 6)
+				maxDuty = 60;
+			else if(workStep == 7)
+				maxDuty = 62;
+			else if(workStep == 8)
+				maxDuty = 64;
+		}
+		else
+		{
+			if(workStep == 1)
 			maxDuty = 40;
-		else if(workStep == 2)
-			maxDuty = 44;
-		else if(workStep == 3)
-			maxDuty = 48;
-		else if(workStep == 4)
-			maxDuty = 52;
-		else if(workStep == 5)
-			maxDuty = 55;
-		else if(workStep == 6)
-			maxDuty = 58;
-		else if(workStep == 7)
-			maxDuty = 61;
-		else if(workStep == 8)
-			maxDuty = 64;
+			else if(workStep == 2)
+				maxDuty = 44;
+			else if(workStep == 3)
+				maxDuty = 48;
+			else if(workStep == 4)
+				maxDuty = 52;
+			else if(workStep == 5)
+				maxDuty = 55;
+			else if(workStep == 6)
+				maxDuty = 58;
+			else if(workStep == 7)
+				maxDuty = 61;
+			else if(workStep == 8)
+				maxDuty = 64;
+		}
 		if(workStep > 0)
 		{
 			PWM2DUTY = maxDuty;
@@ -284,9 +311,10 @@ void keyCtr()
 		}
 		else
 		{
-			if(pwStep <= 1)
+			if(pwStep <= 0 || lockStart)
 			{
 				//电量不足时候
+				lockStart = 1;
 				shandengTime = 500;
 				return;	
 			}
@@ -533,6 +561,7 @@ void pwmStop()
 
 void gotoSleep()
 {
+	count900s = 0;
 	LedInput();
 	pwmStop();
 	IOSTA = 0x60;
@@ -603,15 +632,21 @@ void chrgCtr()
 	if(PORTA & 0x20)
 	{
 		//充电中
+		lockStart = 0;
 		chrgFlag = 1;
 		workStep = 0;
 		ledLightTime = 0;
 		pwmStop();
 		
-		if(pwStep >= 9)
+		if(fullLock || pwStep >= 9)
 		{
 			//充满了
 			ledStep = 8;
+			if(++fullLockCount > 200)
+			{
+				fullLock = 1;
+				fullLockCount = 200;
+			}
 			if(pwStep == 10 && ++fullCount > 100)
 				IOSTA |= 0x01;
 			//ABPLCON &= 0X7F;
@@ -619,13 +654,24 @@ void chrgCtr()
 		}
 		else
 		{
+			fullLockCount = 0;
 			//ABPLCON |= 0x80;
 			PORTA &= 0xFB;		//关闭充满提示灯
 			//fullCount = 0;
 			if(count500ms == 0 && pwStep < 9)
 			{
 				if(lockLedStep < pwStep - 1)
-					lockLedStep = pwStep - 1;
+				{
+					if(lockLedStep == 0)
+						lockLedStep = pwStep - 1;
+					if(++ledCount > 100)
+						lockLedStep = pwStep - 1;
+					
+				}
+				else
+				{
+					ledCount = 0;
+				}
 //				if(++ledStep > 8)
 				ledStep = lockLedStep;
 			}
@@ -645,12 +691,15 @@ void chrgCtr()
 	}
 	else 
 	{
+		fullLock = 0;
+		fullLockCount = 0;
 		lockLedStep = 0;
 		if(workStep > 0 && pwStep == 0)
 		{
-			if(++lowBat > 1000)
+			if(++lowBat > 6000)
 			{
 				shandengTime = 500;
+				lockStart = 1;
 				lowBat = 0;
 				powerOff();
 			}

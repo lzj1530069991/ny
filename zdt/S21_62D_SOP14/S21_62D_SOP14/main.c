@@ -678,7 +678,7 @@ void chrgCtr()
 			{
 				if(chrgStep <= 1)
 				{
-					PWM1DUTY = 8;
+					PWM1DUTY = 9;
 					chrgStep = 1;
 				}
 			}
@@ -687,7 +687,7 @@ void chrgCtr()
 				if(chrgStep <= 2)
 				{
 					chrgStep = 2;
-					PWM1DUTY = 9;
+					PWM1DUTY = 10;
 				}
 			}
 			else if(pwStep < 3)
@@ -695,7 +695,7 @@ void chrgCtr()
 				if(chrgStep <= 3)
 				{
 					chrgStep = 3;
-					PWM1DUTY = 10;
+					PWM1DUTY = 11;
 				}
 			}
 			else if(pwStep < 5)
@@ -703,14 +703,14 @@ void chrgCtr()
 				if(chrgStep <= 4)
 				{
 					chrgStep = 4;
-					PWM1DUTY = 11;
+					PWM1DUTY = 12;
 				}
 			}
 			else
 			{
 				if(chrgStep <= 5)
 				{
-					PWM1DUTY = 12;
+					PWM1DUTY = 13;
 					chrgStep = 5;
 				}
 			}
