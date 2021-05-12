@@ -1,13 +1,15 @@
 ICBODY       := NY8B061D
 CLIENT_NAME  := yxy
 CB_FILE      := jmq_62D_SOP16.cb
-HOST_TOOL    := NYIDE 4.00
-USER_C       := main.c 
+HOST_TOOL    := NYIDE 4.20
+USER_C       := main.c  
 LIBS         :=  
-USER_ASM     := 
+USER_ASM     :=  
 OUT_NAME     := jmq_62D_SOP16
 CC_PATH      := C:\Nyquest\NYC_NY8
 TEMP_FOLDER  := 
+OBJDIR       := OBJ
+VPATH        := 
 
 #  - small: disable bank ram
 #  - small_8b: disable bank ram (NY8B series)
@@ -32,13 +34,14 @@ CFLAGS      := -mny8 --errfmt-ny -p$(ICBODY) -D__CPU_$(ICBODY) --debug \
                -I"$(CC_PATH)/include" -I"C:\Nyquest\NYIDE\\include\NY8 C"  -MD --stack-size 6  \
                 --backup-stk 2 
 
-ASFLAGS     := -p $(ICBODY) -g -l --w-no 32797 --lang en-us  \
+ASFLAGS     := -p $(ICBODY) --dbgfmt 2 -g -l --w-no 32797 --lang en-us  \
                -I "$(CC_PATH)/inc"
 
 DEPS        := $(patsubst %.c,%.d, $(USER_C))
-ASM_SRC     := $(USER_ASM) $(patsubst %.c,%.s, $(USER_C))
-OBJS        := $(patsubst %.s,%.o, $(ASM_SRC))
-OBJS        := $(patsubst %.asm,%.o, $(OBJS))
+ASM_SRC     := $(USER_ASM) 
+ASM_SRC     := $(addprefix $(OBJDIR)/,$(notdir $(patsubst %.c,%.s,$(USER_C))))
+OBJS        := $(addprefix $(OBJDIR)/,$(notdir $(patsubst %.c,%.o,$(USER_C)))) \
+               $(addprefix $(OBJDIR)/,$(notdir $(patsubst %.s,%.o,$(USER_ASM))))
 OBJS        := $(sort $(OBJS))
 
 LIBS        += $(ICBODY).a
@@ -68,14 +71,22 @@ all: $(BIN_FILE)
 $(BIN_FILE): $(OBJS)
 	$(LD) $(OBJS) $(LIBS) "$(CB_FILE)" -s "$(CFG_FILE)" -o "$(TEMP_FOLDER)$(OUT_NAME)" $(LDFLAGS)
 
-%.s: %.c
+
+
+$(OBJDIR)/%.s: %.c
 	$(CC) -S $< -o $@ $(CFLAGS)
-
-%.o: %.s
+	
+$(OBJDIR)/%.o: $(OBJDIR)/%.s
 	$(AS) $< $(ASFLAGS)
 
-%.o: %.asm
+$(OBJDIR)/%.o: $(OBJDIR)/%.asm
 	$(AS) $< $(ASFLAGS)
+
+$(OBJDIR)/%.o: %.asm
+	$(AS) $< -o $@ $(ASFLAGS)
+	
+$(OBJDIR)/%.o: %.s
+	$(AS) $< -o $@ $(ASFLAGS)
 
 -include $(DEPS)
 
@@ -89,4 +100,10 @@ clean:
 	-@1>nul 2>nul del $(patsubst %.c, %.s, $(USER_C))
 	-@1>nul 2>nul del $(addsuffix .o, $(basename $(ASM_SRC)))
 	-@1>nul 2>nul del $(addsuffix .lst, $(basename $(ASM_SRC)))
+	-@1>nul 2>nul del $(addprefix $(OBJDIR)\,$(notdir $(patsubst %.c,%.adb,$(USER_C))))
+	-@1>nul 2>nul del $(addprefix $(OBJDIR)\,$(notdir $(patsubst %.c,%.p,$(USER_C))))
+	-@1>nul 2>nul del $(addprefix $(OBJDIR)\,$(notdir $(patsubst %.c,%.s,$(USER_C))))
+	-@1>nul 2>nul del $(addprefix $(OBJDIR)\,$(notdir $(patsubst %.c,%.d,$(USER_C))))
+	-@1>nul 2>nul del $(addprefix $(OBJDIR)\,$(notdir $(addsuffix .o, $(basename $(ASM_SRC)))))
+	-@1>nul 2>nul del $(addprefix $(OBJDIR)\,$(notdir $(addsuffix .lst, $(basename $(ASM_SRC)))))
 

@@ -418,6 +418,7 @@ void pwmStop()
 
 void gotoSleep()
 {
+	count900s = 0;
 	LedInput();
 	sleepTime = 0;
 	//pwStep = 0;

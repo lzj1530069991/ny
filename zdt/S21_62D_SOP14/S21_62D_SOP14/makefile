@@ -1,4 +1,4 @@
-ICBODY       := NY8B062D
+ICBODY       := NY8B061D
 CLIENT_NAME  := zdt
 CB_FILE      := S21_62D_SOP14.cb
 HOST_TOOL    := NYIDE 4.20
@@ -16,7 +16,7 @@ VPATH        :=
 #  - bank2: 2 bank ram
 #  - bank2_8b: 2 bank ram (NY8B series)
 #  - bank4: 4 bank ram
-MODEL := bank2_8b
+MODEL := small_8b
 
 ENABLE_INIT_BSS := 0
 

@@ -78,6 +78,7 @@ u8t lockStart = 0;	//低电锁定状态
 u8t fullLock = 0;	//充满了锁定
 u8t fullLockCount = 0;
 u8t ledCount = 0;
+u8t maxOut = 0;
 
 u8t debug = 0;		//1打开bug
 
@@ -198,7 +199,7 @@ void main(void)
 			checkOutA();
 		}
 		chrgCtr();
-		
+		ledShow();
 		if(workStep > 0 && currentDuty > maxDuty)
 		{
 			currentDuty = currentDuty - 10;
@@ -322,7 +323,10 @@ void keyCtr()
 			workStep = 1;
 			PWM2DUTY = 80;
 			currentDuty = 80;
-			maxDuty = 40;
+			if(pwStep <= 2)
+				maxDuty = 50;
+			else
+				maxDuty = 40;
 			pwmInit();
 			shanshuoTime = 16;
 			
@@ -646,18 +650,22 @@ void chrgCtr()
 			{
 				fullLock = 1;
 				fullLockCount = 200;
+				PORTA |= 0x04;		//打开充满提示灯
 			}
 			if(pwStep == 10 && ++fullCount > 100)
+			{
 				IOSTA |= 0x01;
+				PORTA |= 0x04;		//打开充满提示灯
+			}
 			//ABPLCON &= 0X7F;
-			PORTA |= 0x04;		//打开充满提示灯
+			
 		}
 		else
 		{
 			fullLockCount = 0;
 			//ABPLCON |= 0x80;
 			PORTA &= 0xFB;		//关闭充满提示灯
-			//fullCount = 0;
+			fullCount = 0;
 			if(count500ms == 0 && pwStep < 9)
 			{
 				if(lockLedStep < pwStep - 1)
@@ -783,7 +791,7 @@ void checkBatAD()
         	//R_AIN2_DATA = 1550;
         	lowCount = 0;
         }
-        else if(R_AIN4_DATA < 1135)
+        else if(R_AIN4_DATA < 1145)
         {
         	if(++lowCount < 10)
         		return;
@@ -965,6 +973,19 @@ void checkOutA()
         R_AIN3_DATA >>=3;					// R_AIN0_DATA divided 8
         if(debug)
         	R_AIN3_DATA = OUTA;
+        	
+        if(pwStep > 3)
+        {
+        	maxOut = 80;
+        }
+        else if(pwStep > 1)
+        {
+        	maxOut = 65;
+        }
+        else
+        {
+        	maxOut = 60;
+        }
         if(workStep < 9 && R_AIN3_DATA > 200)
         {
         	if(++overCount > 5)
@@ -987,7 +1008,7 @@ void checkOutA()
 //        		}
         	}
         }
-        else if(R_AIN3_DATA > 75)
+        else if(R_AIN3_DATA > maxOut)
         {
         	if(overCount > 0)
         	{
@@ -1037,27 +1058,39 @@ void checkOutA()
         	{
         		overCount--;
         	}
-        	if(R_AIN3_DATA > 64 && workStep < 3)
+        	if(R_AIN3_DATA > (maxOut - 26) && workStep < 4)
         	{
         		if(workStep == 1)
         		{
         			tempDuty = 79;
         		}
-        		else if(workStep == 2 && R_AIN3_DATA > 68)
+        		else if(workStep == 2)
         		{
         			tempDuty = 82;
         		}
-        		else if(workStep == 3 && R_AIN3_DATA > 70)
+        		else if(workStep == 3)
         		{
         			tempDuty = 85;
         		}
+        		
         		PWM2DUTY = tempDuty;
         	}
-        	else if(R_AIN3_DATA < 50)
+        	if(R_AIN3_DATA > 59 && workStep < 6 && workStep > 3)
+        	{
+        		if(workStep == 4)
+	    		{
+	    			tempDuty = 88;
+	    		}
+	    		else if(workStep == 5)
+	    		{
+	    			tempDuty = 90;
+	    		}
+        	}
+        	else if(R_AIN3_DATA < 67)
         	{
         		PWM2DUTY = maxDuty;
         	}
-        	else if(workStep >= 7 && R_AIN3_DATA < 68)
+        	else if(workStep >= 7 && R_AIN3_DATA < 75)
         	{
         		PWM2DUTY = maxDuty;
         	}

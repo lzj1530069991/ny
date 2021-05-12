@@ -47,9 +47,6 @@ u8t count500ms = 0;
 u8t	keyCount = 0;//消抖计数
 u8t workStep = 0;
 u8t ledStep = 0;
-u16t fgCount = 0;
-u16t fgPRD = 0;
-u8t preFG = 0;
 u8t maxDuty = 0;
 u8t pwStep = 0;
 u16t  R_AIN4_DATA;	
@@ -83,6 +80,9 @@ u8t lockLedStep = 0;
 u16t closeCount = 0;
 u8t chrgStep = 0;
 u8t prePwStep = 0;
+u8t currentChrgPWMDuty = 0;
+u8t chrgDutyTime = 0;
+u8t lockLedTime = 0;
 
 u8t debug = 0;		//1打开bug
 #define OUTA	301
@@ -136,8 +136,6 @@ void isr(void) __interrupt(0)
 		{
 			IntFlag = 1;
 			intCount = 0;
-			if(workStep)
-				++fgCount;
 			if(++count500ms >= 40)
 				count500ms = 0;
 			if(++count200ms >= 20)
@@ -244,15 +242,16 @@ void main(void)
     	}
     	if(chrgFlag == 0)
     		keyCtr();
-		if(count200ms < 11)
-		{
-			checkBatAD();
-		}
-		else if(count200ms > 13 && count200ms < 16)
-		{
-			checkChrgV();
-			
-		}
+//		if(count200ms < 11)
+//		{
+//			
+//		}
+//		else if(count200ms > 13 && count200ms < 16)
+//		{
+//			checkChrgV();
+//			
+//		}
+		checkBatAD();
 		chrgCtr();
 		
 		
@@ -288,9 +287,9 @@ void keyCtr()
 		}	
 		ledTime = 0;
 		if(++workStep > 6)
-			workStep = 1;
-//		if(pwStep == 0)
-//			shanshuoTime = 10;
+			workStep = 0;
+		if(workStep == 0)
+			powerOff();;
 		if(workStep == 1)
 		{
 			ledStep = 1;
@@ -528,10 +527,11 @@ void pwm1Init()
 	if(0x80&T1CR1)
 		return;
 	TMRH = 0x00;
-	TMR1 = 24;							//频率为110K
+	TMR1 = 48;							//频率为110K
 	//PWM2DUTY = 0x08;				// 		
 	
 	T1CR2 = C_TMR1_ClkSrc_Inst | C_PS1_Div2;	// Enable Prescaler1, Prescaler1 dividing rate = 1:2, Timer1 clock source is instruction clock 
+	T1CR2 = C_TMR1_ClkSrc_Inst | C_PS1_Dis;
 	T1CR1 = C_PWM1_En | C_TMR1_Reload | C_TMR1_En;	// PWM1 output will be present on PB6 , PWM1 output is active high, reloaded from TMR1, non-stop mode
 }
 
@@ -576,8 +576,6 @@ void gotoSleep()
 	workStep = 0;
 	AWUCON = 0x88;
 	BWUCON = 0x00;
-	fgPRD = 0;
-	fgCount = 0;
 	redLedFlag = 0;
 	//ADMD = 0x00;
 	//INTE =  0x00;
@@ -638,7 +636,7 @@ char keyRead(char keyStatus)
 
 void chrgCtr()
 {
-	if(PORTA & 0x08 || R_AIN3_DATA > 200)
+	if(PORTA & 0x08)
 	{
 		//充电中
 		chrgFlag = 1;
@@ -648,7 +646,7 @@ void chrgCtr()
 		
 		if(pwStep >= 7)
 		{
-			chrgStep = 6;
+			chrgStep = 9;
 			//充满了
 			ledStep = 6;
 			if(pwStep == 8 && ++fullCount >= 100)
@@ -656,6 +654,10 @@ void chrgCtr()
 				fullCount = 100;
 				pwm1Stop();
 				PORTB &= 0xF7;
+			}
+			else
+			{
+				PWM1DUTY = 24;
 			}
 				//ABPLCON &= 0X7F;
 //			PORTB &= 0xF7;
@@ -665,53 +667,109 @@ void chrgCtr()
 		{
 			//ABPLCON |= 0x80;
 			IOSTB &= 0xF7;
-			//fullCount = 0;
-			if(count500ms == 0 && pwStep < 7 && chrgStep < 6)
+			fullCount = 0;
+			if(count500ms == 0 && pwStep < 7 && chrgStep < 9)
 			{
 				if(lockLedStep < pwStep - 1)
-					lockLedStep = pwStep - 1;
+				{
+					if(++lockLedTime > 20)
+						lockLedStep = pwStep - 1;
+				}
+				else
+				{
+					lockLedTime = 0;
+				}
 				if(++ledStep > 6)
 					ledStep = lockLedStep;
 			}
-			
-			if(pwStep < 1)
+			if(count1s == 0)
 			{
-				if(chrgStep <= 1)
+				if(chrgStep > 0)
 				{
-					PWM1DUTY = 9;
-					chrgStep = 1;
+					if(R_AIN2_DATA < 80)
+					{
+						if(chrgStep <= 1)
+						{
+							chrgStep = 1;
+							PWM1DUTY = 13;
+						}
+					}
+					else if(R_AIN2_DATA < 110)
+					{
+						if(chrgStep <= 2)
+						{
+							chrgStep = 2;
+							PWM1DUTY = 15;
+						}
+					}
+					else if(R_AIN2_DATA < 150)
+					{
+						if(chrgStep <= 3)
+						{
+							chrgStep = 3;
+							PWM1DUTY = 18;
+						}
+					}
+					else if(R_AIN2_DATA < 190)
+					{
+						if(chrgStep <= 4)
+						{
+							chrgStep = 4;
+							PWM1DUTY = 19;
+						}
+					}
+					else if(R_AIN2_DATA < 260)
+					{
+						if(chrgStep <= 5)
+						{
+							chrgStep = 5;
+							PWM1DUTY = 20;
+						}
+					}
+					else if(R_AIN2_DATA < 310)
+					{
+						if(chrgStep <= 6)
+						{
+							chrgStep = 6;
+							PWM1DUTY = 21;
+						}
+					}
+					else if(R_AIN2_DATA < 340)
+					{
+						if(chrgStep <= 7)
+						{
+							chrgStep = 7;
+							PWM1DUTY = 22;
+						}
+					}
+					else
+					{
+						if(chrgStep <= 8)
+						{
+							chrgStep = 8;
+							PWM1DUTY = 23;
+						}
+					}
 				}
-			}
-			else if(pwStep < 2)
-			{
-				if(chrgStep <= 2)
+				else
 				{
-					chrgStep = 2;
-					PWM1DUTY = 10;
-				}
-			}
-			else if(pwStep < 3)
-			{
-				if(chrgStep <= 3)
-				{
-					chrgStep = 3;
-					PWM1DUTY = 11;
-				}
-			}
-			else if(pwStep < 5)
-			{
-				if(chrgStep <= 4)
-				{
-					chrgStep = 4;
-					PWM1DUTY = 12;
-				}
-			}
-			else
-			{
-				if(chrgStep <= 5)
-				{
-					PWM1DUTY = 13;
-					chrgStep = 5;
+					
+					if(++currentChrgPWMDuty >= 11)
+					{
+						currentChrgPWMDuty = 11;
+						if(R_AIN2_DATA < 200)
+						{
+							if(++chrgDutyTime > 100)
+								chrgStep = 1;
+						}
+						else
+						{
+							if(++chrgDutyTime > 20)
+								chrgStep = 1;
+						}
+						
+					}
+					PWM1DUTY = currentChrgPWMDuty;
 				}
 			}
 			pwm1Init();
@@ -720,7 +778,9 @@ void chrgCtr()
 	}
 	else 
 	{
+		currentChrgPWMDuty = 0;
 		chrgStep = 0;
+		chrgDutyTime = 0;
 		lockLedStep = 0;
 		chrgTime = 0;
 		pwm1Stop();
@@ -804,21 +864,32 @@ void checkBatAD()
         }
         
         R_AIN2_DATA = R_AIN2_DATA - 1150;
-		if(R_AIN2_DATA >= 405)
+        if(PORTA & 0x08 && R_AIN2_DATA < 390)
+      	{
+      		if(R_AIN2_DATA > 360)
+      			R_AIN2_DATA = R_AIN2_DATA - 10;
+      		else if(R_AIN2_DATA > 300)
+      			R_AIN2_DATA = R_AIN2_DATA - 20;
+      		else if(R_AIN2_DATA > 200)
+      			R_AIN2_DATA = R_AIN2_DATA - 30;
+      		else if(R_AIN2_DATA > 50)
+      			R_AIN2_DATA = R_AIN2_DATA - 40;
+      	}
+		if(R_AIN2_DATA >= 398)
        	{
        		pwStep = 7;
        	}
-        if(R_AIN2_DATA >= 410)
+        if(R_AIN2_DATA >= 402)
        	{
        		pwStep = 8;
        	}
-       	else if(R_AIN2_DATA > 350)
+       	else if(R_AIN2_DATA > 380)
        	{
 			
 			if(pwStep < 6)
       		{
       			fullCount = 0;
-      			if(R_AIN2_DATA > 355)
+      			if(R_AIN2_DATA > 382)
       				pwStep = 6;
       		}
 			else if(chrgTime == 0 && R_AIN2_DATA < 396)
@@ -834,66 +905,66 @@ void checkBatAD()
 					pwStep = 7;
 			}
        	}
-       	else if(R_AIN2_DATA > 325)
+       	else if(R_AIN2_DATA > 360)
       	{
       		
       		if(pwStep == 4)
       		{
-      			if(R_AIN2_DATA > 330)
+      			if(R_AIN2_DATA > 362)
       				pwStep = 5;
       		}
       		if(pwStep > 5)
       		{
-      			if(R_AIN2_DATA < 365)
+      			if(R_AIN2_DATA < 380)
       				pwStep = 5;
       		}
       		else
       			pwStep = 5;
       		chrgTime = 0;
       	}
-       	 else if(R_AIN2_DATA > 260)
+       	 else if(R_AIN2_DATA > 330)
       	{
       		if(pwStep == 3)
       		{
-      			if(R_AIN2_DATA > 265)
+      			if(R_AIN2_DATA > 335)
       				pwStep = 4;
       		}
       		if(pwStep > 4)
       		{
-      			if(R_AIN2_DATA < 320)
+      			if(R_AIN2_DATA < 360)
       				pwStep = 4;
       		}
       		else
       			pwStep = 4;
       		chrgTime = 0;
       	}
-      	else if(R_AIN2_DATA > 200)
+      	else if(R_AIN2_DATA > 290)
       	{
       		if(pwStep == 2)
       		{
-      			if(R_AIN2_DATA > 210)
+      			if(R_AIN2_DATA > 295)
       				pwStep = 3;
       		}
       		if(pwStep > 3)
       		{
-      			if(R_AIN2_DATA < 260)
+      			if(R_AIN2_DATA < 340)
       				pwStep = 3;
       		}
       		else
       			pwStep = 3;
       		chrgTime = 0;
       	}
-      	else if(R_AIN2_DATA > 100)
+      	else if(R_AIN2_DATA > 180)
       	{
       		//大于30% 小于60%
       		if(pwStep == 1)
       		{
-      			if(R_AIN2_DATA > 110)
+      			if(R_AIN2_DATA > 180)
       				pwStep = 2;
       		}
       		if(pwStep > 2)
       		{
-      			if(R_AIN2_DATA < 190)
+      			if(R_AIN2_DATA < 240)
       				pwStep = 2;
       		}
       		else
@@ -905,7 +976,7 @@ void checkBatAD()
       		//大于10% 小于30%
       		if(pwStep > 1)
       		{
-      			if(R_AIN2_DATA < 90)
+      			if(R_AIN2_DATA < 170)
       				pwStep = 1;
       		}
       		else

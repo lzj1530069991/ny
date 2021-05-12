@@ -246,7 +246,7 @@ void main(void)
 		chrgCtr();
 		
 		
-		if(workStep == 0 && keyCount == 0 && (PORTA & 0x08) == 0 && ledLightTime == 0 && ledDeadTime == 0)
+		if(workStep == 0 && keyCount == 0 && (PORTA & 0x08) == 0 && ledLightTime == 0 && ledDeadTime == 0 && shanshuoTime == 0)
 		{
 			if(++sleepTime > 20)
 			{
@@ -636,20 +636,21 @@ void chrgCtr()
 			chrgStep = 6;
 			//充满了
 			ledStep = 6;
-			if(++fullCount >= 100)
+			if(++fullCount >= 200)
 			{
-				fullCount = 100;
+				fullCount = 200;
 				pwm1Stop();
+				PORTB &= 0xF7;
+				IOSTB |= 0X08;
 			}
 				//ABPLCON &= 0X7F;
-			PORTB &= 0xF7;
-			IOSTB |= 0X08;
+			
 		}
 		else
 		{
 			//ABPLCON |= 0x80;
 			IOSTB &= 0xF7;
-			//fullCount = 0;
+			fullCount = 0;
 			if(count500ms == 0 && pwStep < 7)
 			{
 				if(lockLedStep < pwStep - 1)
@@ -674,7 +675,7 @@ void chrgCtr()
 				if(chrgStep <= 2)
 				{
 					chrgStep = 2;
-					PWM1DUTY = 10;
+					PWM1DUTY = 9;
 				}
 			}
 			else if(pwStep < 4)
@@ -682,22 +683,22 @@ void chrgCtr()
 				if(chrgStep <= 3)
 				{
 					chrgStep = 3;
-					PWM1DUTY = 11;
+					PWM1DUTY = 10;
 				}
 			}
-			else if(pwStep < 8)
+			else if(pwStep < 7)
 			{
 				if(chrgStep <= 4)
 				{
 					chrgStep = 4;
-					PWM1DUTY = 12;
+					PWM1DUTY = 11;
 				}
 			}
 			else
 			{
 				if(chrgStep <= 5)
 				{
-					PWM1DUTY = 13;
+					PWM1DUTY = 12;
 					chrgStep = 5;
 				}
 			}

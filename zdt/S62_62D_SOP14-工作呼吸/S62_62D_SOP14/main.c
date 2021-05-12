@@ -340,10 +340,10 @@ void keyCtr()
 		}
 		else
 		{
-//			if(lowCount >= 10)
-//			{
-//				return;
-//			}
+			if(lowCount >= 10)
+			{
+				return;
+			}
 			breathFalg = 0;
 			breathTime = 250;
 			waitRainbowTime = 500;

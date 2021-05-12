@@ -50,6 +50,7 @@ u8t lightBat = 0;
 u16t closeCount = 0;
 u8t firstShowCount = 0;
 u16t batCount = 0;
+u8t maxChrgDuty = 0;
 
 
 __sbit IntFlag = Status:0;
@@ -103,7 +104,9 @@ void isr(void) __interrupt(0)
 					--ledDeadTime;
 			}
 			if(++count5s >= 500)
-					count5s = 0;
+			{
+				count5s = 0;
+			}
 			if(++count1s >= 100)
 			{
 				count1s = 0;
@@ -142,6 +145,7 @@ void main(void)
 	ledLightTime = showFlag = 1;
 	tempshiweiNum = shiweiNum = 8;
 	tempgeweiNum = geweiNum = 8;
+	delay(250);
 	while(1)
 	{
 	    CLRWDT();
@@ -208,12 +212,9 @@ void main(void)
     	}
     	if(count200ms < 5)
 		{
-			if(workStep > 0 &&cDuty == tempDuty)
-				checkBatAD();
-			if(workStep == 0)
-				checkBatAD();
+			checkBatAD();
 		}
-		else if(count200ms > 8 && count200ms < 11)
+		else if(count200ms > 10 && count200ms < 15)
 		{
 			checkOutA();
 		}
@@ -222,6 +223,7 @@ void main(void)
     		keyCtr();
 		if(workStep == 0 && keyCount == 0 && (PORTA & 0x08) == 0 && ledLightTime == 0 && ledDeadTime == 0)
 		{
+			showFlag = 0;
 			if(++sleepTime > 200)
 				gotoSleep();
 	
@@ -282,30 +284,30 @@ void chrgCtr()
 		{
 			countFull = 0;
 			IOSTB &= 0xF7;
-			if(shiweiNum < 2)
+			if(preBatValue < 8)
 			{
 				if(chrgStep <= 0)
 				{
-					PWM1DUTY = 9;
+					PWM1DUTY = 6;
 					chrgStep = 0;
 					pwm1Init();
 				}
 			}
-			if(shiweiNum < 5)
+			if(preBatValue < 40)
 			{
 				if(chrgStep <= 1)
 				{
-					PWM1DUTY = 11;
+					PWM1DUTY = 7;
 					chrgStep = 1;
 					pwm1Init();
 				}
 			}
-			else if(shiweiNum < 8)
+			else if(preBatValue < 70)
 			{
 				if(chrgStep <= 2)
 				{
 					chrgStep = 2;
-					PWM1DUTY = 12;
+					PWM1DUTY = 9;
 					pwm1Init();
 				}
 			}
@@ -313,7 +315,7 @@ void chrgCtr()
 			{
 				if(chrgStep <= 3)
 				{
-					PWM1DUTY = 13;
+					PWM1DUTY = 10;
 					chrgStep = 3;
 					pwm1Init();
 				}
@@ -328,7 +330,7 @@ void chrgCtr()
 		pwm1Stop();
 		chrgFlag = 0;
 		//未充电
-		
+		maxChrgDuty = 0;
 
 		if(workStep == 0 && (preBatValue > batValue + 1))
 		{
@@ -563,7 +565,7 @@ char keyRead(char keyStatus)
 	if(keyStatus)
 	{
 		keyCount++;
-		checkBatAD();
+		//checkBatAD();
 		if(keyCount >= 200)
 		{
 			keyCount = 200;
@@ -702,7 +704,7 @@ void checkOutA()
 //        		}
         	}
         }
-        else if(R_AIN4_DATA > 45)
+        else if(R_AIN4_DATA > 77)
         {
         	if(overCount > 0)
         	{
@@ -719,16 +721,21 @@ void checkOutA()
         }
         else
         {
+        	u8t maxAout = 40;
+        	if(batValue > 70)
+        	{
+        		maxAout = 60;
+        	}
         	if(overCount > 0)
         	{
         		overCount--;
         	}
-        	if(R_AIN4_DATA > 40 && workStep < 4)
+        	if(R_AIN4_DATA > maxAout && workStep < 4)
         	{
         		tempDuty = 70 + workStep*5;
         		//PWM2DUTY = tempDuty;
         	}
-        	else if(R_AIN4_DATA < 68)
+        	else if(R_AIN4_DATA < 75)
         	{
         		//PWM2DUTY = maxDuty;
         		tempDuty = maxDuty;

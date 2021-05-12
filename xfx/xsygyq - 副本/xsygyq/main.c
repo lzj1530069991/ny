@@ -48,6 +48,7 @@ u16t shanTime = 0;
 u8t count1s = 0;
 u16t waitTime = 0;
 u8t offShowTime = 0;
+u8t notRecv = 0;
 
 static unsigned char numArray[]={0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f,0x71,0x79,0x50};
 
@@ -79,12 +80,12 @@ void isr(void) __interrupt(0)
 			if(++count1s > 100)
 			{
 				count1s = 0;
-				if(stepShowTime > 0)
+				if(pwShowTime > 0)
+					pwShowTime--;
+				else if(stepShowTime > 0)
 				{
 					stepShowTime--;
 				}
-				else if(pwShowTime > 0)
-					pwShowTime--;
 				else if(offShowTime > 0)
 					offShowTime--;
 			}
@@ -255,8 +256,9 @@ void chrgCtr()
 //检测红外遮挡
 void checkIRKey()
 {
-	if(getbit(PORTB, 3) == 0)
+	if(getbit(PORTB, 3) == 1)
 	{
+		notRecv = 0;
 		if(++revCount > 5)
 		{
 			if(irStep == 0 && waitTime == 0)
@@ -282,8 +284,12 @@ void checkIRKey()
 	else
 	{
 		//未检测到遮挡
-		revCount = 0;
-		irStep = 0;			//移开了
+		if(++notRecv > 5)
+		{
+			notRecv = 5;
+			revCount = 0;
+			irStep = 0;			//移开了
+		}
 	}
 //	
 //	if(checkCount > 10 && irStep)
@@ -490,6 +496,7 @@ void keyCtr()
 		{
 			pwFlag = 0;		//关机
 			workStep = 0;
+			offShowTime = 250;
 		}
 		else
 		{
