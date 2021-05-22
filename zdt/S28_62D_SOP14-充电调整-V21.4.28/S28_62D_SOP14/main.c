@@ -754,16 +754,6 @@ void checkOutA()
 //        		}
         	}
         }
-        else if(R_AIN4_DATA > 77)
-        {
-        	if(overCount > 0)
-        	{
-        		overCount--;
-        	}
-
-        	tempDuty = 70 + workStep*5;
-
-        }
         else
         {
         	u8t maxAout = 40;
@@ -771,7 +761,11 @@ void checkOutA()
         		maxAout = 45;
         	if(workStep == 1)
     		{
-    			maxAout = maxAout - 5;
+    			maxAout = maxAout - 11;
+    		}
+    		if(workStep == 2)
+    		{
+    			maxAout = maxAout - 8;
     		}
     		else if(workStep == 4)
     		{

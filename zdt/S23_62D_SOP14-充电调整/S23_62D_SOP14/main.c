@@ -74,6 +74,7 @@ u8t limitDuty = 0;
 u8t addTime = 0;
 u8t subTime = 0;
 u8t subMin = 0;
+u8t ledCount = 0;
 
 u8t debug = 0;		//1打开bug
 #define OUTA	301
@@ -642,70 +643,57 @@ void chrgCtr()
 			//ABPLCON |= 0x80;
 			IOSTB &= 0xF7;
 			fullCount = 0;
-			if(pwStep < 1)
+			if(count500ms == 0 && pwStep <= 7 && lockLedStep < 6)
 			{
-				limitDuty = 19;
-			}
-			if(pwStep < 2)
-			{
-				limitDuty = 20;
-			}
-			else if(pwStep < 6)
-			{
-				limitDuty = 23;
-			}
-			else
-			{	
-				limitDuty = 24;
-			}
-			if(count500ms == 0 && pwStep < 7)
-			{
+
 				if(lockLedStep < pwStep - 1)
-					lockLedStep = pwStep - 1;
+				{
+					if(lockLedStep == 0)
+						lockLedStep = pwStep - 1;
+					if(++ledCount > 100)
+						lockLedStep = pwStep - 1;
+					
+				}
+				else
+				{
+					ledCount = 0;
+				}
 				if(++ledStep > 6)
 					ledStep = lockLedStep;
 			}
-			if(pwStep == 7)
+			if(lockLedStep >= 6)
 			{
 				ledStep = 6;	//亮灯不闪了
 			}
-			if(maxduty > limitDuty)
-			{
-				maxduty = limitDuty;
-				PWM1DUTY = maxduty;
-			}
-			else
-			{
-				PWM1DUTY = chrgduty;
-			}
+			PWM1DUTY = chrgduty;
 			pwm1Init();
 			if(count200ms > 5)
 			{
 
-					if(R_AIN4_DATA > 37)
+				if(R_AIN4_DATA > 36)
+				{
+					if(++subTime > 200)
 					{
-						if(++subTime > 50)
-						{
-							maxduty = maxduty - 1;
-							subTime = 0;
-							subMin = 34;
-						}
+						maxduty = maxduty - 1;
+						subTime = 0;
+						subMin = 28;
+					}
+					addTime = 0;
+				}
+				else if(R_AIN4_DATA < subMin)
+				{
+					if(++addTime > 50)
+					{
+						maxduty = maxduty + 1;
 						addTime = 0;
 					}
-					else if(R_AIN4_DATA < subMin)
-					{
-						if(++addTime > 50)
-						{
-							maxduty = maxduty + 1;
-							addTime = 0;
-						}
-						subTime = 0;
-					}
-					if(chrgduty < maxduty)
-						chrgduty++;
-					else
-						chrgduty = maxduty;
-				
+					subTime = 0;
+				}
+				if(chrgduty < maxduty)
+					chrgduty++;
+				else
+					chrgduty = maxduty;
+			
 			}
 			
 		}
@@ -713,7 +701,7 @@ void chrgCtr()
 	}
 	else 
 	{
-		subMin = 37;
+		subMin = 28;
 		chrgFullFlag = 0;
 		chrgduty = 0;
 		maxduty = 0;
@@ -862,7 +850,11 @@ void checkOutA()
         		maxAout = 45;
         	if(workStep == 1)
     		{
-    			maxAout = maxAout - 5;
+    			maxAout = maxAout - 11;
+    		}
+    		else if(workStep == 2)
+    		{
+    			maxAout = maxAout - 8;
     		}
     		else if(workStep == 4)
     		{

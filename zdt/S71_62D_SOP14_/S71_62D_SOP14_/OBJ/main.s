@@ -1674,9 +1674,9 @@ _setColor:
 	.debuginfo subprogram _showRGB
 _showRGB:
 ; 0 exit points
-	.line	377, "main.c"; 	if(red <= ledCount)
-	BANKSEL	_red
-	MOVR	_red,W
+	.line	377, "main.c"; 	if(blue <= ledCount)
+	BANKSEL	_blue
+	MOVR	_blue,W
 	BANKSEL	_ledCount
 	SUBAR	_ledCount,W
 	BTRSS	STATUS,0
@@ -1688,9 +1688,9 @@ _00281_DS_:
 	.line	383, "main.c"; 	PORTB &= 0xFE;
 	BCR	_PORTB,0
 _00282_DS_:
-	.line	386, "main.c"; 	if(blue <= ledCount)
-	BANKSEL	_blue
-	MOVR	_blue,W
+	.line	386, "main.c"; 	if(red <= ledCount)
+	BANKSEL	_red
+	MOVR	_red,W
 	BANKSEL	_ledCount
 	SUBAR	_ledCount,W
 	BTRSS	STATUS,0

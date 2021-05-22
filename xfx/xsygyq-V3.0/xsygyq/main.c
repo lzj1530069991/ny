@@ -57,6 +57,9 @@ u16t count5s = 0;
 u8t count250ms = 0;
 u8t checkBatTime = 0;
 u8t fullTime = 0;
+u8t waitBatTime = 0;
+u8t startTime = 0;
+u8t zhedangCount = 0;
 
 static unsigned char numArray[]={0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f,0x71,0x79,0x50};
 
@@ -129,7 +132,8 @@ void main(void)
 {
     initSys();
     initAD();
-    gotoSleep();
+    startTime = 200;
+    //gotoSleep();
     while(1)
     {
         CLRWDT();							// Clear WatchDog
@@ -169,42 +173,47 @@ void main(void)
 		else if(pwFlag)
 		{
 			
-			if(++count250ms >= 25)
+			if(++count250ms >= 10)
 	    	{
 		    	
 		    	count250ms = 0;
+		    	zhedangCount = 0;
 		    	u8t i = 0;
 		    	revCount = 0;
 		    	PORTBbits.PB1 = 1;						// Set PB[1]= 1
 				IRCR = C_IR_38K | C_IR_En;	
+				delay(10);
 				PORTA |= 0x40;
 		    	for(i=0;i<6;i++)
 		    	{
-			    	//PORTB |= 0x02;
-			    	delay(2);
-			    	checkIRKey();
-			    	//PORTB &= 0xFD;
-			    	delay(5);
+			    	delay(10);
 		    	}
+		    	//checkIRKey();
 		    	PORTBbits.PB1 = 0;						// Set PB[1]= 1
-				IRCR = C_IR_38K;	
+				IRCR = C_IR_38K;
+				PORTA &= 0xBF;
 		    	if(revCount > 5)
 		    	{
 		    		revCount = 0;
 		    		delay(30);
 		    		PORTBbits.PB1 = 1;						// Set PB[1]= 1
 					IRCR = C_IR_38K | C_IR_En;	
-		    		for(i=0;i<6;i++)
+					delay(10);
+					PORTA |= 0x40;
+					zhedangCount = 0;
+		    		for(i=0;i<50;i++)
 			    	{
-				    	//PORTB |= 0x02;
-				    	delay(2);
-				    	checkIRKey();
-				    	//PORTB &= 0xFD;
-				    	delay(5);
+						while(PORTBbits.PB3 == 1)
+				    	{
+				    		zhedangCount++;
+				    	}
 			    	}
+			    	
+			    	PORTA &= 0xBF;
+			    	checkIRKey();
 			    	PORTBbits.PB1 = 0;						// Set PB[1]= 1
 					IRCR = C_IR_38K;
-			    	if(zhedangTime == 0)
+			    	if(zhedangTime == 1)
 			    	{
 			    		if(workStep == 1)
 						{
@@ -218,18 +227,14 @@ void main(void)
 			    		{
 			    			waitTime = 150;
 			    		}
+			    		
 			    	}
-			    	if(++zhedangTime > 40)
+			    	if(zhedangCount > 5)
 			    	{
-			    		zhedangTime = 40;
-//			    		if(zhedangTime % 2)
-//			    		{
-//			    			showFlag = 1;
-//			    		}
-//			    		else
-//			    		{
-//			    			showFlag = 0;
-//			    		}
+				    	if(++zhedangTime > 40)
+				    	{
+				    		zhedangTime = 40;
+				    	}
 			    	}
 		    	}
 		    	else
@@ -239,25 +244,19 @@ void main(void)
 		    	}
 		    	delay(5);
 		    	
-		    	PORTA &= 0xBF;
+		    	
 			}
 		}
     	keyCtr();
-    	if(waitTime == 0 && workTime == 0)
-    	{
-    		if(++checkBatTime >= 20)
-    		{
-    			checkBatTime = 0;
-    			checkBat();
-    		}
-    	}
-    	else
-    	{
-    		checkBatTime = 0;
-    	}
+    	if(++checkBatTime >= 20)
+		{
+			checkBatTime = 0;
+			if(workTime == 0)
+				checkBat();
+		}
     	chrgCtr();
     	
-		if((0x20 & ~PORTA) && keyCount == 0 && pwFlag == 0 && stepShowTime == 0 && pwShowTime == 0 && offShowTime == 0)
+		if((0x20 & ~PORTA) && keyCount == 0 && pwFlag == 0 && stepShowTime == 0 && pwShowTime == 0 && offShowTime == 0 && startTime == 0)
 		{
 			//休眠
 			if(++sleepTime > 100)
@@ -297,7 +296,10 @@ void chrgCtr()
 	
 
 		//未充电
-		fullFlag = 0;
+		if((0x20 & PORTA) == 0)
+		{
+			fullFlag = 0;
+		}
 		BPHCON |= 0x04;
 		IOSTB &= 0xFB;
 		if(workTime > 0)
@@ -310,7 +312,15 @@ void chrgCtr()
     		pwmStop();
     		PORTB &= 0xFB;
     	}
-     	if(stepShowTime)
+    	if(startTime)
+    	{
+    		checkBat();
+    		startTime--;
+    		showFlag = 1;
+			baiweiNum = shiweiNum = 8;
+			geweiNum = 8;
+    	}
+     	else if(stepShowTime)
 		{
 			showFlag = 1;
 			baiweiNum = shiweiNum = 0;
@@ -333,7 +343,7 @@ void chrgCtr()
 		}
 		else
 		{
-			if(pwStep <= 5 && offShowTime == 0 && ((0x20 & PORTA) == 0))
+			if(pwStep <= 5 && offShowTime == 0 && ((0x20 & PORTA) == 0) && pwFlag)
 			{
 				showFlag = 1;
 				if(++shanTime > 500)			//电量不足闪灯
@@ -426,8 +436,7 @@ void checkIRKey()
 		irStep = 0;
 		return;
 	}
-	delay(2);
-	if(revCount > 12 && revCount < 20 && irStep == 0)
+	if(zhedangCount > 5 && irStep == 0)
 	{
 		//马达动起来
 		if(workStep == 1)
@@ -442,6 +451,7 @@ void checkIRKey()
 		{
 			workTime = 150;
 		}
+		waitBatTime = 100;
 		//waitTime = workTime + 300;
 		irStep = 1;
 	}
@@ -599,12 +609,19 @@ void keyCtr()
 	char kclick = keyRead(0x80 & (~PORTA));
 	if(kclick == 1)
 	{
-		if(pwFlag)
+		checkBat();
+		if(pwFlag && pwStep > 0)
 		{
 			if(showFlag == 0)
 			{
 				//显示电量
 				pwShowTime = 3;
+				offShowTime = 0;
+			}
+			else if(stepShowTime == 0)
+			{
+				pwShowTime = 0;
+				stepShowTime = 2;
 				offShowTime = 0;
 			}
 			else
@@ -619,6 +636,7 @@ void keyCtr()
 	}
 	else if(kclick == 2)
 	{
+		checkBat();
 		if(pwFlag)
 		{
 			pwFlag = 0;		//关机
@@ -627,8 +645,9 @@ void keyCtr()
 			stepShowTime = 0;
 			offShowTime = 5;
 		}
-		else
+		else if(pwStep > 0)
 		{
+			
 			pwFlag = 1;		//开机
 			pwShowTime = 3;
 			stepShowTime = 2;
@@ -689,18 +708,26 @@ void checkBat()
     {
     	pwStep = 0;
     	fullTime = 0;
+    	if((0x20 & PORTA) == 0)
+		{
+			pwFlag = 0;		//关机
+			workStep = 0;
+			pwShowTime = 0;
+			stepShowTime = 0;
+			offShowTime = 0;
+		}
     }
     else
     {
     	u16t tempValue = 0;
     	fullTime = 0;
-    	if(R_Quarter_VDD_DATA >= 2000)
+    	if(R_Quarter_VDD_DATA >= 1998)
     	{
-    		tempValue = (R_Quarter_VDD_DATA - 2000)/2 + 45;
+    		tempValue = (R_Quarter_VDD_DATA - 1998)/2 + 49;
     	}
-    	else if(R_Quarter_VDD_DATA >= 1900)
+    	else if(R_Quarter_VDD_DATA >= 1886)
     	{
-    		tempValue = ((R_Quarter_VDD_DATA - 1900)/4) + 22;
+    		tempValue = ((R_Quarter_VDD_DATA - 1886)/4) + 21;
     	}
     	else if(R_Quarter_VDD_DATA > 1550)
     	{
@@ -714,17 +741,33 @@ void checkBat()
     	{
     		
     		u8t tempShi = tempValue/10;
-    		if(tempValue < 10)
+    		if(tempValue < 5)
     		{
     			tempValue = 1;
     		}
     		else if(tempValue < 20)
     		{
+    			tempValue = tempValue - 5;
+    		}
+    		else if(tempValue < 30)
+    		{
     			tempValue = tempValue - 10;
+    		}
+    		else if(tempValue < 40)
+    		{
+    			tempValue = tempValue - 15;
+    		}
+    		else if(tempValue < 50)
+    		{
+    			tempValue = tempValue - 21;
+    		}
+    		else if(tempValue < 70)
+    		{
+    			tempValue = tempValue - 22;
     		}
     		else if(tempValue < 120)
     		{
-    			tempValue = tempValue - 20;
+    			tempValue = tempValue - 23;
     		}
     		if(tempValue >= 100)
     		{
@@ -733,33 +776,31 @@ void checkBat()
     		//充电中
     		if(pwStep < tempValue)
     		{
-    			if(++count5s > 500)
-    			{
-    				count5s = 0;
-    				pwStep++;
-    			}
+    			pwStep++;
     			//pwStep = tempValue;
     			
     		}
     	}
     	else
     	{
-    		if(tempValue > 99)
-    			tempValue = 99;
-    		if(pwStep == 0 || pwFlag == 0)
+    		if(tempValue > 100)
+    			tempValue = 100;
+    		if(pwStep == 0)
     		{
     			pwStep = tempValue;
     		}
     		if(pwStep > tempValue)
     		{
-    			if(++count5s > 500)
+    			if(++count5s > 10)
     			{
     				count5s = 0;
     				pwStep--;
     			}
     		}
+    			
     	}
     }
+   
     
 }
 

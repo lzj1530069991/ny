@@ -374,7 +374,7 @@ void showRGB()
 
 
 	
-	if(red <= ledCount)
+	if(blue <= ledCount)
 	{
 		PORTB |= 0x01;
 	}
@@ -383,7 +383,7 @@ void showRGB()
 		PORTB &= 0xFE;
 	}
 	
-	if(blue <= ledCount)
+	if(red <= ledCount)
 	{
 		PORTA |= 0x02;
 	}
