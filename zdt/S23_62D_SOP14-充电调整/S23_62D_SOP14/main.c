@@ -11,28 +11,26 @@ typedef unsigned short u16t;
 
 #define L1OUT	IOSTB &= 0xFD
 #define L2OUT	IOSTA &= 0xFE
-#define L3OUT	IOSTB &= 0xFE
+#define L3OUT	IOSTB &= 0xDE
 
 #define L1IN	IOSTB |= 0x02
 #define L2IN	IOSTA |= 0x01
-#define L3IN	IOSTB |= 0x01
+#define L3IN	IOSTB |= 0x21
 
 #define L1H		PORTB |= 0x02
 #define L2H		PORTA |= 0x01
-#define L3H		PORTB |= 0x01
+#define L3H		PORTB |= 0x21
 
 #define L1L		PORTB &= 0xFD
 #define L2L		PORTA &= 0xFE
-#define L3L		PORTB &= 0xFE
+#define L3L		PORTB &= 0xDE
 
 u8t Status = 0;
-u16t duty = 0;
 u8t intCount = 0;
 u8t count500ms = 0;
 u8t	keyCount = 0;//消抖计数
 u8t workStep = 0;
 u8t ledStep = 0;
-u8t preFG = 0;
 u8t maxDuty = 0;
 u8t pwStep = 0;
 u16t  R_AIN4_DATA;	
@@ -68,13 +66,14 @@ u8t chrgduty = 0;
 u8t maxduty = 0;
 u8t count50ms = 0;
 u8t chrgFullFlag = 0;
-u8t preR_AIN4_DATA = 0;
-u8t pwmTime = 0;
-u8t limitDuty = 0;
+u8t ledCount = 0;
 u8t addTime = 0;
 u8t subTime = 0;
 u8t subMin = 0;
-u8t ledCount = 0;
+u8t chrgWaitTime = 0;
+u16t tempSum = 0;
+u8t count100 = 0;
+u16t tempResult = 0;
 
 u8t debug = 0;		//1打开bug
 #define OUTA	301
@@ -238,10 +237,7 @@ void main(void)
 		{
 			checkBatAD();
 		}
-		else if(count200ms > 5 && count200ms < 19)
-		{
-			checkOutA();
-		}
+		checkOutA();
 		chrgCtr();
 		
 		
@@ -434,9 +430,9 @@ void ledShow()
 void LedInput()
 {
 	IOSTA |= 0x01;
-	IOSTB |= 0x03;
+	IOSTB |= 0x23;
 	PORTA &= 0xFE;
-	PORTB &= 0xFC;
+	PORTB &= 0xDC;
 }
 
 void LED1ON()
@@ -665,35 +661,39 @@ void chrgCtr()
 			{
 				ledStep = 6;	//亮灯不闪了
 			}
-			PWM1DUTY = chrgduty;
+			PWM1DUTY = maxduty;
 			pwm1Init();
 			if(count200ms > 5)
 			{
-
-				if(R_AIN4_DATA > 36)
-				{
-					if(++subTime > 200)
+					if(R_AIN4_DATA <= 35 && R_AIN4_DATA >=subMin)
 					{
-						maxduty = maxduty - 1;
-						subTime = 0;
-						subMin = 28;
-					}
-					addTime = 0;
-				}
-				else if(R_AIN4_DATA < subMin)
-				{
-					if(++addTime > 50)
+						addTime = subTime = 0;
+					}	
+					if(R_AIN4_DATA > 35)
 					{
-						maxduty = maxduty + 1;
+						if(++subTime > chrgWaitTime)
+						{
+							maxduty = maxduty - 1;
+							subTime = 0;
+							subMin = 34;
+							chrgWaitTime = 250;
+						}
 						addTime = 0;
 					}
-					subTime = 0;
-				}
-				if(chrgduty < maxduty)
-					chrgduty++;
-				else
-					chrgduty = maxduty;
-			
+					else if(R_AIN4_DATA < subMin)
+					{
+						if(++addTime > chrgWaitTime)
+						{
+							maxduty = maxduty + 1;
+							addTime = 0;
+						}
+						subTime = 0;
+					}
+					if(chrgduty < maxduty)
+						chrgduty++;
+					else
+						chrgduty = maxduty;
+				
 			}
 			
 		}
@@ -701,7 +701,8 @@ void chrgCtr()
 	}
 	else 
 	{
-		subMin = 28;
+		chrgWaitTime = 20;
+		subMin = 33;
 		chrgFullFlag = 0;
 		chrgduty = 0;
 		maxduty = 0;
@@ -814,14 +815,22 @@ void checkOutA()
         R_AIN4_DATA_LB &= 0xF0;				// Only get Bit7~4
         R_AIN4_DATA += R_AIN4_DATA_LB;		// R_AIN0_DATA + R_AIN0_DATA_LB
         R_AIN4_DATA >>=3;					// R_AIN0_DATA divided 8
-        if(workStep < 6 && R_AIN4_DATA > 200)
+        tempSum += R_AIN4_DATA;
+		if(++count100 >= 10)
+		{
+			count100 = 0;
+			tempResult = tempSum/10;
+			tempSum = 0;
+		}
+	
+        if(workStep < 6 && tempResult > 200)
         {
         	if(++overCount > 5)
         	{
         		overCount = 5;
         	}
         }
-        else if(R_AIN4_DATA > 400)
+        else if(tempResult > 400)
         {
         	if(++overCount > 5)
         	{
@@ -833,7 +842,7 @@ void checkOutA()
 //        		}
         	}
         }
-        else if(R_AIN4_DATA > 77)
+        else if(tempResult > 77)
         {
         	if(overCount > 0)
         	{
@@ -872,12 +881,12 @@ void checkOutA()
         	{
         		overCount--;
         	}
-        	if(R_AIN4_DATA > maxAout)
+        	if(tempResult > maxAout)
         	{
         		tempDuty = 70 + workStep*5;
         		//PWM2DUTY = tempDuty;
         	}
-        	else if(R_AIN4_DATA < 75)
+        	else if(tempResult < 75)
         	{
         		//PWM2DUTY = maxDuty;
         		tempDuty = maxDuty;

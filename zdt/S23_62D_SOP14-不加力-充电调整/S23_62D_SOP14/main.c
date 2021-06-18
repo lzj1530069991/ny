@@ -76,6 +76,7 @@ u8t limitDuty = 0;
 u8t addTime = 0;
 u8t subTime = 0;
 u8t subMin = 0;
+u8t chrgWaitTime = 0;
 
 u8t debug = 0;		//1打开bug
 #define OUTA	301
@@ -298,16 +299,16 @@ void keyCtr()
 			shanshuoTime = 10;
 		if(workStep == 1)
 		{
-			maxDuty = 73;
+			maxDuty = 68;
 			currentDuty = 85;
 			ledLightTime = 0;
 		}
 		else if(workStep == 2)
-			maxDuty = 79;
+			maxDuty = 76;
 		else if(workStep == 3)
-			maxDuty = 84;
+			maxDuty = 82;
 		else if(workStep == 4)
-			maxDuty = 89;
+			maxDuty = 88;
 		else if(workStep == 5)
 			maxDuty = 94;
 		else if(workStep == 6)
@@ -335,9 +336,9 @@ void keyCtr()
 			ledLightTime = 0;
 			ledStep = 1;
 			workStep = 1;
-			PWM2DUTY = 73;
+			PWM2DUTY = 85;
 			currentDuty = 85;
-			maxDuty = 73;
+			maxDuty = 68;
 			pwmInit();
 			if(pwStep == 0)
 				shanshuoTime = 10;
@@ -528,7 +529,7 @@ void pwm1Init()
 	if(0x80&T1CR1)
 		return;
 	TMRH = 0x00;
-	TMR1 = 48;							//频率为110K
+	TMR1 = 60;							//频率为110K
 	//PWM2DUTY = 0x08;				// 		
 	
 	T1CR2 = C_TMR1_ClkSrc_Inst | C_PS1_Div2;	// Enable Prescaler1, Prescaler1 dividing rate = 1:2, Timer1 clock source is instruction clock 
@@ -684,43 +685,39 @@ void chrgCtr()
 			{	
 				limitDuty = 24;
 			}
-			if(count500ms == 0 && pwStep < 7)
+			if(count500ms == 0 && pwStep < 7 && lockLedStep < 6)
 			{
 				if(lockLedStep < pwStep - 1)
 					lockLedStep = pwStep - 1;
 				if(++ledStep > 6)
 					ledStep = lockLedStep;
 			}
-			if(pwStep == 7)
+			if(lockLedStep >= 6)
 			{
 				ledStep = 6;	//亮灯不闪了
 			}
-			if(maxduty > limitDuty)
-			{
-				maxduty = limitDuty;
-				PWM1DUTY = maxduty;
-			}
-			else
-			{
-				PWM1DUTY = chrgduty;
-			}
+			PWM1DUTY = maxduty;
 			pwm1Init();
 			if(count200ms > 5)
 			{
-
-					if(R_AIN4_DATA > 37)
+					if(R_AIN4_DATA <= 35 && R_AIN4_DATA >=subMin)
 					{
-						if(++subTime > 50)
+						addTime = subTime = 0;
+					}	
+					if(R_AIN4_DATA > 35)
+					{
+						if(++subTime > chrgWaitTime)
 						{
 							maxduty = maxduty - 1;
 							subTime = 0;
 							subMin = 34;
+							chrgWaitTime = 250;
 						}
 						addTime = 0;
 					}
 					else if(R_AIN4_DATA < subMin)
 					{
-						if(++addTime > 50)
+						if(++addTime > chrgWaitTime)
 						{
 							maxduty = maxduty + 1;
 							addTime = 0;
@@ -739,7 +736,8 @@ void chrgCtr()
 	}
 	else 
 	{
-		subMin = 37;
+		chrgWaitTime = 50;
+		subMin = 33;
 		chrgFullFlag = 0;
 		chrgduty = 0;
 		maxduty = 0;

@@ -6,7 +6,7 @@
 
 
 
-u8t debug = 0;		//1打开bug
+
 #define OUTA	100
 #define BATTLE	1550
 
@@ -35,11 +35,10 @@ u8t tempDuty = 0;
 u16t count5S = 0;
 u8t ledDeadTime = 0;
 //u8t prePwStep = 0;
-u16t countFull = 0;
+u8t countFull = 0;
 
 u8t	tempshiweiNum = 0;	//十位
 u8t	tempgeweiNum = 0;	//个位
-u16t refreshCount = 0;	//刷新计时
 u8t shiweiNum = 0;	//十位
 u8t	geweiNum = 0;	//个位
 u8t batValue = 0;
@@ -47,7 +46,6 @@ u8t cDuty = 0;
 u8t preBatValue = 0;
 u16t closeCount = 0;
 u8t firstShowCount = 0;
-u16t batCount = 0;
 u8t chrgStep = 0;
 u8t maxduty = 0;
 u8t chrgFullFlag = 0;
@@ -55,8 +53,13 @@ u8t fullTime = 0;
 u8t fullFlag = 0;
 u8t subTime = 0;
 u8t subMin = 0;
+u8t addMax = 0;
 u8t addTime = 0;
 u8t chrgduty = 0;
+u8t lowATime = 0;
+u8t highATime = 0;
+u8t chrgWaitTime = 0;
+u8t startFlag = 0;
 
 __sbit IntFlag = Status:0;
 __sbit longPressFlag = Status:1;
@@ -96,7 +99,7 @@ void isr(void) __interrupt(0)
 	{
 		TMR0 += 55;
 	
-		if(++intCount >= 100)
+		if(++intCount >= 125)
 		{
 			IntFlag = 1;
 			intCount = 0;
@@ -107,7 +110,7 @@ void isr(void) __interrupt(0)
 				if(ledDeadTime > 0)
 					--ledDeadTime;
 			}
-			if(++count5s >= 500)
+			if(++count5s >= 3000)
 			{
 				count5s = 0;
 			}
@@ -183,7 +186,7 @@ void main(void)
     	if(firstShowCount > 0)
     	{
     		firstShowCount--;
-    		preBatValue = batValue;
+    		checkBatAD();
     	}
     	//低电自动关机
     	if(batValue < 5 && workStep > 0)
@@ -215,13 +218,12 @@ void main(void)
     	{
     		count5S = 0;
     	}
-    	if(count200ms < 3 && R_AIN4_DATA < 40)
+   
+		if(firstShowCount == 0)
+			checkOutA();
+		if(count200ms < 3)
 		{
 			checkBatAD();
-		}
-		else if(count200ms > 5 && count200ms < 19)
-		{
-			checkOutA();
 		}
     	chrgCtr();
     	if(chrgFlag == 0)
@@ -280,7 +282,7 @@ void chrgCtr()
 		{
 			chrgStep = 4;
 			//充满了
-			if(shiweiNum == 9 &&  geweiNum == 9 && batValue >= 100 && ++countFull > 2000)
+			if(shiweiNum == 9 &&  geweiNum == 9 && batValue >= 100 && ++countFull > 200)
 			{
 				pwm1Stop();
 			//ABPLCON &= 0X7F;
@@ -294,26 +296,32 @@ void chrgCtr()
 		{
 			countFull = 0;
 			IOSTB &= 0xF7;
-			PWM1DUTY = chrgduty;
+			PWM1DUTY = maxduty;
 			pwm1Init();
 			if(count200ms > 5)
 			{
-
-					if(R_AIN4_DATA > 31)
+					if(R_AIN4_DATA <= 33 && R_AIN4_DATA >=subMin)
 					{
-						if(++subTime > 50)
+						addTime = subTime = 0;
+					}	
+					if(R_AIN4_DATA > 33)
+					{
+						if(++subTime > chrgWaitTime)
 						{
-							maxduty = maxduty - 1;
+							if(maxduty > 2)
+								maxduty = maxduty - 1;
 							subTime = 0;
-							subMin = 27;
+							subMin = 32;
+							chrgWaitTime = 250;
 						}
 						addTime = 0;
 					}
 					else if(R_AIN4_DATA < subMin)
 					{
-						if(++addTime > 50)
+						if(++addTime > chrgWaitTime)
 						{
-							maxduty = maxduty + 1;
+							if(maxduty < 60)
+								maxduty = maxduty + 1;
 							addTime = 0;
 						}
 						subTime = 0;
@@ -324,13 +332,16 @@ void chrgCtr()
 						chrgduty = maxduty;
 				
 			}
+		
 			
 		
 		}
 	}
 	else 
 	{
-		subMin = 27;
+		startFlag = 0;
+		chrgWaitTime = 20;
+		subMin = 33;
 		chrgFullFlag = 0;
 		maxduty = 0;
 		countFull = 0;
@@ -401,8 +412,8 @@ void refreshNub()
 
 void setMaxDuty()
 {
-	if(batValue < 50)
-		maxDuty = maxDuty + 10 - (batValue/10);
+//	if(batValue < 50)
+//		maxDuty = maxDuty + 10 - (batValue/10);
 	tempDuty = maxDuty;
 	pwmInit();
 }
@@ -518,7 +529,7 @@ void pwm1Init()
 	if(0x80&T1CR1)
 		return;
 	TMRH = 0x00;
-	TMR1 = 48;							//频率为110K
+	TMR1 = 70;							//频率为110K
 	//PWM2DUTY = 0x08;				// 		
 	
 	T1CR2 = C_TMR1_ClkSrc_Inst | C_PS1_Div2;	// Enable Prescaler1, Prescaler1 dividing rate = 1:2, Timer1 clock source is instruction clock 
@@ -553,6 +564,7 @@ void pwmStop()
 
 void gotoSleep()
 {
+	count900s = 0;
 	checkBatAD();
 	setInput();
 	count5s = 0;
@@ -652,10 +664,10 @@ void checkBatAD()
         R_AIN2_DATA <<= 4;					// R_AIN0_DATA shift left 4 bit
         R_AIN2_DATA_LB &= 0xF0;				// Only get Bit7~4
         R_AIN2_DATA += R_AIN2_DATA_LB;		// R_AIN0_DATA + R_AIN0_DATA_LB
-        R_AIN2_DATA >>=4;					// R_AIN0_DATA divided 
+        R_AIN2_DATA >>=3;					// R_AIN0_DATA divided 
         
 
-        if(R_AIN2_DATA > 785)
+        if(R_AIN2_DATA > 1570)
 	    {
 	    	if(++fullTime > 200)
 	    	{
@@ -663,7 +675,7 @@ void checkBatAD()
 	    		batValue = 100;
 	    	}
 	    }
-	    else if(R_AIN2_DATA < 550)
+	    else if(R_AIN2_DATA < 1100)
 	    {
 	    	batValue = 0;
 	    	fullTime = 0;
@@ -671,43 +683,54 @@ void checkBatAD()
 	    else
 	    {
 	    	fullTime = 0;
-	    	if(R_AIN2_DATA >= 692)
+	    	if(R_AIN2_DATA >= 1540)
 	    	{
-	    		batValue = (R_AIN2_DATA - 692) + 40;
+	    		batValue = (R_AIN2_DATA - 1540) + 100;
 	    	}
-	    	else if(R_AIN2_DATA >= 572)
+	    	else if(R_AIN2_DATA >= 1374)
 	    	{
-	    		batValue = ((R_AIN2_DATA - 572)/4) + 10;
+	    		batValue = ((R_AIN2_DATA - 1374) /2) + 17;
 	    	}
-	    	else if(R_AIN2_DATA > 550)
+	    	else if(R_AIN2_DATA > 1100)
 	    	{
-	    		batValue = (R_AIN2_DATA - 550)/8;
+	    		batValue = (R_AIN2_DATA - 1100) / 16;
 	    	}
 	    	else
 	    	{
 	    		batValue = 0;
 	    	}
+	    	if(firstShowCount > 0 && firstShowCount < 50)
+			{
+					if(batValue > 60)
+					{
+						if(batValue < 90)
+							preBatValue = batValue - 12;
+						else
+							preBatValue = batValue;
+					}
+					else if(preBatValue > 30)
+						preBatValue = batValue - 10;
+					else
+						preBatValue = batValue;
+			}
 	    	if(0x08 & PORTA)
 	    	{
-	   			if(batValue < 10)
+	   			if(batValue > 80)
+	   				batValue = batValue - 30;
+	   			else if(batValue > 50)
+	   				batValue = batValue - 25;
+	   			else if(batValue > 15)
+	   				batValue = batValue - 15;
+	   			else
 	   				batValue = 1;
-	   			else if(batValue < 20)
-	   			{
-	   				batValue = batValue - 10;
-	   			}
-	   			else if(batValue < 50)
-	   			{
-	   				batValue = batValue - 20;
-	   			}
-	   			else if(batValue < 133)
-	   			{
-	   				batValue = batValue - 33;
-	   			}
+	   			if(batValue > 99)
+	   				batValue = 99;
 			}
 			if(batValue > 100)
 				batValue = 100;
 	
 	    }
+	    
 	   
 }
 
@@ -742,16 +765,16 @@ void checkOutA()
         }
         else
         {
-        	u8t maxAout = 40;
-        	if(batValue > 70)
-        		maxAout = 45;
+        	u8t maxAout = 45;
+        	if(batValue > 30)
+        		maxAout = 52;
         	if(workStep == 1)
     		{
-    			maxAout = maxAout - 11;
+    			maxAout = maxAout - 7;
     		}
     		else if(workStep == 2)
     		{
-    			maxAout = maxAout - 8;
+    			maxAout = maxAout - 2;
     		}
     		else if(workStep == 4)
     		{
@@ -771,13 +794,21 @@ void checkOutA()
         	}
         	if(R_AIN4_DATA > maxAout)
         	{
-        		tempDuty = 70 + workStep*5;
+        		if(++highATime > 2)
+        		{
+        			tempDuty = 70 + workStep*5;
+        		}
+        		lowATime = 0;
         		//PWM2DUTY = tempDuty;
         	}
         	else if(R_AIN4_DATA < 75)
         	{
         		//PWM2DUTY = maxDuty;
-        		tempDuty = maxDuty;
+        		if(++lowATime > 2)
+        		{
+        			tempDuty = maxDuty;
+        		}
+        		highATime = 0;
         	}
    
         }
