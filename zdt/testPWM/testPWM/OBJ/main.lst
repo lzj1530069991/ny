@@ -1,0 +1,228 @@
+
+                    Nyquest Technology Co., Ltd.
+
+NYASM 2.30
+
+    ADDR  OPCODE/VALUE              LINE   TAG  SOURCE                   STATEMENT    
+
+                                    1-    1     ;--------------------------------------------------------
+                                    1-    2     ; File Created by SDCC : free open source ANSI-C Compiler
+                                    1-    3     ; Version 3.7.1 #0 (MSVC)
+                                    1-    4     ;--------------------------------------------------------
+                                    1-    5     ; NY8A port
+                                    1-    6     ;--------------------------------------------------------
+                                    1-    7     	.file	"main.c"
+                                    1-    8     	list	p=NY8B062D,c=on
+                                    1-    9     	#include "ny8b062d.inc"
+                                    1-   11     ;--------------------------------------------------------
+                                    1-   12     ; external declarations
+                                    1-   13     ;--------------------------------------------------------
+                                    1-   14     	extern	_PORTAbits
+                                    1-   15     	extern	_PORTBbits
+                                    1-   16     	extern	_PCONbits
+                                    1-   17     	extern	_BWUCONbits
+                                    1-   18     	extern	_ABPLCONbits
+                                    1-   19     	extern	_BPHCONbits
+                                    1-   20     	extern	_INTEbits
+                                    1-   21     	extern	_INTFbits
+                                    1-   22     	extern	_ADMDbits
+                                    1-   23     	extern	_ADRbits
+                                    1-   24     	extern	_ADVREFHbits
+                                    1-   25     	extern	_ADCRbits
+                                    1-   26     	extern	_AWUCONbits
+                                    1-   27     	extern	_PACONbits
+                                    1-   28     	extern	_INTEDGbits
+                                    1-   29     	extern	_ANAENbits
+                                    1-   30     	extern	_RFCbits
+                                    1-   31     	extern	_INTE2bits
+                                    1-   32     	extern	_INDF
+                                    1-   33     	extern	_TMR0
+                                    1-   34     	extern	_PCL
+                                    1-   35     	extern	_STATUS
+                                    1-   36     	extern	_FSR
+                                    1-   37     	extern	_PORTA
+                                    1-   38     	extern	_PORTB
+                                    1-   39     	extern	_PCON
+                                    1-   40     	extern	_BWUCON
+                                    1-   41     	extern	_PCHBUF
+                                    1-   42     	extern	_ABPLCON
+                                    1-   43     	extern	_BPHCON
+                                    1-   44     	extern	_INTE
+                                    1-   45     	extern	_INTF
+                                    1-   46     	extern	_ADMD
+                                    1-   47     	extern	_ADR
+                                    1-   48     	extern	_ADD
+                                    1-   49     	extern	_ADVREFH
+                                    1-   50     	extern	_ADCR
+                                    1-   51     	extern	_AWUCON
+                                    1-   52     	extern	_PACON
+                                    1-   53     	extern	_INTEDG
+                                    1-   54     	extern	_TMRH
+                                    1-   55     	extern	_ANAEN
+                                    1-   56     	extern	_RFC
+                                    1-   57     	extern	_TM3RH
+                                    1-   58     	extern	_INTE2
+                                    1-   59     	extern	_TMR1
+                                    1-   60     	extern	_T1CR1
+                                    1-   61     	extern	_T1CR2
+                                    1-   62     	extern	_PWM1DUTY
+                                    1-   63     	extern	_PS1CV
+                                    1-   64     	extern	_BZ1CR
+                                    1-   65     	extern	_IRCR
+                                    1-   66     	extern	_TBHP
+                                    1-   67     	extern	_TBHD
+                                    1-   68     	extern	_TMR2
+                                    1-   69     	extern	_T2CR1
+                                    1-   70     	extern	_T2CR2
+                                    1-   71     	extern	_PWM2DUTY
+                                    1-   72     	extern	_PS2CV
+                                    1-   73     	extern	_BZ2CR
+                                    1-   74     	extern	_OSCCR
+                                    1-   75     	extern	_TMR3
+                                    1-   76     	extern	_T3CR1
+                                    1-   77     	extern	_T3CR2
+                                    1-   78     	extern	_PWM3DUTY
+                                    1-   79     	extern	_PS3CV
+                                    1-   80     	extern	_BZ3CR
+                                    1-   81     	extern	_IOSTA
+                                    1-   82     	extern	_IOSTB
+                                    1-   83     	extern	_APHCON
+                                    1-   84     	extern	_PS0CV
+                                    1-   85     	extern	_BODCON
+                                    1-   86     	extern	_CMPCR
+                                    1-   87     	extern	_PCON1
+                                    1-   88     	extern	_T0MD
+                                    1-   89     	extern	__nyc_ny8_startup
+                                    1-   90     ;--------------------------------------------------------
+                                    1-   91     ; global declarations
+                                    1-   92     ;--------------------------------------------------------
+                                    1-   93     	extern	_main
+                                    1-   95     	extern PSAVE
+                                    1-   96     	extern SSAVE
+                                    1-   97     	extern WSAVE
+                                    1-   98     	extern STK04
+                                    1-   99     	extern STK03
+                                    1-  100     	extern STK02
+                                    1-  101     	extern STK01
+                                    1-  102     	extern STK00
+                                    1-  104     .segment "uninit", 0x20000040
+ 20000040                           1-  105     PSAVE:
+                                    1-  106     	.res 1
+ 20000041                           1-  107     SSAVE:
+                                    1-  108     	.res 1
+ 20000042                           1-  109     WSAVE:
+                                    1-  110     	.res 1
+ 20000043                           1-  111     STK04:
+                                    1-  112     	.res 1
+ 20000044                           1-  113     STK03:
+                                    1-  114     	.res 1
+ 20000045                           1-  115     STK02:
+                                    1-  116     	.res 1
+ 20000046                           1-  117     STK01:
+                                    1-  118     	.res 1
+ 20000047                           1-  119     STK00:
+                                    1-  120     	.res 1
+                                    1-  122     ;--------------------------------------------------------
+                                    1-  123     ; global definitions
+                                    1-  124     ;--------------------------------------------------------
+                                    1-  125     ;--------------------------------------------------------
+                                    1-  126     ; absolute symbol definitions
+                                    1-  127     ;--------------------------------------------------------
+                                    1-  128     ;--------------------------------------------------------
+                                    1-  129     ; compiler-defined variables
+                                    1-  130     ;--------------------------------------------------------
+                                    1-  131     ;--------------------------------------------------------
+                                    1-  132     ; initialized data
+                                    1-  133     ;--------------------------------------------------------
+                                    1-  134     ;--------------------------------------------------------
+                                    1-  135     ; overlayable items in internal ram 
+                                    1-  136     ;--------------------------------------------------------
+                                    1-  137     ;	udata_ovr
+                                    1-  138     ;--------------------------------------------------------
+                                    1-  139     ; reset vector 
+                                    1-  140     ;--------------------------------------------------------
+                                    1-  141     ORG	0x0000
+     0000 3rrr                      1-  142     	LGOTO	__nyc_ny8_startup
+                                    1-  143     ;--------------------------------------------------------
+                                    1-  144     ; code
+                                    1-  145     ;--------------------------------------------------------
+                                    1-  146     ;***
+                                    1-  147     ;  pBlock Stats: dbName = M
+                                    1-  148     ;***
+                                    1-  149     ;has an exit
+                                    1-  150     ;; Starting pCode block
+                                    1-  151     .segment "code"; module=main, function=_main
+     0000                           1-  153     _main:
+                                    1-  154     ; 2 exit points
+                                    1-  155     	.line	25, "main.c"; 	DISI();
+     0000 0013                      1-  156     	DISI
+                                    1-  157     	.line	27, "main.c"; 	IOSTA = C_PA_Output;					// Set PortA as output port
+     0001 0200                      1-  158     	CLRA	
+     0002 000r                      1-  159     	IOST	_IOSTA
+                                    1-  160     	.line	28, "main.c"; 	PORTA = 0x00;							// PortA Data Register = 0x00
+     0003 02rr                      1-  161     	CLRR	_PORTA
+                                    1-  162     	.line	29, "main.c"; 	PCON  = C_WDT_En | C_LVR_En; 			// Enable WDT & LVR
+     0004 2188                      1-  163     	MOVIA	0x88
+     0005 00rr                      1-  164     	MOVAR	_PCON
+                                    1-  165     	.line	33, "main.c"; 	TMRH  = C_TMR2_Data_b9 | C_TMR2_Data_b8 | C_TMR1_Data_b9 | C_PWM2_Duty_b9 | C_PWM2_Duty_b8 | C_PWM1_Duty_b9;
+     0006 21EE                      1-  166     	MOVIA	0xee
+     0007 00rr                      1-  167     	MOVAR	_TMRH
+                                    1-  168     	.line	35, "main.c"; 	TMR1  = 165;							// Move FFH to TMR1 LB register ( TMR1[9:0]=3FFH )
+     0008 21A5                      1-  169     	MOVIA	0xa5
+     0009 00rr                      1-  170     	SFUN	_TMR1
+                                    1-  171     	.line	36, "main.c"; 	TMR2  = 0xFF;							// Move FFH to TMR2 LB register ( TMR2[9:0]=3FFH )
+     000A 21FF                      1-  172     	MOVIA	0xff
+     000B 00rr                      1-  173     	SFUN	_TMR2
+                                    1-  174     	.line	37, "main.c"; 	PWM1DUTY = C_PWM_LB_DUTY_01H;			// Move 01H to PWM1DUTY LB register ( PWM1DUTY[9:0]=001H )
+     000C 2101                      1-  175     	MOVIA	0x01
+     000D 00rr                      1-  176     	SFUN	_PWM1DUTY
+                                    1-  177     	.line	38, "main.c"; 	PWM2DUTY = C_PWM_LB_DUTY_FFH;			// Move FFH to PWM2DUTY LB register ( PWM2DUTY[9:0]=3FFH )
+     000E 21FF                      1-  178     	MOVIA	0xff
+     000F 00rr                      1-  179     	SFUN	_PWM2DUTY
+                                    1-  180     	.line	39, "main.c"; 	T1CR2	 = C_PS1_Dis | C_TMR1_ClkSrc_Inst;	// Prescaler 1:1 , Timer1 clock source is instruction clock
+     0010 2108                      1-  181     	MOVIA	0x08
+     0011 00rr                      1-  182     	SFUN	_T1CR2
+                                    1-  183     	.line	40, "main.c"; 	T1CR1	 = C_PWM1_En | C_PWM1_Active_Hi | C_TMR1_Reload | C_TMR1_En;	// Enable PWM1 , Active_High , Non-Stop mode ,reloaded from TMR1[9:0] , enable Timer1
+     0012 2183                      1-  184     	MOVIA	0x83
+     0013 00rr                      1-  185     	SFUN	_T1CR1
+     0014                           1-  186     _00106_DS_:
+                                    1-  187     	.line	44, "main.c"; 	CLRWDT();							// Clear WatchDog
+     0014 0002                      1-  188     	clrwdt
+                                    1-  189     	MGOTO	_00106_DS_
+     0015 3rrr                      3-   63 m1      LGOTO rom_address
+                                    1-  190     	.line	46, "main.c"; 	}
+                                    1-  191     	RETURN	
+     0016 0010                      3-   40 m1      ret
+                                    1-  192     ; exit point of _main
+                                    1-  195     ;	code size estimation:
+                                    1-  196     ;	   21+    0 =    21 instructions (   42 byte)
+                                    1-  198     	end
+
+SYMBOL TABLE            TYPE     VALUE
+__PIN_COUNT__           Constant 0000000E
+__PROCESSOR__           Constant 00810623
+C                       Constant 00000000
+DC                      Constant 00000001
+ENABLE_RAM_BANK         Constant 00000001
+F                       Constant 00000001
+FSR                     Constant 00000004
+INDF                    Constant 00000000
+PCHBUF                  Constant 0000000A
+PCL                     Constant 00000002
+STATUS                  Constant 00000003
+USEFGOTO                Constant 00000000
+W                       Constant 00000000
+Z                       Constant 00000002
+
+
+SOURCE FILE TABLE
+001 OBJ/main.s
+002 ny8b062d.inc
+003 common.inc
+004 main.c
+
+PROCESSOR    = NY8B062D (8 bits)
+PROGRAM ROM  = 0x00000000 - 0x000007FF
+DATA ROM     = 0x00000000 - 0x000007FF
+RESERVED MEM = 0x00000800 - 0x00000810
+SRAM / SFR   = 0x00000000 - 0x00000000

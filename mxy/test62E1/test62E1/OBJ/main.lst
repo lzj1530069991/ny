@@ -1,0 +1,698 @@
+
+                    Nyquest Technology Co., Ltd.
+
+NYASM 2.30
+
+    ADDR  OPCODE/VALUE              LINE   TAG  SOURCE                   STATEMENT    
+
+                                    1-    1     ;--------------------------------------------------------
+                                    1-    2     ; File Created by SDCC : free open source ANSI-C Compiler
+                                    1-    3     ; Version 3.7.1 #0 (MSVC)
+                                    1-    4     ;--------------------------------------------------------
+                                    1-    5     ; NY8A port
+                                    1-    6     ;--------------------------------------------------------
+                                    1-    7     	.file	"main.c"
+                                    1-    8     	list	p=NY8B062E,c=on
+                                    1-    9     	#include "ny8b062e.inc"
+                                    1-   11     ;--------------------------------------------------------
+                                    1-   12     ; external declarations
+                                    1-   13     ;--------------------------------------------------------
+                                    1-   14     	extern	_F_wait_eoc
+                                    1-   15     	extern	_PORTAbits
+                                    1-   16     	extern	_PORTBbits
+                                    1-   17     	extern	_PCONbits
+                                    1-   18     	extern	_BWUCONbits
+                                    1-   19     	extern	_ABPLCONbits
+                                    1-   20     	extern	_BPHCONbits
+                                    1-   21     	extern	_INTEbits
+                                    1-   22     	extern	_INTFbits
+                                    1-   23     	extern	_ADMDbits
+                                    1-   24     	extern	_ADRbits
+                                    1-   25     	extern	_ADVREFHbits
+                                    1-   26     	extern	_ADCRbits
+                                    1-   27     	extern	_AWUCONbits
+                                    1-   28     	extern	_PACONbits
+                                    1-   29     	extern	_ADJMDbits
+                                    1-   30     	extern	_INTEDGbits
+                                    1-   31     	extern	_ANAENbits
+                                    1-   32     	extern	_RFCbits
+                                    1-   33     	extern	_INTE2bits
+                                    1-   34     	extern	_INDF
+                                    1-   35     	extern	_TMR0
+                                    1-   36     	extern	_PCL
+                                    1-   37     	extern	_STATUS
+                                    1-   38     	extern	_FSR
+                                    1-   39     	extern	_PORTA
+                                    1-   40     	extern	_PORTB
+                                    1-   41     	extern	_PCON
+                                    1-   42     	extern	_BWUCON
+                                    1-   43     	extern	_PCHBUF
+                                    1-   44     	extern	_ABPLCON
+                                    1-   45     	extern	_BPHCON
+                                    1-   46     	extern	_INTE
+                                    1-   47     	extern	_INTF
+                                    1-   48     	extern	_ADMD
+                                    1-   49     	extern	_ADR
+                                    1-   50     	extern	_ADD
+                                    1-   51     	extern	_ADVREFH
+                                    1-   52     	extern	_ADCR
+                                    1-   53     	extern	_AWUCON
+                                    1-   54     	extern	_PACON
+                                    1-   55     	extern	_ADJMD
+                                    1-   56     	extern	_INTEDG
+                                    1-   57     	extern	_TMRH
+                                    1-   58     	extern	_ANAEN
+                                    1-   59     	extern	_RFC
+                                    1-   60     	extern	_TM3RH
+                                    1-   61     	extern	_INTE2
+                                    1-   62     	extern	_TMR1
+                                    1-   63     	extern	_T1CR1
+                                    1-   64     	extern	_T1CR2
+                                    1-   65     	extern	_PWM1DUTY
+                                    1-   66     	extern	_PS1CV
+                                    1-   67     	extern	_BZ1CR
+                                    1-   68     	extern	_IRCR
+                                    1-   69     	extern	_TBHP
+                                    1-   70     	extern	_TBHD
+                                    1-   71     	extern	_TMR2
+                                    1-   72     	extern	_T2CR1
+                                    1-   73     	extern	_T2CR2
+                                    1-   74     	extern	_PWM2DUTY
+                                    1-   75     	extern	_PS2CV
+                                    1-   76     	extern	_BZ2CR
+                                    1-   77     	extern	_OSCCR
+                                    1-   78     	extern	_TMR3
+                                    1-   79     	extern	_T3CR1
+                                    1-   80     	extern	_T3CR2
+                                    1-   81     	extern	_PWM3DUTY
+                                    1-   82     	extern	_PS3CV
+                                    1-   83     	extern	_BZ3CR
+                                    1-   84     	extern	_P4CR1
+                                    1-   85     	extern	_PWM4DUTY
+                                    1-   86     	extern	_IOSTA
+                                    1-   87     	extern	_IOSTB
+                                    1-   88     	extern	_APHCON
+                                    1-   89     	extern	_PS0CV
+                                    1-   90     	extern	_BODCON
+                                    1-   91     	extern	_CMPCR
+                                    1-   92     	extern	_PCON1
+                                    1-   93     	extern	_T0MD
+                                    1-   94     	extern	___sdcc_saved_fsr
+                                    1-   95     	extern	___sdcc_saved_stk00
+                                    1-   96     	extern	___sdcc_saved_stk01
+                                    1-   97     	extern	__nyc_ny8_startup
+                                    1-   98     ;--------------------------------------------------------
+                                    1-   99     ; global declarations
+                                    1-  100     ;--------------------------------------------------------
+                                    1-  101     	extern	_F_ADJMD
+                                    1-  102     	extern	_delay
+                                    1-  103     	extern	_main
+                                    1-  104     	extern	_isr
+                                    1-  105     	extern	_R_ADC_DATA_HB
+                                    1-  106     	extern	_R_ADC_DATA_LB
+                                    1-  107     	extern	_R_ADJMD
+                                    1-  108     	extern	_R_SMPCNT
+                                    1-  109     	extern	_R_DBS
+                                    1-  110     	extern	_R_ACCUM_HB
+                                    1-  111     	extern	_R_ACCUM_LB
+                                    1-  112     	extern	_R_FLAG
+                                    1-  114     	extern PSAVE
+                                    1-  115     	extern SSAVE
+                                    1-  116     	extern WSAVE
+                                    1-  117     	extern STK04
+                                    1-  118     	extern STK03
+                                    1-  119     	extern STK02
+                                    1-  120     	extern STK01
+                                    1-  121     	extern STK00
+                                    1-  123     .segment "uninit", 0x20000040
+ 20000040                           1-  124     PSAVE:
+                                    1-  125     	.res 1
+ 20000041                           1-  126     SSAVE:
+                                    1-  127     	.res 1
+ 20000042                           1-  128     WSAVE:
+                                    1-  129     	.res 1
+ 20000043                           1-  130     STK04:
+                                    1-  131     	.res 1
+ 20000044                           1-  132     STK03:
+                                    1-  133     	.res 1
+ 20000045                           1-  134     STK02:
+                                    1-  135     	.res 1
+ 20000046                           1-  136     STK01:
+                                    1-  137     	.res 1
+ 20000047                           1-  138     STK00:
+                                    1-  139     	.res 1
+                                    1-  141     ;--------------------------------------------------------
+                                    1-  142     ; global definitions
+                                    1-  143     ;--------------------------------------------------------
+                                    1-  144     .segment "uninit"
+     0000                           1-  145     _R_ADC_DATA_HB:
+                                    1-  146     	.res	1
+                                    1-  149     .segment "uninit"
+     0000                           1-  150     _R_ADC_DATA_LB:
+                                    1-  151     	.res	1
+                                    1-  154     .segment "uninit"
+     0000                           1-  155     _R_ADJMD:
+                                    1-  156     	.res	1
+                                    1-  159     .segment "uninit"
+     0000                           1-  160     _R_SMPCNT:
+                                    1-  161     	.res	1
+                                    1-  164     .segment "uninit"
+     0000                           1-  165     _R_DBS:
+                                    1-  166     	.res	1
+                                    1-  169     .segment "uninit"
+     0000                           1-  170     _R_ACCUM_HB:
+                                    1-  171     	.res	1
+                                    1-  174     .segment "uninit"
+     0000                           1-  175     _R_ACCUM_LB:
+                                    1-  176     	.res	1
+                                    1-  179     .segment "uninit"
+     0000                           1-  180     _R_FLAG:
+                                    1-  181     	.res	1
+                                    1-  184     ;--------------------------------------------------------
+                                    1-  185     ; absolute symbol definitions
+                                    1-  186     ;--------------------------------------------------------
+                                    1-  187     ;--------------------------------------------------------
+                                    1-  188     ; compiler-defined variables
+                                    1-  189     ;--------------------------------------------------------
+                                    1-  190     .segment "uninit"
+     0000                           1-  191     r0x1013:
+                                    1-  192     	.res	1
+                                    1-  193     .segment "uninit"
+     0000                           1-  194     r0x100F:
+                                    1-  195     	.res	1
+                                    1-  196     .segment "uninit"
+     0000                           1-  197     r0x100E:
+                                    1-  198     	.res	1
+                                    1-  199     .segment "uninit"
+     0000                           1-  200     r0x1010:
+                                    1-  201     	.res	1
+                                    1-  202     .segment "uninit"
+     0000                           1-  203     r0x1011:
+                                    1-  204     	.res	1
+                                    1-  205     .segment "uninit"
+     0000                           1-  206     r0x1012:
+                                    1-  207     	.res	1
+                                    1-  208     .segment "uninit"
+     0000                           1-  209     r0x100C:
+                                    1-  210     	.res	1
+                                    1-  211     .segment "uninit"
+     0000                           1-  212     r0x100B:
+                                    1-  213     	.res	1
+                                    1-  214     ;--------------------------------------------------------
+                                    1-  215     ; initialized data
+                                    1-  216     ;--------------------------------------------------------
+                                    1-  217     ;--------------------------------------------------------
+                                    1-  218     ; overlayable items in internal ram 
+                                    1-  219     ;--------------------------------------------------------
+                                    1-  220     ;	udata_ovr
+                                    1-  221     ;--------------------------------------------------------
+                                    1-  222     ; reset vector 
+                                    1-  223     ;--------------------------------------------------------
+                                    1-  224     ORG	0x0000
+     0000 3rrr                      1-  225     	LGOTO	__nyc_ny8_startup
+                                    1-  226     ;--------------------------------------------------------
+                                    1-  227     ; interrupt and initialization code
+                                    1-  228     ;--------------------------------------------------------
+                                    1-  229     ORG 0x0008
+                                    1-  230     	MGOTO	__sdcc_interrupt
+     0008 3rrr                      3-   63 m1      LGOTO rom_address
+                                    1-  232     .segment "code"
+     0000                           1-  233     __sdcc_interrupt:
+                                    1-  234     ;***
+                                    1-  235     ;  pBlock Stats: dbName = I
+                                    1-  236     ;***
+                                    1-  237     ;functions called:
+                                    1-  238     ;   _F_ADJMD
+                                    1-  239     ;   _F_ADJMD
+                                    1-  240     ;   _F_ADJMD
+                                    1-  241     ;   _F_ADJMD
+                                    1-  242     ;4 compiler assigned registers:
+                                    1-  243     ;   STK00
+                                    1-  244     ;   STK01
+                                    1-  245     ;   r0x1013
+                                    1-  246     ;   r0x1014
+                                    1-  247     ;; Starting pCode block
+     0000                           1-  248     _isr:
+                                    1-  249     ; 0 exit points
+                                    1-  250     	.line	90, "main.c"; 	void isr(void) __interrupt(0)
+     0000 00rr                      1-  251     	MOVAR	WSAVE
+     0001 1503                      1-  252     	SWAPR	STATUS,W
+     0002 0283                      1-  253     	CLRR	STATUS
+     0003 00rr                      1-  254     	MOVAR	SSAVE
+     0004 010A                      1-  255     	MOVR	PCHBUF,W
+     0005 028A                      1-  256     	CLRR	PCHBUF
+     0006 00rr                      1-  257     	MOVAR	PSAVE
+     0007 0104                      1-  258     	MOVR	FSR,W
+                                    1-  259     	BANKSEL	___sdcc_saved_fsr
+     0008 rrrr                      3-  110 m1      .banksel ram_address
+     0009 00rr                      1-  260     	MOVAR	___sdcc_saved_fsr
+     000A 01rr                      1-  261     	MOVR	STK00,W
+                                    1-  262     	BANKSEL	___sdcc_saved_stk00
+     000B rrrr                      3-  110 m1      .banksel ram_address
+     000C 00rr                      1-  263     	MOVAR	___sdcc_saved_stk00
+     000D 01rr                      1-  264     	MOVR	STK01,W
+                                    1-  265     	BANKSEL	___sdcc_saved_stk01
+     000E rrrr                      3-  110 m1      .banksel ram_address
+     000F 00rr                      1-  266     	MOVAR	___sdcc_saved_stk01
+                                    1-  267     	.line	92, "main.c"; 	ADRbits.ADIF = 0;						// Clear adc interrupt flag bit
+     0010 1Frr                      1-  268     	BCR	_ADRbits,7
+                                    1-  269     	.line	93, "main.c"; 	R_ADC_DATA_HB = ADD;					// RAM "R_AIN1_DATA_HB" Store AIN1's ADC data bit 11~4
+     0011 01rr                      1-  270     	MOVR	_ADD,W
+                                    1-  271     	BANKSEL	_R_ADC_DATA_HB
+     0012 rrrr                      3-  110 m1      .banksel ram_address
+     0013 00rr                      1-  272     	MOVAR	_R_ADC_DATA_HB
+                                    1-  273     	.line	94, "main.c"; 	R_ADC_DATA_LB = 0x0F & ADR;			// RAM "R_AIN1_DATA_LB" bit3~0 Store AIN1's ADC data bit 3~0
+     0014 210F                      1-  274     	MOVIA	0x0f
+     0015 10rr                      1-  275     	ANDAR	_ADR,W
+                                    1-  276     	BANKSEL	_R_ADC_DATA_LB
+     0016 rrrr                      3-  110 m1      .banksel ram_address
+     0017 00rr                      1-  277     	MOVAR	_R_ADC_DATA_LB
+                                    1-  278     	.line	98, "main.c"; 	if (R_FLAG != 0x80)
+                                    1-  279     	BANKSEL	_R_FLAG
+     0018 rrrr                      3-  110 m1      .banksel ram_address
+     0019 01rr                      1-  280     	MOVR	_R_FLAG,W
+     001A 2480                      1-  281     	XORIA	0x80
+     001B 0D03                      1-  282     	BTRSC	STATUS,2
+                                    1-  283     	MGOTO	_00002_DS_
+     001C 3rrr                      3-   63 m1      LGOTO rom_address
+                                    1-  284     	.line	101, "main.c"; 	R_SMPCNT--;
+                                    1-  285     	BANKSEL	_R_SMPCNT
+     001D rrrr                      3-  110 m1      .banksel ram_address
+     001E 17rr                      1-  286     	DECRSZ	_R_SMPCNT,F
+                                    1-  287     	.line	102, "main.c"; 	if (!R_SMPCNT)
+                                    1-  288     	MGOTO	_00123_DS_
+     001F 3rrr                      3-   63 m1      LGOTO rom_address
+                                    1-  289     	.line	105, "main.c"; 	R_SMPCNT = C_SMPCNT;
+     0020 2102                      1-  290     	MOVIA	0x02
+     0021 00rr                      1-  291     	MOVAR	_R_SMPCNT
+                                    1-  292     	.line	106, "main.c"; 	if ((R_ACCUM_HB)||(R_ACCUM_LB>(C_SMPCNT/2)))
+                                    1-  293     	BANKSEL	_R_ACCUM_HB
+     0022 rrrr                      3-  110 m1      .banksel ram_address
+     0023 01rr                      1-  294     	MOVR	_R_ACCUM_HB,W
+     0024 0903                      1-  295     	BTRSS	STATUS,2
+                                    1-  296     	MGOTO	_00116_DS_
+     0025 3rrr                      3-   63 m1      LGOTO rom_address
+                                    1-  297     ;;swapping arguments (AOP_TYPEs 1/3)
+                                    1-  298     ;;unsigned compare: left >= lit (0x2=2), size=1
+     0026 2102                      1-  299     	MOVIA	0x02
+                                    1-  300     	BANKSEL	_R_ACCUM_LB
+     0027 rrrr                      3-  110 m1      .banksel ram_address
+     0028 04rr                      1-  301     	SUBAR	_R_ACCUM_LB,W
+     0029 0803                      1-  302     	BTRSS	STATUS,0
+                                    1-  303     	MGOTO	_00117_DS_
+     002A 3rrr                      3-   63 m1      LGOTO rom_address
+     002B                           1-  304     _00116_DS_:
+                                    1-  305     	.line	109, "main.c"; 	R_ACCUM_HB = R_ACCUM_LB = 0x00;
+                                    1-  306     	BANKSEL	_R_ACCUM_LB
+     002B rrrr                      3-  110 m1      .banksel ram_address
+     002C 02rr                      1-  307     	CLRR	_R_ACCUM_LB
+                                    1-  308     	BANKSEL	_R_ACCUM_HB
+     002D rrrr                      3-  110 m1      .banksel ram_address
+     002E 02rr                      1-  309     	CLRR	_R_ACCUM_HB
+                                    1-  310     	.line	110, "main.c"; 	R_DBS--;
+                                    1-  311     	BANKSEL	_R_DBS
+     002F rrrr                      3-  110 m1      .banksel ram_address
+     0030 17rr                      1-  312     	DECRSZ	_R_DBS,F
+                                    1-  313     	.line	111, "main.c"; 	if (!R_DBS)
+                                    1-  314     	MGOTO	_00002_DS_
+     0031 3rrr                      3-   63 m1      LGOTO rom_address
+                                    1-  315     	.line	114, "main.c"; 	R_FLAG = 0x80;
+     0032 2180                      1-  316     	MOVIA	0x80
+                                    1-  317     	BANKSEL	_R_FLAG
+     0033 rrrr                      3-  110 m1      .banksel ram_address
+     0034 00rr                      1-  318     	MOVAR	_R_FLAG
+                                    1-  319     	.line	115, "main.c"; 	R_ADJMD--;
+                                    1-  320     	BANKSEL	_R_ADJMD
+     0035 rrrr                      3-  110 m1      .banksel ram_address
+     0036 06rr                      1-  321     	DECR	_R_ADJMD,F
+                                    1-  322     	.line	116, "main.c"; 	F_ADJMD(R_ADJMD);
+     0037 01rr                      1-  323     	MOVR	_R_ADJMD,W
+                                    1-  324     	BANKSEL	r0x1013
+     0038 rrrr                      3-  110 m1      .banksel ram_address
+     0039 00rr                      1-  325     	MOVAR	r0x1013
+     003A 00rr                      1-  326     	MOVAR	STK00
+     003B 2100                      1-  327     	MOVIA	0x00
+                                    1-  328     	MCALL	_F_ADJMD
+     003C 2rrr                      3-   66 m1      LCALL rom_address
+                                    1-  329     	.line	117, "main.c"; 	ADMD = C_ADMD;			//; Enable ADC power, Disable global ADC input channel, Select PA2 as ADC input
+     003D 2182                      1-  330     	MOVIA	0x82
+     003E 00rr                      1-  331     	MOVAR	_ADMD
+                                    1-  332     	MGOTO	_00002_DS_
+     003F 3rrr                      3-   63 m1      LGOTO rom_address
+     0040                           1-  333     _00117_DS_:
+                                    1-  334     	.line	123, "main.c"; 	R_ACCUM_HB = R_ACCUM_LB = 0x00;
+                                    1-  335     	BANKSEL	_R_ACCUM_LB
+     0040 rrrr                      3-  110 m1      .banksel ram_address
+     0041 02rr                      1-  336     	CLRR	_R_ACCUM_LB
+                                    1-  337     	BANKSEL	_R_ACCUM_HB
+     0042 rrrr                      3-  110 m1      .banksel ram_address
+     0043 02rr                      1-  338     	CLRR	_R_ACCUM_HB
+                                    1-  339     ;;unsigned compare: left < lit (0x3F=63), size=1
+                                    1-  340     	.line	124, "main.c"; 	if (ADJMD >= 0x3F)
+     0044 213F                      1-  341     	MOVIA	0x3f
+     0045 04rr                      1-  342     	SUBAR	_ADJMD,W
+     0046 0803                      1-  343     	BTRSS	STATUS,0
+                                    1-  344     	MGOTO	_00114_DS_
+     0047 3rrr                      3-   63 m1      LGOTO rom_address
+                                    1-  345     	.line	127, "main.c"; 	R_FLAG = 0x80;
+     0048 2180                      1-  346     	MOVIA	0x80
+                                    1-  347     	BANKSEL	_R_FLAG
+     0049 rrrr                      3-  110 m1      .banksel ram_address
+     004A 00rr                      1-  348     	MOVAR	_R_FLAG
+                                    1-  349     	.line	128, "main.c"; 	ADMD = C_ADMD;			//; Enable ADC power, Disable global ADC input channel, Select PA2 as ADC input
+     004B 2182                      1-  350     	MOVIA	0x82
+     004C 00rr                      1-  351     	MOVAR	_ADMD
+                                    1-  352     	MGOTO	_00002_DS_
+     004D 3rrr                      3-   63 m1      LGOTO rom_address
+     004E                           1-  353     _00114_DS_:
+                                    1-  354     	.line	133, "main.c"; 	R_ADJMD++;
+                                    1-  355     	BANKSEL	_R_ADJMD
+     004E rrrr                      3-  110 m1      .banksel ram_address
+     004F 05rr                      1-  356     	INCR	_R_ADJMD,F
+                                    1-  357     	.line	134, "main.c"; 	F_ADJMD(R_ADJMD);
+     0050 01rr                      1-  358     	MOVR	_R_ADJMD,W
+                                    1-  359     	BANKSEL	r0x1013
+     0051 rrrr                      3-  110 m1      .banksel ram_address
+     0052 00rr                      1-  360     	MOVAR	r0x1013
+     0053 00rr                      1-  361     	MOVAR	STK00
+     0054 2100                      1-  362     	MOVIA	0x00
+                                    1-  363     	MCALL	_F_ADJMD
+     0055 2rrr                      3-   66 m1      LCALL rom_address
+                                    1-  364     	MGOTO	_00002_DS_
+     0056 3rrr                      3-   63 m1      LGOTO rom_address
+     0057                           1-  365     _00123_DS_:
+                                    1-  366     	.line	141, "main.c"; 	R_ACCUM_LB += R_ADC_DATA_LB;
+                                    1-  367     	BANKSEL	_R_ADC_DATA_LB
+     0057 rrrr                      3-  110 m1      .banksel ram_address
+     0058 01rr                      1-  368     	MOVR	_R_ADC_DATA_LB,W
+                                    1-  369     	BANKSEL	_R_ACCUM_LB
+     0059 rrrr                      3-  110 m1      .banksel ram_address
+     005A 03rr                      1-  370     	ADDAR	_R_ACCUM_LB,F
+                                    1-  371     	.line	142, "main.c"; 	if (STATUS&0x01 == 1)
+     005B 01rr                      1-  372     	MOVR	_STATUS,W
+                                    1-  373     	BANKSEL	r0x1013
+     005C rrrr                      3-  110 m1      .banksel ram_address
+     005D 00rr                      1-  374     	MOVAR	r0x1013
+     005E 08rr                      1-  375     	BTRSS	r0x1013,0
+                                    1-  376     	MGOTO	_00002_DS_
+     005F 3rrr                      3-   63 m1      LGOTO rom_address
+                                    1-  377     	.line	143, "main.c"; 	R_ACCUM_HB++;
+                                    1-  378     	BANKSEL	_R_ACCUM_HB
+     0060 rrrr                      3-  110 m1      .banksel ram_address
+     0061 05rr                      1-  379     	INCR	_R_ACCUM_HB,F
+     0062                           1-  380     _00002_DS_:
+                                    1-  381     	.line	146, "main.c"; 	ADMDbits.START = 1;						// Start a ADC conversion session
+     0062 1Brr                      1-  382     	BSR	_ADMDbits,6
+                                    1-  383     	.line	148, "main.c"; 	}
+                                    1-  384     	BANKSEL	___sdcc_saved_stk01
+     0063 rrrr                      3-  110 m1      .banksel ram_address
+     0064 01rr                      1-  385     	MOVR	___sdcc_saved_stk01,W
+     0065 00rr                      1-  386     	MOVAR	STK01
+                                    1-  387     	BANKSEL	___sdcc_saved_stk00
+     0066 rrrr                      3-  110 m1      .banksel ram_address
+     0067 01rr                      1-  388     	MOVR	___sdcc_saved_stk00,W
+     0068 00rr                      1-  389     	MOVAR	STK00
+                                    1-  390     	BANKSEL	___sdcc_saved_fsr
+     0069 rrrr                      3-  110 m1      .banksel ram_address
+     006A 01rr                      1-  391     	MOVR	___sdcc_saved_fsr,W
+     006B 0084                      1-  392     	MOVAR	FSR
+     006C 01rr                      1-  393     	MOVR	PSAVE,W
+     006D 008A                      1-  394     	MOVAR	PCHBUF
+     006E 0283                      1-  395     	CLRR	STATUS
+     006F 15rr                      1-  396     	SWAPR	SSAVE,W
+     0070 0083                      1-  397     	MOVAR	STATUS
+     0071 15rr                      1-  398     	SWAPR	WSAVE,F
+     0072 15rr                      1-  399     	SWAPR	WSAVE,W
+     0073                           1-  400     END_OF_INTERRUPT:
+     0073 0011                      1-  401     	RETIE	
+                                    1-  403     ;--------------------------------------------------------
+                                    1-  404     ; code
+                                    1-  405     ;--------------------------------------------------------
+                                    1-  406     ;***
+                                    1-  407     ;  pBlock Stats: dbName = M
+                                    1-  408     ;***
+                                    1-  409     ;has an exit
+                                    1-  410     ;functions called:
+                                    1-  411     ;   _F_ADJMD
+                                    1-  412     ;   _delay
+                                    1-  413     ;   _F_ADJMD
+                                    1-  414     ;   _delay
+                                    1-  415     ;1 compiler assigned register :
+                                    1-  416     ;   STK00
+                                    1-  417     ;; Starting pCode block
+                                    1-  418     .segment "code"; module=main, function=_main
+     0000                           1-  420     _main:
+                                    1-  421     ; 2 exit points
+                                    1-  422     	.line	38, "main.c"; 	IOSTA = C_PA_Input;						// Set PortA as input port
+     0000 21FF                      1-  423     	MOVIA	0xff
+     0001 000r                      1-  424     	IOST	_IOSTA
+                                    1-  425     	.line	39, "main.c"; 	PORTA = 0xFF;							// PortA Data Register = 0xFF
+     0002 00rr                      1-  426     	MOVAR	_PORTA
+                                    1-  427     	.line	40, "main.c"; 	INTE  = 0x00;							// INTE = 0x00
+     0003 02rr                      1-  428     	CLRR	_INTE
+                                    1-  429     	.line	43, "main.c"; 	R_ADC_DATA_HB = R_ADC_DATA_LB = 0x00;
+                                    1-  430     	BANKSEL	_R_ADC_DATA_LB
+     0004 rrrr                      3-  110 m1      .banksel ram_address
+     0005 02rr                      1-  431     	CLRR	_R_ADC_DATA_LB
+                                    1-  432     	BANKSEL	_R_ADC_DATA_HB
+     0006 rrrr                      3-  110 m1      .banksel ram_address
+     0007 02rr                      1-  433     	CLRR	_R_ADC_DATA_HB
+                                    1-  434     	.line	44, "main.c"; 	R_ACCUM_HB = R_ACCUM_LB = 0x00;
+                                    1-  435     	BANKSEL	_R_ACCUM_LB
+     0008 rrrr                      3-  110 m1      .banksel ram_address
+     0009 02rr                      1-  436     	CLRR	_R_ACCUM_LB
+                                    1-  437     	BANKSEL	_R_ACCUM_HB
+     000A rrrr                      3-  110 m1      .banksel ram_address
+     000B 02rr                      1-  438     	CLRR	_R_ACCUM_HB
+                                    1-  439     	.line	45, "main.c"; 	R_ADJMD = 0x00;
+                                    1-  440     	BANKSEL	_R_ADJMD
+     000C rrrr                      3-  110 m1      .banksel ram_address
+     000D 02rr                      1-  441     	CLRR	_R_ADJMD
+                                    1-  442     	.line	46, "main.c"; 	F_ADJMD(R_ADJMD);
+     000E 2100                      1-  443     	MOVIA	0x00
+     000F 00rr                      1-  444     	MOVAR	STK00
+                                    1-  445     	MCALL	_F_ADJMD
+     0010 2rrr                      3-   66 m1      LCALL rom_address
+                                    1-  446     	.line	47, "main.c"; 	R_SMPCNT = C_SMPCNT;
+     0011 2102                      1-  447     	MOVIA	0x02
+                                    1-  448     	BANKSEL	_R_SMPCNT
+     0012 rrrr                      3-  110 m1      .banksel ram_address
+     0013 00rr                      1-  449     	MOVAR	_R_SMPCNT
+                                    1-  450     	.line	48, "main.c"; 	R_DBS = C_DBS;
+     0014 2103                      1-  451     	MOVIA	0x03
+                                    1-  452     	BANKSEL	_R_DBS
+     0015 rrrr                      3-  110 m1      .banksel ram_address
+     0016 00rr                      1-  453     	MOVAR	_R_DBS
+                                    1-  454     	.line	49, "main.c"; 	R_FLAG = 0x00;
+                                    1-  455     	BANKSEL	_R_FLAG
+     0017 rrrr                      3-  110 m1      .banksel ram_address
+     0018 02rr                      1-  456     	CLRR	_R_FLAG
+                                    1-  457     	.line	53, "main.c"; 	ADMD = C_ADC_En | C_ADC_CH_Dis | C_ADC_PB2;//test
+     0019 2187                      1-  458     	MOVIA	0x87
+     001A 00rr                      1-  459     	MOVAR	_ADMD
+                                    1-  460     	.line	57, "main.c"; 	ADVREFH = C_Vrefh_VDD;					// ADC reference high voltage is supplied by internal VDD (Note: ADC clock freq. must be equal or less than 2MHz @ VDD=5.0V)
+     001B 2103                      1-  461     	MOVIA	0x03
+     001C 00rr                      1-  462     	MOVAR	_ADVREFH
+                                    1-  463     	.line	63, "main.c"; 	ADR	 = C_Ckl_Div1;						// ADC clock=Fcpu/1, Clear ADIF, disable ADC interrupt
+     001D 2120                      1-  464     	MOVIA	0x20
+     001E 00rr                      1-  465     	MOVAR	_ADR
+                                    1-  466     	.line	72, "main.c"; 	ADCR  = C_Sample_8clk | C_12BIT; 		// Sample pulse width=8 adc clock, ADC select 12-bit conversion ( Note: ADC clock freq. must be equal or less than 2MHz)
+     001F 210F                      1-  467     	MOVIA	0x0f
+     0020 00rr                      1-  468     	MOVAR	_ADCR
+                                    1-  469     	.line	75, "main.c"; 	PACON = C_PA2_AIN2;						// Set AIN2(PA2) as pure ADC input for reducing power consumption (SFR "PACON")
+     0021 2104                      1-  470     	MOVIA	0x04
+     0022 00rr                      1-  471     	MOVAR	_PACON
+                                    1-  472     	.line	76, "main.c"; 	ADMDbits.GCHS = 1;						// Enable global ADC channel	(SFR "ADMD")
+     0023 1Arr                      1-  473     	BSR	_ADMDbits,4
+                                    1-  474     	.line	77, "main.c"; 	ADRbits.ADIF = 0;						// Clear adc interrupt flag bit
+     0024 1Frr                      1-  475     	BCR	_ADRbits,7
+                                    1-  476     	.line	78, "main.c"; 	ADRbits.ADIE = 1;						// Enable adc interrupt bit
+     0025 1Brr                      1-  477     	BSR	_ADRbits,6
+                                    1-  478     	.line	79, "main.c"; 	delay(50);								// Delay 1.12ms(Instruction clock=4MHz/4T) for waiting ADC stable
+     0026 2132                      1-  479     	MOVIA	0x32
+     0027 00rr                      1-  480     	MOVAR	STK00
+     0028 2100                      1-  481     	MOVIA	0x00
+                                    1-  482     	MCALL	_delay
+     0029 2rrr                      3-   66 m1      LCALL rom_address
+                                    1-  483     	.line	80, "main.c"; 	ADMDbits.START = 1;						// Start a ADC conversion session
+     002A 1Brr                      1-  484     	BSR	_ADMDbits,6
+                                    1-  485     	.line	81, "main.c"; 	ENI();
+     002B 0004                      1-  486     	ENI
+     002C                           1-  487     _00106_DS_:
+                                    1-  488     	.line	85, "main.c"; 	CLRWDT();							// Clear WatchDog
+     002C 0002                      1-  489     	clrwdt
+                                    1-  490     	MGOTO	_00106_DS_
+     002D 3rrr                      3-   63 m1      LGOTO rom_address
+                                    1-  491     	.line	87, "main.c"; 	}
+                                    1-  492     	RETURN	
+     002E 0010                      3-   40 m1      ret
+                                    1-  493     ; exit point of _main
+                                    1-  495     ;***
+                                    1-  496     ;  pBlock Stats: dbName = C
+                                    1-  497     ;***
+                                    1-  498     ;has an exit
+                                    1-  499     ;4 compiler assigned registers:
+                                    1-  500     ;   r0x100B
+                                    1-  501     ;   STK00
+                                    1-  502     ;   r0x100C
+                                    1-  503     ;   r0x100D
+                                    1-  504     ;; Starting pCode block
+                                    1-  505     .segment "code"; module=main, function=_F_ADJMD
+                                    1-  507     ;local variable name mapping:
+     0000                           1-  510     _F_ADJMD:
+                                    1-  511     ; 2 exit points
+                                    1-  512     	.line	157, "main.c"; 	void F_ADJMD(int operator)
+                                    1-  513     	BANKSEL	r0x100B
+     0000 rrrr                      3-  110 m1      .banksel ram_address
+     0001 00rr                      1-  514     	MOVAR	r0x100B
+     0002 01rr                      1-  515     	MOVR	STK00,W
+                                    1-  516     	BANKSEL	r0x100C
+     0003 rrrr                      3-  110 m1      .banksel ram_address
+     0004 00rr                      1-  517     	MOVAR	r0x100C
+                                    1-  518     ;;signed compare: left < lit (0x20=32), size=2, mask=ffff
+                                    1-  519     	.line	159, "main.c"; 	if (operator >= 0x20)
+                                    1-  520     	BANKSEL	r0x100B
+     0005 rrrr                      3-  110 m1      .banksel ram_address
+     0006 01rr                      1-  521     	MOVR	r0x100B,W
+     0007 2580                      1-  522     	ADDIA	0x80
+     0008 2580                      1-  523     	ADDIA	0x80
+     0009 0903                      1-  524     	BTRSS	STATUS,2
+                                    1-  525     	MGOTO	_00178_DS_
+     000A 3rrr                      3-   63 m1      LGOTO rom_address
+     000B 2120                      1-  526     	MOVIA	0x20
+                                    1-  527     	BANKSEL	r0x100C
+     000C rrrr                      3-  110 m1      .banksel ram_address
+     000D 04rr                      1-  528     	SUBAR	r0x100C,W
+     000E                           1-  529     _00178_DS_:
+     000E 0803                      1-  530     	BTRSS	STATUS,0
+                                    1-  531     	MGOTO	_00171_DS_
+     000F 3rrr                      3-   63 m1      LGOTO rom_address
+                                    1-  532     	.line	160, "main.c"; 	ADJMD=operator;
+                                    1-  533     	BANKSEL	r0x100C
+     0010 rrrr                      3-  110 m1      .banksel ram_address
+     0011 01rr                      1-  534     	MOVR	r0x100C,W
+     0012 00rr                      1-  535     	MOVAR	_ADJMD
+                                    1-  536     	MGOTO	_00173_DS_
+     0013 3rrr                      3-   63 m1      LGOTO rom_address
+     0014                           1-  537     _00171_DS_:
+                                    1-  538     	.line	162, "main.c"; 	ADJMD=0x1F-operator;
+                                    1-  539     	BANKSEL	r0x100C
+     0014 rrrr                      3-  110 m1      .banksel ram_address
+     0015 01rr                      1-  540     	MOVR	r0x100C,W
+                                    1-  541     ;;1	MOVAR	r0x100D
+     0016 271F                      1-  542     	SUBIA	0x1f
+     0017 00rr                      1-  543     	MOVAR	_ADJMD
+     0018                           1-  544     _00173_DS_:
+                                    1-  545     	.line	163, "main.c"; 	}
+                                    1-  546     	RETURN	
+     0018 0010                      3-   40 m1      ret
+                                    1-  547     ; exit point of _F_ADJMD
+                                    1-  549     ;***
+                                    1-  550     ;  pBlock Stats: dbName = C
+                                    1-  551     ;***
+                                    1-  552     ;has an exit
+                                    1-  553     ;6 compiler assigned registers:
+                                    1-  554     ;   r0x100E
+                                    1-  555     ;   STK00
+                                    1-  556     ;   r0x100F
+                                    1-  557     ;   r0x1010
+                                    1-  558     ;   r0x1011
+                                    1-  559     ;   r0x1012
+                                    1-  560     ;; Starting pCode block
+                                    1-  561     .segment "code"; module=main, function=_delay
+                                    1-  563     ;local variable name mapping:
+     0000                           1-  568     _delay:
+                                    1-  569     ; 2 exit points
+                                    1-  570     	.line	150, "main.c"; 	void delay(int count)
+                                    1-  571     	BANKSEL	r0x100E
+     0000 rrrr                      3-  110 m1      .banksel ram_address
+     0001 00rr                      1-  572     	MOVAR	r0x100E
+     0002 01rr                      1-  573     	MOVR	STK00,W
+                                    1-  574     	BANKSEL	r0x100F
+     0003 rrrr                      3-  110 m1      .banksel ram_address
+     0004 00rr                      1-  575     	MOVAR	r0x100F
+                                    1-  576     	.line	153, "main.c"; 	for(i=1;i<=count;i++)
+     0005 2101                      1-  577     	MOVIA	0x01
+                                    1-  578     	BANKSEL	r0x1010
+     0006 rrrr                      3-  110 m1      .banksel ram_address
+     0007 00rr                      1-  579     	MOVAR	r0x1010
+                                    1-  580     	BANKSEL	r0x1011
+     0008 rrrr                      3-  110 m1      .banksel ram_address
+     0009 02rr                      1-  581     	CLRR	r0x1011
+     000A                           1-  582     _00154_DS_:
+                                    1-  583     	BANKSEL	r0x100E
+     000A rrrr                      3-  110 m1      .banksel ram_address
+     000B 01rr                      1-  584     	MOVR	r0x100E,W
+     000C 2580                      1-  585     	ADDIA	0x80
+                                    1-  586     	BANKSEL	r0x1012
+     000D rrrr                      3-  110 m1      .banksel ram_address
+     000E 00rr                      1-  587     	MOVAR	r0x1012
+                                    1-  588     	BANKSEL	r0x1011
+     000F rrrr                      3-  110 m1      .banksel ram_address
+     0010 01rr                      1-  589     	MOVR	r0x1011,W
+     0011 2580                      1-  590     	ADDIA	0x80
+                                    1-  591     	BANKSEL	r0x1012
+     0012 rrrr                      3-  110 m1      .banksel ram_address
+     0013 04rr                      1-  592     	SUBAR	r0x1012,W
+     0014 0903                      1-  593     	BTRSS	STATUS,2
+                                    1-  594     	MGOTO	_00165_DS_
+     0015 3rrr                      3-   63 m1      LGOTO rom_address
+                                    1-  595     	BANKSEL	r0x1010
+     0016 rrrr                      3-  110 m1      .banksel ram_address
+     0017 01rr                      1-  596     	MOVR	r0x1010,W
+                                    1-  597     	BANKSEL	r0x100F
+     0018 rrrr                      3-  110 m1      .banksel ram_address
+     0019 04rr                      1-  598     	SUBAR	r0x100F,W
+     001A                           1-  599     _00165_DS_:
+     001A 0803                      1-  600     	BTRSS	STATUS,0
+                                    1-  601     	MGOTO	_00156_DS_
+     001B 3rrr                      3-   63 m1      LGOTO rom_address
+                                    1-  602     	BANKSEL	r0x1010
+     001C rrrr                      3-  110 m1      .banksel ram_address
+     001D 05rr                      1-  603     	INCR	r0x1010,F
+     001E 0903                      1-  604     	BTRSS	STATUS,2
+                                    1-  605     	MGOTO	_00001_DS_
+     001F 3rrr                      3-   63 m1      LGOTO rom_address
+                                    1-  606     	BANKSEL	r0x1011
+     0020 rrrr                      3-  110 m1      .banksel ram_address
+     0021 05rr                      1-  607     	INCR	r0x1011,F
+     0022                           1-  608     _00001_DS_:
+                                    1-  609     	MGOTO	_00154_DS_
+     0022 3rrr                      3-   63 m1      LGOTO rom_address
+     0023                           1-  610     _00156_DS_:
+                                    1-  611     	.line	155, "main.c"; 	}
+                                    1-  612     	RETURN	
+     0023 0010                      3-   40 m1      ret
+                                    1-  613     ; exit point of _delay
+                                    1-  616     ;	code size estimation:
+                                    1-  617     ;	  169+   53 =   222 instructions (  550 byte)
+                                    1-  619     	end
+
+SYMBOL TABLE            TYPE     VALUE
+__PIN_COUNT__           Constant 0000000E
+__PROCESSOR__           Constant 00810624
+C                       Constant 00000000
+DC                      Constant 00000001
+ENABLE_RAM_BANK         Constant 00000001
+F                       Constant 00000001
+FSR                     Constant 00000004
+INDF                    Constant 00000000
+PCHBUF                  Constant 0000000A
+PCL                     Constant 00000002
+STATUS                  Constant 00000003
+USEFGOTO                Constant 00000000
+W                       Constant 00000000
+Z                       Constant 00000002
+
+
+SOURCE FILE TABLE
+001 OBJ/main.s
+002 ny8b062e.inc
+003 common.inc
+004 main.c
+
+PROCESSOR    = NY8B062E (8 bits)
+PROGRAM ROM  = 0x00000000 - 0x000007FF
+DATA ROM     = 0x00000000 - 0x000007FF
+RESERVED MEM = 0x00000800 - 0x00000810
+SRAM / SFR   = 0x00000000 - 0x00000000

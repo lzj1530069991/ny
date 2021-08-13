@@ -14,7 +14,6 @@
 	extern	_IO_Init
 	extern	_ledCtr
 	extern	_workCtr
-	extern	_fgCtr
 	extern	_LedCtr2
 	extern	_checkInAD
 	extern	_F_AIN3_Convert
@@ -106,6 +105,7 @@
 	extern	_F_AIN2_Convert
 	extern	_F_AIN4_Convert
 	extern	_checkOutA
+	extern	_fgCtr
 	extern	_checkBatAD
 	extern	_initAD
 	extern	_delay
@@ -178,6 +178,9 @@
 	extern	_tempSum
 	extern	_count100
 	extern	_tempResult
+	extern	_fgCount
+	extern	_preFG
+	extern	_fgPRD
 	extern	_debug
 
 	extern PSAVE
@@ -237,10 +240,13 @@ _R_AIN2_DATA_LB:
 ; compiler-defined variables
 ;--------------------------------------------------------
 .segment "uninit"
-r0x105F:
+r0x1060:
 	.res	1
 .segment "uninit"
-r0x1057:
+r0x1059:
+	.res	1
+.segment "uninit"
+r0x105F:
 	.res	1
 .segment "uninit"
 r0x105E:
@@ -258,64 +264,22 @@ r0x105B:
 r0x105A:
 	.res	1
 .segment "uninit"
-r0x1059:
-	.res	1
-.segment "uninit"
-r0x1050:
+r0x1052:
 	.res	1
 .segment "uninit"
 r0x1058:
 	.res	1
 .segment "uninit"
-r0x1056:
-	.res	1
-.segment "uninit"
-r0x1051:
-	.res	1
-.segment "uninit"
-r0x1052:
-	.res	1
-.segment "uninit"
 r0x1053:
+	.res	1
+.segment "uninit"
+r0x1054:
 	.res	1
 .segment "uninit"
 r0x1055:
 	.res	1
 .segment "uninit"
-r0x103A:
-	.res	1
-.segment "uninit"
-r0x103B:
-	.res	1
-.segment "uninit"
-r0x104E:
-	.res	1
-.segment "uninit"
-r0x104F:
-	.res	1
-.segment "uninit"
-r0x1048:
-	.res	1
-.segment "uninit"
-r0x1049:
-	.res	1
-.segment "uninit"
-r0x104A:
-	.res	1
-.segment "uninit"
-r0x104B:
-	.res	1
-.segment "uninit"
-r0x1042:
-	.res	1
-.segment "uninit"
-r0x1043:
-	.res	1
-.segment "uninit"
-r0x1044:
-	.res	1
-.segment "uninit"
-r0x1047:
+r0x1057:
 	.res	1
 .segment "uninit"
 r0x103C:
@@ -324,10 +288,46 @@ r0x103C:
 r0x103D:
 	.res	1
 .segment "uninit"
+r0x1050:
+	.res	1
+.segment "uninit"
+r0x1051:
+	.res	1
+.segment "uninit"
+r0x104A:
+	.res	1
+.segment "uninit"
+r0x104B:
+	.res	1
+.segment "uninit"
+r0x104C:
+	.res	1
+.segment "uninit"
+r0x104D:
+	.res	1
+.segment "uninit"
+r0x1044:
+	.res	1
+.segment "uninit"
+r0x1045:
+	.res	1
+.segment "uninit"
+r0x1046:
+	.res	1
+.segment "uninit"
+r0x1049:
+	.res	1
+.segment "uninit"
 r0x103E:
 	.res	1
 .segment "uninit"
-r0x1041:
+r0x103F:
+	.res	1
+.segment "uninit"
+r0x1040:
+	.res	1
+.segment "uninit"
+r0x1043:
 	.res	1
 ;--------------------------------------------------------
 ; initialized data
@@ -604,6 +604,24 @@ _tempResult:
 
 
 .segment "idata"
+_fgCount:
+	dw	0x00
+	.debuginfo gvariable name=_fgCount,1byte,array=0,entsize=1,ext=1,enc=unsigned
+
+
+.segment "idata"
+_preFG:
+	dw	0x00
+	.debuginfo gvariable name=_preFG,1byte,array=0,entsize=1,ext=1,enc=unsigned
+
+
+.segment "idata"
+_fgPRD:
+	dw	0x00
+	.debuginfo gvariable name=_fgPRD,1byte,array=0,entsize=1,ext=1,enc=unsigned
+
+
+.segment "idata"
 _debug:
 	dw	0x00
 	.debuginfo gvariable name=_debug,1byte,array=0,entsize=1,ext=1,enc=unsigned
@@ -634,7 +652,7 @@ __sdcc_interrupt:
 ;; Starting pCode block
 _isr:
 ; 0 exit points
-	.line	120, "main.c"; 	void isr(void) __interrupt(0)
+	.line	123, "main.c"; 	void isr(void) __interrupt(0)
 	MOVAR	WSAVE
 	SWAPR	STATUS,W
 	CLRR	STATUS
@@ -651,114 +669,122 @@ _isr:
 	MOVR	STK01,W
 	BANKSEL	___sdcc_saved_stk01
 	MOVAR	___sdcc_saved_stk01
-	.line	122, "main.c"; 	if(INTFbits.T0IF)
+	.line	125, "main.c"; 	if(INTFbits.T0IF)
 	BTRSS	_INTFbits,0
-	MGOTO	_00126_DS_
-	.line	124, "main.c"; 	TMR0 += 55;
+	MGOTO	_00128_DS_
+	.line	127, "main.c"; 	TMR0 += 55;
 	MOVIA	0x37
 	ADDAR	_TMR0,F
-	.line	126, "main.c"; 	if(++intCount >= 100)
+	.line	129, "main.c"; 	if(++intCount >= 100)
 	BANKSEL	_intCount
 	INCR	_intCount,F
 ;;unsigned compare: left < lit (0x64=100), size=1
 	MOVIA	0x64
 	SUBAR	_intCount,W
 	BTRSS	STATUS,0
-	MGOTO	_00126_DS_
-	.line	128, "main.c"; 	IntFlag = 1;
+	MGOTO	_00128_DS_
+	.line	131, "main.c"; 	IntFlag = 1;
 	BANKSEL	_Status
 	BSR	_Status,0
-	.line	129, "main.c"; 	intCount = 0;
+	.line	132, "main.c"; 	intCount = 0;
 	BANKSEL	_intCount
 	CLRR	_intCount
-	.line	130, "main.c"; 	if(++count500ms >= 40)
+	.line	133, "main.c"; 	if(workStep)
+	BANKSEL	_workStep
+	MOVR	_workStep,W
+	BTRSC	STATUS,2
+	MGOTO	_00008_DS_
+	.line	134, "main.c"; 	++fgCount;
+	BANKSEL	_fgCount
+	INCR	_fgCount,F
+_00008_DS_:
+	.line	135, "main.c"; 	if(++count500ms >= 40)
 	BANKSEL	_count500ms
 	INCR	_count500ms,F
-;;unsigned compare: left < lit (0x28=40), size=1
 	MOVIA	0x28
 	SUBAR	_count500ms,W
 	BTRSC	STATUS,0
-	.line	131, "main.c"; 	count500ms = 0;
+	.line	136, "main.c"; 	count500ms = 0;
 	CLRR	_count500ms
-	.line	132, "main.c"; 	if(++count200ms >= 20)
+	.line	137, "main.c"; 	if(++count200ms >= 20)
 	BANKSEL	_count200ms
 	INCR	_count200ms,F
 	MOVIA	0x14
 	SUBAR	_count200ms,W
 	BTRSS	STATUS,0
-	MGOTO	_00110_DS_
-	.line	134, "main.c"; 	count200ms = 0;
+	MGOTO	_00112_DS_
+	.line	139, "main.c"; 	count200ms = 0;
 	CLRR	_count200ms
-	.line	135, "main.c"; 	if(ledDeadTime > 0)
+	.line	140, "main.c"; 	if(ledDeadTime > 0)
 	BANKSEL	_ledDeadTime
 	MOVR	_ledDeadTime,W
 	BTRSS	STATUS,2
-	.line	136, "main.c"; 	--ledDeadTime;
+	.line	141, "main.c"; 	--ledDeadTime;
 	DECR	_ledDeadTime,F
-_00110_DS_:
-	.line	138, "main.c"; 	if(++count1s >= 100)
+_00112_DS_:
+	.line	143, "main.c"; 	if(++count1s >= 100)
 	BANKSEL	_count1s
 	INCR	_count1s,F
 	MOVIA	0x64
 	SUBAR	_count1s,W
 	BTRSS	STATUS,0
-	MGOTO	_00126_DS_
-	.line	140, "main.c"; 	count1s = 0;
+	MGOTO	_00128_DS_
+	.line	145, "main.c"; 	count1s = 0;
 	CLRR	_count1s
-	.line	141, "main.c"; 	if(chrgFlag == 1 && pwStep == 6)
+	.line	146, "main.c"; 	if(chrgFlag == 1 && pwStep == 6)
 	BANKSEL	_Status
 	BTRSS	_Status,3
-	MGOTO	_00112_DS_
+	MGOTO	_00114_DS_
 	BANKSEL	_pwStep
 	MOVR	_pwStep,W
 	XORIA	0x06
 	BTRSS	STATUS,2
-	MGOTO	_00112_DS_
-	.line	143, "main.c"; 	++chrgTime;
+	MGOTO	_00114_DS_
+	.line	148, "main.c"; 	++chrgTime;
 	BANKSEL	_chrgTime
 	INCR	_chrgTime,F
 	BTRSC	STATUS,2
 	INCR	(_chrgTime + 1),F
-_00112_DS_:
-	.line	146, "main.c"; 	if(ledLightTime > 0)
+_00114_DS_:
+	.line	151, "main.c"; 	if(ledLightTime > 0)
 	BANKSEL	_ledLightTime
 	MOVR	_ledLightTime,W
 	BTRSS	STATUS,2
-	.line	147, "main.c"; 	--ledLightTime;
+	.line	152, "main.c"; 	--ledLightTime;
 	DECR	_ledLightTime,F
-	.line	148, "main.c"; 	if(shanshuoTime > 0)
+	.line	153, "main.c"; 	if(shanshuoTime > 0)
 	BANKSEL	_shanshuoTime
 	MOVR	_shanshuoTime,W
 	BTRSS	STATUS,2
-	.line	149, "main.c"; 	--shanshuoTime;
+	.line	154, "main.c"; 	--shanshuoTime;
 	DECR	_shanshuoTime,F
-	.line	150, "main.c"; 	if(workStep)
+	.line	155, "main.c"; 	if(workStep)
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	BTRSC	STATUS,2
-	MGOTO	_00119_DS_
-	.line	152, "main.c"; 	++count900s;
+	MGOTO	_00121_DS_
+	.line	157, "main.c"; 	++count900s;
 	BANKSEL	_count900s
 	INCR	_count900s,F
 	BTRSC	STATUS,2
 	INCR	(_count900s + 1),F
-	MGOTO	_00126_DS_
-_00119_DS_:
-	.line	156, "main.c"; 	count900s = 0;
+	MGOTO	_00128_DS_
+_00121_DS_:
+	.line	161, "main.c"; 	count900s = 0;
 	BANKSEL	_count900s
 	CLRR	_count900s
 	CLRR	(_count900s + 1)
-_00126_DS_:
-	.line	165, "main.c"; 	if(INTFbits.PABIF)
+_00128_DS_:
+	.line	170, "main.c"; 	if(INTFbits.PABIF)
 	BTRSS	_INTFbits,1
-	MGOTO	_00128_DS_
-	.line	167, "main.c"; 	INTF= (unsigned char)~(C_INT_PABKey);	// Clear PABIF(PortB input change interrupt flag bit)
+	MGOTO	_00130_DS_
+	.line	172, "main.c"; 	INTF= (unsigned char)~(C_INT_PABKey);	// Clear PABIF(PortB input change interrupt flag bit)
 	MOVIA	0xfd
 	MOVAR	_INTF
-_00128_DS_:
-	.line	170, "main.c"; 	INTF = 0;
+_00130_DS_:
+	.line	175, "main.c"; 	INTF = 0;
 	CLRR	_INTF
-	.line	172, "main.c"; 	}
+	.line	177, "main.c"; 	}
 	BANKSEL	___sdcc_saved_stk01
 	MOVR	___sdcc_saved_stk01,W
 	MOVAR	STK01
@@ -789,6 +815,7 @@ END_OF_INTERRUPT:
 ;   _initSys
 ;   _initAD
 ;   _ledShow
+;   _fgCtr
 ;   _pwmStop
 ;   _powerOff
 ;   _keyCtr
@@ -800,6 +827,7 @@ END_OF_INTERRUPT:
 ;   _initSys
 ;   _initAD
 ;   _ledShow
+;   _fgCtr
 ;   _pwmStop
 ;   _powerOff
 ;   _keyCtr
@@ -813,96 +841,37 @@ END_OF_INTERRUPT:
 	.debuginfo subprogram _main
 _main:
 ; 2 exit points
-	.line	176, "main.c"; 	initSys();
+	.line	181, "main.c"; 	initSys();
 	MCALL	_initSys
-	.line	177, "main.c"; 	initAD();
+	.line	182, "main.c"; 	initAD();
 	MCALL	_initAD
-_00175_DS_:
-	.line	180, "main.c"; 	CLRWDT();
+_00166_DS_:
+	.line	185, "main.c"; 	CLRWDT();
 	clrwdt
-	.line	181, "main.c"; 	ledShow();
+	.line	186, "main.c"; 	ledShow();
 	MCALL	_ledShow
-	.line	182, "main.c"; 	if(workStep > 0 && tempDuty >= 20)
-	BANKSEL	_workStep
-	MOVR	_workStep,W
-	BTRSC	STATUS,2
-	MGOTO	_00139_DS_
-;;unsigned compare: left < lit (0x14=20), size=1
-	MOVIA	0x14
-	BANKSEL	_tempDuty
-	SUBAR	_tempDuty,W
-	BTRSS	STATUS,0
-	MGOTO	_00139_DS_
-	.line	184, "main.c"; 	if(cDuty > tempDuty)
-	BANKSEL	_cDuty
-	MOVR	_cDuty,W
-	BANKSEL	_tempDuty
-	SUBAR	_tempDuty,W
-	BTRSC	STATUS,0
-	MGOTO	_00136_DS_
-	.line	186, "main.c"; 	cDuty--;
-	BANKSEL	_cDuty
-	DECR	_cDuty,F
-	.line	187, "main.c"; 	PWM1DUTY = cDuty;
-	MOVR	_cDuty,W
-	SFUN	_PWM1DUTY
-	MGOTO	_00139_DS_
-_00136_DS_:
-	.line	189, "main.c"; 	else if(cDuty < tempDuty)
-	BANKSEL	_tempDuty
-	MOVR	_tempDuty,W
-	BANKSEL	_cDuty
-	SUBAR	_cDuty,W
-	BTRSC	STATUS,0
-	MGOTO	_00139_DS_
-	.line	191, "main.c"; 	cDuty++;
-	INCR	_cDuty,F
-	.line	192, "main.c"; 	PWM1DUTY = cDuty;
-	MOVR	_cDuty,W
-	SFUN	_PWM1DUTY
-_00139_DS_:
-	.line	195, "main.c"; 	if(workStep > 0 && currentDuty > maxDuty)
-	BANKSEL	_workStep
-	MOVR	_workStep,W
-	BTRSC	STATUS,2
-	MGOTO	_00142_DS_
-	BANKSEL	_currentDuty
-	MOVR	_currentDuty,W
-	BANKSEL	_maxDuty
-	SUBAR	_maxDuty,W
-	BTRSC	STATUS,0
-	MGOTO	_00142_DS_
-	.line	197, "main.c"; 	currentDuty = currentDuty - 1;
-	BANKSEL	_currentDuty
-	DECR	_currentDuty,F
-	.line	198, "main.c"; 	PWM1DUTY = currentDuty;
-	MOVR	_currentDuty,W
-	SFUN	_PWM1DUTY
-	.line	199, "main.c"; 	cDuty = currentDuty;
-	MOVR	_currentDuty,W
-	BANKSEL	_cDuty
-	MOVAR	_cDuty
-_00142_DS_:
-	.line	201, "main.c"; 	if(!IntFlag)
+	.line	187, "main.c"; 	fgCtr();
+	MCALL	_fgCtr
+	.line	188, "main.c"; 	if(!IntFlag)
 	BANKSEL	_Status
 	BTRSS	_Status,0
-	MGOTO	_00175_DS_
-	.line	203, "main.c"; 	IntFlag = 0;
+	MGOTO	_00166_DS_
+	.line	190, "main.c"; 	IntFlag = 0;
 	BCR	_Status,0
-	.line	205, "main.c"; 	if(shanshuoTime == 0 && pwStep == 0 && workStep > 0)
+	.line	192, "main.c"; 	if(shanshuoTime == 0 && pwStep == 0 && workStep > 0)
 	BANKSEL	_shanshuoTime
 	MOVR	_shanshuoTime,W
 	BTRSS	STATUS,2
-	MGOTO	_00149_DS_
+	MGOTO	_00140_DS_
 	BANKSEL	_pwStep
 	MOVR	_pwStep,W
 	BTRSS	STATUS,2
-	MGOTO	_00149_DS_
+	MGOTO	_00140_DS_
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	BTRSC	STATUS,2
-	MGOTO	_00149_DS_
-	.line	207, "main.c"; 	if(++closeCount >= 1000)
+	MGOTO	_00140_DS_
+	.line	194, "main.c"; 	if(++closeCount >= 1000)
 	BANKSEL	_closeCount
 	INCR	_closeCount,F
 	BTRSC	STATUS,2
@@ -911,43 +880,43 @@ _00142_DS_:
 	MOVIA	0x03
 	SUBAR	(_closeCount + 1),W
 	BTRSS	STATUS,2
-	MGOTO	_00258_DS_
+	MGOTO	_00227_DS_
 	MOVIA	0xe8
 	SUBAR	_closeCount,W
-_00258_DS_:
+_00227_DS_:
 	BTRSS	STATUS,0
-	MGOTO	_00150_DS_
-	.line	209, "main.c"; 	closeCount = 0;
+	MGOTO	_00141_DS_
+	.line	196, "main.c"; 	closeCount = 0;
 	BANKSEL	_closeCount
 	CLRR	_closeCount
 	CLRR	(_closeCount + 1)
-	.line	210, "main.c"; 	workStep = 0;
+	.line	197, "main.c"; 	workStep = 0;
 	BANKSEL	_workStep
 	CLRR	_workStep
-	.line	211, "main.c"; 	ledStep = 0;
+	.line	198, "main.c"; 	ledStep = 0;
 	BANKSEL	_ledStep
 	CLRR	_ledStep
-	.line	212, "main.c"; 	pwmStop();
+	.line	199, "main.c"; 	pwmStop();
 	MCALL	_pwmStop
-	MGOTO	_00150_DS_
-_00149_DS_:
-	.line	217, "main.c"; 	closeCount = 0;
+	MGOTO	_00141_DS_
+_00140_DS_:
+	.line	204, "main.c"; 	closeCount = 0;
 	BANKSEL	_closeCount
 	CLRR	_closeCount
 	CLRR	(_closeCount + 1)
 ;;unsigned compare: left < lit (0x5=5), size=1
-_00150_DS_:
-	.line	220, "main.c"; 	if(overCount >= 5 && workStep > 0)
+_00141_DS_:
+	.line	207, "main.c"; 	if(overCount >= 5 && workStep > 0)
 	MOVIA	0x05
 	BANKSEL	_overCount
 	SUBAR	_overCount,W
 	BTRSS	STATUS,0
-	MGOTO	_00156_DS_
+	MGOTO	_00147_DS_
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	BTRSC	STATUS,2
-	MGOTO	_00156_DS_
-	.line	222, "main.c"; 	if(++count5S > 500)
+	MGOTO	_00147_DS_
+	.line	209, "main.c"; 	if(++count5S > 500)
 	BANKSEL	_count5S
 	INCR	_count5S,F
 	BTRSC	STATUS,2
@@ -957,74 +926,74 @@ _00150_DS_:
 	MOVIA	0x01
 	SUBAR	(_count5S + 1),W
 	BTRSS	STATUS,2
-	MGOTO	_00260_DS_
+	MGOTO	_00229_DS_
 	MOVIA	0xf5
 	SUBAR	_count5S,W
-_00260_DS_:
+_00229_DS_:
 	BTRSS	STATUS,0
-	MGOTO	_00157_DS_
-	.line	224, "main.c"; 	overCount = 0;
+	MGOTO	_00148_DS_
+	.line	211, "main.c"; 	overCount = 0;
 	BANKSEL	_overCount
 	CLRR	_overCount
-	.line	225, "main.c"; 	count5S = 0;
+	.line	212, "main.c"; 	count5S = 0;
 	BANKSEL	_count5S
 	CLRR	_count5S
 	CLRR	(_count5S + 1)
-	.line	226, "main.c"; 	ledDeadTime = 25;
+	.line	213, "main.c"; 	ledDeadTime = 25;
 	MOVIA	0x19
 	BANKSEL	_ledDeadTime
 	MOVAR	_ledDeadTime
-	.line	227, "main.c"; 	powerOff();
+	.line	214, "main.c"; 	powerOff();
 	MCALL	_powerOff
-	MGOTO	_00157_DS_
-_00156_DS_:
-	.line	232, "main.c"; 	count5S = 0;
+	MGOTO	_00148_DS_
+_00147_DS_:
+	.line	219, "main.c"; 	count5S = 0;
 	BANKSEL	_count5S
 	CLRR	_count5S
 	CLRR	(_count5S + 1)
-_00157_DS_:
-	.line	234, "main.c"; 	if(chrgFlag == 0)
+_00148_DS_:
+	.line	221, "main.c"; 	if(chrgFlag == 0)
 	BANKSEL	_Status
 	BTRSS	_Status,3
-	.line	235, "main.c"; 	keyCtr();
+	.line	222, "main.c"; 	keyCtr();
 	MCALL	_keyCtr
-_00160_DS_:
-	.line	236, "main.c"; 	if(count200ms < 3)
+_00151_DS_:
+	.line	223, "main.c"; 	if(count200ms < 3)
 	MOVIA	0x03
 	BANKSEL	_count200ms
 	SUBAR	_count200ms,W
 	BTRSS	STATUS,0
-	.line	238, "main.c"; 	checkBatAD();
+	.line	225, "main.c"; 	checkBatAD();
 	MCALL	_checkBatAD
-	.line	240, "main.c"; 	checkOutA();
+	.line	227, "main.c"; 	checkOutA();
 	MCALL	_checkOutA
-	.line	241, "main.c"; 	chrgCtr();
+	.line	228, "main.c"; 	chrgCtr();
 	MCALL	_chrgCtr
-	.line	244, "main.c"; 	if(workStep == 0 && keyCount == 0 && (PORTA & 0x20) == 0 && ledLightTime == 0 && ledDeadTime == 0 && shanshuoTime == 0)
+	.line	231, "main.c"; 	if(workStep == 0 && keyCount == 0 && (PORTA & 0x20) == 0 && ledLightTime == 0 && ledDeadTime == 0 && shanshuoTime == 0)
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	BTRSS	STATUS,2
-	MGOTO	_00166_DS_
+	MGOTO	_00157_DS_
 	BANKSEL	_keyCount
 	MOVR	_keyCount,W
 	BTRSS	STATUS,2
-	MGOTO	_00166_DS_
+	MGOTO	_00157_DS_
 	BANKSEL	_PORTA
 	BTRSC	_PORTA,5
-	MGOTO	_00166_DS_
+	MGOTO	_00157_DS_
 	BANKSEL	_ledLightTime
 	MOVR	_ledLightTime,W
 	BTRSS	STATUS,2
-	MGOTO	_00166_DS_
+	MGOTO	_00157_DS_
 	BANKSEL	_ledDeadTime
 	MOVR	_ledDeadTime,W
 	BTRSS	STATUS,2
-	MGOTO	_00166_DS_
+	MGOTO	_00157_DS_
 	BANKSEL	_shanshuoTime
 	MOVR	_shanshuoTime,W
 	BTRSS	STATUS,2
-	MGOTO	_00166_DS_
-	.line	246, "main.c"; 	if(++sleepTime > 20)
+	MGOTO	_00157_DS_
+	.line	233, "main.c"; 	if(++sleepTime > 20)
 	BANKSEL	_sleepTime
 	INCR	_sleepTime,F
 	BTRSC	STATUS,2
@@ -1034,31 +1003,31 @@ _00160_DS_:
 	MOVIA	0x00
 	SUBAR	(_sleepTime + 1),W
 	BTRSS	STATUS,2
-	MGOTO	_00262_DS_
+	MGOTO	_00231_DS_
 	MOVIA	0x15
 	SUBAR	_sleepTime,W
-_00262_DS_:
+_00231_DS_:
 	BTRSS	STATUS,0
-	MGOTO	_00166_DS_
-	.line	248, "main.c"; 	gotoSleep();
+	MGOTO	_00157_DS_
+	.line	235, "main.c"; 	gotoSleep();
 	MCALL	_gotoSleep
 ;;unsigned compare: left < lit (0x384=900), size=2
-_00166_DS_:
-	.line	252, "main.c"; 	if(count900s >= 900)
+_00157_DS_:
+	.line	239, "main.c"; 	if(count900s >= 900)
 	MOVIA	0x03
 	BANKSEL	_count900s
 	SUBAR	(_count900s + 1),W
 	BTRSS	STATUS,2
-	MGOTO	_00263_DS_
+	MGOTO	_00232_DS_
 	MOVIA	0x84
 	SUBAR	_count900s,W
-_00263_DS_:
+_00232_DS_:
 	BTRSS	STATUS,0
-	MGOTO	_00175_DS_
-	.line	254, "main.c"; 	powerOff();
+	MGOTO	_00166_DS_
+	.line	241, "main.c"; 	powerOff();
 	MCALL	_powerOff
-	MGOTO	_00175_DS_
-	.line	258, "main.c"; 	}
+	MGOTO	_00166_DS_
+	.line	245, "main.c"; 	}
 	RETURN	
 ; exit point of _main
 
@@ -1071,11 +1040,11 @@ _00263_DS_:
 	.debuginfo subprogram _F_wait_eoc
 _F_wait_eoc:
 ; 2 exit points
-_00821_DS_:
-	.line	939, "main.c"; 	while(ADMDbits.EOC==0)
+_00809_DS_:
+	.line	959, "main.c"; 	while(ADMDbits.EOC==0)
 	BTRSS	_ADMDbits,5
-	MGOTO	_00821_DS_
-	.line	941, "main.c"; 	}
+	MGOTO	_00809_DS_
+	.line	961, "main.c"; 	}
 	RETURN	
 ; exit point of _F_wait_eoc
 
@@ -1089,86 +1058,86 @@ _00821_DS_:
 ;   _delay
 ;   _F_wait_eoc
 ;6 compiler assigned registers:
-;   r0x103C
-;   r0x103D
 ;   r0x103E
 ;   r0x103F
 ;   r0x1040
 ;   r0x1041
+;   r0x1042
+;   r0x1043
 ;; Starting pCode block
 .segment "code"; module=main, function=_F_AIN2_Convert
 	.debuginfo subprogram _F_AIN2_Convert
 ;local variable name mapping:
-	.debuginfo variable _count=r0x103C,enc=unsigned
-	.debuginfo variable _i=r0x103D,enc=unsigned
+	.debuginfo variable _count=r0x103E,enc=unsigned
+	.debuginfo variable _i=r0x103F,enc=unsigned
 _F_AIN2_Convert:
 ; 2 exit points
-	.line	922, "main.c"; 	void F_AIN2_Convert(char count)
-	BANKSEL	r0x103C
-	MOVAR	r0x103C
-	.line	924, "main.c"; 	R_AIN2_DATA=R_AIN2_DATA_LB=0x00;   
+	.line	942, "main.c"; 	void F_AIN2_Convert(char count)
+	BANKSEL	r0x103E
+	MOVAR	r0x103E
+	.line	944, "main.c"; 	R_AIN2_DATA=R_AIN2_DATA_LB=0x00;   
 	BANKSEL	_R_AIN2_DATA_LB
 	CLRR	_R_AIN2_DATA_LB
 	BANKSEL	_R_AIN2_DATA
 	CLRR	_R_AIN2_DATA
 	CLRR	(_R_AIN2_DATA + 1)
-	.line	926, "main.c"; 	ADMD  = 0x90 | C_ADC_PA4;				// Select AIN6(PB1) pad as ADC input
+	.line	946, "main.c"; 	ADMD  = 0x90 | C_ADC_PA4;				// Select AIN6(PB1) pad as ADC input
 	MOVIA	0x94
 	MOVAR	_ADMD
-	.line	927, "main.c"; 	delay(200);	
+	.line	947, "main.c"; 	delay(200);	
 	MOVIA	0xc8
 	MCALL	_delay
-	.line	928, "main.c"; 	for(i=1;i<=count;i++)
+	.line	948, "main.c"; 	for(i=1;i<=count;i++)
 	MOVIA	0x01
-	BANKSEL	r0x103D
-	MOVAR	r0x103D
-_00814_DS_:
-	BANKSEL	r0x103D
-	MOVR	r0x103D,W
-	BANKSEL	r0x103C
-	SUBAR	r0x103C,W
+	BANKSEL	r0x103F
+	MOVAR	r0x103F
+_00802_DS_:
+	BANKSEL	r0x103F
+	MOVR	r0x103F,W
+	BANKSEL	r0x103E
+	SUBAR	r0x103E,W
 	BTRSS	STATUS,0
-	MGOTO	_00816_DS_
-	.line	930, "main.c"; 	ADMDbits.START = 1;					// Start a ADC conversion session
+	MGOTO	_00804_DS_
+	.line	950, "main.c"; 	ADMDbits.START = 1;					// Start a ADC conversion session
 	BSR	_ADMDbits,6
-	.line	931, "main.c"; 	F_wait_eoc();							// Wait for ADC conversion complete
+	.line	951, "main.c"; 	F_wait_eoc();							// Wait for ADC conversion complete
 	MCALL	_F_wait_eoc
-	.line	932, "main.c"; 	R_AIN2_DATA_LB += ( 0x0F & ADR); 
+	.line	952, "main.c"; 	R_AIN2_DATA_LB += ( 0x0F & ADR); 
 	MOVIA	0x0f
 	ANDAR	_ADR,W
-;;3	MOVAR	r0x103E
+;;3	MOVAR	r0x1040
 	BANKSEL	_R_AIN2_DATA_LB
 	ADDAR	_R_AIN2_DATA_LB,F
-	.line	933, "main.c"; 	R_AIN2_DATA    += ADD; 
+	.line	953, "main.c"; 	R_AIN2_DATA    += ADD; 
 	MOVR	_ADD,W
-	BANKSEL	r0x103E
-	MOVAR	r0x103E
-;;1	CLRR	r0x103F
-;;105	MOVR	r0x103E,W
-;;103	MOVAR	r0x1040
+	BANKSEL	r0x1040
+	MOVAR	r0x1040
+;;1	CLRR	r0x1041
+;;105	MOVR	r0x1040,W
+;;103	MOVAR	r0x1042
 	MOVIA	0x00
-	BANKSEL	r0x1041
-	MOVAR	r0x1041
-;;104	MOVR	r0x1040,W
-	BANKSEL	r0x103E
-	MOVR	r0x103E,W
+	BANKSEL	r0x1043
+	MOVAR	r0x1043
+;;104	MOVR	r0x1042,W
+	BANKSEL	r0x1040
+	MOVR	r0x1040,W
 	BANKSEL	_R_AIN2_DATA
 	ADDAR	_R_AIN2_DATA,F
-	BANKSEL	r0x1041
-	MOVR	r0x1041,W
+	BANKSEL	r0x1043
+	MOVR	r0x1043,W
 	BTRSC	STATUS,0
-	INCR	r0x1041,W
+	INCR	r0x1043,W
 	BTRSC	STATUS,2
 	MGOTO	_00001_DS_
 	BANKSEL	_R_AIN2_DATA
 	ADDAR	(_R_AIN2_DATA + 1),F
 _00001_DS_:
-	.line	928, "main.c"; 	for(i=1;i<=count;i++)
-	BANKSEL	r0x103D
-	INCR	r0x103D,F
-	MGOTO	_00814_DS_
-_00816_DS_:
-	.line	935, "main.c"; 	}
+	.line	948, "main.c"; 	for(i=1;i<=count;i++)
+	BANKSEL	r0x103F
+	INCR	r0x103F,F
+	MGOTO	_00802_DS_
+_00804_DS_:
+	.line	955, "main.c"; 	}
 	RETURN	
 ; exit point of _F_AIN2_Convert
 
@@ -1182,86 +1151,86 @@ _00816_DS_:
 ;   _delay
 ;   _F_wait_eoc
 ;6 compiler assigned registers:
-;   r0x1042
-;   r0x1043
 ;   r0x1044
 ;   r0x1045
 ;   r0x1046
 ;   r0x1047
+;   r0x1048
+;   r0x1049
 ;; Starting pCode block
 .segment "code"; module=main, function=_F_AIN4_Convert
 	.debuginfo subprogram _F_AIN4_Convert
 ;local variable name mapping:
-	.debuginfo variable _count=r0x1042,enc=unsigned
-	.debuginfo variable _i=r0x1043,enc=unsigned
+	.debuginfo variable _count=r0x1044,enc=unsigned
+	.debuginfo variable _i=r0x1045,enc=unsigned
 _F_AIN4_Convert:
 ; 2 exit points
-	.line	907, "main.c"; 	void F_AIN4_Convert(char count)
-	BANKSEL	r0x1042
-	MOVAR	r0x1042
-	.line	909, "main.c"; 	R_AIN4_DATA=R_AIN4_DATA_LB=0x00;   
+	.line	927, "main.c"; 	void F_AIN4_Convert(char count)
+	BANKSEL	r0x1044
+	MOVAR	r0x1044
+	.line	929, "main.c"; 	R_AIN4_DATA=R_AIN4_DATA_LB=0x00;   
 	BANKSEL	_R_AIN4_DATA_LB
 	CLRR	_R_AIN4_DATA_LB
 	BANKSEL	_R_AIN4_DATA
 	CLRR	_R_AIN4_DATA
 	CLRR	(_R_AIN4_DATA + 1)
-	.line	911, "main.c"; 	ADMD  = 0x90 | C_ADC_PA0;				// Select AIN6(PB1) pad as ADC input
-	MOVIA	0x90
+	.line	931, "main.c"; 	ADMD  = 0x90 | C_ADC_PA1;				// Select AIN6(PB1) pad as ADC input
+	MOVIA	0x91
 	MOVAR	_ADMD
-	.line	912, "main.c"; 	delay(200);	
+	.line	932, "main.c"; 	delay(200);	
 	MOVIA	0xc8
 	MCALL	_delay
-	.line	913, "main.c"; 	for(i=1;i<=count;i++)
+	.line	933, "main.c"; 	for(i=1;i<=count;i++)
 	MOVIA	0x01
-	BANKSEL	r0x1043
-	MOVAR	r0x1043
-_00805_DS_:
-	BANKSEL	r0x1043
-	MOVR	r0x1043,W
-	BANKSEL	r0x1042
-	SUBAR	r0x1042,W
+	BANKSEL	r0x1045
+	MOVAR	r0x1045
+_00793_DS_:
+	BANKSEL	r0x1045
+	MOVR	r0x1045,W
+	BANKSEL	r0x1044
+	SUBAR	r0x1044,W
 	BTRSS	STATUS,0
-	MGOTO	_00807_DS_
-	.line	915, "main.c"; 	ADMDbits.START = 1;					// Start a ADC conversion session
+	MGOTO	_00795_DS_
+	.line	935, "main.c"; 	ADMDbits.START = 1;					// Start a ADC conversion session
 	BSR	_ADMDbits,6
-	.line	916, "main.c"; 	F_wait_eoc();							// Wait for ADC conversion complete
+	.line	936, "main.c"; 	F_wait_eoc();							// Wait for ADC conversion complete
 	MCALL	_F_wait_eoc
-	.line	917, "main.c"; 	R_AIN4_DATA_LB += ( 0x0F & ADR); 
+	.line	937, "main.c"; 	R_AIN4_DATA_LB += ( 0x0F & ADR); 
 	MOVIA	0x0f
 	ANDAR	_ADR,W
-;;3	MOVAR	r0x1044
+;;3	MOVAR	r0x1046
 	BANKSEL	_R_AIN4_DATA_LB
 	ADDAR	_R_AIN4_DATA_LB,F
-	.line	918, "main.c"; 	R_AIN4_DATA    += ADD; 
+	.line	938, "main.c"; 	R_AIN4_DATA    += ADD; 
 	MOVR	_ADD,W
-	BANKSEL	r0x1044
-	MOVAR	r0x1044
-;;1	CLRR	r0x1045
-;;102	MOVR	r0x1044,W
-;;100	MOVAR	r0x1046
+	BANKSEL	r0x1046
+	MOVAR	r0x1046
+;;1	CLRR	r0x1047
+;;102	MOVR	r0x1046,W
+;;100	MOVAR	r0x1048
 	MOVIA	0x00
-	BANKSEL	r0x1047
-	MOVAR	r0x1047
-;;101	MOVR	r0x1046,W
-	BANKSEL	r0x1044
-	MOVR	r0x1044,W
+	BANKSEL	r0x1049
+	MOVAR	r0x1049
+;;101	MOVR	r0x1048,W
+	BANKSEL	r0x1046
+	MOVR	r0x1046,W
 	BANKSEL	_R_AIN4_DATA
 	ADDAR	_R_AIN4_DATA,F
-	BANKSEL	r0x1047
-	MOVR	r0x1047,W
+	BANKSEL	r0x1049
+	MOVR	r0x1049,W
 	BTRSC	STATUS,0
-	INCR	r0x1047,W
+	INCR	r0x1049,W
 	BTRSC	STATUS,2
 	MGOTO	_00002_DS_
 	BANKSEL	_R_AIN4_DATA
 	ADDAR	(_R_AIN4_DATA + 1),F
 _00002_DS_:
-	.line	913, "main.c"; 	for(i=1;i<=count;i++)
-	BANKSEL	r0x1043
-	INCR	r0x1043,F
-	MGOTO	_00805_DS_
-_00807_DS_:
-	.line	920, "main.c"; 	}
+	.line	933, "main.c"; 	for(i=1;i<=count;i++)
+	BANKSEL	r0x1045
+	INCR	r0x1045,F
+	MGOTO	_00793_DS_
+_00795_DS_:
+	.line	940, "main.c"; 	}
 	RETURN	
 ; exit point of _F_AIN4_Convert
 
@@ -1279,10 +1248,10 @@ _00807_DS_:
 ;   __mulchar
 ;   __mulchar
 ;7 compiler assigned registers:
-;   r0x1048
-;   r0x1049
 ;   r0x104A
 ;   r0x104B
+;   r0x104C
+;   r0x104D
 ;   STK02
 ;   STK01
 ;   STK00
@@ -1290,19 +1259,19 @@ _00807_DS_:
 .segment "code"; module=main, function=_checkOutA
 	.debuginfo subprogram _checkOutA
 ;local variable name mapping:
-	.debuginfo variable _maxAout=r0x1048,enc=unsigned
+	.debuginfo variable _maxAout=r0x104A,enc=unsigned
 _checkOutA:
 ; 2 exit points
-	.line	811, "main.c"; 	R_AIN4_DATA = R_AIN4_DATA_LB = 0x00;
+	.line	830, "main.c"; 	R_AIN4_DATA = R_AIN4_DATA_LB = 0x00;
 	BANKSEL	_R_AIN4_DATA_LB
 	CLRR	_R_AIN4_DATA_LB
 	BANKSEL	_R_AIN4_DATA
 	CLRR	_R_AIN4_DATA
 	CLRR	(_R_AIN4_DATA + 1)
-	.line	812, "main.c"; 	F_AIN4_Convert(8);					// execute AIN0 ADC converting 8 times
+	.line	831, "main.c"; 	F_AIN4_Convert(8);					// execute AIN0 ADC converting 8 times
 	MOVIA	0x08
 	MCALL	_F_AIN4_Convert
-	.line	813, "main.c"; 	R_AIN4_DATA <<= 4;					// R_AIN0_DATA shift left 4 bit
+	.line	832, "main.c"; 	R_AIN4_DATA <<= 4;					// R_AIN0_DATA shift left 4 bit
 	BANKSEL	_R_AIN4_DATA
 	SWAPR	(_R_AIN4_DATA + 1),W
 	ANDIA	0xf0
@@ -1312,50 +1281,50 @@ _checkOutA:
 	ANDIA	0x0f
 	IORAR	(_R_AIN4_DATA + 1),F
 	XORAR	_R_AIN4_DATA,F
-	.line	814, "main.c"; 	R_AIN4_DATA_LB &= 0xF0;				// Only get Bit7~4
+	.line	833, "main.c"; 	R_AIN4_DATA_LB &= 0xF0;				// Only get Bit7~4
 	MOVIA	0xf0
 	BANKSEL	_R_AIN4_DATA_LB
 	ANDAR	_R_AIN4_DATA_LB,F
-	.line	815, "main.c"; 	R_AIN4_DATA += R_AIN4_DATA_LB;		// R_AIN0_DATA + R_AIN0_DATA_LB
+	.line	834, "main.c"; 	R_AIN4_DATA += R_AIN4_DATA_LB;		// R_AIN0_DATA + R_AIN0_DATA_LB
 	MOVR	_R_AIN4_DATA_LB,W
+	BANKSEL	r0x104C
+	MOVAR	r0x104C
 	BANKSEL	r0x104A
 	MOVAR	r0x104A
-	BANKSEL	r0x1048
-	MOVAR	r0x1048
-	BANKSEL	r0x1049
-	CLRR	r0x1049
-;;106	MOVR	r0x1048,W
-	MOVIA	0x00
 	BANKSEL	r0x104B
-	MOVAR	r0x104B
-	BANKSEL	r0x104A
-	MOVR	r0x104A,W
+	CLRR	r0x104B
+;;106	MOVR	r0x104A,W
+	MOVIA	0x00
+	BANKSEL	r0x104D
+	MOVAR	r0x104D
+	BANKSEL	r0x104C
+	MOVR	r0x104C,W
 	BANKSEL	_R_AIN4_DATA
 	ADDAR	_R_AIN4_DATA,F
-	BANKSEL	r0x104B
-	MOVR	r0x104B,W
+	BANKSEL	r0x104D
+	MOVR	r0x104D,W
 	BTRSC	STATUS,0
-	INCR	r0x104B,W
+	INCR	r0x104D,W
 	BTRSC	STATUS,2
 	MGOTO	_00003_DS_
 	BANKSEL	_R_AIN4_DATA
 	ADDAR	(_R_AIN4_DATA + 1),F
-;;shiftRight_Left2ResultLit:5590: shCount=1, size=2, sign=0, same=1, offr=0
+;;shiftRight_Left2ResultLit:5673: shCount=1, size=2, sign=0, same=1, offr=0
 _00003_DS_:
-	.line	816, "main.c"; 	R_AIN4_DATA >>=3;					// R_AIN0_DATA divided 8
+	.line	835, "main.c"; 	R_AIN4_DATA >>=3;					// R_AIN0_DATA divided 8
 	BCR	STATUS,0
 	BANKSEL	_R_AIN4_DATA
 	RRR	(_R_AIN4_DATA + 1),F
 	RRR	_R_AIN4_DATA,F
-;;shiftRight_Left2ResultLit:5590: shCount=1, size=2, sign=0, same=1, offr=0
+;;shiftRight_Left2ResultLit:5673: shCount=1, size=2, sign=0, same=1, offr=0
 	BCR	STATUS,0
 	RRR	(_R_AIN4_DATA + 1),F
 	RRR	_R_AIN4_DATA,F
-;;shiftRight_Left2ResultLit:5590: shCount=1, size=2, sign=0, same=1, offr=0
+;;shiftRight_Left2ResultLit:5673: shCount=1, size=2, sign=0, same=1, offr=0
 	BCR	STATUS,0
 	RRR	(_R_AIN4_DATA + 1),F
 	RRR	_R_AIN4_DATA,F
-	.line	817, "main.c"; 	tempSum += R_AIN4_DATA;
+	.line	836, "main.c"; 	tempSum += R_AIN4_DATA;
 	MOVR	_R_AIN4_DATA,W
 	BANKSEL	_tempSum
 	ADDAR	_tempSum,F
@@ -1368,17 +1337,17 @@ _00003_DS_:
 	BANKSEL	_tempSum
 	ADDAR	(_tempSum + 1),F
 _00004_DS_:
-	.line	818, "main.c"; 	if(++count100 >= 3)
+	.line	837, "main.c"; 	if(++count100 >= 3)
 	BANKSEL	_count100
 	INCR	_count100,F
 ;;unsigned compare: left < lit (0x3=3), size=1
 	MOVIA	0x03
 	SUBAR	_count100,W
 	BTRSS	STATUS,0
-	MGOTO	_00691_DS_
-	.line	820, "main.c"; 	count100 = 0;
+	MGOTO	_00679_DS_
+	.line	839, "main.c"; 	count100 = 0;
 	CLRR	_count100
-	.line	821, "main.c"; 	tempResult = tempSum/3;
+	.line	840, "main.c"; 	tempResult = tempSum/3;
 	MOVIA	0x03
 	MOVAR	STK02
 	MOVIA	0x00
@@ -1392,31 +1361,31 @@ _00004_DS_:
 	MOVAR	(_tempResult + 1)
 	MOVR	STK00,W
 	MOVAR	_tempResult
-	.line	822, "main.c"; 	tempSum = 0;
+	.line	841, "main.c"; 	tempSum = 0;
 	BANKSEL	_tempSum
 	CLRR	_tempSum
 	CLRR	(_tempSum + 1)
 ;;unsigned compare: left < lit (0x6=6), size=1
-_00691_DS_:
-	.line	825, "main.c"; 	if(workStep < 6 && tempResult > 200)
+_00679_DS_:
+	.line	844, "main.c"; 	if(workStep < 6 && tempResult > 200)
 	MOVIA	0x06
 	BANKSEL	_workStep
 	SUBAR	_workStep,W
 	BTRSC	STATUS,0
-	MGOTO	_00728_DS_
+	MGOTO	_00716_DS_
 ;;swapping arguments (AOP_TYPEs 1/3)
 ;;unsigned compare: left >= lit (0xC9=201), size=2
 	MOVIA	0x00
 	BANKSEL	_tempResult
 	SUBAR	(_tempResult + 1),W
 	BTRSS	STATUS,2
-	MGOTO	_00791_DS_
+	MGOTO	_00779_DS_
 	MOVIA	0xc9
 	SUBAR	_tempResult,W
-_00791_DS_:
+_00779_DS_:
 	BTRSS	STATUS,0
-	MGOTO	_00728_DS_
-	.line	827, "main.c"; 	if(++overCount > 5)
+	MGOTO	_00716_DS_
+	.line	846, "main.c"; 	if(++overCount > 5)
 	BANKSEL	_overCount
 	INCR	_overCount,F
 ;;swapping arguments (AOP_TYPEs 1/3)
@@ -1424,26 +1393,26 @@ _00791_DS_:
 	MOVIA	0x06
 	SUBAR	_overCount,W
 	BTRSS	STATUS,0
-	MGOTO	_00729_DS_
-	.line	829, "main.c"; 	overCount = 5;
+	MGOTO	_00717_DS_
+	.line	848, "main.c"; 	overCount = 5;
 	MOVIA	0x05
 	MOVAR	_overCount
-	MGOTO	_00729_DS_
+	MGOTO	_00717_DS_
 ;;swapping arguments (AOP_TYPEs 1/3)
 ;;unsigned compare: left >= lit (0x191=401), size=2
-_00728_DS_:
-	.line	832, "main.c"; 	else if(tempResult > 400)
+_00716_DS_:
+	.line	851, "main.c"; 	else if(tempResult > 400)
 	MOVIA	0x01
 	BANKSEL	_tempResult
 	SUBAR	(_tempResult + 1),W
 	BTRSS	STATUS,2
-	MGOTO	_00793_DS_
+	MGOTO	_00781_DS_
 	MOVIA	0x91
 	SUBAR	_tempResult,W
-_00793_DS_:
+_00781_DS_:
 	BTRSS	STATUS,0
-	MGOTO	_00725_DS_
-	.line	834, "main.c"; 	if(++overCount > 5)
+	MGOTO	_00713_DS_
+	.line	853, "main.c"; 	if(++overCount > 5)
 	BANKSEL	_overCount
 	INCR	_overCount,F
 ;;swapping arguments (AOP_TYPEs 1/3)
@@ -1451,192 +1420,238 @@ _00793_DS_:
 	MOVIA	0x06
 	SUBAR	_overCount,W
 	BTRSS	STATUS,0
-	MGOTO	_00729_DS_
-	.line	836, "main.c"; 	overCount = 5;
+	MGOTO	_00717_DS_
+	.line	855, "main.c"; 	overCount = 5;
 	MOVIA	0x05
 	MOVAR	_overCount
-	MGOTO	_00729_DS_
+	MGOTO	_00717_DS_
 ;;swapping arguments (AOP_TYPEs 1/3)
-;;unsigned compare: left >= lit (0x59=89), size=2
-_00725_DS_:
-	.line	844, "main.c"; 	else if(tempResult > 88)
+;;unsigned compare: left >= lit (0x45=69), size=2
+_00713_DS_:
+	.line	863, "main.c"; 	else if(tempResult > 68)
 	MOVIA	0x00
 	BANKSEL	_tempResult
 	SUBAR	(_tempResult + 1),W
 	BTRSS	STATUS,2
-	MGOTO	_00795_DS_
-	MOVIA	0x59
+	MGOTO	_00783_DS_
+	MOVIA	0x45
 	SUBAR	_tempResult,W
-_00795_DS_:
+_00783_DS_:
 	BTRSS	STATUS,0
-	MGOTO	_00722_DS_
-	.line	846, "main.c"; 	if(overCount > 0)
+	MGOTO	_00710_DS_
+	.line	865, "main.c"; 	if(overCount > 0)
 	BANKSEL	_overCount
 	MOVR	_overCount,W
 	BTRSS	STATUS,2
-	.line	848, "main.c"; 	overCount--;
+	.line	867, "main.c"; 	overCount--;
 	DECR	_overCount,F
-	.line	851, "main.c"; 	tempDuty = 70 + workStep*5;
+	.line	870, "main.c"; 	tempDuty = 69 + workStep*5;
 	MOVIA	0x05
 	MOVAR	STK00
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	MCALL	__mulchar
-	BANKSEL	r0x1048
-	MOVAR	r0x1048
-	MOVIA	0x46
-	ADDAR	r0x1048,W
+	BANKSEL	r0x104A
+	MOVAR	r0x104A
+	MOVIA	0x45
+	ADDAR	r0x104A,W
 	BANKSEL	_tempDuty
 	MOVAR	_tempDuty
-	MGOTO	_00729_DS_
-_00722_DS_:
-	.line	856, "main.c"; 	u8t maxAout = 75;
-	MOVIA	0x4b
-	BANKSEL	r0x1048
-	MOVAR	r0x1048
+	MGOTO	_00717_DS_
+_00710_DS_:
+	.line	875, "main.c"; 	u8t maxAout = 40;
+	MOVIA	0x28
+	BANKSEL	r0x104A
+	MOVAR	r0x104A
 ;;swapping arguments (AOP_TYPEs 1/3)
 ;;unsigned compare: left >= lit (0x4=4), size=1
-	.line	857, "main.c"; 	if(pwStep > 3)
+	.line	876, "main.c"; 	if(pwStep > 3)
 	MOVIA	0x04
 	BANKSEL	_pwStep
 	SUBAR	_pwStep,W
 	BTRSS	STATUS,0
-	MGOTO	_00699_DS_
-	.line	858, "main.c"; 	maxAout = 80;
-	MOVIA	0x50
-	BANKSEL	r0x1048
-	MOVAR	r0x1048
-_00699_DS_:
-	.line	859, "main.c"; 	if(workStep == 1)
+	MGOTO	_00687_DS_
+	.line	877, "main.c"; 	maxAout = 45;
+	MOVIA	0x2d
+	BANKSEL	r0x104A
+	MOVAR	r0x104A
+_00687_DS_:
+	.line	878, "main.c"; 	if(workStep == 1)
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	XORIA	0x01
 	BTRSS	STATUS,2
-	MGOTO	_00712_DS_
-	.line	861, "main.c"; 	maxAout = maxAout - 15;
+	MGOTO	_00700_DS_
+	.line	880, "main.c"; 	maxAout = maxAout - 15;
 	MOVIA	0xf1
-	BANKSEL	r0x1048
-	ADDAR	r0x1048,F
-	MGOTO	_00713_DS_
-_00712_DS_:
-	.line	863, "main.c"; 	else if(workStep == 2)
+	BANKSEL	r0x104A
+	ADDAR	r0x104A,F
+	MGOTO	_00701_DS_
+_00700_DS_:
+	.line	882, "main.c"; 	else if(workStep == 2)
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	XORIA	0x02
 	BTRSS	STATUS,2
-	MGOTO	_00709_DS_
-	.line	865, "main.c"; 	maxAout = maxAout - 11;
-	MOVIA	0xf5
-	BANKSEL	r0x1048
-	ADDAR	r0x1048,F
-	MGOTO	_00713_DS_
-_00709_DS_:
-	.line	867, "main.c"; 	else if(workStep == 4)
+	MGOTO	_00697_DS_
+	.line	884, "main.c"; 	maxAout = maxAout - 12;
+	MOVIA	0xf4
+	BANKSEL	r0x104A
+	ADDAR	r0x104A,F
+	MGOTO	_00701_DS_
+_00697_DS_:
+	.line	886, "main.c"; 	else if(workStep == 3)
 	BANKSEL	_workStep
 	MOVR	_workStep,W
-	XORIA	0x04
+	XORIA	0x03
 	BTRSS	STATUS,2
-	MGOTO	_00706_DS_
-	.line	869, "main.c"; 	maxAout = maxAout + 5;
-	MOVIA	0x05
-	BANKSEL	r0x1048
-	ADDAR	r0x1048,F
-	MGOTO	_00713_DS_
-_00706_DS_:
-	.line	871, "main.c"; 	else if(workStep == 5)
+	MGOTO	_00694_DS_
+	.line	888, "main.c"; 	maxAout = maxAout - 5;
+	MOVIA	0xfb
+	BANKSEL	r0x104A
+	ADDAR	r0x104A,F
+	MGOTO	_00701_DS_
+_00694_DS_:
+	.line	890, "main.c"; 	else if(workStep == 5)
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	XORIA	0x05
 	BTRSS	STATUS,2
-	MGOTO	_00703_DS_
-	.line	873, "main.c"; 	maxAout = maxAout + 10;
-	MOVIA	0x0a
-	BANKSEL	r0x1048
-	ADDAR	r0x1048,F
-	MGOTO	_00713_DS_
-_00703_DS_:
-	.line	875, "main.c"; 	else if(workStep == 6)
+	MGOTO	_00691_DS_
+	.line	892, "main.c"; 	maxAout = maxAout + 1;
+	BANKSEL	r0x104A
+	INCR	r0x104A,F
+	MGOTO	_00701_DS_
+_00691_DS_:
+	.line	894, "main.c"; 	else if(workStep == 6)
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	XORIA	0x06
 	BTRSS	STATUS,2
-	MGOTO	_00713_DS_
-	.line	877, "main.c"; 	maxAout = maxAout + 18;
-	MOVIA	0x12
-	BANKSEL	r0x1048
-	ADDAR	r0x1048,F
-_00713_DS_:
-	.line	879, "main.c"; 	if(overCount > 0)
+	MGOTO	_00701_DS_
+	.line	896, "main.c"; 	maxAout = maxAout + 5;
+	MOVIA	0x05
+	BANKSEL	r0x104A
+	ADDAR	r0x104A,F
+_00701_DS_:
+	.line	898, "main.c"; 	if(overCount > 0)
 	BANKSEL	_overCount
 	MOVR	_overCount,W
 	BTRSS	STATUS,2
-	.line	881, "main.c"; 	overCount--;
+	.line	900, "main.c"; 	overCount--;
 	DECR	_overCount,F
-	.line	883, "main.c"; 	if(tempResult > maxAout)
-	BANKSEL	r0x1048
-	MOVR	r0x1048,W
-	BANKSEL	r0x1049
-	MOVAR	r0x1049
+	.line	902, "main.c"; 	if(tempResult > maxAout)
 	BANKSEL	r0x104A
-	CLRR	r0x104A
+	MOVR	r0x104A,W
+	BANKSEL	r0x104B
+	MOVAR	r0x104B
+	BANKSEL	r0x104C
+	CLRR	r0x104C
 	BANKSEL	_tempResult
 	MOVR	(_tempResult + 1),W
-	BANKSEL	r0x104A
-	SUBAR	r0x104A,W
+	BANKSEL	r0x104C
+	SUBAR	r0x104C,W
 	BTRSS	STATUS,2
-	MGOTO	_00797_DS_
+	MGOTO	_00785_DS_
 	BANKSEL	_tempResult
 	MOVR	_tempResult,W
-	BANKSEL	r0x1049
-	SUBAR	r0x1049,W
-_00797_DS_:
+	BANKSEL	r0x104B
+	SUBAR	r0x104B,W
+_00785_DS_:
 	BTRSC	STATUS,0
-	MGOTO	_00719_DS_
-	.line	885, "main.c"; 	tempDuty = 70 + workStep*5;
+	MGOTO	_00707_DS_
+	.line	904, "main.c"; 	tempDuty = 69 + workStep*5;
 	MOVIA	0x05
 	MOVAR	STK00
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	MCALL	__mulchar
-	BANKSEL	r0x1048
-	MOVAR	r0x1048
-	MOVIA	0x46
-	ADDAR	r0x1048,W
+	BANKSEL	r0x104A
+	MOVAR	r0x104A
+	MOVIA	0x45
+	ADDAR	r0x104A,W
 	BANKSEL	_tempDuty
 	MOVAR	_tempDuty
-	MGOTO	_00729_DS_
+	MGOTO	_00717_DS_
 ;;unsigned compare: left < lit (0x64=100), size=2
-_00719_DS_:
-	.line	888, "main.c"; 	else if(tempResult < 100)
+_00707_DS_:
+	.line	907, "main.c"; 	else if(tempResult < 100)
 	MOVIA	0x00
 	BANKSEL	_tempResult
 	SUBAR	(_tempResult + 1),W
 	BTRSS	STATUS,2
-	MGOTO	_00798_DS_
+	MGOTO	_00786_DS_
 	MOVIA	0x64
 	SUBAR	_tempResult,W
-_00798_DS_:
+_00786_DS_:
 	BTRSC	STATUS,0
-	MGOTO	_00729_DS_
-	.line	891, "main.c"; 	tempDuty = maxDuty;
+	MGOTO	_00717_DS_
+	.line	910, "main.c"; 	tempDuty = maxDuty;
 	BANKSEL	_maxDuty
 	MOVR	_maxDuty,W
 	BANKSEL	_tempDuty
 	MOVAR	_tempDuty
-_00729_DS_:
-	.line	895, "main.c"; 	if(workStep > 0)
+_00717_DS_:
+	.line	914, "main.c"; 	PWM3DUTY = 100 - tempDuty;
+	BANKSEL	_tempDuty
+	MOVR	_tempDuty,W
+	SUBIA	0x64
+	BANKSEL	r0x104A
+	MOVAR	r0x104A
+	SFUN	_PWM3DUTY
+	.line	915, "main.c"; 	if(workStep > 0)
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	BTRSC	STATUS,2
-	MGOTO	_00733_DS_
-	.line	896, "main.c"; 	ledStep = workStep;
+	MGOTO	_00721_DS_
+	.line	916, "main.c"; 	ledStep = workStep;
 	MOVR	_workStep,W
 	BANKSEL	_ledStep
 	MOVAR	_ledStep
-_00733_DS_:
-	.line	900, "main.c"; 	}
+_00721_DS_:
+	.line	920, "main.c"; 	}
 	RETURN	
 ; exit point of _checkOutA
+
+;***
+;  pBlock Stats: dbName = C
+;***
+;has an exit
+;; Starting pCode block
+.segment "code"; module=main, function=_fgCtr
+	.debuginfo subprogram _fgCtr
+_fgCtr:
+; 2 exit points
+	.line	811, "main.c"; 	if(PORTB & 0x01)
+	BTRSS	_PORTB,0
+	MGOTO	_00671_DS_
+	.line	813, "main.c"; 	if(preFG == 0)
+	BANKSEL	_preFG
+	MOVR	_preFG,W
+	BTRSS	STATUS,2
+	MGOTO	_00669_DS_
+	.line	815, "main.c"; 	fgPRD = fgCount;
+	BANKSEL	_fgCount
+	MOVR	_fgCount,W
+	BANKSEL	_fgPRD
+	MOVAR	_fgPRD
+	.line	816, "main.c"; 	fgCount = 0;
+	BANKSEL	_fgCount
+	CLRR	_fgCount
+_00669_DS_:
+	.line	818, "main.c"; 	preFG = 1;
+	MOVIA	0x01
+	BANKSEL	_preFG
+	MOVAR	_preFG
+	MGOTO	_00673_DS_
+_00671_DS_:
+	.line	822, "main.c"; 	preFG = 0;
+	BANKSEL	_preFG
+	CLRR	_preFG
+_00673_DS_:
+	.line	824, "main.c"; 	}
+	RETURN	
+; exit point of _fgCtr
 
 ;***
 ;  pBlock Stats: dbName = C
@@ -1646,25 +1661,25 @@ _00733_DS_:
 ;   _F_AIN2_Convert
 ;   _F_AIN2_Convert
 ;4 compiler assigned registers:
-;   r0x104C
-;   r0x104D
 ;   r0x104E
 ;   r0x104F
+;   r0x1050
+;   r0x1051
 ;; Starting pCode block
 .segment "code"; module=main, function=_checkBatAD
 	.debuginfo subprogram _checkBatAD
 _checkBatAD:
 ; 2 exit points
-	.line	755, "main.c"; 	R_AIN2_DATA = R_AIN2_DATA_LB = 0x00;
+	.line	756, "main.c"; 	R_AIN2_DATA = R_AIN2_DATA_LB = 0x00;
 	BANKSEL	_R_AIN2_DATA_LB
 	CLRR	_R_AIN2_DATA_LB
 	BANKSEL	_R_AIN2_DATA
 	CLRR	_R_AIN2_DATA
 	CLRR	(_R_AIN2_DATA + 1)
-	.line	756, "main.c"; 	F_AIN2_Convert(8);					// execute AIN0 ADC converting 8 times
+	.line	757, "main.c"; 	F_AIN2_Convert(8);					// execute AIN0 ADC converting 8 times
 	MOVIA	0x08
 	MCALL	_F_AIN2_Convert
-	.line	757, "main.c"; 	R_AIN2_DATA <<= 4;					// R_AIN0_DATA shift left 4 bit
+	.line	758, "main.c"; 	R_AIN2_DATA <<= 4;					// R_AIN0_DATA shift left 4 bit
 	BANKSEL	_R_AIN2_DATA
 	SWAPR	(_R_AIN2_DATA + 1),W
 	ANDIA	0xf0
@@ -1674,53 +1689,53 @@ _checkBatAD:
 	ANDIA	0x0f
 	IORAR	(_R_AIN2_DATA + 1),F
 	XORAR	_R_AIN2_DATA,F
-	.line	758, "main.c"; 	R_AIN2_DATA_LB &= 0xF0;				// Only get Bit7~4
+	.line	759, "main.c"; 	R_AIN2_DATA_LB &= 0xF0;				// Only get Bit7~4
 	MOVIA	0xf0
 	BANKSEL	_R_AIN2_DATA_LB
 	ANDAR	_R_AIN2_DATA_LB,F
-	.line	759, "main.c"; 	R_AIN2_DATA += R_AIN2_DATA_LB;		// R_AIN0_DATA + R_AIN0_DATA_LB
+	.line	760, "main.c"; 	R_AIN2_DATA += R_AIN2_DATA_LB;		// R_AIN0_DATA + R_AIN0_DATA_LB
 	MOVR	_R_AIN2_DATA_LB,W
-	BANKSEL	r0x104E
-	MOVAR	r0x104E
-;;1	MOVAR	r0x104C
-;;1	CLRR	r0x104D
-;;99	MOVR	r0x104C,W
+	BANKSEL	r0x1050
+	MOVAR	r0x1050
+;;1	MOVAR	r0x104E
+;;1	CLRR	r0x104F
+;;99	MOVR	r0x104E,W
 	MOVIA	0x00
-	BANKSEL	r0x104F
-	MOVAR	r0x104F
-	BANKSEL	r0x104E
-	MOVR	r0x104E,W
+	BANKSEL	r0x1051
+	MOVAR	r0x1051
+	BANKSEL	r0x1050
+	MOVR	r0x1050,W
 	BANKSEL	_R_AIN2_DATA
 	ADDAR	_R_AIN2_DATA,F
-	BANKSEL	r0x104F
-	MOVR	r0x104F,W
+	BANKSEL	r0x1051
+	MOVR	r0x1051,W
 	BTRSC	STATUS,0
-	INCR	r0x104F,W
+	INCR	r0x1051,W
 	BTRSC	STATUS,2
 	MGOTO	_00005_DS_
 	BANKSEL	_R_AIN2_DATA
 	ADDAR	(_R_AIN2_DATA + 1),F
-;;shiftRight_Left2ResultLit:5590: shCount=1, size=2, sign=0, same=1, offr=0
+;;shiftRight_Left2ResultLit:5673: shCount=1, size=2, sign=0, same=1, offr=0
 _00005_DS_:
-	.line	760, "main.c"; 	R_AIN2_DATA >>=3;					// R_AIN0_DATA divided 
+	.line	761, "main.c"; 	R_AIN2_DATA >>=3;					// R_AIN0_DATA divided 
 	BCR	STATUS,0
 	BANKSEL	_R_AIN2_DATA
 	RRR	(_R_AIN2_DATA + 1),F
 	RRR	_R_AIN2_DATA,F
-;;shiftRight_Left2ResultLit:5590: shCount=1, size=2, sign=0, same=1, offr=0
+;;shiftRight_Left2ResultLit:5673: shCount=1, size=2, sign=0, same=1, offr=0
 	BCR	STATUS,0
 	RRR	(_R_AIN2_DATA + 1),F
 	RRR	_R_AIN2_DATA,F
-;;shiftRight_Left2ResultLit:5590: shCount=1, size=2, sign=0, same=1, offr=0
+;;shiftRight_Left2ResultLit:5673: shCount=1, size=2, sign=0, same=1, offr=0
 	BCR	STATUS,0
 	RRR	(_R_AIN2_DATA + 1),F
 	RRR	_R_AIN2_DATA,F
-	.line	761, "main.c"; 	if(debug)
+	.line	762, "main.c"; 	if(debug)
 	BANKSEL	_debug
 	MOVR	_debug,W
 	BTRSC	STATUS,2
-	MGOTO	_00603_DS_
-	.line	762, "main.c"; 	R_AIN2_DATA = BATTLE;
+	MGOTO	_00581_DS_
+	.line	763, "main.c"; 	R_AIN2_DATA = BATTLE;
 	MOVIA	0x0e
 	BANKSEL	_R_AIN2_DATA
 	MOVAR	_R_AIN2_DATA
@@ -1728,214 +1743,214 @@ _00005_DS_:
 	MOVAR	(_R_AIN2_DATA + 1)
 ;;swapping arguments (AOP_TYPEs 1/3)
 ;;unsigned compare: left >= lit (0x623=1571), size=2
-_00603_DS_:
-	.line	764, "main.c"; 	if(R_AIN2_DATA > 1570)
+_00581_DS_:
+	.line	765, "main.c"; 	if(R_AIN2_DATA > 1570)
 	MOVIA	0x06
 	BANKSEL	_R_AIN2_DATA
 	SUBAR	(_R_AIN2_DATA + 1),W
 	BTRSS	STATUS,2
-	MGOTO	_00677_DS_
+	MGOTO	_00655_DS_
 	MOVIA	0x23
 	SUBAR	_R_AIN2_DATA,W
-_00677_DS_:
+_00655_DS_:
 	BTRSS	STATUS,0
-	MGOTO	_00628_DS_
-	.line	767, "main.c"; 	lowCount = 0;
+	MGOTO	_00606_DS_
+	.line	768, "main.c"; 	lowCount = 0;
 	BANKSEL	_lowCount
 	CLRR	_lowCount
-	.line	768, "main.c"; 	pwStep = 8;
+	.line	769, "main.c"; 	pwStep = 8;
 	MOVIA	0x08
 	BANKSEL	_pwStep
 	MOVAR	_pwStep
-	MGOTO	_00629_DS_
+	MGOTO	_00607_DS_
 ;;unsigned compare: left < lit (0x47E=1150), size=2
-_00628_DS_:
-	.line	770, "main.c"; 	else if(R_AIN2_DATA < 1150)
+_00606_DS_:
+	.line	771, "main.c"; 	else if(R_AIN2_DATA < 1150)
 	MOVIA	0x04
 	BANKSEL	_R_AIN2_DATA
 	SUBAR	(_R_AIN2_DATA + 1),W
 	BTRSS	STATUS,2
-	MGOTO	_00678_DS_
+	MGOTO	_00656_DS_
 	MOVIA	0x7e
 	SUBAR	_R_AIN2_DATA,W
-_00678_DS_:
+_00656_DS_:
 	BTRSC	STATUS,0
-	MGOTO	_00625_DS_
-	.line	772, "main.c"; 	if(++lowCount < 10)
+	MGOTO	_00603_DS_
+	.line	773, "main.c"; 	if(++lowCount < 10)
 	BANKSEL	_lowCount
 	INCR	_lowCount,F
 ;;unsigned compare: left < lit (0xA=10), size=1
 	MOVIA	0x0a
 	SUBAR	_lowCount,W
 	BTRSS	STATUS,0
-	.line	773, "main.c"; 	return;
-	MGOTO	_00636_DS_
-	.line	774, "main.c"; 	lowCount = 10;
+	.line	774, "main.c"; 	return;
+	MGOTO	_00614_DS_
+	.line	775, "main.c"; 	lowCount = 10;
 	MOVIA	0x0a
 	MOVAR	_lowCount
-	.line	775, "main.c"; 	pwStep = 0;
+	.line	776, "main.c"; 	pwStep = 0;
 	BANKSEL	_pwStep
 	CLRR	_pwStep
-	.line	776, "main.c"; 	R_AIN2_DATA = 1150;
+	.line	777, "main.c"; 	R_AIN2_DATA = 1150;
 	MOVIA	0x7e
 	BANKSEL	_R_AIN2_DATA
 	MOVAR	_R_AIN2_DATA
 	MOVIA	0x04
 	MOVAR	(_R_AIN2_DATA + 1)
-	MGOTO	_00629_DS_
-_00625_DS_:
-	.line	781, "main.c"; 	lowCount = 0;
+	MGOTO	_00607_DS_
+_00603_DS_:
+	.line	782, "main.c"; 	lowCount = 0;
 	BANKSEL	_lowCount
 	CLRR	_lowCount
-	.line	782, "main.c"; 	firstTime = 0;
+	.line	783, "main.c"; 	firstTime = 0;
 	BANKSEL	_firstTime
 	CLRR	_firstTime
 ;;unsigned compare: left < lit (0x4F6=1270), size=2
-	.line	783, "main.c"; 	if(R_AIN2_DATA < 1270)
+	.line	784, "main.c"; 	if(R_AIN2_DATA < 1270)
 	MOVIA	0x04
 	BANKSEL	_R_AIN2_DATA
 	SUBAR	(_R_AIN2_DATA + 1),W
 	BTRSS	STATUS,2
-	MGOTO	_00680_DS_
+	MGOTO	_00658_DS_
 	MOVIA	0xf6
 	SUBAR	_R_AIN2_DATA,W
-_00680_DS_:
+_00658_DS_:
 	BTRSC	STATUS,0
-	MGOTO	_00622_DS_
-	.line	784, "main.c"; 	pwStep = 1;
+	MGOTO	_00600_DS_
+	.line	785, "main.c"; 	pwStep = 1;
 	MOVIA	0x01
 	BANKSEL	_pwStep
 	MOVAR	_pwStep
-	MGOTO	_00629_DS_
+	MGOTO	_00607_DS_
 ;;unsigned compare: left < lit (0x53C=1340), size=2
-_00622_DS_:
-	.line	785, "main.c"; 	else if(R_AIN2_DATA < 1340)
+_00600_DS_:
+	.line	786, "main.c"; 	else if(R_AIN2_DATA < 1340)
 	MOVIA	0x05
 	BANKSEL	_R_AIN2_DATA
 	SUBAR	(_R_AIN2_DATA + 1),W
 	BTRSS	STATUS,2
-	MGOTO	_00681_DS_
+	MGOTO	_00659_DS_
 	MOVIA	0x3c
 	SUBAR	_R_AIN2_DATA,W
-_00681_DS_:
+_00659_DS_:
 	BTRSC	STATUS,0
-	MGOTO	_00619_DS_
-	.line	786, "main.c"; 	pwStep = 2;
+	MGOTO	_00597_DS_
+	.line	787, "main.c"; 	pwStep = 2;
 	MOVIA	0x02
 	BANKSEL	_pwStep
 	MOVAR	_pwStep
-	MGOTO	_00629_DS_
+	MGOTO	_00607_DS_
 ;;unsigned compare: left < lit (0x56E=1390), size=2
-_00619_DS_:
-	.line	787, "main.c"; 	else if(R_AIN2_DATA < 1390)
+_00597_DS_:
+	.line	788, "main.c"; 	else if(R_AIN2_DATA < 1390)
 	MOVIA	0x05
 	BANKSEL	_R_AIN2_DATA
 	SUBAR	(_R_AIN2_DATA + 1),W
 	BTRSS	STATUS,2
-	MGOTO	_00682_DS_
+	MGOTO	_00660_DS_
 	MOVIA	0x6e
 	SUBAR	_R_AIN2_DATA,W
-_00682_DS_:
+_00660_DS_:
 	BTRSC	STATUS,0
-	MGOTO	_00616_DS_
-	.line	788, "main.c"; 	pwStep = 3;
+	MGOTO	_00594_DS_
+	.line	789, "main.c"; 	pwStep = 3;
 	MOVIA	0x03
 	BANKSEL	_pwStep
 	MOVAR	_pwStep
-	MGOTO	_00629_DS_
+	MGOTO	_00607_DS_
 ;;unsigned compare: left < lit (0x5AA=1450), size=2
-_00616_DS_:
-	.line	789, "main.c"; 	else if(R_AIN2_DATA < 1450)
+_00594_DS_:
+	.line	790, "main.c"; 	else if(R_AIN2_DATA < 1450)
 	MOVIA	0x05
 	BANKSEL	_R_AIN2_DATA
 	SUBAR	(_R_AIN2_DATA + 1),W
 	BTRSS	STATUS,2
-	MGOTO	_00683_DS_
+	MGOTO	_00661_DS_
 	MOVIA	0xaa
 	SUBAR	_R_AIN2_DATA,W
-_00683_DS_:
+_00661_DS_:
 	BTRSC	STATUS,0
-	MGOTO	_00613_DS_
-	.line	790, "main.c"; 	pwStep = 4;
+	MGOTO	_00591_DS_
+	.line	791, "main.c"; 	pwStep = 4;
 	MOVIA	0x04
 	BANKSEL	_pwStep
 	MOVAR	_pwStep
-	MGOTO	_00629_DS_
+	MGOTO	_00607_DS_
 ;;unsigned compare: left < lit (0x5E6=1510), size=2
-_00613_DS_:
-	.line	791, "main.c"; 	else if(R_AIN2_DATA < 1510)
+_00591_DS_:
+	.line	792, "main.c"; 	else if(R_AIN2_DATA < 1510)
 	MOVIA	0x05
 	BANKSEL	_R_AIN2_DATA
 	SUBAR	(_R_AIN2_DATA + 1),W
 	BTRSS	STATUS,2
-	MGOTO	_00684_DS_
+	MGOTO	_00662_DS_
 	MOVIA	0xe6
 	SUBAR	_R_AIN2_DATA,W
-_00684_DS_:
+_00662_DS_:
 	BTRSC	STATUS,0
-	MGOTO	_00610_DS_
-	.line	792, "main.c"; 	pwStep = 5;
+	MGOTO	_00588_DS_
+	.line	793, "main.c"; 	pwStep = 5;
 	MOVIA	0x05
 	BANKSEL	_pwStep
 	MOVAR	_pwStep
-	MGOTO	_00629_DS_
+	MGOTO	_00607_DS_
 ;;unsigned compare: left < lit (0x604=1540), size=2
-_00610_DS_:
-	.line	793, "main.c"; 	else if(R_AIN2_DATA < 1540)
+_00588_DS_:
+	.line	794, "main.c"; 	else if(R_AIN2_DATA < 1540)
 	MOVIA	0x06
 	BANKSEL	_R_AIN2_DATA
 	SUBAR	(_R_AIN2_DATA + 1),W
 	BTRSS	STATUS,2
-	MGOTO	_00685_DS_
+	MGOTO	_00663_DS_
 	MOVIA	0x04
 	SUBAR	_R_AIN2_DATA,W
-_00685_DS_:
+_00663_DS_:
 	BTRSC	STATUS,0
-	MGOTO	_00607_DS_
-	.line	794, "main.c"; 	pwStep = 6;
+	MGOTO	_00585_DS_
+	.line	795, "main.c"; 	pwStep = 6;
 	MOVIA	0x06
 	BANKSEL	_pwStep
 	MOVAR	_pwStep
-	MGOTO	_00629_DS_
-_00607_DS_:
-	.line	796, "main.c"; 	pwStep = 7;
+	MGOTO	_00607_DS_
+_00585_DS_:
+	.line	797, "main.c"; 	pwStep = 7;
 	MOVIA	0x07
 	BANKSEL	_pwStep
 	MOVAR	_pwStep
-_00629_DS_:
-	.line	799, "main.c"; 	if(prePwStep == 0 || prePwStep < pwStep)
+_00607_DS_:
+	.line	800, "main.c"; 	if(prePwStep == 0 || prePwStep < pwStep)
 	BANKSEL	_prePwStep
 	MOVR	_prePwStep,W
 	BTRSC	STATUS,2
-	MGOTO	_00630_DS_
+	MGOTO	_00608_DS_
 	BANKSEL	_pwStep
 	MOVR	_pwStep,W
 	BANKSEL	_prePwStep
 	SUBAR	_prePwStep,W
 	BTRSC	STATUS,0
-	MGOTO	_00631_DS_
-_00630_DS_:
-	.line	800, "main.c"; 	prePwStep = pwStep;
+	MGOTO	_00609_DS_
+_00608_DS_:
+	.line	801, "main.c"; 	prePwStep = pwStep;
 	BANKSEL	_pwStep
 	MOVR	_pwStep,W
 	BANKSEL	_prePwStep
 	MOVAR	_prePwStep
-_00631_DS_:
-	.line	802, "main.c"; 	if(ledLightTime > 0 && prePwStep > 0)
+_00609_DS_:
+	.line	803, "main.c"; 	if(ledLightTime > 0 && prePwStep > 0)
 	BANKSEL	_ledLightTime
 	MOVR	_ledLightTime,W
 	BTRSC	STATUS,2
-	MGOTO	_00636_DS_
+	MGOTO	_00614_DS_
 	BANKSEL	_prePwStep
 	MOVR	_prePwStep,W
 	BTRSC	STATUS,2
-	MGOTO	_00636_DS_
-	.line	803, "main.c"; 	pwStep = prePwStep;
+	MGOTO	_00614_DS_
+	.line	804, "main.c"; 	pwStep = prePwStep;
 	MOVR	_prePwStep,W
 	BANKSEL	_pwStep
 	MOVAR	_pwStep
-_00636_DS_:
-	.line	805, "main.c"; 	}
+_00614_DS_:
+	.line	806, "main.c"; 	}
 	RETURN	
 ; exit point of _checkBatAD
 
@@ -1951,23 +1966,23 @@ _00636_DS_:
 	.debuginfo subprogram _initAD
 _initAD:
 ; 2 exit points
-	.line	731, "main.c"; 	ADMD  = C_ADC_En | C_ADC_CH_Dis | C_ADC_PA4 ;	// Enable ADC power, Disable global ADC input channel, Select PA0 pad as ADC input (SFR "ADMD")
+	.line	732, "main.c"; 	ADMD  = C_ADC_En | C_ADC_CH_Dis | C_ADC_PA4 ;	// Enable ADC power, Disable global ADC input channel, Select PA0 pad as ADC input (SFR "ADMD")
 	MOVIA	0x84
 	MOVAR	_ADMD
-	.line	736, "main.c"; 	ADVREFH = C_Vrefh_2V;					// ADC reference high voltage is supplied by internal 2V  (Note: ADC clock freq. must be equal or less than 250KHz)
+	.line	737, "main.c"; 	ADVREFH = C_Vrefh_2V;					// ADC reference high voltage is supplied by internal 2V  (Note: ADC clock freq. must be equal or less than 250KHz)
 	CLRR	_ADVREFH
-	.line	741, "main.c"; 	ADR	  = C_Ckl_Div8;						// ADC clock=Fcpu/8, Clear ADIF, disable ADC interrupt	
+	.line	742, "main.c"; 	ADR	  = C_Ckl_Div8;						// ADC clock=Fcpu/8, Clear ADIF, disable ADC interrupt	
 	MOVIA	0x10
 	MOVAR	_ADR
-	.line	743, "main.c"; 	ADCR  = C_Sample_1clk | C_12BIT;
+	.line	744, "main.c"; 	ADCR  = C_Sample_1clk | C_12BIT;
 	MOVIA	0x03
 	MOVAR	_ADCR
-	.line	746, "main.c"; 	ADMDbits.GCHS = 1;						// Enable global ADC channel	(SFR "ADMD")
+	.line	747, "main.c"; 	ADMDbits.GCHS = 1;						// Enable global ADC channel	(SFR "ADMD")
 	BSR	_ADMDbits,4
-	.line	747, "main.c"; 	delay(100);								// Delay 0.56ms(Instruction clock=4MHz/2T) for waiting ADC stable 
+	.line	748, "main.c"; 	delay(100);								// Delay 0.56ms(Instruction clock=4MHz/2T) for waiting ADC stable 
 	MOVIA	0x64
 	MCALL	_delay
-	.line	750, "main.c"; 	}
+	.line	751, "main.c"; 	}
 	RETURN	
 ; exit point of _initAD
 
@@ -1976,37 +1991,37 @@ _initAD:
 ;***
 ;has an exit
 ;2 compiler assigned registers:
-;   r0x103A
-;   r0x103B
+;   r0x103C
+;   r0x103D
 ;; Starting pCode block
 .segment "code"; module=main, function=_delay
 	.debuginfo subprogram _delay
 ;local variable name mapping:
-	.debuginfo variable _time=r0x103A,enc=unsigned
-	.debuginfo variable _i=r0x103B,enc=unsigned
+	.debuginfo variable _time=r0x103C,enc=unsigned
+	.debuginfo variable _i=r0x103D,enc=unsigned
 _delay:
 ; 2 exit points
-	.line	721, "main.c"; 	void delay(u8t time)
-	BANKSEL	r0x103A
-	MOVAR	r0x103A
-	.line	723, "main.c"; 	for(u8t i=0;i<time;i++)
-	BANKSEL	r0x103B
-	CLRR	r0x103B
-_00591_DS_:
-	BANKSEL	r0x103A
-	MOVR	r0x103A,W
-	BANKSEL	r0x103B
-	SUBAR	r0x103B,W
+	.line	722, "main.c"; 	void delay(u8t time)
+	BANKSEL	r0x103C
+	MOVAR	r0x103C
+	.line	724, "main.c"; 	for(u8t i=0;i<time;i++)
+	BANKSEL	r0x103D
+	CLRR	r0x103D
+_00569_DS_:
+	BANKSEL	r0x103C
+	MOVR	r0x103C,W
+	BANKSEL	r0x103D
+	SUBAR	r0x103D,W
 	BTRSC	STATUS,0
-	MGOTO	_00593_DS_
-	.line	724, "main.c"; 	NOP();
+	MGOTO	_00571_DS_
+	.line	725, "main.c"; 	NOP();
 	nop
-	.line	723, "main.c"; 	for(u8t i=0;i<time;i++)
-	BANKSEL	r0x103B
-	INCR	r0x103B,F
-	MGOTO	_00591_DS_
-_00593_DS_:
-	.line	725, "main.c"; 	}
+	.line	724, "main.c"; 	for(u8t i=0;i<time;i++)
+	BANKSEL	r0x103D
+	INCR	r0x103D,F
+	MGOTO	_00569_DS_
+_00571_DS_:
+	.line	726, "main.c"; 	}
 	RETURN	
 ; exit point of _delay
 
@@ -2019,56 +2034,62 @@ _00593_DS_:
 ;   _pwm1Stop
 ;   _pwm1Init
 ;   _pwm1Stop
+;   _pwmInit
+;   _pwmStop
+;   _delay
 ;   _pwmStop
 ;   _pwm1Stop
 ;   _pwm1Init
 ;   _pwm1Stop
+;   _pwmInit
+;   _pwmStop
+;   _delay
 ;5 compiler assigned registers:
-;   r0x1051
-;   r0x1052
 ;   r0x1053
 ;   r0x1054
 ;   r0x1055
+;   r0x1056
+;   r0x1057
 ;; Starting pCode block
 .segment "code"; module=main, function=_chrgCtr
 	.debuginfo subprogram _chrgCtr
 _chrgCtr:
 ; 2 exit points
-	.line	612, "main.c"; 	if(PORTA & 0x20)
+	.line	600, "main.c"; 	if(PORTA & 0x20)
 	BANKSEL	_PORTA
 	BTRSS	_PORTA,5
-	MGOTO	_00507_DS_
-	.line	615, "main.c"; 	chrgFlag = 1;
+	MGOTO	_00479_DS_
+	.line	603, "main.c"; 	chrgFlag = 1;
 	BANKSEL	_Status
 	BSR	_Status,3
-	.line	616, "main.c"; 	workStep = 0;
+	.line	604, "main.c"; 	workStep = 0;
 	BANKSEL	_workStep
 	CLRR	_workStep
-	.line	617, "main.c"; 	ledLightTime = 0;
+	.line	605, "main.c"; 	ledLightTime = 0;
 	BANKSEL	_ledLightTime
 	CLRR	_ledLightTime
-	.line	618, "main.c"; 	pwmStop();
+	.line	606, "main.c"; 	pwmStop();
 	MCALL	_pwmStop
 ;;unsigned compare: left < lit (0x8=8), size=1
-	.line	620, "main.c"; 	if(pwStep >= 8 || chrgFullFlag)
+	.line	608, "main.c"; 	if(pwStep >= 8 || chrgFullFlag)
 	MOVIA	0x08
 	BANKSEL	_pwStep
 	SUBAR	_pwStep,W
 	BTRSC	STATUS,0
-	MGOTO	_00500_DS_
+	MGOTO	_00468_DS_
 	BANKSEL	_chrgFullFlag
 	MOVR	_chrgFullFlag,W
 	BTRSC	STATUS,2
-	MGOTO	_00501_DS_
-_00500_DS_:
-	.line	622, "main.c"; 	chrgStep = 6;
+	MGOTO	_00469_DS_
+_00468_DS_:
+	.line	610, "main.c"; 	chrgStep = 6;
 	MOVIA	0x06
 	BANKSEL	_chrgStep
 	MOVAR	_chrgStep
-	.line	624, "main.c"; 	ledStep = 6;
+	.line	612, "main.c"; 	ledStep = 6;
 	BANKSEL	_ledStep
 	MOVAR	_ledStep
-	.line	625, "main.c"; 	if(++fullCount >= 2000)
+	.line	613, "main.c"; 	if(++fullCount >= 2000)
 	BANKSEL	_fullCount
 	INCR	_fullCount,F
 	BTRSC	STATUS,2
@@ -2077,114 +2098,114 @@ _00500_DS_:
 	MOVIA	0x07
 	SUBAR	(_fullCount + 1),W
 	BTRSS	STATUS,2
-	MGOTO	_00572_DS_
+	MGOTO	_00550_DS_
 	MOVIA	0xd0
 	SUBAR	_fullCount,W
-_00572_DS_:
+_00550_DS_:
 	BTRSS	STATUS,0
-	MGOTO	_00509_DS_
-	.line	627, "main.c"; 	fullCount = 2000;
+	MGOTO	_00481_DS_
+	.line	615, "main.c"; 	fullCount = 2000;
 	MOVIA	0xd0
 	BANKSEL	_fullCount
 	MOVAR	_fullCount
 	MOVIA	0x07
 	MOVAR	(_fullCount + 1)
-	.line	628, "main.c"; 	chrgFullFlag = 1;
+	.line	616, "main.c"; 	chrgFullFlag = 1;
 	MOVIA	0x01
 	BANKSEL	_chrgFullFlag
 	MOVAR	_chrgFullFlag
-	.line	629, "main.c"; 	pwm1Stop();
+	.line	617, "main.c"; 	pwm1Stop();
 	MCALL	_pwm1Stop
-	.line	630, "main.c"; 	PORTB &= 0xF7;
-	BCR	_PORTB,3
-	.line	631, "main.c"; 	IOSTB |= 0X08;
+	.line	618, "main.c"; 	PORTB &= 0xFB;
+	BCR	_PORTB,2
+	.line	619, "main.c"; 	IOSTB |= 0X04;
 	IOSTR	_IOSTB
-	BANKSEL	r0x1051
-	MOVAR	r0x1051
-	BSR	r0x1051,3
-	MOVR	r0x1051,W
+	BANKSEL	r0x1053
+	MOVAR	r0x1053
+	BSR	r0x1053,2
+	MOVR	r0x1053,W
 	IOST	_IOSTB
-	MGOTO	_00509_DS_
-_00501_DS_:
-	.line	639, "main.c"; 	IOSTB &= 0xF7;
+	MGOTO	_00481_DS_
+_00469_DS_:
+	.line	627, "main.c"; 	IOSTB &= 0xFB;
 	IOSTR	_IOSTB
-	BANKSEL	r0x1051
-	MOVAR	r0x1051
-	BCR	r0x1051,3
-	MOVR	r0x1051,W
+	BANKSEL	r0x1053
+	MOVAR	r0x1053
+	BCR	r0x1053,2
+	MOVR	r0x1053,W
 	IOST	_IOSTB
-	.line	640, "main.c"; 	fullCount = 0;
+	.line	628, "main.c"; 	fullCount = 0;
 	BANKSEL	_fullCount
 	CLRR	_fullCount
 	CLRR	(_fullCount + 1)
-	.line	641, "main.c"; 	if(count500ms == 0 && pwStep <= 7 && lockLedStep < 6)
+	.line	629, "main.c"; 	if(count500ms == 0 && pwStep <= 7 && lockLedStep < 6)
 	BANKSEL	_count500ms
 	MOVR	_count500ms,W
 	BTRSS	STATUS,2
-	MGOTO	_00478_DS_
+	MGOTO	_00447_DS_
 ;;swapping arguments (AOP_TYPEs 1/3)
 ;;unsigned compare: left >= lit (0x8=8), size=1
 	MOVIA	0x08
 	BANKSEL	_pwStep
 	SUBAR	_pwStep,W
 	BTRSC	STATUS,0
-	MGOTO	_00478_DS_
+	MGOTO	_00447_DS_
 ;;unsigned compare: left < lit (0x6=6), size=1
 	MOVIA	0x06
 	BANKSEL	_lockLedStep
 	SUBAR	_lockLedStep,W
 	BTRSC	STATUS,0
-	MGOTO	_00478_DS_
-	.line	644, "main.c"; 	if(lockLedStep < pwStep - 1)
+	MGOTO	_00447_DS_
+	.line	632, "main.c"; 	if(lockLedStep < pwStep - 1)
 	BANKSEL	_pwStep
 	MOVR	_pwStep,W
-	BANKSEL	r0x1051
-	MOVAR	r0x1051
-	BANKSEL	r0x1052
-	CLRR	r0x1052
+	BANKSEL	r0x1053
+	MOVAR	r0x1053
+	BANKSEL	r0x1054
+	CLRR	r0x1054
 	MOVIA	0xff
-	BANKSEL	r0x1051
-	ADDAR	r0x1051,F
+	BANKSEL	r0x1053
+	ADDAR	r0x1053,F
 	BTRSC	STATUS,0
 	MGOTO	_00006_DS_
-	BANKSEL	r0x1052
-	DECR	r0x1052,F
+	BANKSEL	r0x1054
+	DECR	r0x1054,F
 _00006_DS_:
 	BANKSEL	_lockLedStep
 	MOVR	_lockLedStep,W
-	BANKSEL	r0x1053
-	MOVAR	r0x1053
-;;1	CLRR	r0x1054
-	MOVIA	0x00
-	ADDIA	0x80
 	BANKSEL	r0x1055
 	MOVAR	r0x1055
-	BANKSEL	r0x1052
-	MOVR	r0x1052,W
+;;1	CLRR	r0x1056
+	MOVIA	0x00
 	ADDIA	0x80
+	BANKSEL	r0x1057
+	MOVAR	r0x1057
+	BANKSEL	r0x1054
+	MOVR	r0x1054,W
+	ADDIA	0x80
+	BANKSEL	r0x1057
+	SUBAR	r0x1057,W
+	BTRSS	STATUS,2
+	MGOTO	_00553_DS_
+	BANKSEL	r0x1053
+	MOVR	r0x1053,W
 	BANKSEL	r0x1055
 	SUBAR	r0x1055,W
-	BTRSS	STATUS,2
-	MGOTO	_00575_DS_
-	BANKSEL	r0x1051
-	MOVR	r0x1051,W
-	BANKSEL	r0x1053
-	SUBAR	r0x1053,W
-_00575_DS_:
+_00553_DS_:
 	BTRSC	STATUS,0
-	MGOTO	_00473_DS_
-	.line	646, "main.c"; 	if(lockLedStep == 0)
+	MGOTO	_00442_DS_
+	.line	634, "main.c"; 	if(lockLedStep == 0)
 	BANKSEL	_lockLedStep
 	MOVR	_lockLedStep,W
 	BTRSS	STATUS,2
-	MGOTO	_00469_DS_
-	.line	647, "main.c"; 	lockLedStep = pwStep - 1;
+	MGOTO	_00438_DS_
+	.line	635, "main.c"; 	lockLedStep = pwStep - 1;
 	BANKSEL	_pwStep
 	DECR	_pwStep,W
 	BANKSEL	_lockLedStep
 	MOVAR	_lockLedStep
-_00469_DS_:
-	.line	648, "main.c"; 	if(++ledCount > 100)
+_00438_DS_:
+	.line	636, "main.c"; 	if(++ledCount > 100)
 	BANKSEL	_ledCount
 	INCR	_ledCount,F
 ;;swapping arguments (AOP_TYPEs 1/3)
@@ -2192,19 +2213,19 @@ _00469_DS_:
 	MOVIA	0x65
 	SUBAR	_ledCount,W
 	BTRSS	STATUS,0
-	MGOTO	_00474_DS_
-	.line	649, "main.c"; 	lockLedStep = pwStep - 1;
+	MGOTO	_00443_DS_
+	.line	637, "main.c"; 	lockLedStep = pwStep - 1;
 	BANKSEL	_pwStep
 	DECR	_pwStep,W
 	BANKSEL	_lockLedStep
 	MOVAR	_lockLedStep
-	MGOTO	_00474_DS_
-_00473_DS_:
-	.line	654, "main.c"; 	ledCount = 0;
+	MGOTO	_00443_DS_
+_00442_DS_:
+	.line	642, "main.c"; 	ledCount = 0;
 	BANKSEL	_ledCount
 	CLRR	_ledCount
-_00474_DS_:
-	.line	656, "main.c"; 	if(++ledStep > 6)
+_00443_DS_:
+	.line	644, "main.c"; 	if(++ledStep > 6)
 	BANKSEL	_ledStep
 	INCR	_ledStep,F
 ;;swapping arguments (AOP_TYPEs 1/3)
@@ -2212,220 +2233,241 @@ _00474_DS_:
 	MOVIA	0x07
 	SUBAR	_ledStep,W
 	BTRSS	STATUS,0
-	MGOTO	_00478_DS_
-	.line	657, "main.c"; 	ledStep = lockLedStep;
+	MGOTO	_00447_DS_
+	.line	645, "main.c"; 	ledStep = lockLedStep;
 	BANKSEL	_lockLedStep
 	MOVR	_lockLedStep,W
 	BANKSEL	_ledStep
 	MOVAR	_ledStep
 ;;unsigned compare: left < lit (0x6=6), size=1
-_00478_DS_:
-	.line	659, "main.c"; 	if(lockLedStep >= 6)
+_00447_DS_:
+	.line	647, "main.c"; 	if(lockLedStep >= 6)
 	MOVIA	0x06
 	BANKSEL	_lockLedStep
 	SUBAR	_lockLedStep,W
 	BTRSS	STATUS,0
-	MGOTO	_00482_DS_
-	.line	661, "main.c"; 	ledStep = 6;	//亮灯不闪了
+	MGOTO	_00451_DS_
+	.line	649, "main.c"; 	ledStep = 6;	//亮灯不闪了
 	MOVIA	0x06
 	BANKSEL	_ledStep
 	MOVAR	_ledStep
-_00482_DS_:
-	.line	663, "main.c"; 	PWM2DUTY = maxduty;
-	BANKSEL	_maxduty
-	MOVR	_maxduty,W
-	SFUN	_PWM2DUTY
-	.line	664, "main.c"; 	pwm1Init();
+_00451_DS_:
+	.line	652, "main.c"; 	pwm1Init();
 	MCALL	_pwm1Init
 ;;swapping arguments (AOP_TYPEs 1/3)
 ;;unsigned compare: left >= lit (0x6=6), size=1
-	.line	665, "main.c"; 	if(count200ms > 5)
+	.line	653, "main.c"; 	if(count200ms > 5)
 	MOVIA	0x06
 	BANKSEL	_count200ms
 	SUBAR	_count200ms,W
 	BTRSS	STATUS,0
-	MGOTO	_00509_DS_
+	MGOTO	_00481_DS_
 ;;swapping arguments (AOP_TYPEs 1/3)
-;;unsigned compare: left >= lit (0x24=36), size=2
-	.line	667, "main.c"; 	if(R_AIN4_DATA <= 35 && R_AIN4_DATA >=subMin)
+;;unsigned compare: left >= lit (0x26=38), size=2
+	.line	655, "main.c"; 	if(R_AIN4_DATA <= 37 && R_AIN4_DATA >=subMin)
 	MOVIA	0x00
 	BANKSEL	_R_AIN4_DATA
 	SUBAR	(_R_AIN4_DATA + 1),W
 	BTRSS	STATUS,2
-	MGOTO	_00580_DS_
-	MOVIA	0x24
+	MGOTO	_00558_DS_
+	MOVIA	0x26
 	SUBAR	_R_AIN4_DATA,W
-_00580_DS_:
+_00558_DS_:
 	BTRSC	STATUS,0
-	MGOTO	_00484_DS_
+	MGOTO	_00453_DS_
 	BANKSEL	_subMin
 	MOVR	_subMin,W
-	BANKSEL	r0x1051
-	MOVAR	r0x1051
-	BANKSEL	r0x1052
-	CLRR	r0x1052
+	BANKSEL	r0x1053
+	MOVAR	r0x1053
+	BANKSEL	r0x1054
+	CLRR	r0x1054
 	MOVIA	0x00
 	BANKSEL	_R_AIN4_DATA
 	SUBAR	(_R_AIN4_DATA + 1),W
 	BTRSS	STATUS,2
-	MGOTO	_00581_DS_
-	BANKSEL	r0x1051
-	MOVR	r0x1051,W
+	MGOTO	_00559_DS_
+	BANKSEL	r0x1053
+	MOVR	r0x1053,W
 	BANKSEL	_R_AIN4_DATA
 	SUBAR	_R_AIN4_DATA,W
-_00581_DS_:
+_00559_DS_:
 	BTRSS	STATUS,0
-	MGOTO	_00484_DS_
-	.line	669, "main.c"; 	addTime = subTime = 0;
+	MGOTO	_00453_DS_
+	.line	657, "main.c"; 	addTime = subTime = 0;
 	BANKSEL	_subTime
 	CLRR	_subTime
 	BANKSEL	_addTime
 	CLRR	_addTime
 ;;swapping arguments (AOP_TYPEs 1/3)
-;;unsigned compare: left >= lit (0x24=36), size=2
-_00484_DS_:
-	.line	671, "main.c"; 	if(R_AIN4_DATA > 35)
+;;unsigned compare: left >= lit (0x26=38), size=2
+_00453_DS_:
+	.line	659, "main.c"; 	if(R_AIN4_DATA > 37)
 	MOVIA	0x00
 	BANKSEL	_R_AIN4_DATA
 	SUBAR	(_R_AIN4_DATA + 1),W
 	BTRSS	STATUS,2
-	MGOTO	_00582_DS_
-	MOVIA	0x24
+	MGOTO	_00560_DS_
+	MOVIA	0x26
 	SUBAR	_R_AIN4_DATA,W
-_00582_DS_:
+_00560_DS_:
 	BTRSS	STATUS,0
-	MGOTO	_00493_DS_
-	.line	673, "main.c"; 	if(++subTime > chrgWaitTime)
+	MGOTO	_00462_DS_
+	.line	661, "main.c"; 	if(++subTime > chrgWaitTime)
 	BANKSEL	_subTime
 	INCR	_subTime,F
 	MOVR	_subTime,W
 	BANKSEL	_chrgWaitTime
 	SUBAR	_chrgWaitTime,W
 	BTRSC	STATUS,0
-	MGOTO	_00487_DS_
-	.line	675, "main.c"; 	maxduty = maxduty - 1;
+	MGOTO	_00456_DS_
+	.line	663, "main.c"; 	maxduty = maxduty - 1;
 	BANKSEL	_maxduty
 	DECR	_maxduty,F
-	.line	676, "main.c"; 	subTime = 0;
+	.line	664, "main.c"; 	subTime = 0;
 	BANKSEL	_subTime
 	CLRR	_subTime
-	.line	677, "main.c"; 	subMin = 34;
-	MOVIA	0x22
+	.line	665, "main.c"; 	subMin = 36;
+	MOVIA	0x24
 	BANKSEL	_subMin
 	MOVAR	_subMin
-	.line	678, "main.c"; 	chrgWaitTime = 250;
+	.line	666, "main.c"; 	chrgWaitTime = 250;
 	MOVIA	0xfa
 	BANKSEL	_chrgWaitTime
 	MOVAR	_chrgWaitTime
-_00487_DS_:
-	.line	680, "main.c"; 	addTime = 0;
+_00456_DS_:
+	.line	668, "main.c"; 	addTime = 0;
 	BANKSEL	_addTime
 	CLRR	_addTime
-	MGOTO	_00494_DS_
-_00493_DS_:
-	.line	682, "main.c"; 	else if(R_AIN4_DATA < subMin)
+	MGOTO	_00463_DS_
+_00462_DS_:
+	.line	670, "main.c"; 	else if(R_AIN4_DATA < subMin)
 	BANKSEL	_subMin
 	MOVR	_subMin,W
-	BANKSEL	r0x1051
-	MOVAR	r0x1051
-	BANKSEL	r0x1052
-	CLRR	r0x1052
+	BANKSEL	r0x1053
+	MOVAR	r0x1053
+	BANKSEL	r0x1054
+	CLRR	r0x1054
 	MOVIA	0x00
 	BANKSEL	_R_AIN4_DATA
 	SUBAR	(_R_AIN4_DATA + 1),W
 	BTRSS	STATUS,2
-	MGOTO	_00584_DS_
-	BANKSEL	r0x1051
-	MOVR	r0x1051,W
+	MGOTO	_00562_DS_
+	BANKSEL	r0x1053
+	MOVR	r0x1053,W
 	BANKSEL	_R_AIN4_DATA
 	SUBAR	_R_AIN4_DATA,W
-_00584_DS_:
+_00562_DS_:
 	BTRSC	STATUS,0
-	MGOTO	_00494_DS_
-	.line	684, "main.c"; 	if(++addTime > chrgWaitTime)
+	MGOTO	_00463_DS_
+	.line	672, "main.c"; 	if(++addTime > chrgWaitTime)
 	BANKSEL	_addTime
 	INCR	_addTime,F
 	MOVR	_addTime,W
 	BANKSEL	_chrgWaitTime
 	SUBAR	_chrgWaitTime,W
 	BTRSC	STATUS,0
-	MGOTO	_00489_DS_
-	.line	686, "main.c"; 	maxduty = maxduty + 1;
+	MGOTO	_00458_DS_
+	.line	674, "main.c"; 	maxduty = maxduty + 1;
 	BANKSEL	_maxduty
 	INCR	_maxduty,F
-	.line	687, "main.c"; 	addTime = 0;
+	.line	675, "main.c"; 	addTime = 0;
 	BANKSEL	_addTime
 	CLRR	_addTime
-_00489_DS_:
-	.line	689, "main.c"; 	subTime = 0;
+_00458_DS_:
+	.line	677, "main.c"; 	subTime = 0;
 	BANKSEL	_subTime
 	CLRR	_subTime
-_00494_DS_:
-	.line	691, "main.c"; 	if(chrgduty < maxduty)
+;;swapping arguments (AOP_TYPEs 1/3)
+;;unsigned compare: left >= lit (0x24=36), size=1
+_00463_DS_:
+	.line	679, "main.c"; 	if(maxduty > 35)
+	MOVIA	0x24
+	BANKSEL	_maxduty
+	SUBAR	_maxduty,W
+	BTRSS	STATUS,0
+	MGOTO	_00465_DS_
+	.line	681, "main.c"; 	maxduty = 35;
+	MOVIA	0x23
+	MOVAR	_maxduty
+_00465_DS_:
+	.line	683, "main.c"; 	PWM2DUTY = maxduty;
 	BANKSEL	_maxduty
 	MOVR	_maxduty,W
-	BANKSEL	_chrgduty
-	SUBAR	_chrgduty,W
-	BTRSC	STATUS,0
-	MGOTO	_00496_DS_
-	.line	692, "main.c"; 	chrgduty++;
-	INCR	_chrgduty,F
-	MGOTO	_00509_DS_
-_00496_DS_:
-	.line	694, "main.c"; 	chrgduty = maxduty;
-	BANKSEL	_maxduty
-	MOVR	_maxduty,W
-	BANKSEL	_chrgduty
-	MOVAR	_chrgduty
-	MGOTO	_00509_DS_
-_00507_DS_:
-	.line	703, "main.c"; 	chrgWaitTime = 20;
+	SFUN	_PWM2DUTY
+	MGOTO	_00481_DS_
+_00479_DS_:
+	.line	691, "main.c"; 	chrgWaitTime = 20;
 	MOVIA	0x14
 	BANKSEL	_chrgWaitTime
 	MOVAR	_chrgWaitTime
-	.line	704, "main.c"; 	subMin = 33;
-	MOVIA	0x21
+	.line	692, "main.c"; 	subMin = 36;
+	MOVIA	0x24
 	BANKSEL	_subMin
 	MOVAR	_subMin
-	.line	705, "main.c"; 	chrgFullFlag = 0;
+	.line	693, "main.c"; 	chrgFullFlag = 0;
 	BANKSEL	_chrgFullFlag
 	CLRR	_chrgFullFlag
-	.line	706, "main.c"; 	chrgduty = 0;
+	.line	694, "main.c"; 	chrgduty = 0;
 	BANKSEL	_chrgduty
 	CLRR	_chrgduty
-	.line	707, "main.c"; 	maxduty = 0;
+	.line	695, "main.c"; 	maxduty = 0;
 	BANKSEL	_maxduty
 	CLRR	_maxduty
-	.line	708, "main.c"; 	chrgStep = 0;
+	.line	696, "main.c"; 	chrgStep = 0;
 	BANKSEL	_chrgStep
 	CLRR	_chrgStep
-	.line	709, "main.c"; 	lockLedStep = 0;
+	.line	697, "main.c"; 	lockLedStep = 0;
 	BANKSEL	_lockLedStep
 	CLRR	_lockLedStep
-	.line	710, "main.c"; 	chrgTime = 0;
+	.line	698, "main.c"; 	chrgTime = 0;
 	BANKSEL	_chrgTime
 	CLRR	_chrgTime
 	CLRR	(_chrgTime + 1)
-	.line	711, "main.c"; 	pwm1Stop();
+	.line	699, "main.c"; 	pwm1Stop();
 	MCALL	_pwm1Stop
-	.line	712, "main.c"; 	if(workStep == 0)
+	.line	700, "main.c"; 	if(workStep == 0)
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	BTRSS	STATUS,2
 	MGOTO	_00007_DS_
-	.line	713, "main.c"; 	ledStep = 0;
+	.line	701, "main.c"; 	ledStep = 0;
 	BANKSEL	_ledStep
 	CLRR	_ledStep
 _00007_DS_:
-	.line	714, "main.c"; 	chrgFlag = 0;
+	.line	702, "main.c"; 	chrgFlag = 0;
 	BANKSEL	_Status
 	BCR	_Status,3
-	.line	715, "main.c"; 	chrgTime = 0;	//重置充电计数
+	.line	703, "main.c"; 	chrgTime = 0;	//重置充电计数
 	BANKSEL	_chrgTime
 	CLRR	_chrgTime
 	CLRR	(_chrgTime + 1)
-_00509_DS_:
-	.line	718, "main.c"; 	}
+	.line	704, "main.c"; 	if(workStep > 0)
+	BANKSEL	_workStep
+	MOVR	_workStep,W
+	BTRSS	STATUS,2
+	.line	706, "main.c"; 	pwmInit();
+	MCALL	_pwmInit
+	.line	708, "main.c"; 	if(fgCount > 150)
+	MOVIA	0x97
+	BANKSEL	_fgCount
+	SUBAR	_fgCount,W
+	BTRSS	STATUS,0
+	MGOTO	_00481_DS_
+	.line	710, "main.c"; 	pwmStop();
+	MCALL	_pwmStop
+	.line	711, "main.c"; 	PORTB &= 0xF7;
+	BCR	_PORTB,3
+	.line	712, "main.c"; 	fgPRD = 0;
+	BANKSEL	_fgPRD
+	CLRR	_fgPRD
+	.line	713, "main.c"; 	fgCount = 0;
+	BANKSEL	_fgCount
+	CLRR	_fgCount
+	.line	714, "main.c"; 	delay(200);
+	MOVIA	0xc8
+	MCALL	_delay
+_00481_DS_:
+	.line	719, "main.c"; 	}
 	RETURN	
 ; exit point of _chrgCtr
 
@@ -2434,80 +2476,80 @@ _00509_DS_:
 ;***
 ;has an exit
 ;1 compiler assigned register :
-;   r0x1056
+;   r0x1058
 ;; Starting pCode block
 .segment "code"; module=main, function=_keyRead
 	.debuginfo subprogram _keyRead
 ;local variable name mapping:
-	.debuginfo variable _keyStatus=r0x1056,enc=unsigned
+	.debuginfo variable _keyStatus=r0x1058,enc=unsigned
 _keyRead:
 ; 2 exit points
-	.line	575, "main.c"; 	char keyRead(char keyStatus)	
-	BANKSEL	r0x1056
-	MOVAR	r0x1056
-	.line	577, "main.c"; 	if(keyStatus)
-	MOVR	r0x1056,W
+	.line	563, "main.c"; 	char keyRead(char keyStatus)	
+	BANKSEL	r0x1058
+	MOVAR	r0x1058
+	.line	565, "main.c"; 	if(keyStatus)
+	MOVR	r0x1058,W
 	BTRSC	STATUS,2
-	MGOTO	_00459_DS_
-	.line	579, "main.c"; 	keyCount++;
+	MGOTO	_00428_DS_
+	.line	567, "main.c"; 	keyCount++;
 	BANKSEL	_keyCount
 	INCR	_keyCount,F
 ;;unsigned compare: left < lit (0x64=100), size=1
-	.line	580, "main.c"; 	if(keyCount >= 100)
+	.line	568, "main.c"; 	if(keyCount >= 100)
 	MOVIA	0x64
 	SUBAR	_keyCount,W
 	BTRSS	STATUS,0
-	MGOTO	_00460_DS_
-	.line	582, "main.c"; 	keyCount = 100;
+	MGOTO	_00429_DS_
+	.line	570, "main.c"; 	keyCount = 100;
 	MOVIA	0x64
 	MOVAR	_keyCount
-	.line	583, "main.c"; 	if(!longPressFlag)
+	.line	571, "main.c"; 	if(!longPressFlag)
 	BANKSEL	_Status
 	BTRSC	_Status,1
-	MGOTO	_00460_DS_
-	.line	585, "main.c"; 	longPressFlag = 1;
+	MGOTO	_00429_DS_
+	.line	573, "main.c"; 	longPressFlag = 1;
 	BSR	_Status,1
-	.line	586, "main.c"; 	return 2;
+	.line	574, "main.c"; 	return 2;
 	MOVIA	0x02
-	MGOTO	_00461_DS_
+	MGOTO	_00430_DS_
 ;;unsigned compare: left < lit (0x64=100), size=1
-_00459_DS_:
-	.line	592, "main.c"; 	if(keyCount >= 100)
+_00428_DS_:
+	.line	580, "main.c"; 	if(keyCount >= 100)
 	MOVIA	0x64
 	BANKSEL	_keyCount
 	SUBAR	_keyCount,W
 	BTRSS	STATUS,0
-	MGOTO	_00456_DS_
-	.line	594, "main.c"; 	keyCount = 0;
+	MGOTO	_00425_DS_
+	.line	582, "main.c"; 	keyCount = 0;
 	CLRR	_keyCount
-	.line	595, "main.c"; 	longPressFlag = 0;
+	.line	583, "main.c"; 	longPressFlag = 0;
 	BANKSEL	_Status
 	BCR	_Status,1
-	.line	596, "main.c"; 	return	0;
+	.line	584, "main.c"; 	return	0;
 	MOVIA	0x00
-	MGOTO	_00461_DS_
+	MGOTO	_00430_DS_
 ;;unsigned compare: left < lit (0x4=4), size=1
-_00456_DS_:
-	.line	598, "main.c"; 	else if(keyCount >= 4)
+_00425_DS_:
+	.line	586, "main.c"; 	else if(keyCount >= 4)
 	MOVIA	0x04
 	BANKSEL	_keyCount
 	SUBAR	_keyCount,W
 	BTRSS	STATUS,0
-	MGOTO	_00457_DS_
-	.line	600, "main.c"; 	keyCount = 0;
+	MGOTO	_00426_DS_
+	.line	588, "main.c"; 	keyCount = 0;
 	CLRR	_keyCount
-	.line	601, "main.c"; 	return	1;
+	.line	589, "main.c"; 	return	1;
 	MOVIA	0x01
-	MGOTO	_00461_DS_
-_00457_DS_:
-	.line	603, "main.c"; 	keyCount = 0;
+	MGOTO	_00430_DS_
+_00426_DS_:
+	.line	591, "main.c"; 	keyCount = 0;
 	BANKSEL	_keyCount
 	CLRR	_keyCount
-_00460_DS_:
-	.line	605, "main.c"; 	return 0;
+_00429_DS_:
+	.line	593, "main.c"; 	return 0;
 	MOVIA	0x00
-_00461_DS_:
-	.line	606, "main.c"; 	}
+_00430_DS_:
+	.line	594, "main.c"; 	}
 	RETURN	
 ; exit point of _keyRead
 
@@ -2527,69 +2569,63 @@ _00461_DS_:
 	.debuginfo subprogram _gotoSleep
 _gotoSleep:
 ; 2 exit points
-	.line	542, "main.c"; 	LedInput();
+	.line	532, "main.c"; 	LedInput();
 	MCALL	_LedInput
-	.line	543, "main.c"; 	sleepTime = 0;
+	.line	533, "main.c"; 	sleepTime = 0;
 	BANKSEL	_sleepTime
 	CLRR	_sleepTime
 	CLRR	(_sleepTime + 1)
-	.line	545, "main.c"; 	pwmStop();
+	.line	535, "main.c"; 	pwmStop();
 	MCALL	_pwmStop
-	.line	546, "main.c"; 	pwm1Stop();
+	.line	536, "main.c"; 	pwm1Stop();
 	MCALL	_pwm1Stop
-	.line	547, "main.c"; 	PORTA = 0x00;
+	.line	537, "main.c"; 	PORTA = 0x00;
 	BANKSEL	_PORTA
 	CLRR	_PORTA
-	.line	548, "main.c"; 	PORTB = 0x00;
+	.line	538, "main.c"; 	PORTB = 0x00;
 	CLRR	_PORTB
-	.line	549, "main.c"; 	workStep = 0;
+	.line	539, "main.c"; 	workStep = 0;
 	BANKSEL	_workStep
 	CLRR	_workStep
-	.line	550, "main.c"; 	AWUCON = 0x60;
+	.line	540, "main.c"; 	AWUCON = 0x60;
 	MOVIA	0x60
 	MOVAR	_AWUCON
-	.line	551, "main.c"; 	BWUCON = 0x00;
+	.line	541, "main.c"; 	BWUCON = 0x00;
 	CLRR	_BWUCON
-	.line	552, "main.c"; 	redLedFlag = 0;
+	.line	542, "main.c"; 	redLedFlag = 0;
 	BANKSEL	_Status
 	BCR	_Status,2
-	.line	555, "main.c"; 	INTE =  C_INT_PABKey;
+	.line	545, "main.c"; 	INTE =  C_INT_PABKey;
 	MOVIA	0x02
 	MOVAR	_INTE
-	.line	556, "main.c"; 	PCON =  C_LVR_En | 0x10;	
+	.line	546, "main.c"; 	PCON =  C_LVR_En | 0x10;	
 	MOVIA	0x18
 	MOVAR	_PCON
-	.line	557, "main.c"; 	INTF = 0;								// Clear all interrupt flags
+	.line	547, "main.c"; 	INTF = 0;								// Clear all interrupt flags
 	CLRR	_INTF
-	.line	558, "main.c"; 	CLRWDT();
+	.line	548, "main.c"; 	CLRWDT();
 	clrwdt
-	.line	559, "main.c"; 	ENI();
+	.line	549, "main.c"; 	ENI();
 	ENI
-	.line	560, "main.c"; 	SLEEP();
+	.line	550, "main.c"; 	SLEEP();
 	sleep
-	.line	561, "main.c"; 	AWUCON = 0x00;
+	.line	551, "main.c"; 	AWUCON = 0x00;
 	CLRR	_AWUCON
-	.line	562, "main.c"; 	IOSTA = C_PA6_Input | C_PA5_Input | C_PA4_Input | C_PA3_Input | C_PA2_Input | C_PA0_Input;
-	MOVIA	0x7d
-	IOST	_IOSTA
-	.line	563, "main.c"; 	IOSTB = 0x00;
-	CLRA	
-	IOST	_IOSTB
-	.line	564, "main.c"; 	PORTA = 0x00;
+	.line	552, "main.c"; 	PORTA = 0x00;
 	BANKSEL	_PORTA
 	CLRR	_PORTA
-	.line	565, "main.c"; 	APHCON = 0x3F;
+	.line	553, "main.c"; 	APHCON = 0x3F;
 	MOVIA	0x3f
 	IOST	_APHCON
-	.line	566, "main.c"; 	INTE =  C_INT_TMR0;	// Enable Timer0、Timer1、WDT overflow interrupt
+	.line	554, "main.c"; 	INTE =  C_INT_TMR0;	// Enable Timer0、Timer1、WDT overflow interrupt
 	MOVIA	0x01
 	MOVAR	_INTE
-	.line	567, "main.c"; 	INTF = 0;
+	.line	555, "main.c"; 	INTF = 0;
 	CLRR	_INTF
-	.line	569, "main.c"; 	PCON = C_WDT_En | C_LVR_En | C_LVD_En | 0x10;				// Enable WDT ,  Enable LVR
+	.line	557, "main.c"; 	PCON = C_WDT_En | C_LVR_En | C_LVD_En | 0x10;				// Enable WDT ,  Enable LVR
 	MOVIA	0xb8
 	MOVAR	_PCON
-	.line	572, "main.c"; 	}
+	.line	560, "main.c"; 	}
 	RETURN	
 ; exit point of _gotoSleep
 
@@ -2602,10 +2638,15 @@ _gotoSleep:
 	.debuginfo subprogram _pwmStop
 _pwmStop:
 ; 2 exit points
-	.line	534, "main.c"; 	T1CR1 = C_TMR1_Dis;
+	.line	522, "main.c"; 	PORTB &= 0xF7;
+	BCR	_PORTB,3
+	.line	523, "main.c"; 	PORTA &= 0xFB;
+	BANKSEL	_PORTA
+	BCR	_PORTA,2
+	.line	524, "main.c"; 	T3CR1 = C_TMR3_Dis;
 	CLRA	
-	SFUN	_T1CR1
-	.line	535, "main.c"; 	}
+	SFUN	_T3CR1
+	.line	525, "main.c"; 	}
 	RETURN	
 ; exit point of _pwmStop
 
@@ -2614,32 +2655,34 @@ _pwmStop:
 ;***
 ;has an exit
 ;1 compiler assigned register :
-;   r0x1058
+;   r0x1052
 ;; Starting pCode block
 .segment "code"; module=main, function=_pwmInit
 	.debuginfo subprogram _pwmInit
 _pwmInit:
 ; 2 exit points
-	.line	522, "main.c"; 	if(0x80&T1CR1)
-	SFUNR	_T1CR1
-	BANKSEL	r0x1058
-	MOVAR	r0x1058
-	BTRSC	r0x1058,7
-	.line	523, "main.c"; 	return;
-	MGOTO	_00436_DS_
-	.line	524, "main.c"; 	TMRH = 0x00;
-	CLRR	_TMRH
-	.line	525, "main.c"; 	TMR1 = 100;							//频率为110K
+	.line	509, "main.c"; 	PORTB |= 0x08;
+	BSR	_PORTB,3
+	.line	510, "main.c"; 	if(0x80&T3CR1)
+	SFUNR	_T3CR1
+	BANKSEL	r0x1052
+	MOVAR	r0x1052
+	BTRSC	r0x1052,7
+	.line	511, "main.c"; 	return;
+	MGOTO	_00405_DS_
+	.line	512, "main.c"; 	TM3RH = 0x00;
+	CLRR	_TM3RH
+	.line	513, "main.c"; 	TMR3 = 100;							//频率为110K
 	MOVIA	0x64
-	SFUN	_TMR1
-	.line	528, "main.c"; 	T1CR2 = C_TMR1_ClkSrc_Inst | C_PS1_Div4;	// Enable Prescaler1, Prescaler1 dividing rate = 1:2, Timer1 clock source is instruction clock 
+	SFUN	_TMR3
+	.line	516, "main.c"; 	T3CR2 = C_TMR3_ClkSrc_Inst | C_PS3_Div4;	// Enable Prescaler1, Prescaler1 dividing rate = 1:2, Timer1 clock source is instruction clock 
 	MOVIA	0x01
-	SFUN	_T1CR2
-	.line	529, "main.c"; 	T1CR1 = C_PWM1_En | C_TMR1_Reload | C_TMR1_En;	// PWM1 output will be present on PB6 , PWM1 output is active high, reloaded from TMR1, non-stop mode
+	SFUN	_T3CR2
+	.line	517, "main.c"; 	T3CR1 = C_PWM3_En | C_TMR3_Reload | C_TMR3_En;	// PWM1 output will be present on PB6 , PWM1 output is active high, reloaded from TMR1, non-stop mode
 	MOVIA	0x83
-	SFUN	_T1CR1
-_00436_DS_:
-	.line	530, "main.c"; 	}
+	SFUN	_T3CR1
+_00405_DS_:
+	.line	518, "main.c"; 	}
 	RETURN	
 ; exit point of _pwmInit
 
@@ -2652,10 +2695,10 @@ _00436_DS_:
 	.debuginfo subprogram _pwm1Stop
 _pwm1Stop:
 ; 2 exit points
-	.line	515, "main.c"; 	T2CR1 = C_TMR2_Dis;
+	.line	502, "main.c"; 	T2CR1 = C_TMR2_Dis;
 	CLRA	
 	SFUN	_T2CR1
-	.line	516, "main.c"; 	}
+	.line	503, "main.c"; 	}
 	RETURN	
 ; exit point of _pwm1Stop
 
@@ -2664,35 +2707,35 @@ _pwm1Stop:
 ;***
 ;has an exit
 ;1 compiler assigned register :
-;   r0x1050
+;   r0x1052
 ;; Starting pCode block
 .segment "code"; module=main, function=_pwm1Init
 	.debuginfo subprogram _pwm1Init
 _pwm1Init:
 ; 2 exit points
-	.line	502, "main.c"; 	if(0x80&T2CR1)
+	.line	489, "main.c"; 	if(0x80&T2CR1)
 	SFUNR	_T2CR1
-	BANKSEL	r0x1050
-	MOVAR	r0x1050
-	BTRSC	r0x1050,7
-	.line	503, "main.c"; 	return;
-	MGOTO	_00425_DS_
-	.line	504, "main.c"; 	TMRH = 0x00;
+	BANKSEL	r0x1052
+	MOVAR	r0x1052
+	BTRSC	r0x1052,7
+	.line	490, "main.c"; 	return;
+	MGOTO	_00394_DS_
+	.line	491, "main.c"; 	TMRH = 0x00;
 	CLRR	_TMRH
-	.line	505, "main.c"; 	TMR1 = 48;							//频率为110K
+	.line	492, "main.c"; 	TMR2 = 48;							//频率为110K
 	MOVIA	0x30
-	SFUN	_TMR1
-	.line	508, "main.c"; 	T2CR2 = C_TMR2_ClkSrc_Inst | C_PS2_Div2;	// Enable Prescaler1, Prescaler1 dividing rate = 1:2, Timer1 clock source is instruction clock 
+	SFUN	_TMR2
+	.line	495, "main.c"; 	T2CR2 = C_TMR2_ClkSrc_Inst | C_PS2_Div2;	// Enable Prescaler1, Prescaler1 dividing rate = 1:2, Timer1 clock source is instruction clock 
 	CLRA	
 	SFUN	_T2CR2
-	.line	509, "main.c"; 	T2CR2 = C_TMR2_ClkSrc_Inst | C_PS2_Dis;
+	.line	496, "main.c"; 	T2CR2 = C_TMR2_ClkSrc_Inst | C_PS2_Dis;
 	MOVIA	0x08
 	SFUN	_T2CR2
-	.line	510, "main.c"; 	T2CR1 = C_PWM2_En | C_TMR2_Reload | C_TMR2_En;	// PWM1 output will be present on PB6 , PWM1 output is active high, reloaded from TMR1, non-stop mode
+	.line	497, "main.c"; 	T2CR1 = C_PWM2_En | C_TMR2_Reload | C_TMR2_En;	// PWM1 output will be present on PB6 , PWM1 output is active high, reloaded from TMR1, non-stop mode
 	MOVIA	0x83
 	SFUN	_T2CR1
-_00425_DS_:
-	.line	511, "main.c"; 	}
+_00394_DS_:
+	.line	498, "main.c"; 	}
 	RETURN	
 ; exit point of _pwm1Init
 
@@ -2706,35 +2749,36 @@ _00425_DS_:
 ;   _delay
 ;   _LedInput
 ;1 compiler assigned register :
-;   r0x1059
+;   r0x105A
 ;; Starting pCode block
 .segment "code"; module=main, function=_LED6ON
 	.debuginfo subprogram _LED6ON
 _LED6ON:
 ; 2 exit points
-	.line	492, "main.c"; 	L2OUT;
+	.line	479, "main.c"; 	L2OUT;
 	IOSTR	_IOSTB
-	BANKSEL	r0x1059
-	MOVAR	r0x1059
-	BCR	r0x1059,1
-	MOVR	r0x1059,W
+	BANKSEL	r0x105A
+	MOVAR	r0x105A
+	BCR	r0x105A,1
+	MOVR	r0x105A,W
 	IOST	_IOSTB
-	.line	493, "main.c"; 	L1OUT;
-	IOSTR	_IOSTB
-	MOVAR	r0x1059
-	BCR	r0x1059,0
-	MOVR	r0x1059,W
-	IOST	_IOSTB
-	.line	494, "main.c"; 	L1H;
-	BSR	_PORTB,0
-	.line	495, "main.c"; 	L2L;
+	.line	480, "main.c"; 	L1OUT;
+	IOSTR	_IOSTA
+	MOVAR	r0x105A
+	BCR	r0x105A,0
+	MOVR	r0x105A,W
+	IOST	_IOSTA
+	.line	481, "main.c"; 	L1H;
+	BANKSEL	_PORTA
+	BSR	_PORTA,0
+	.line	482, "main.c"; 	L2L;
 	BCR	_PORTB,1
-	.line	496, "main.c"; 	delay(100);
+	.line	483, "main.c"; 	delay(100);
 	MOVIA	0x64
 	MCALL	_delay
-	.line	497, "main.c"; 	LedInput();
+	.line	484, "main.c"; 	LedInput();
 	MCALL	_LedInput
-	.line	498, "main.c"; 	}
+	.line	485, "main.c"; 	}
 	RETURN	
 ; exit point of _LED6ON
 
@@ -2748,35 +2792,36 @@ _LED6ON:
 ;   _delay
 ;   _LedInput
 ;1 compiler assigned register :
-;   r0x105A
+;   r0x105B
 ;; Starting pCode block
 .segment "code"; module=main, function=_LED5ON
 	.debuginfo subprogram _LED5ON
 _LED5ON:
 ; 2 exit points
-	.line	481, "main.c"; 	L2OUT;
+	.line	468, "main.c"; 	L2OUT;
 	IOSTR	_IOSTB
-	BANKSEL	r0x105A
-	MOVAR	r0x105A
-	BCR	r0x105A,1
-	MOVR	r0x105A,W
+	BANKSEL	r0x105B
+	MOVAR	r0x105B
+	BCR	r0x105B,1
+	MOVR	r0x105B,W
 	IOST	_IOSTB
-	.line	482, "main.c"; 	L1OUT;
-	IOSTR	_IOSTB
-	MOVAR	r0x105A
-	BCR	r0x105A,0
-	MOVR	r0x105A,W
-	IOST	_IOSTB
-	.line	483, "main.c"; 	L2H;
+	.line	469, "main.c"; 	L1OUT;
+	IOSTR	_IOSTA
+	MOVAR	r0x105B
+	BCR	r0x105B,0
+	MOVR	r0x105B,W
+	IOST	_IOSTA
+	.line	470, "main.c"; 	L2H;
 	BSR	_PORTB,1
-	.line	484, "main.c"; 	L1L;
-	BCR	_PORTB,0
-	.line	485, "main.c"; 	delay(100);
+	.line	471, "main.c"; 	L1L;
+	BANKSEL	_PORTA
+	BCR	_PORTA,0
+	.line	472, "main.c"; 	delay(100);
 	MOVIA	0x64
 	MCALL	_delay
-	.line	486, "main.c"; 	LedInput();
+	.line	473, "main.c"; 	LedInput();
 	MCALL	_LedInput
-	.line	487, "main.c"; 	}
+	.line	474, "main.c"; 	}
 	RETURN	
 ; exit point of _LED5ON
 
@@ -2790,36 +2835,36 @@ _LED5ON:
 ;   _delay
 ;   _LedInput
 ;1 compiler assigned register :
-;   r0x105B
+;   r0x105C
 ;; Starting pCode block
 .segment "code"; module=main, function=_LED4ON
 	.debuginfo subprogram _LED4ON
 _LED4ON:
 ; 2 exit points
-	.line	471, "main.c"; 	L3OUT;
+	.line	458, "main.c"; 	L3OUT;
 	IOSTR	_IOSTA
-	BANKSEL	r0x105B
-	MOVAR	r0x105B
-	BCR	r0x105B,7
-	MOVR	r0x105B,W
+	BANKSEL	r0x105C
+	MOVAR	r0x105C
+	BCR	r0x105C,7
+	MOVR	r0x105C,W
 	IOST	_IOSTA
-	.line	472, "main.c"; 	L2OUT;
+	.line	459, "main.c"; 	L2OUT;
 	IOSTR	_IOSTB
-	MOVAR	r0x105B
-	BCR	r0x105B,1
-	MOVR	r0x105B,W
+	MOVAR	r0x105C
+	BCR	r0x105C,1
+	MOVR	r0x105C,W
 	IOST	_IOSTB
-	.line	473, "main.c"; 	L3H;
+	.line	460, "main.c"; 	L3H;
 	BANKSEL	_PORTA
 	BSR	_PORTA,7
-	.line	474, "main.c"; 	L2L;
+	.line	461, "main.c"; 	L2L;
 	BCR	_PORTB,1
-	.line	475, "main.c"; 	delay(100);
+	.line	462, "main.c"; 	delay(100);
 	MOVIA	0x64
 	MCALL	_delay
-	.line	476, "main.c"; 	LedInput();
+	.line	463, "main.c"; 	LedInput();
 	MCALL	_LedInput
-	.line	477, "main.c"; 	}
+	.line	464, "main.c"; 	}
 	RETURN	
 ; exit point of _LED4ON
 
@@ -2833,36 +2878,36 @@ _LED4ON:
 ;   _delay
 ;   _LedInput
 ;1 compiler assigned register :
-;   r0x105C
+;   r0x105D
 ;; Starting pCode block
 .segment "code"; module=main, function=_LED3ON
 	.debuginfo subprogram _LED3ON
 _LED3ON:
 ; 2 exit points
-	.line	461, "main.c"; 	L2OUT;
+	.line	448, "main.c"; 	L2OUT;
 	IOSTR	_IOSTB
-	BANKSEL	r0x105C
-	MOVAR	r0x105C
-	BCR	r0x105C,1
-	MOVR	r0x105C,W
+	BANKSEL	r0x105D
+	MOVAR	r0x105D
+	BCR	r0x105D,1
+	MOVR	r0x105D,W
 	IOST	_IOSTB
-	.line	462, "main.c"; 	L3OUT;
+	.line	449, "main.c"; 	L3OUT;
 	IOSTR	_IOSTA
-	MOVAR	r0x105C
-	BCR	r0x105C,7
-	MOVR	r0x105C,W
+	MOVAR	r0x105D
+	BCR	r0x105D,7
+	MOVR	r0x105D,W
 	IOST	_IOSTA
-	.line	463, "main.c"; 	L2H;
+	.line	450, "main.c"; 	L2H;
 	BSR	_PORTB,1
-	.line	464, "main.c"; 	L3L;
+	.line	451, "main.c"; 	L3L;
 	BANKSEL	_PORTA
 	BCR	_PORTA,7
-	.line	465, "main.c"; 	delay(100);
+	.line	452, "main.c"; 	delay(100);
 	MOVIA	0x64
 	MCALL	_delay
-	.line	466, "main.c"; 	LedInput();
+	.line	453, "main.c"; 	LedInput();
 	MCALL	_LedInput
-	.line	467, "main.c"; 	}
+	.line	454, "main.c"; 	}
 	RETURN	
 ; exit point of _LED3ON
 
@@ -2876,36 +2921,36 @@ _LED3ON:
 ;   _delay
 ;   _LedInput
 ;1 compiler assigned register :
-;   r0x105D
+;   r0x105E
 ;; Starting pCode block
 .segment "code"; module=main, function=_LED2ON
 	.debuginfo subprogram _LED2ON
 _LED2ON:
 ; 2 exit points
-	.line	450, "main.c"; 	L3OUT;
+	.line	437, "main.c"; 	L3OUT;
 	IOSTR	_IOSTA
-	BANKSEL	r0x105D
-	MOVAR	r0x105D
-	BCR	r0x105D,7
-	MOVR	r0x105D,W
+	BANKSEL	r0x105E
+	MOVAR	r0x105E
+	BCR	r0x105E,7
+	MOVR	r0x105E,W
 	IOST	_IOSTA
-	.line	451, "main.c"; 	L1OUT;
-	IOSTR	_IOSTB
-	MOVAR	r0x105D
-	BCR	r0x105D,0
-	MOVR	r0x105D,W
-	IOST	_IOSTB
-	.line	452, "main.c"; 	L1H;
-	BSR	_PORTB,0
-	.line	453, "main.c"; 	L3L;
+	.line	438, "main.c"; 	L1OUT;
+	IOSTR	_IOSTA
+	MOVAR	r0x105E
+	BCR	r0x105E,0
+	MOVR	r0x105E,W
+	IOST	_IOSTA
+	.line	439, "main.c"; 	L1H;
 	BANKSEL	_PORTA
+	BSR	_PORTA,0
+	.line	440, "main.c"; 	L3L;
 	BCR	_PORTA,7
-	.line	454, "main.c"; 	delay(100);
+	.line	441, "main.c"; 	delay(100);
 	MOVIA	0x64
 	MCALL	_delay
-	.line	455, "main.c"; 	LedInput();
+	.line	442, "main.c"; 	LedInput();
 	MCALL	_LedInput
-	.line	456, "main.c"; 	}
+	.line	443, "main.c"; 	}
 	RETURN	
 ; exit point of _LED2ON
 
@@ -2919,36 +2964,36 @@ _LED2ON:
 ;   _delay
 ;   _LedInput
 ;1 compiler assigned register :
-;   r0x105E
+;   r0x105F
 ;; Starting pCode block
 .segment "code"; module=main, function=_LED1ON
 	.debuginfo subprogram _LED1ON
 _LED1ON:
 ; 2 exit points
-	.line	440, "main.c"; 	L3OUT;
+	.line	427, "main.c"; 	L3OUT;
 	IOSTR	_IOSTA
-	BANKSEL	r0x105E
-	MOVAR	r0x105E
-	BCR	r0x105E,7
-	MOVR	r0x105E,W
+	BANKSEL	r0x105F
+	MOVAR	r0x105F
+	BCR	r0x105F,7
+	MOVR	r0x105F,W
 	IOST	_IOSTA
-	.line	441, "main.c"; 	L1OUT;
-	IOSTR	_IOSTB
-	MOVAR	r0x105E
-	BCR	r0x105E,0
-	MOVR	r0x105E,W
-	IOST	_IOSTB
-	.line	442, "main.c"; 	L3H;
+	.line	428, "main.c"; 	L1OUT;
+	IOSTR	_IOSTA
+	MOVAR	r0x105F
+	BCR	r0x105F,0
+	MOVR	r0x105F,W
+	IOST	_IOSTA
+	.line	429, "main.c"; 	L3H;
 	BANKSEL	_PORTA
 	BSR	_PORTA,7
-	.line	443, "main.c"; 	L1L;
-	BCR	_PORTB,0
-	.line	444, "main.c"; 	delay(100);
+	.line	430, "main.c"; 	L1L;
+	BCR	_PORTA,0
+	.line	431, "main.c"; 	delay(100);
 	MOVIA	0x64
 	MCALL	_delay
-	.line	445, "main.c"; 	LedInput();
+	.line	432, "main.c"; 	LedInput();
 	MCALL	_LedInput
-	.line	446, "main.c"; 	}
+	.line	433, "main.c"; 	}
 	RETURN	
 ; exit point of _LED1ON
 
@@ -2957,33 +3002,33 @@ _LED1ON:
 ;***
 ;has an exit
 ;1 compiler assigned register :
-;   r0x1057
+;   r0x1059
 ;; Starting pCode block
 .segment "code"; module=main, function=_LedInput
 	.debuginfo subprogram _LedInput
 _LedInput:
 ; 2 exit points
-	.line	432, "main.c"; 	IOSTA |= 0x80;
+	.line	419, "main.c"; 	IOSTA |= 0x81;
 	IOSTR	_IOSTA
-	BANKSEL	r0x1057
-	MOVAR	r0x1057
-	BSR	r0x1057,7
-	MOVR	r0x1057,W
+	BANKSEL	r0x1059
+	MOVAR	r0x1059
+	MOVIA	0x81
+	IORAR	r0x1059,F
+	MOVR	r0x1059,W
 	IOST	_IOSTA
-	.line	433, "main.c"; 	IOSTB |= 0x03;
+	.line	420, "main.c"; 	IOSTB |= 0x02;
 	IOSTR	_IOSTB
-	MOVAR	r0x1057
-	MOVIA	0x03
-	IORAR	r0x1057,F
-	MOVR	r0x1057,W
+	MOVAR	r0x1059
+	BSR	r0x1059,1
+	MOVR	r0x1059,W
 	IOST	_IOSTB
-	.line	434, "main.c"; 	PORTB &= 0xFC;
-	MOVIA	0xfc
-	ANDAR	_PORTB,F
-	.line	435, "main.c"; 	PORTA &= 0x7F;
+	.line	421, "main.c"; 	PORTB &= 0xFD;
+	BCR	_PORTB,1
+	.line	422, "main.c"; 	PORTA &= 0x7E;
+	MOVIA	0x7e
 	BANKSEL	_PORTA
-	BCR	_PORTA,7
-	.line	436, "main.c"; 	}
+	ANDAR	_PORTA,F
+	.line	423, "main.c"; 	}
 	RETURN	
 ; exit point of _LedInput
 
@@ -3013,147 +3058,147 @@ _LedInput:
 	.debuginfo subprogram _ledShow
 _ledShow:
 ; 2 exit points
-	.line	374, "main.c"; 	if(ledDeadTime > 0 && workStep == 0)
+	.line	361, "main.c"; 	if(ledDeadTime > 0 && workStep == 0)
 	BANKSEL	_ledDeadTime
 	MOVR	_ledDeadTime,W
 	BTRSC	STATUS,2
-	MGOTO	_00322_DS_
+	MGOTO	_00291_DS_
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	BTRSS	STATUS,2
-	MGOTO	_00322_DS_
-	.line	376, "main.c"; 	if(ledDeadTime % 2 == 0)
+	MGOTO	_00291_DS_
+	.line	363, "main.c"; 	if(ledDeadTime % 2 == 0)
 	BANKSEL	_ledDeadTime
 	BTRSC	_ledDeadTime,0
-	MGOTO	_00319_DS_
-	.line	378, "main.c"; 	ledStep = 0;
+	MGOTO	_00288_DS_
+	.line	365, "main.c"; 	ledStep = 0;
 	BANKSEL	_ledStep
 	CLRR	_ledStep
-	MGOTO	_00322_DS_
-_00319_DS_:
-	.line	382, "main.c"; 	ledStep = tempLedStep;
+	MGOTO	_00291_DS_
+_00288_DS_:
+	.line	369, "main.c"; 	ledStep = tempLedStep;
 	BANKSEL	_tempLedStep
 	MOVR	_tempLedStep,W
 	BANKSEL	_ledStep
 	MOVAR	_ledStep
-_00322_DS_:
-	.line	386, "main.c"; 	if(ledLightTime > 0 && pwStep > 0)
+_00291_DS_:
+	.line	373, "main.c"; 	if(ledLightTime > 0 && pwStep > 0)
 	BANKSEL	_ledLightTime
 	MOVR	_ledLightTime,W
 	BTRSC	STATUS,2
-	MGOTO	_00330_DS_
+	MGOTO	_00299_DS_
 	BANKSEL	_pwStep
 	MOVR	_pwStep,W
 	BTRSC	STATUS,2
-	MGOTO	_00330_DS_
-	.line	388, "main.c"; 	if(ledLightTime > 0)
+	MGOTO	_00299_DS_
+	.line	375, "main.c"; 	if(ledLightTime > 0)
 	BANKSEL	_ledLightTime
 	MOVR	_ledLightTime,W
 	BTRSC	STATUS,2
-	MGOTO	_00330_DS_
+	MGOTO	_00299_DS_
 ;;swapping arguments (AOP_TYPEs 1/3)
 ;;unsigned compare: left >= lit (0x7=7), size=1
-	.line	390, "main.c"; 	if(pwStep > 6 )
+	.line	377, "main.c"; 	if(pwStep > 6 )
 	MOVIA	0x07
 	BANKSEL	_pwStep
 	SUBAR	_pwStep,W
 	BTRSS	STATUS,0
-	MGOTO	_00325_DS_
-	.line	391, "main.c"; 	ledStep = 6;
+	MGOTO	_00294_DS_
+	.line	378, "main.c"; 	ledStep = 6;
 	MOVIA	0x06
 	BANKSEL	_ledStep
 	MOVAR	_ledStep
-	MGOTO	_00330_DS_
-_00325_DS_:
-	.line	393, "main.c"; 	ledStep = pwStep;
+	MGOTO	_00299_DS_
+_00294_DS_:
+	.line	380, "main.c"; 	ledStep = pwStep;
 	BANKSEL	_pwStep
 	MOVR	_pwStep,W
 	BANKSEL	_ledStep
 	MOVAR	_ledStep
-_00330_DS_:
-	.line	396, "main.c"; 	if(shanshuoTime > 0 && workStep > 0 && pwStep == 0)
+_00299_DS_:
+	.line	383, "main.c"; 	if(shanshuoTime > 0 && workStep > 0 && pwStep == 0)
 	BANKSEL	_shanshuoTime
 	MOVR	_shanshuoTime,W
 	BTRSC	STATUS,2
-	MGOTO	_00336_DS_
+	MGOTO	_00305_DS_
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	BTRSC	STATUS,2
-	MGOTO	_00336_DS_
+	MGOTO	_00305_DS_
 	BANKSEL	_pwStep
 	MOVR	_pwStep,W
 	BTRSS	STATUS,2
-	MGOTO	_00336_DS_
+	MGOTO	_00305_DS_
 ;;unsigned compare: left < lit (0x32=50), size=1
-	.line	398, "main.c"; 	if(count1s < 50)
+	.line	385, "main.c"; 	if(count1s < 50)
 	MOVIA	0x32
 	BANKSEL	_count1s
 	SUBAR	_count1s,W
 	BTRSC	STATUS,0
-	MGOTO	_00333_DS_
-	.line	399, "main.c"; 	ledStep = workStep;
+	MGOTO	_00302_DS_
+	.line	386, "main.c"; 	ledStep = workStep;
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	BANKSEL	_ledStep
 	MOVAR	_ledStep
-	MGOTO	_00336_DS_
-_00333_DS_:
-	.line	401, "main.c"; 	ledStep = 0;
+	MGOTO	_00305_DS_
+_00302_DS_:
+	.line	388, "main.c"; 	ledStep = 0;
 	BANKSEL	_ledStep
 	CLRR	_ledStep
-_00336_DS_:
-	.line	404, "main.c"; 	LedInput();
+_00305_DS_:
+	.line	391, "main.c"; 	LedInput();
 	MCALL	_LedInput
 ;;swapping arguments (AOP_TYPEs 1/3)
 ;;unsigned compare: left >= lit (0x9=9), size=1
-	.line	405, "main.c"; 	switch(ledStep)
+	.line	392, "main.c"; 	switch(ledStep)
 	MOVIA	0x09
 	BANKSEL	_ledStep
 	SUBAR	_ledStep,W
 	BTRSC	STATUS,0
-	MGOTO	_00349_DS_
-	MOVIA	((_00390_DS_ >> 8) & 0xff)
+	MGOTO	_00318_DS_
+	MOVIA	((_00359_DS_ >> 8) & 0xff)
 	MOVAR	PCHBUF
 	MOVR	_ledStep,W
-	ADDIA	_00390_DS_
+	ADDIA	_00359_DS_
 	BTRSC	STATUS,0
 	INCR	PCHBUF,F
 	MOVAR	PCL
-_00390_DS_:
-	MGOTO	_00339_DS_
-	MGOTO	_00347_DS_
-	MGOTO	_00346_DS_
-	MGOTO	_00345_DS_
-	MGOTO	_00344_DS_
-	MGOTO	_00343_DS_
-	MGOTO	_00342_DS_
-	MGOTO	_00342_DS_
-	MGOTO	_00342_DS_
-_00339_DS_:
-	.line	408, "main.c"; 	LedInput();
+_00359_DS_:
+	MGOTO	_00308_DS_
+	MGOTO	_00316_DS_
+	MGOTO	_00315_DS_
+	MGOTO	_00314_DS_
+	MGOTO	_00313_DS_
+	MGOTO	_00312_DS_
+	MGOTO	_00311_DS_
+	MGOTO	_00311_DS_
+	MGOTO	_00311_DS_
+_00308_DS_:
+	.line	395, "main.c"; 	LedInput();
 	MCALL	_LedInput
-	.line	409, "main.c"; 	break;
-	MGOTO	_00349_DS_
-_00342_DS_:
-	.line	413, "main.c"; 	LED6ON();
+	.line	396, "main.c"; 	break;
+	MGOTO	_00318_DS_
+_00311_DS_:
+	.line	400, "main.c"; 	LED6ON();
 	MCALL	_LED6ON
-_00343_DS_:
-	.line	415, "main.c"; 	LED5ON();
+_00312_DS_:
+	.line	402, "main.c"; 	LED5ON();
 	MCALL	_LED5ON
-_00344_DS_:
-	.line	417, "main.c"; 	LED4ON();
+_00313_DS_:
+	.line	404, "main.c"; 	LED4ON();
 	MCALL	_LED4ON
-_00345_DS_:
-	.line	419, "main.c"; 	LED3ON();
+_00314_DS_:
+	.line	406, "main.c"; 	LED3ON();
 	MCALL	_LED3ON
-_00346_DS_:
-	.line	421, "main.c"; 	LED2ON();
+_00315_DS_:
+	.line	408, "main.c"; 	LED2ON();
 	MCALL	_LED2ON
-_00347_DS_:
-	.line	423, "main.c"; 	LED1ON();
+_00316_DS_:
+	.line	410, "main.c"; 	LED1ON();
 	MCALL	_LED1ON
-_00349_DS_:
-	.line	426, "main.c"; 	}
+_00318_DS_:
+	.line	413, "main.c"; 	}
 	RETURN	
 ; exit point of _ledShow
 
@@ -3169,52 +3214,52 @@ _00349_DS_:
 	.debuginfo subprogram _initSys
 _initSys:
 ; 2 exit points
-	.line	342, "main.c"; 	DISI();
+	.line	329, "main.c"; 	DISI();
 	DISI
-	.line	343, "main.c"; 	IOSTA = C_PA6_Input | C_PA5_Input | C_PA4_Input | C_PA3_Input | C_PA2_Input | C_PA0_Input;
-	MOVIA	0x7d
+	.line	330, "main.c"; 	IOSTA = C_PA6_Input | C_PA5_Input | C_PA4_Input | C_PA1_Input;
+	MOVIA	0x72
 	IOST	_IOSTA
-	.line	344, "main.c"; 	IOSTB = C_PB3_Input;
-	MOVIA	0x08
+	.line	331, "main.c"; 	IOSTB = C_PB0_Input;
+	MOVIA	0x01
 	IOST	_IOSTB
-	.line	345, "main.c"; 	PORTB = 0x00;
+	.line	332, "main.c"; 	PORTB = 0x00;
 	CLRR	_PORTB
-	.line	346, "main.c"; 	PORTA = 0x00;
+	.line	333, "main.c"; 	PORTA = 0x00;
 	BANKSEL	_PORTA
 	CLRR	_PORTA
-	.line	347, "main.c"; 	LedInput();
+	.line	334, "main.c"; 	LedInput();
 	MCALL	_LedInput
-	.line	348, "main.c"; 	APHCON = 0xBF;
+	.line	335, "main.c"; 	APHCON = 0xBF;
 	MOVIA	0xbf
 	IOST	_APHCON
-	.line	349, "main.c"; 	BPHCON = 0xFF;
+	.line	336, "main.c"; 	BPHCON = 0xFF;
 	MOVIA	0xff
 	MOVAR	_BPHCON
-	.line	350, "main.c"; 	ABPLCON = 0xFF;
+	.line	337, "main.c"; 	ABPLCON = 0xFF;
 	MOVAR	_ABPLCON
-	.line	352, "main.c"; 	INTE =  C_INT_TMR0 ;	// Enable Timer0、Timer1、WDT overflow interrupt
+	.line	339, "main.c"; 	INTE =  C_INT_TMR0 ;	// Enable Timer0、Timer1、WDT overflow interrupt
 	MOVIA	0x01
 	MOVAR	_INTE
-	.line	354, "main.c"; 	PCON1 = C_TMR0_Dis;
+	.line	341, "main.c"; 	PCON1 = C_TMR0_Dis;
 	CLRA	
 	IOST	_PCON1
-	.line	356, "main.c"; 	TMR0 = 55;
+	.line	343, "main.c"; 	TMR0 = 55;
 	MOVIA	0x37
 	MOVAR	_TMR0
-	.line	357, "main.c"; 	T0MD =  C_PS0_TMR0 | C_PS0_Div4;
+	.line	344, "main.c"; 	T0MD =  C_PS0_TMR0 | C_PS0_Div4;
 	MOVIA	0x01
 	T0MD	
-	.line	359, "main.c"; 	PCON1 = C_TMR0_En;
+	.line	346, "main.c"; 	PCON1 = C_TMR0_En;
 	IOST	_PCON1
-	.line	362, "main.c"; 	PCON = C_WDT_En | C_LVR_En | 0x10;				// Enable WDT ,  Enable LVR
+	.line	349, "main.c"; 	PCON = C_WDT_En | C_LVR_En | 0x10;				// Enable WDT ,  Enable LVR
 	MOVIA	0x98
 	MOVAR	_PCON
-	.line	365, "main.c"; 	PCON1 = C_TMR0_En;						// Enable Timer0
+	.line	352, "main.c"; 	PCON1 = C_TMR0_En;						// Enable Timer0
 	MOVIA	0x01
 	IOST	_PCON1
-	.line	366, "main.c"; 	ENI();
+	.line	353, "main.c"; 	ENI();
 	ENI
-	.line	367, "main.c"; 	}
+	.line	354, "main.c"; 	}
 	RETURN	
 ; exit point of _initSys
 
@@ -3230,12 +3275,12 @@ _initSys:
 	.debuginfo subprogram _powerOff
 _powerOff:
 ; 2 exit points
-	.line	333, "main.c"; 	workStep = 0;
+	.line	320, "main.c"; 	workStep = 0;
 	BANKSEL	_workStep
 	CLRR	_workStep
-	.line	334, "main.c"; 	pwmStop();
+	.line	321, "main.c"; 	pwmStop();
 	MCALL	_pwmStop
-	.line	336, "main.c"; 	}
+	.line	323, "main.c"; 	}
 	RETURN	
 ; exit point of _powerOff
 
@@ -3252,58 +3297,59 @@ _powerOff:
 ;   _pwmInit
 ;   _powerOff
 ;   _pwmInit
-;1 compiler assigned register :
-;   r0x105F
+;2 compiler assigned registers:
+;   r0x1060
+;   r0x1061
 ;; Starting pCode block
 .segment "code"; module=main, function=_keyCtr
 	.debuginfo subprogram _keyCtr
 ;local variable name mapping:
-	.debuginfo variable _kclick=r0x105F,enc=unsigned
+	.debuginfo variable _kclick=r0x1060,enc=unsigned
 _keyCtr:
 ; 2 exit points
-	.line	263, "main.c"; 	char kclick = keyRead(0x40 & (~PORTA));
+	.line	250, "main.c"; 	char kclick = keyRead(0x40 & (~PORTA));
 	BANKSEL	_PORTA
 	COMR	_PORTA,W
-	BANKSEL	r0x105F
-	MOVAR	r0x105F
+	BANKSEL	r0x1060
+	MOVAR	r0x1060
 	MOVIA	0x40
-	ANDAR	r0x105F,F
-	MOVR	r0x105F,W
+	ANDAR	r0x1060,F
+	MOVR	r0x1060,W
 	MCALL	_keyRead
-	BANKSEL	r0x105F
-	MOVAR	r0x105F
-	.line	264, "main.c"; 	if(kclick == 1)
+	BANKSEL	r0x1060
+	MOVAR	r0x1060
+	.line	251, "main.c"; 	if(kclick == 1)
 	XORIA	0x01
 	BTRSS	STATUS,2
-	MGOTO	_00303_DS_
-	.line	266, "main.c"; 	count500ms = 0;
+	MGOTO	_00272_DS_
+	.line	253, "main.c"; 	count500ms = 0;
 	BANKSEL	_count500ms
 	CLRR	_count500ms
-	.line	267, "main.c"; 	ledLightTime = 0;
+	.line	254, "main.c"; 	ledLightTime = 0;
 	BANKSEL	_ledLightTime
 	CLRR	_ledLightTime
-	.line	268, "main.c"; 	if(workStep == 0)
+	.line	255, "main.c"; 	if(workStep == 0)
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	BTRSS	STATUS,2
-	MGOTO	_00269_DS_
-	.line	270, "main.c"; 	count1s = 0;
+	MGOTO	_00238_DS_
+	.line	257, "main.c"; 	count1s = 0;
 	BANKSEL	_count1s
 	CLRR	_count1s
-	.line	271, "main.c"; 	ledLightTime = 3;
+	.line	258, "main.c"; 	ledLightTime = 3;
 	MOVIA	0x03
 	BANKSEL	_ledLightTime
 	MOVAR	_ledLightTime
-	.line	272, "main.c"; 	prePwStep = 0;
+	.line	259, "main.c"; 	prePwStep = 0;
 	BANKSEL	_prePwStep
 	CLRR	_prePwStep
-	.line	273, "main.c"; 	return;
-	MGOTO	_00305_DS_
-_00269_DS_:
-	.line	275, "main.c"; 	ledTime = 0;
+	.line	260, "main.c"; 	return;
+	MGOTO	_00274_DS_
+_00238_DS_:
+	.line	262, "main.c"; 	ledTime = 0;
 	BANKSEL	_ledTime
 	CLRR	_ledTime
-	.line	276, "main.c"; 	if(++workStep > 6)
+	.line	263, "main.c"; 	if(++workStep > 6)
 	BANKSEL	_workStep
 	INCR	_workStep,F
 ;;swapping arguments (AOP_TYPEs 1/3)
@@ -3311,186 +3357,188 @@ _00269_DS_:
 	MOVIA	0x07
 	SUBAR	_workStep,W
 	BTRSS	STATUS,0
-	MGOTO	_00271_DS_
-	.line	277, "main.c"; 	workStep = 1;
+	MGOTO	_00240_DS_
+	.line	264, "main.c"; 	workStep = 1;
 	MOVIA	0x01
 	MOVAR	_workStep
-_00271_DS_:
-	.line	278, "main.c"; 	if(pwStep == 0)
+_00240_DS_:
+	.line	265, "main.c"; 	if(pwStep == 0)
 	BANKSEL	_pwStep
 	MOVR	_pwStep,W
 	BTRSS	STATUS,2
-	MGOTO	_00273_DS_
-	.line	279, "main.c"; 	shanshuoTime = 10;
+	MGOTO	_00242_DS_
+	.line	266, "main.c"; 	shanshuoTime = 10;
 	MOVIA	0x0a
 	BANKSEL	_shanshuoTime
 	MOVAR	_shanshuoTime
-_00273_DS_:
-	.line	280, "main.c"; 	if(workStep == 1)
+_00242_DS_:
+	.line	267, "main.c"; 	if(workStep == 1)
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	XORIA	0x01
 	BTRSS	STATUS,2
-	MGOTO	_00289_DS_
-	.line	282, "main.c"; 	maxDuty = 30;
-	MOVIA	0x1e
+	MGOTO	_00258_DS_
+	.line	269, "main.c"; 	maxDuty = 40;
+	MOVIA	0x28
 	BANKSEL	_maxDuty
 	MOVAR	_maxDuty
-	.line	283, "main.c"; 	ledLightTime = 0;
+	.line	270, "main.c"; 	ledLightTime = 0;
 	BANKSEL	_ledLightTime
 	CLRR	_ledLightTime
-	MGOTO	_00290_DS_
-_00289_DS_:
-	.line	285, "main.c"; 	else if(workStep == 2)
+	MGOTO	_00259_DS_
+_00258_DS_:
+	.line	272, "main.c"; 	else if(workStep == 2)
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	XORIA	0x02
 	BTRSS	STATUS,2
-	MGOTO	_00286_DS_
-	.line	286, "main.c"; 	maxDuty = 35;
-	MOVIA	0x23
+	MGOTO	_00255_DS_
+	.line	273, "main.c"; 	maxDuty = 42;
+	MOVIA	0x2a
 	BANKSEL	_maxDuty
 	MOVAR	_maxDuty
-	MGOTO	_00290_DS_
-_00286_DS_:
-	.line	287, "main.c"; 	else if(workStep == 3)
+	MGOTO	_00259_DS_
+_00255_DS_:
+	.line	274, "main.c"; 	else if(workStep == 3)
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	XORIA	0x03
 	BTRSS	STATUS,2
-	MGOTO	_00283_DS_
-	.line	288, "main.c"; 	maxDuty = 39;
-	MOVIA	0x27
+	MGOTO	_00252_DS_
+	.line	275, "main.c"; 	maxDuty = 44;
+	MOVIA	0x2c
 	BANKSEL	_maxDuty
 	MOVAR	_maxDuty
-	MGOTO	_00290_DS_
-_00283_DS_:
-	.line	289, "main.c"; 	else if(workStep == 4)
+	MGOTO	_00259_DS_
+_00252_DS_:
+	.line	276, "main.c"; 	else if(workStep == 4)
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	XORIA	0x04
 	BTRSS	STATUS,2
-	MGOTO	_00280_DS_
-	.line	290, "main.c"; 	maxDuty = 43;
-	MOVIA	0x2b
+	MGOTO	_00249_DS_
+	.line	277, "main.c"; 	maxDuty = 46;
+	MOVIA	0x2e
 	BANKSEL	_maxDuty
 	MOVAR	_maxDuty
-	MGOTO	_00290_DS_
-_00280_DS_:
-	.line	291, "main.c"; 	else if(workStep == 5)
+	MGOTO	_00259_DS_
+_00249_DS_:
+	.line	278, "main.c"; 	else if(workStep == 5)
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	XORIA	0x05
 	BTRSS	STATUS,2
-	MGOTO	_00277_DS_
-	.line	292, "main.c"; 	maxDuty = 47;
-	MOVIA	0x2f
+	MGOTO	_00246_DS_
+	.line	279, "main.c"; 	maxDuty = 48;
+	MOVIA	0x30
 	BANKSEL	_maxDuty
 	MOVAR	_maxDuty
-	MGOTO	_00290_DS_
-_00277_DS_:
-	.line	293, "main.c"; 	else if(workStep == 6)
+	MGOTO	_00259_DS_
+_00246_DS_:
+	.line	280, "main.c"; 	else if(workStep == 6)
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	XORIA	0x06
 	BTRSS	STATUS,2
-	MGOTO	_00290_DS_
-	.line	294, "main.c"; 	maxDuty = 52;
-	MOVIA	0x34
+	MGOTO	_00259_DS_
+	.line	281, "main.c"; 	maxDuty = 50;
+	MOVIA	0x32
 	BANKSEL	_maxDuty
 	MOVAR	_maxDuty
-_00290_DS_:
-	.line	295, "main.c"; 	if(workStep > 0)
+_00259_DS_:
+	.line	282, "main.c"; 	if(workStep > 0)
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	BTRSC	STATUS,2
-	MGOTO	_00292_DS_
-	.line	297, "main.c"; 	PWM1DUTY = maxDuty;
+	MGOTO	_00261_DS_
+	.line	284, "main.c"; 	PWM3DUTY = 100 - maxDuty;
 	BANKSEL	_maxDuty
 	MOVR	_maxDuty,W
-	SFUN	_PWM1DUTY
-	.line	298, "main.c"; 	pwmInit();
+	SUBIA	0x64
+;;1	MOVAR	r0x1061
+	SFUN	_PWM3DUTY
+	.line	285, "main.c"; 	pwmInit();
 	MCALL	_pwmInit
-_00292_DS_:
-	.line	300, "main.c"; 	ledStep = workStep;
+_00261_DS_:
+	.line	287, "main.c"; 	ledStep = workStep;
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	BANKSEL	_ledStep
 	MOVAR	_ledStep
-	MGOTO	_00305_DS_
-_00303_DS_:
-	.line	302, "main.c"; 	else if(kclick == 2)
-	BANKSEL	r0x105F
-	MOVR	r0x105F,W
+	MGOTO	_00274_DS_
+_00272_DS_:
+	.line	289, "main.c"; 	else if(kclick == 2)
+	BANKSEL	r0x1060
+	MOVR	r0x1060,W
 	XORIA	0x02
 	BTRSS	STATUS,2
-	MGOTO	_00305_DS_
-	.line	304, "main.c"; 	if(workStep > 0)
+	MGOTO	_00274_DS_
+	.line	291, "main.c"; 	if(workStep > 0)
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	BTRSC	STATUS,2
-	MGOTO	_00298_DS_
-	.line	306, "main.c"; 	powerOff();
+	MGOTO	_00267_DS_
+	.line	293, "main.c"; 	powerOff();
 	MCALL	_powerOff
-	MGOTO	_00299_DS_
-_00298_DS_:
-	.line	310, "main.c"; 	if(pwStep == 10)
+	MGOTO	_00268_DS_
+_00267_DS_:
+	.line	297, "main.c"; 	if(pwStep == 10)
 	BANKSEL	_pwStep
 	MOVR	_pwStep,W
 	XORIA	0x0a
 	BTRSS	STATUS,2
-	MGOTO	_00294_DS_
-	.line	312, "main.c"; 	sleepTime = 0;
+	MGOTO	_00263_DS_
+	.line	299, "main.c"; 	sleepTime = 0;
 	BANKSEL	_sleepTime
 	CLRR	_sleepTime
 	CLRR	(_sleepTime + 1)
-	.line	313, "main.c"; 	return;
-	MGOTO	_00305_DS_
-_00294_DS_:
-	.line	315, "main.c"; 	ledLightTime = 0;
+	.line	300, "main.c"; 	return;
+	MGOTO	_00274_DS_
+_00263_DS_:
+	.line	302, "main.c"; 	ledLightTime = 0;
 	BANKSEL	_ledLightTime
 	CLRR	_ledLightTime
-	.line	316, "main.c"; 	ledStep = 1;
+	.line	303, "main.c"; 	ledStep = 1;
 	MOVIA	0x01
 	BANKSEL	_ledStep
 	MOVAR	_ledStep
-	.line	317, "main.c"; 	workStep = 1;
+	.line	304, "main.c"; 	workStep = 1;
 	BANKSEL	_workStep
 	MOVAR	_workStep
-	.line	318, "main.c"; 	PWM1DUTY = 70;
-	MOVIA	0x46
-	SFUN	_PWM1DUTY
-	.line	319, "main.c"; 	currentDuty = 70;
+	.line	305, "main.c"; 	pwmInit();
+	MCALL	_pwmInit
+	.line	306, "main.c"; 	PWM3DUTY = 60;
+	MOVIA	0x3c
+	SFUN	_PWM3DUTY
+	.line	307, "main.c"; 	currentDuty = 60;
 	BANKSEL	_currentDuty
 	MOVAR	_currentDuty
-	.line	320, "main.c"; 	maxDuty = 30;
-	MOVIA	0x1e
+	.line	308, "main.c"; 	maxDuty = 40;
+	MOVIA	0x28
 	BANKSEL	_maxDuty
 	MOVAR	_maxDuty
-	.line	321, "main.c"; 	pwmInit();
-	MCALL	_pwmInit
-	.line	322, "main.c"; 	if(pwStep == 0)
+	.line	309, "main.c"; 	if(pwStep == 0)
 	BANKSEL	_pwStep
 	MOVR	_pwStep,W
 	BTRSS	STATUS,2
-	MGOTO	_00299_DS_
-	.line	323, "main.c"; 	shanshuoTime = 10;
+	MGOTO	_00268_DS_
+	.line	310, "main.c"; 	shanshuoTime = 10;
 	MOVIA	0x0a
 	BANKSEL	_shanshuoTime
 	MOVAR	_shanshuoTime
-_00299_DS_:
-	.line	326, "main.c"; 	ledStep = workStep;
+_00268_DS_:
+	.line	313, "main.c"; 	ledStep = workStep;
 	BANKSEL	_workStep
 	MOVR	_workStep,W
 	BANKSEL	_ledStep
 	MOVAR	_ledStep
-_00305_DS_:
-	.line	328, "main.c"; 	}
+_00274_DS_:
+	.line	315, "main.c"; 	}
 	RETURN	
 ; exit point of _keyCtr
 
 
 ;	code size estimation:
-;	 1324+  373 =  1697 instructions ( 4140 byte)
+;	 1322+  375 =  1697 instructions ( 4144 byte)
 
 	end

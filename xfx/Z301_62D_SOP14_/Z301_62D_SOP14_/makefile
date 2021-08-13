@@ -1,7 +1,7 @@
 ICBODY       := NY8B062D
 CLIENT_NAME  := XFX
 CB_FILE      := Z301_62D_SOP14_.cb
-HOST_TOOL    := NYIDE 4.20
+HOST_TOOL    := NYIDE 4.31
 USER_C       := main.c  
 LIBS         :=  
 USER_ASM     :=  
@@ -12,10 +12,15 @@ OBJDIR       := OBJ
 VPATH        := 
 
 #  - small: disable bank ram
-#  - small_8b: disable bank ram (NY8B series)
-#  - bank2: 2 bank ram
-#  - bank2_8b: 2 bank ram (NY8B series)
-#  - bank4: 4 bank ram
+#  - bank2: 2 bank ram (1 word BANKSEL)
+#  - bank4: 4 bank ram (2 word BANKSEL)
+#
+# suffix
+#  - NONE:  4-bit S-Page and 4-bit R-Page SFR (0~0xF)
+#  - 8b:    5-bit S-Pate and 5-bit R-Page SFR (0~0x1F)
+#  - type3: 5-bit S-Page and 4-bit R-Page SFR (0~0xF)
+#  - type4: 8b with FGOTO, ROM size > 0x800, 4 RAM bank
+#  - v2:    clear RAM at bank3 (hardware mapping to bank0)
 MODEL := bank2_8b
 
 ENABLE_INIT_BSS := 0
@@ -28,30 +33,38 @@ AR := nyar
 LDFLAGS     := -p $(ICBODY) --client "$(CLIENT_NAME)" -L "$(CC_PATH)/lib"      \
                -g -M --riffbin --elf --disasm          \
                --host "$(HOST_TOOL)" --cinit --no-programchecksum             \
-               --codechecksum --opt-banksel  --w-no 32797 --lang en-us
+               --codechecksum --opt-banksel  --w-no 32797 --lang en-us 
 
 CFLAGS      := -mny8 --errfmt-ny -p$(ICBODY) -D__CPU_$(ICBODY) --debug \
-               -I"$(CC_PATH)/include" -I"C:\Nyquest\NYIDE\\include\NY8 C"  -MD --stack-size 8  \
+               -I"$(CC_PATH)/include" -I"C:\Nyquest\NY8_Example_Code\\include\NY8 C"  -MD --stack-size 8  \
                 --backup-stk 2 
 
 ASFLAGS     := -p $(ICBODY) --dbgfmt 2 -g -l --w-no 32797 --lang en-us  \
                -I "$(CC_PATH)/inc"
 
 DEPS        := $(patsubst %.c,%.d, $(USER_C))
-ASM_SRC     := $(USER_ASM) 
-ASM_SRC     := $(addprefix $(OBJDIR)/,$(notdir $(patsubst %.c,%.s,$(USER_C))))
-OBJS        := $(addprefix $(OBJDIR)/,$(notdir $(patsubst %.c,%.o,$(USER_C)))) \
-               $(addprefix $(OBJDIR)/,$(notdir $(patsubst %.s,%.o,$(USER_ASM))))
+ASM_SRC     := $(USER_ASM)
+ASM_SRC     := $(addprefix $(OBJDIR)/,$(subst /,\, $(patsubst %.c,%.s,$(USER_C))))
+OBJS        := $(addprefix $(OBJDIR)/,$(subst /,\, $(patsubst %.c,%.o,$(USER_C)))) \
+               $(addprefix $(OBJDIR)/,$(subst /,\, $(patsubst %.s,%.o,$(USER_ASM))))
 OBJS        := $(sort $(OBJS))
 
 LIBS        += $(ICBODY).a
 BIN_FILE    := $(strip $(OUT_NAME)).bin
 
 ifneq (,$(findstring small,$(MODEL)))
-  LIBS      += libsdcc_small.a
+  ifneq (,$(findstring type4,$(MODEL)))
+	LIBS    += libsdcc_small_fgo.a
+  else
+	LIBS    += libsdcc_small.a
+  endif
   CFG_FILE  := $(CC_PATH)/cfg/small/$(ICBODY).cfg
 else
-  LIBS      += libsdcc_bankram.a
+  ifneq (,$(findstring type4,$(MODEL)))
+	LIBS    += libsdcc_bank4_fgo.a
+  else
+	LIBS    += libsdcc_bankram.a
+  endif
   CFG_FILE  := $(CC_PATH)/cfg/bankram/$(ICBODY).cfg
   ASFLAGS   += -D ENABLE_RAM_BANK=1
 endif
@@ -75,7 +88,7 @@ $(BIN_FILE): $(OBJS)
 
 $(OBJDIR)/%.s: %.c
 	$(CC) -S $< -o $@ $(CFLAGS)
-	
+
 $(OBJDIR)/%.o: $(OBJDIR)/%.s
 	$(AS) $< $(ASFLAGS)
 
@@ -84,7 +97,7 @@ $(OBJDIR)/%.o: $(OBJDIR)/%.asm
 
 $(OBJDIR)/%.o: %.asm
 	$(AS) $< -o $@ $(ASFLAGS)
-	
+
 $(OBJDIR)/%.o: %.s
 	$(AS) $< -o $@ $(ASFLAGS)
 
@@ -98,12 +111,11 @@ clean:
 	-@1>nul 2>nul del $(patsubst %.c, %.p, $(USER_C))
 	-@1>nul 2>nul del $(patsubst %.c, %.d, $(USER_C))
 	-@1>nul 2>nul del $(patsubst %.c, %.s, $(USER_C))
-	-@1>nul 2>nul del $(addsuffix .o, $(basename $(ASM_SRC)))
-	-@1>nul 2>nul del $(addsuffix .lst, $(basename $(ASM_SRC)))
-	-@1>nul 2>nul del $(addprefix $(OBJDIR)\,$(notdir $(patsubst %.c,%.adb,$(USER_C))))
-	-@1>nul 2>nul del $(addprefix $(OBJDIR)\,$(notdir $(patsubst %.c,%.p,$(USER_C))))
-	-@1>nul 2>nul del $(addprefix $(OBJDIR)\,$(notdir $(patsubst %.c,%.s,$(USER_C))))
-	-@1>nul 2>nul del $(addprefix $(OBJDIR)\,$(notdir $(patsubst %.c,%.d,$(USER_C))))
-	-@1>nul 2>nul del $(addprefix $(OBJDIR)\,$(notdir $(addsuffix .o, $(basename $(ASM_SRC)))))
-	-@1>nul 2>nul del $(addprefix $(OBJDIR)\,$(notdir $(addsuffix .lst, $(basename $(ASM_SRC)))))
-
+	-@1>nul 2>nul del $(subst /,\,$(addsuffix .o, $(basename $(ASM_SRC))))
+	-@1>nul 2>nul del $(subst /,\,$(addsuffix .lst, $(basename $(ASM_SRC))))
+	-@1>nul 2>nul del $(addprefix $(OBJDIR)\,$(subst /,\, $(patsubst %.c,%.adb,$(USER_C))))
+	-@1>nul 2>nul del $(addprefix $(OBJDIR)\,$(subst /,\, $(patsubst %.c,%.p,$(USER_C))))
+	-@1>nul 2>nul del $(addprefix $(OBJDIR)\,$(subst /,\, $(patsubst %.c,%.s,$(USER_C))))
+	-@1>nul 2>nul del $(addprefix $(OBJDIR)\,$(subst /,\, $(patsubst %.c,%.d,$(USER_C))))
+	-@1>nul 2>nul del $(addprefix $(OBJDIR)\,$(subst /,\, $(addsuffix .o, $(basename $(ASM_SRC)))))
+	-@1>nul 2>nul del $(addprefix $(OBJDIR)\,$(subst /,\, $(addsuffix .lst, $(basename $(ASM_SRC)))))

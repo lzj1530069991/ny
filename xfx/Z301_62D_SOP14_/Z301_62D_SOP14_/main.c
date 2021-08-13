@@ -28,6 +28,8 @@ u16t  R_AIN2_DATA;
 u8t R_AIN2_DATA_LB;
 u8t pwmFlag = 0;
 u8t waitTime = 0;
+u8t	jrCount = 0;	//加热计数
+u8t	jrLockFlag = 0;		//加热锁
 
 #define UPDATE_REG(x)	__asm__("MOVR _" #x ",F")
 
@@ -115,6 +117,11 @@ void main(void)
 
 void workCtr()
 {
+	if(jrLockFlag)
+	{
+		jrStep = 0;
+	}
+	
 	if(jrStep > 0)
 	{
 		checkTempAD();
@@ -129,7 +136,7 @@ void workCtr()
 	{
 		fjLed1();
 		PORTB &= 0xF7;
-		PWM3DUTY = 80;
+		PWM3DUTY = 28;
 		PORTB |= 0x04;
 		if(pwmFlag == 0)
 		{
@@ -141,8 +148,12 @@ void workCtr()
 	{
 		fjLed2();
 		PORTB &= 0xF7;
-		PWM3DUTY = 20;
 		PORTB |= 0x04;
+		PWM3DUTY = 2;
+//		pwmFlag = 0;
+//		T3CR1 = C_TMR3_Dis;
+//		IOSTA &= 0xFB;
+//		PORTA |= 0x04;
 		if(pwmFlag == 0)
 		{
 			pwmFlag = 1;
@@ -154,12 +165,27 @@ void workCtr()
 		jrLed1();
 		closeFJ();
 		//小于30度,加热
-		if(R_AIN2_DATA > 2411)
+		if(R_AIN2_DATA > 2180)
 		{
 			PORTB |= 0x08;
 		}
+		if(PORTB & 0x08)
+		{
+			if(++jrCount > 250)
+			{
+				jrCount = 250;
+				if(R_AIN2_DATA > 2160)
+				{
+					jrLockFlag = 1;
+				}
+			}
+		}
+		else
+		{
+			jrCount = 0;
+		}
 		//大于35度，停止加热
-		if(R_AIN2_DATA < 2305)
+		if(R_AIN2_DATA < 2110)
 		{
 			PORTB &= 0xF7;
 		}
@@ -169,14 +195,30 @@ void workCtr()
 		jrLed2();
 		closeFJ();
 		//小于40度,加热
-		if(R_AIN2_DATA > 2275)
+		if(R_AIN2_DATA > 1625)
 		{
 			PORTB |= 0x08;
 		}
+		if(PORTB & 0x08)
+		{
+			if(++jrCount > 250)
+			{
+				jrCount = 250;
+				if(R_AIN2_DATA > 1610)
+				{
+					jrLockFlag = 1;
+				}
+			}
+		}
+		else
+		{
+			jrCount = 0;
+		}
 		//大于45度，停止加热
-		if(R_AIN2_DATA < 2260)
+		if(R_AIN2_DATA < 1575)
 		{
 			PORTB &= 0xF7;
+			jrCount = 0;
 		}
 	}
 	else
@@ -185,11 +227,14 @@ void workCtr()
 		closeFJ();
 		PORTB &= 0xF7;
 	}
+	
+	
 }
 
 
 void closeFJ()
 {
+	jrCount = 0;
 	pwmFlag = 0;
 	PORTB &= 0xFB;
 	T3CR1 = C_TMR3_Dis;
@@ -237,9 +282,9 @@ void pwmInit()
 {
 	
 	TM3RH   = 0x00;
-    TMR3	 = 100;						// Move FFH to TMR3 LB register  ( TMR3[9:0]=3FFH )
-    PWM3DUTY = 80;			// Move 00H to PWM3DUTY LB register ( PWM3DUTY[9:0]=300H )
-    T3CR2	 = C_PS3_Dis | C_TMR3_ClkSrc_Inst;	// Prescaler 1:1 , Timer3 clock source is instruction clock  
+    TMR3	 = 80;						// Move FFH to TMR3 LB register  ( TMR3[9:0]=3FFH )
+    PWM3DUTY = 52;			// Move 00H to PWM3DUTY LB register ( PWM3DUTY[9:0]=300H )
+    T3CR2	 = C_PS3_Div256 | C_TMR3_ClkSrc_Inst;	// Prescaler 1:1 , Timer3 clock source is instruction clock  
     T3CR1	 = C_PWM3_En | C_PWM3_Active_Hi | C_TMR3_Reload | C_TMR3_En;	// Enable PWM3 , Active_High , Non-Stop mode ,reloaded from TMR3[9:0] , enable Timer3 
 }
 
@@ -325,9 +370,11 @@ void keyCtr()
 		if(jrStep == 0)
 		{
 			jrStep = 2;
+			jrCount = 0;
 		}
 		else if(jrStep > 0)
 		{
+			jrCount = 0;
 			jrStep--;
 		}
 		

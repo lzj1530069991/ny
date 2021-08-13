@@ -1384,18 +1384,18 @@ _checkOutA:
 	MGOTO	_00004_DS_
 	BANKSEL	_R_AIN3_DATA
 	ADDAR	(_R_AIN3_DATA + 1),F
-;;shiftRight_Left2ResultLit:5590: shCount=1, size=2, sign=0, same=1, offr=0
+;;shiftRight_Left2ResultLit:5673: shCount=1, size=2, sign=0, same=1, offr=0
 _00004_DS_:
 	.line	973, "main.c"; 	R_AIN3_DATA >>=3;					// R_AIN0_DATA divided 8
 	BCR	STATUS,0
 	BANKSEL	_R_AIN3_DATA
 	RRR	(_R_AIN3_DATA + 1),F
 	RRR	_R_AIN3_DATA,F
-;;shiftRight_Left2ResultLit:5590: shCount=1, size=2, sign=0, same=1, offr=0
+;;shiftRight_Left2ResultLit:5673: shCount=1, size=2, sign=0, same=1, offr=0
 	BCR	STATUS,0
 	RRR	(_R_AIN3_DATA + 1),F
 	RRR	_R_AIN3_DATA,F
-;;shiftRight_Left2ResultLit:5590: shCount=1, size=2, sign=0, same=1, offr=0
+;;shiftRight_Left2ResultLit:5673: shCount=1, size=2, sign=0, same=1, offr=0
 	BCR	STATUS,0
 	RRR	(_R_AIN3_DATA + 1),F
 	RRR	_R_AIN3_DATA,F
@@ -1913,18 +1913,18 @@ _checkBatAD:
 	MGOTO	_00006_DS_
 	BANKSEL	_R_AIN4_DATA
 	ADDAR	(_R_AIN4_DATA + 1),F
-;;shiftRight_Left2ResultLit:5590: shCount=1, size=2, sign=0, same=1, offr=0
+;;shiftRight_Left2ResultLit:5673: shCount=1, size=2, sign=0, same=1, offr=0
 _00006_DS_:
 	.line	785, "main.c"; 	R_AIN4_DATA >>=3;					// R_AIN0_DATA divided 8
 	BCR	STATUS,0
 	BANKSEL	_R_AIN4_DATA
 	RRR	(_R_AIN4_DATA + 1),F
 	RRR	_R_AIN4_DATA,F
-;;shiftRight_Left2ResultLit:5590: shCount=1, size=2, sign=0, same=1, offr=0
+;;shiftRight_Left2ResultLit:5673: shCount=1, size=2, sign=0, same=1, offr=0
 	BCR	STATUS,0
 	RRR	(_R_AIN4_DATA + 1),F
 	RRR	_R_AIN4_DATA,F
-;;shiftRight_Left2ResultLit:5590: shCount=1, size=2, sign=0, same=1, offr=0
+;;shiftRight_Left2ResultLit:5673: shCount=1, size=2, sign=0, same=1, offr=0
 	BCR	STATUS,0
 	RRR	(_R_AIN4_DATA + 1),F
 	RRR	_R_AIN4_DATA,F

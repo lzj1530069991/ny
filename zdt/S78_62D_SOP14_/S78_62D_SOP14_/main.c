@@ -179,19 +179,19 @@ void main(void)
 	{
 	    CLRWDT();
 	    ledShow();
-	     if(workStep > 0 && tempDuty >= 45)
-	    {
-	    	if(cDuty > tempDuty)
-	    	{
-	    		cDuty--;
-	    		PWM2DUTY = cDuty;
-	    	}
-	    	else if(cDuty < tempDuty)
-	    	{
-	    		cDuty++;
-	    		PWM2DUTY = cDuty;
-	    	}
-	    }
+//	     if(workStep > 0 && tempDuty >= 45)
+//	    {
+//	    	if(cDuty > tempDuty)
+//	    	{
+//	    		cDuty--;
+//	    		PWM2DUTY = cDuty;
+//	    	}
+//	    	else if(cDuty < tempDuty)
+//	    	{
+//	    		cDuty++;
+//	    		PWM2DUTY = cDuty;
+//	    	}
+//	    }
 	    if(workStep > 0 && currentDuty > maxDuty)
 		{
 			currentDuty = currentDuty - 1;
@@ -279,17 +279,17 @@ void keyCtr()
 			shanshuoTime = 10;
 		if(workStep == 1)
 		{
-			maxDuty = 56;
+			maxDuty = 103;
 			ledLightTime = 0;
 		}
 		else if(workStep == 2)
-			maxDuty = 61;
+			maxDuty = 109;
 		else if(workStep == 3)
-			maxDuty = 66;
+			maxDuty = 114;
 		else if(workStep == 4)
-			maxDuty = 71;
+			maxDuty = 119;
 		else if(workStep == 5)
-			maxDuty = 76;
+			maxDuty = 124;
 		if(workStep > 0)
 		{
 			PWM2DUTY = maxDuty;
@@ -313,9 +313,9 @@ void keyCtr()
 			ledLightTime = 0;
 			ledStep = 1;
 			workStep = 1;
-			PWM2DUTY = 87;
-			currentDuty = 87;
-			maxDuty = 56;
+			PWM2DUTY = 120;
+			currentDuty = 120;
+			maxDuty = 103;
 			pwmInit();
 			if(pwStep == 0)
 				shanshuoTime = 10;
@@ -840,43 +840,44 @@ void checkOutA()
         }
         else
         {
-        	u8t maxAout = 100;
-        	if(pwStep > 3)
-        		maxAout = 105;
-        	if(workStep == 1)
-    		{
-    			maxAout = maxAout - 11;
-    		}
-    		else if(workStep == 2)
-    		{
-    			maxAout = maxAout - 8;
-    		}
-    		else if(workStep == 3)
-    		{
-    			maxAout = maxAout - 2;
-    		}
-    		else if(workStep == 4)
-    		{
-    			maxAout = maxAout + 5;
-    		}
-    		else if(workStep == 5)
-    		{
-    			maxAout = maxAout + 10;
-    		}
+//        	u8t maxAout = 100;
+//        	if(pwStep > 3)
+//        		maxAout = 105;
+//        	if(workStep == 1)
+//    		{
+//    			maxAout = maxAout - 11;
+//    		}
+//    		else if(workStep == 2)
+//    		{
+//    			maxAout = maxAout - 8;
+//    		}
+//    		else if(workStep == 3)
+//    		{
+//    			maxAout = maxAout - 2;
+//    		}
+//    		else if(workStep == 4)
+//    		{
+//    			maxAout = maxAout + 5;
+//    		}
+//    		else if(workStep == 5)
+//    		{
+//    			maxAout = maxAout + 10;
+//    		}
         	if(overCount > 0)
         	{
         		overCount--;
         	}
-        	if(tempResult > maxAout)
-        	{
-        		tempDuty = 94 + workStep*6;
-        		//PWM2DUTY = tempDuty;
-        	}
-        	else if(tempResult < 115)
-        	{
-        		//PWM2DUTY = maxDuty;
-        		tempDuty = maxDuty;
-        	}
+//        	tempDuty = maxDuty;
+//        	if(tempResult > maxAout)
+//        	{
+//        		tempDuty = 94 + workStep*6;
+//        		//PWM2DUTY = tempDuty;
+//        	}
+//        	else if(tempResult < 115)
+//        	{
+//        		//PWM2DUTY = maxDuty;
+//        		tempDuty = maxDuty;
+//        	}
    
         }
       	if(workStep > 0)

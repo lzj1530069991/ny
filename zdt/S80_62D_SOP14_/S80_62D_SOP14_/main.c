@@ -53,7 +53,9 @@ u8t breathWaitTime = 0;
 u8t count1s = 0;
 u8t currentDuty = 0;
 u8t preDuty = 0;
+u8t lowBatFlag = 0;
 u16t waitRainbowTime = 0;
+u8t chrgFullFlag = 0;
 
 void initSys();
 void initAD();
@@ -189,15 +191,17 @@ void chrgCtr()
 	if(0x40 & PORTA)
 	{
 		//充电中
+		lowBatFlag = 0;
 		ledFlag = 0;
 		workStep = 0;
 		pwmStop();
-		if(R_AIN1_DATA > 1525)
+		if(R_AIN1_DATA > 1525 || chrgFullFlag)
 		{
-			if(++fullTime > 6000)
+			if(++fullTime > 6000 || chrgFullFlag)
 			{
 				fullTime = 6000;
 				ledGreen();
+				chrgFullFlag = 1;
 				if(R_AIN1_DATA > 1550)
 				{
 					PORTA &= 0xDF;
@@ -226,6 +230,7 @@ void chrgCtr()
 	}
 	else
 	{
+		chrgFullFlag = 0;
 		if(workStep == 0)
 			ledFlag = 0;
 		//colorStep = 0;
@@ -301,10 +306,14 @@ void workCtr()
 		PWM1DUTY = currentDuty;
 		preDuty = currentDuty;
 	}
-	if(lowCount >= 10)
+	if(lowCount >= 10 && workStep > 0)
 	{
-		if(++closeTime >= 6000)
+		if(++closeTime >= 100)
+		{
+			lowBatFlag = 1;
 			gotoSleep();
+			
+		}
 	}
 	else
 	{
@@ -348,7 +357,7 @@ void keyCtr()
 		}
 		else
 		{
-			if(lowCount >= 10)
+			if(lowBatFlag)
 			{
 				return;
 			}
@@ -357,8 +366,16 @@ void keyCtr()
 			waitRainbowTime = 500;
 			ledFlag = 1;
 			workStep = 1;
-			duty = 107;
-    		PWM1DUTY = 107;
+			if(R_AIN1_DATA < 1300)
+			{
+				duty = 124;
+	    		PWM1DUTY = 124;
+    		}
+    		else
+    		{
+    			duty = 107;
+	    		PWM1DUTY = 107;
+    		}
 			pwmInit();
 			
 		}
@@ -658,12 +675,12 @@ void checkBatAD()
         	//R_AIN2_DATA = 1550;
         	lowCount = 0;
         }
-        else if(R_AIN1_DATA < 1150)
+        else if(R_AIN1_DATA < 1111)
         {
         	if(++lowCount < 10)
         		return;
         	lowCount = 10;
-        	R_AIN1_DATA = 1150;
+        	R_AIN1_DATA = 1111;
         }
         else
         {

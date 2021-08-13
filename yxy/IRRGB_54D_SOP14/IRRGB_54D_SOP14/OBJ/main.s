@@ -2141,7 +2141,7 @@ _00226_DS_:
 	BANKSEL	_sleepCount
 	CLRR	_sleepCount
 	CLRR	(_sleepCount + 1)
-;;shiftRight_Left2ResultLit:5590: shCount=1, size=1, sign=0, same=1, offr=0
+;;shiftRight_Left2ResultLit:5673: shCount=1, size=1, sign=0, same=1, offr=0
 _00233_DS_:
 	.line	281, "main.c"; 	value = value >> 1;
 	BCR	STATUS,0

@@ -9,19 +9,19 @@
 typedef unsigned char u8t;
 typedef unsigned short u16t;
 
-#define L1OUT	IOSTB &= 0xFE
+#define L1OUT	IOSTA &= 0xFE
 #define L2OUT	IOSTB &= 0xFD
 #define L3OUT	IOSTA &= 0x7F
 
-#define L1IN	IOSTB |= 0x01
+#define L1IN	IOSTA |= 0x01
 #define L2IN	IOSTB |= 0x02
 #define L3IN	IOSTA |= 0x80
 
-#define L1H		PORTB |= 0x01
+#define L1H		PORTA |= 0x01
 #define L2H		PORTB |= 0x02
 #define L3H		PORTA |= 0x80
 
-#define L1L		PORTB &= 0xFE
+#define L1L		PORTA &= 0xFE
 #define L2L		PORTB &= 0xFD
 #define L3L		PORTA &= 0x7F
 
@@ -74,6 +74,9 @@ u8t chrgWaitTime = 0;
 u16t tempSum = 0;
 u8t count100 = 0;
 u16t tempResult = 0;
+u8t	fgCount = 0;
+u8t	preFG = 0;
+u8t	fgPRD = 0;
 
 u8t debug = 0;		//1打开bug
 #define OUTA	301
@@ -127,6 +130,8 @@ void isr(void) __interrupt(0)
 		{
 			IntFlag = 1;
 			intCount = 0;
+			if(workStep)
+				++fgCount;
 			if(++count500ms >= 40)
 				count500ms = 0;
 			if(++count200ms >= 20)
@@ -179,25 +184,7 @@ void main(void)
 	{
 	    CLRWDT();
 	    ledShow();
-	     if(workStep > 0 && tempDuty >= 20)
-	    {
-	    	if(cDuty > tempDuty)
-	    	{
-	    		cDuty--;
-	    		PWM1DUTY = cDuty;
-	    	}
-	    	else if(cDuty < tempDuty)
-	    	{
-	    		cDuty++;
-	    		PWM1DUTY = cDuty;
-	    	}
-	    }
-	    if(workStep > 0 && currentDuty > maxDuty)
-		{
-			currentDuty = currentDuty - 1;
-			PWM1DUTY = currentDuty;
-			cDuty = currentDuty;
-		}
+	    fgCtr();
         if(!IntFlag)
     		continue;			//10ms执行一次
     	IntFlag = 0;
@@ -279,22 +266,22 @@ void keyCtr()
 			shanshuoTime = 10;
 		if(workStep == 1)
 		{
-			maxDuty = 30;
+			maxDuty = 40;
 			ledLightTime = 0;
 		}
 		else if(workStep == 2)
-			maxDuty = 35;
+			maxDuty = 42;
 		else if(workStep == 3)
-			maxDuty = 39;
+			maxDuty = 44;
 		else if(workStep == 4)
-			maxDuty = 43;
+			maxDuty = 46;
 		else if(workStep == 5)
-			maxDuty = 47;
+			maxDuty = 48;
 		else if(workStep == 6)
-			maxDuty = 52;
+			maxDuty = 50;
 		if(workStep > 0)
 		{
-			PWM1DUTY = maxDuty;
+			PWM3DUTY = 100 - maxDuty;
 			pwmInit();
 		}
 		ledStep = workStep;
@@ -315,10 +302,10 @@ void keyCtr()
 			ledLightTime = 0;
 			ledStep = 1;
 			workStep = 1;
-			PWM1DUTY = 70;
-			currentDuty = 70;
-			maxDuty = 30;
 			pwmInit();
+			PWM3DUTY = 60;
+			currentDuty = 60;
+			maxDuty = 40;
 			if(pwStep == 0)
 				shanshuoTime = 10;
 			
@@ -340,8 +327,8 @@ void powerOff()
 void initSys()
 {
 	 DISI();
-	IOSTA = C_PA6_Input | C_PA5_Input | C_PA4_Input | C_PA3_Input | C_PA2_Input | C_PA0_Input;
-	IOSTB = C_PB3_Input;
+	IOSTA = C_PA6_Input | C_PA5_Input | C_PA4_Input | C_PA1_Input;
+	IOSTB = C_PB0_Input;
 	PORTB = 0x00;
 	PORTA = 0x00;
 	LedInput();
@@ -429,10 +416,10 @@ void ledShow()
 
 void LedInput()
 {
-	IOSTA |= 0x80;
-	IOSTB |= 0x03;
-	PORTB &= 0xFC;
-	PORTA &= 0x7F;
+	IOSTA |= 0x81;
+	IOSTB |= 0x02;
+	PORTB &= 0xFD;
+	PORTA &= 0x7E;
 }
 
 void LED1ON()
@@ -502,7 +489,7 @@ void pwm1Init()
 	if(0x80&T2CR1)
 		return;
 	TMRH = 0x00;
-	TMR1 = 48;							//频率为110K
+	TMR2 = 48;							//频率为110K
 	//PWM2DUTY = 0x08;				// 		
 	
 	T2CR2 = C_TMR2_ClkSrc_Inst | C_PS2_Div2;	// Enable Prescaler1, Prescaler1 dividing rate = 1:2, Timer1 clock source is instruction clock 
@@ -519,19 +506,22 @@ void pwm1Stop()
 
 void pwmInit()
 {
-	if(0x80&T1CR1)
+	PORTB |= 0x08;
+	if(0x80&T3CR1)
 		return;
-	TMRH = 0x00;
-	TMR1 = 100;							//频率为110K
+	TM3RH = 0x00;
+	TMR3 = 100;							//频率为110K
 	//PWM2DUTY = 0x08;				// 		
 	
-	T1CR2 = C_TMR1_ClkSrc_Inst | C_PS1_Div4;	// Enable Prescaler1, Prescaler1 dividing rate = 1:2, Timer1 clock source is instruction clock 
-	T1CR1 = C_PWM1_En | C_TMR1_Reload | C_TMR1_En;	// PWM1 output will be present on PB6 , PWM1 output is active high, reloaded from TMR1, non-stop mode
+	T3CR2 = C_TMR3_ClkSrc_Inst | C_PS3_Div4;	// Enable Prescaler1, Prescaler1 dividing rate = 1:2, Timer1 clock source is instruction clock 
+	T3CR1 = C_PWM3_En | C_TMR3_Reload | C_TMR3_En;	// PWM1 output will be present on PB6 , PWM1 output is active high, reloaded from TMR1, non-stop mode
 }
 
 void pwmStop()
 {
-	T1CR1 = C_TMR1_Dis;
+	PORTB &= 0xF7;
+	PORTA &= 0xFB;
+	T3CR1 = C_TMR3_Dis;
 }
 
 
@@ -559,8 +549,6 @@ void gotoSleep()
 	ENI();
 	SLEEP();
 	AWUCON = 0x00;
-	IOSTA = C_PA6_Input | C_PA5_Input | C_PA4_Input | C_PA3_Input | C_PA2_Input | C_PA0_Input;
-	IOSTB = 0x00;
 	PORTA = 0x00;
 	APHCON = 0x3F;
 	INTE =  C_INT_TMR0;	// Enable Timer0、Timer1、WDT overflow interrupt
@@ -627,8 +615,8 @@ void chrgCtr()
 				fullCount = 2000;
 				chrgFullFlag = 1;
 				pwm1Stop();
-				PORTB &= 0xF7;
-				IOSTB |= 0X08;
+				PORTB &= 0xFB;
+				IOSTB |= 0X04;
 			}
 				//ABPLCON &= 0X7F;
 			
@@ -636,7 +624,7 @@ void chrgCtr()
 		else
 		{
 			//ABPLCON |= 0x80;
-			IOSTB &= 0xF7;
+			IOSTB &= 0xFB;
 			fullCount = 0;
 			if(count500ms == 0 && pwStep <= 7 && lockLedStep < 6)
 			{
@@ -660,21 +648,21 @@ void chrgCtr()
 			{
 				ledStep = 6;	//亮灯不闪了
 			}
-			PWM2DUTY = maxduty;
+			
 			pwm1Init();
 			if(count200ms > 5)
 			{
-					if(R_AIN4_DATA <= 35 && R_AIN4_DATA >=subMin)
+					if(R_AIN4_DATA <= 37 && R_AIN4_DATA >=subMin)
 					{
 						addTime = subTime = 0;
 					}	
-					if(R_AIN4_DATA > 35)
+					if(R_AIN4_DATA > 37)
 					{
 						if(++subTime > chrgWaitTime)
 						{
 							maxduty = maxduty - 1;
 							subTime = 0;
-							subMin = 34;
+							subMin = 36;
 							chrgWaitTime = 250;
 						}
 						addTime = 0;
@@ -688,11 +676,11 @@ void chrgCtr()
 						}
 						subTime = 0;
 					}
-					if(chrgduty < maxduty)
-						chrgduty++;
-					else
-						chrgduty = maxduty;
-				
+				if(maxduty > 35)
+				{
+					maxduty = 35;
+				}
+				PWM2DUTY = maxduty;
 			}
 			
 		}
@@ -701,7 +689,7 @@ void chrgCtr()
 	else 
 	{
 		chrgWaitTime = 20;
-		subMin = 33;
+		subMin = 36;
 		chrgFullFlag = 0;
 		chrgduty = 0;
 		maxduty = 0;
@@ -713,6 +701,19 @@ void chrgCtr()
 			ledStep = 0;
 		chrgFlag = 0;
 		chrgTime = 0;	//重置充电计数
+		if(workStep > 0)
+		{
+			pwmInit();
+		}
+		if(fgCount > 150)
+		{
+			pwmStop();
+			PORTB &= 0xF7;
+			fgPRD = 0;
+			fgCount = 0;
+			delay(200);
+		}
+		
 			
 	}
 }
@@ -805,6 +806,24 @@ void checkBatAD()
 }
 
 
+void fgCtr()
+{
+	if(PORTB & 0x01)
+	{
+		if(preFG == 0)
+		{
+			fgPRD = fgCount;
+			fgCount = 0;
+		}
+		preFG = 1;
+	}
+	else
+	{
+		preFG = 0;
+	}
+}
+
+
 void checkOutA()
 {	
 		
@@ -841,40 +860,40 @@ void checkOutA()
 //        		}
         	}
         }
-        else if(tempResult > 88)
+        else if(tempResult > 68)
         {
         	if(overCount > 0)
         	{
         		overCount--;
         	}
 
-        	tempDuty = 70 + workStep*5;
+        	tempDuty = 69 + workStep*5;
 
         }
         else
         {
-        	u8t maxAout = 75;
+        	u8t maxAout = 40;
         	if(pwStep > 3)
-        		maxAout = 80;
+        		maxAout = 45;
         	if(workStep == 1)
     		{
     			maxAout = maxAout - 15;
     		}
     		else if(workStep == 2)
     		{
-    			maxAout = maxAout - 11;
+    			maxAout = maxAout - 12;
     		}
-    		else if(workStep == 4)
+    		else if(workStep == 3)
     		{
-    			maxAout = maxAout + 5;
+    			maxAout = maxAout - 5;
     		}
     		else if(workStep == 5)
     		{
-    			maxAout = maxAout + 10;
+    			maxAout = maxAout + 1;
     		}
     		else if(workStep == 6)
     		{
-    			maxAout = maxAout + 18;
+    			maxAout = maxAout + 5;
     		}
         	if(overCount > 0)
         	{
@@ -882,7 +901,7 @@ void checkOutA()
         	}
         	if(tempResult > maxAout)
         	{
-        		tempDuty = 70 + workStep*5;
+        		tempDuty = 69 + workStep*5;
         		//PWM2DUTY = tempDuty;
         	}
         	else if(tempResult < 100)
@@ -890,8 +909,9 @@ void checkOutA()
         		//PWM2DUTY = maxDuty;
         		tempDuty = maxDuty;
         	}
-   
+   			
         }
+        PWM3DUTY = 100 - tempDuty;
       	if(workStep > 0)
         		ledStep = workStep;
         
@@ -908,7 +928,7 @@ void F_AIN4_Convert(char count)
 {
   	R_AIN4_DATA=R_AIN4_DATA_LB=0x00;   
   	char i;
-  	ADMD  = 0x90 | C_ADC_PA0;				// Select AIN6(PB1) pad as ADC input
+  	ADMD  = 0x90 | C_ADC_PA1;				// Select AIN6(PB1) pad as ADC input
   	delay(200);	
   	for(i=1;i<=count;i++)
   	{     			 
